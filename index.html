@@ -28,15 +28,23 @@
     }
 
     /* Background liquid */
-    .bg{position:fixed; inset:0; z-index:-2; background: radial-gradient(1200px 800px at 10% 10%, #1e293b 0%, transparent 60%), radial-gradient(1000px 600px at 90% 20%, #111827 0%, transparent 55%), radial-gradient(1000px 900px at 20% 90%, #0a0f1d 0%, transparent 60%);}
+    .bg{position:fixed; inset:0; z-index:-2; background:
+        radial-gradient(1200px 800px at 10% 10%, #1e293b 0%, transparent 60%),
+        radial-gradient(1000px 600px at 90% 20%, #111827 0%, transparent 55%),
+        radial-gradient(1000px 900px at 20% 90%, #0a0f1d 0%, transparent 60%);
+    }
     .blob{position:absolute; filter: blur(60px); opacity:.55; mix-blend-mode:screen; animation:float 18s ease-in-out infinite;}
     .blob.one{ width: 420px; height:420px; left:-80px; top:-60px; background:linear-gradient(135deg, #22d3ee, #818cf8); }
     .blob.two{ width: 520px; height:520px; right:-120px; top:20vh; background:linear-gradient(135deg, #06b6d4, #ec4899); animation-delay: -6s; }
     .blob.three{ width: 480px; height:480px; left:20vw; bottom:-140px; background:linear-gradient(135deg, #34d399, #60a5fa); animation-delay: -3s; }
     @keyframes float{ 0%,100%{ transform:translateY(0) translateX(0) scale(1)} 50%{ transform:translateY(-30px) translateX(10px) scale(1.05)} }
+    @media (prefers-reduced-motion: reduce){
+      .blob{animation:none}
+    }
 
     /* Header & nav */
-    header{position:sticky; top:0; -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%); background:linear-gradient(180deg, rgba(10,16,29,0.7), rgba(10,16,29,0.35)); border-bottom:1px solid rgba(255,255,255,0.08); z-index:40}
+    header{position:sticky; top:0; -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
+      background:linear-gradient(180deg, rgba(10,16,29,0.7), rgba(10,16,29,0.35)); border-bottom:1px solid rgba(255,255,255,0.08); z-index:40}
     .nav{max-width:1100px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; gap:12px}
     .brand{font-weight:800; letter-spacing:.4px; font-size:18px}
     .spacer{flex:1}
@@ -49,7 +57,9 @@
     .burger svg{width:22px; height:22px; display:block}
 
     /* Drawer */
-    .drawer{position:fixed; inset:0 0 0 auto; width:78%; max-width:320px; transform:translateX(100%); transition:transform .25s ease; background:rgba(13,18,34,.88); -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%); border-left:1px solid rgba(255,255,255,.08); z-index:50; display:flex; flex-direction:column}
+    .drawer{position:fixed; inset:0 0 0 auto; width:78%; max-width:320px; transform:translateX(100%); transition:transform .25s ease;
+      background:rgba(13,18,34,.88); -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
+      border-left:1px solid rgba(255,255,255,.08); z-index:50; display:flex; flex-direction:column}
     .drawer.open{transform:translateX(0)}
     .drawer .head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
     .drawer .links{display:flex; flex-direction:column; padding:10px}
@@ -156,7 +166,7 @@
     </section>
 
     <!-- PROJECTS -->
-    <section id="projects" class="container">
+    <section id="projects" class="container" style="scroll-margin-top:80px">
       <h2>Наші проєкти</h2>
       <div class="grid">
         <!-- Judgment -->
@@ -252,7 +262,7 @@
     </section>
 
     <!-- CONTACTS -->
-    <section id="contacts" class="container">
+    <section id="contacts" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
         <h2 style="margin-top:0">Контакти</h2>
         <p style="color:var(--muted)">Маєш питання, хочеш допомогти або запропонувати співпрацю? Напиши нам чи створи issue у репозиторії.</p>
@@ -265,7 +275,7 @@
     </section>
 
     <!-- SUPPORT -->
-    <section id="support" class="container">
+    <section id="support" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
         <h2 style="margin-top:0">Фінансова підтримка</h2>
         <p style="color:var(--muted)">Підтримка допомагає пришвидшити локалізації та покрити витрати на інструменти. Додаймо сюди посилання на донати.</p>
@@ -294,10 +304,14 @@
     closeBtn?.addEventListener('click', close);
     backdrop?.addEventListener('click', close);
     window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+    // Close on nav link click (mobile)
+    document.querySelectorAll('.drawer .links a').forEach(a=>a.addEventListener('click', close));
 
     // Animate progress bars after load + year
     window.addEventListener('load',()=>{
-      document.querySelectorAll('.progress > span').forEach(el=>{ const w = el.style.width; el.style.width = '0'; requestAnimationFrame(()=>{ el.style.width = w; }); });
+      document.querySelectorAll('.progress > span').forEach(el=>{
+        const w = el.style.width; el.style.width = '0'; requestAnimationFrame(()=>{ el.style.width = w; });
+      });
       document.getElementById('y').textContent = new Date().getFullYear();
     });
   </script>
