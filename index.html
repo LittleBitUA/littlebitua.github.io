@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Little Bit — Українізатори</title>
+  <meta name="description" content="Спілка Little Bit — українські локалізації відеоігор: Judgment, Yakuza, No More Heroes." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --glass-bg: rgba(255,255,255,0.08);
+      --glass-brd: rgba(255,255,255,0.25);
+      --text: #f5f7fb;
+      --muted: #cdd4e1;
+      --accent: #7dd3fc;
+      --accent-2: #a78bfa;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; padding:0}
+    body{
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif;
+      color:var(--text);
+      background:#0b1220; overflow-x:hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Background liquid */
+    .bg{position:fixed; inset:0; z-index:-2; background: radial-gradient(1200px 800px at 10% 10%, #1e293b 0%, transparent 60%), radial-gradient(1000px 600px at 90% 20%, #111827 0%, transparent 55%), radial-gradient(1000px 900px at 20% 90%, #0a0f1d 0%, transparent 60%);}
+    .blob{position:absolute; filter: blur(60px); opacity:.55; mix-blend-mode:screen; animation:float 18s ease-in-out infinite;}
+    .blob.one{ width: 420px; height:420px; left:-80px; top:-60px; background:linear-gradient(135deg, #22d3ee, #818cf8); }
+    .blob.two{ width: 520px; height:520px; right:-120px; top:20vh; background:linear-gradient(135deg, #06b6d4, #ec4899); animation-delay: -6s; }
+    .blob.three{ width: 480px; height:480px; left:20vw; bottom:-140px; background:linear-gradient(135deg, #34d399, #60a5fa); animation-delay: -3s; }
+    @keyframes float{ 0%,100%{ transform:translateY(0) translateX(0) scale(1)} 50%{ transform:translateY(-30px) translateX(10px) scale(1.05)} }
+
+    /* Header & nav */
+    header{position:sticky; top:0; -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%); background:linear-gradient(180deg, rgba(10,16,29,0.7), rgba(10,16,29,0.35)); border-bottom:1px solid rgba(255,255,255,0.08); z-index:40}
+    .nav{max-width:1100px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; gap:12px}
+    .brand{font-weight:800; letter-spacing:.4px; font-size:18px}
+    .spacer{flex:1}
+    .nav-links{display:flex; gap:8px}
+    .nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:10px; transition:all .25s}
+    .nav a:hover{color:var(--text); background:rgba(255,255,255,0.06)}
+
+    /* Burger */
+    .burger{display:none; background:transparent; border:1px solid rgba(255,255,255,.15); border-radius:10px; padding:8px; color:var(--text)}
+    .burger svg{width:22px; height:22px; display:block}
+
+    /* Drawer */
+    .drawer{position:fixed; inset:0 0 0 auto; width:78%; max-width:320px; transform:translateX(100%); transition:transform .25s ease; background:rgba(13,18,34,.88); -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%); border-left:1px solid rgba(255,255,255,.08); z-index:50; display:flex; flex-direction:column}
+    .drawer.open{transform:translateX(0)}
+    .drawer .head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
+    .drawer .links{display:flex; flex-direction:column; padding:10px}
+    .drawer .links a{padding:12px 12px; border-radius:12px; margin:4px 0; color:var(--text); text-decoration:none; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08)}
+
+    .backdrop{position:fixed; inset:0; background:rgba(2,6,23,.55); opacity:0; visibility:hidden; transition:all .25s; z-index:45}
+    .backdrop.show{opacity:1; visibility:visible}
+
+    .container{max-width:1100px; margin:0 auto; padding:56px 20px}
+    .glass{background: var(--glass-bg); border: 1px solid var(--glass-brd); border-radius: 18px; -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%); box-shadow: 0 10px 50px rgba(2,6,23, .35), inset 0 1px 0 rgba(255,255,255,0.06)}
+
+    .hero{ display:grid; grid-template-columns: 1fr; gap:20px; align-items:center; padding:22px; }
+    .hero h1{ font-size: clamp(28px, 3.6vw, 48px); margin:0 0 10px 0; line-height:1.05 }
+    .pill{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:rgba(125,211,252,.12); border:1px solid rgba(125,211,252,.35); color:#dbeafe; font-weight:600; font-size:12px}
+    .lead{color:var(--muted); font-size: 16px; line-height:1.7}
+    .cta{display:flex; gap:12px; margin-top:12px; flex-wrap:wrap}
+    .btn{padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); color:var(--text); text-decoration:none; display:inline-flex; gap:10px; align-items:center; transition:transform .2s, background .2s, border-color .2s}
+    .btn.primary{background:linear-gradient(135deg, rgba(125,211,252,.25), rgba(167,139,250,.25)); border-color: rgba(167,139,250,.45)}
+    .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,0.35)}
+    .btn.disabled{background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.45); border:1px solid rgba(255,255,255,0.12); cursor:not-allowed;}
+
+    h2{font-size: clamp(22px, 3vw, 32px); margin:0 0 18px}
+
+    /* Grid */
+    .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:14px }
+    .card{ overflow:hidden; position:relative; display:flex; flex-direction:column }
+    .thumb{ position:relative; aspect-ratio: 16/9; background:#0f172a; overflow:hidden }
+    .thumb img{ width:100%; height:100%; object-fit:cover; opacity:.92; transform: scale(1.02); transition:transform .5s ease }
+    .card:hover .thumb img{ transform: scale(1.07) }
+    .badge{position:absolute; top:12px; left:12px; background:rgba(2,6,23,.55); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700}
+    .content{ padding:14px 14px 16px; display:flex; flex-direction:column; gap:8px }
+    .content h3{margin:0; font-size:18px}
+    .content p{margin:0; color:var(--muted); line-height:1.6; font-size:14px}
+
+    .progress{ height:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:999px; overflow:hidden; }
+    .progress > span{ display:block; height:100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width:0; transition: width 1200ms cubic-bezier(.2,.7,.2,1) }
+
+    footer{ color:#93a4bc; padding:30px 0 60px; font-size:13px; text-align:center }
+
+    @media (min-width: 880px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
+    @media (max-width: 860px){ .nav-links{ display:none } .burger{display:inline-flex} }
+  </style>
+</head>
+<body>
+  <div class="bg">
+    <div class="blob one"></div>
+    <div class="blob two"></div>
+    <div class="blob three"></div>
+  </div>
+
+  <!-- mobile backdrop -->
+  <div id="backdrop" class="backdrop" aria-hidden="true"></div>
+  <!-- drawer -->
+  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Мобільне меню">
+    <div class="head">
+      <div style="font-weight:800">Меню</div>
+      <button id="closeDrawer" aria-label="Закрити" class="burger">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="links">
+      <a href="#projects">Наші проєкти</a>
+      <a href="#contacts">Контакти</a>
+      <a href="#support">Фінансова підтримка</a>
+    </div>
+  </aside>
+
+  <header>
+    <nav class="nav">
+      <div class="brand">Little Bit</div>
+      <div class="spacer"></div>
+      <div class="nav-links">
+        <a href="#projects">Наші проєкти</a>
+        <a href="#contacts">Контакти</a>
+        <a href="#support">Фінансова підтримка</a>
+      </div>
+      <button id="openDrawer" class="burger" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section id="home" class="container">
+      <div class="hero glass">
+        <div>
+          <span class="pill">Українські локалізації ↗</span>
+          <h1>Спілка «Little Bit» — робимо ігри українськими з любов’ю до мови</h1>
+          <p class="lead">Ми займаємося повними перекладами ігор українською: діалоги, інтерфейси, шрифти, адаптація гумору та стилю.</p>
+          <div class="cta">
+            <a class="btn primary" href="#projects">Дивитися проєкти</a>
+          </div>
+        </div>
+        <div class="glass" style="padding:16px">
+          <h2 style="margin:6px 0 10px">Що ми робимо</h2>
+          <ul style="margin:0; padding-left:18px; line-height:1.8; color:var(--muted)">
+            <li>Повні текстові локалізації (UI, субтитри, туторіали, внутрішньоігрові матеріали)</li>
+            <li>Підтримка шрифтів та технічна інтеграція</li>
+            <li>Художня адаптація з дотриманням українського правопису</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="container">
+      <h2>Наші проєкти</h2>
+      <div class="grid">
+        <!-- Judgment -->
+        <article class="card glass">
+          <div class="thumb">
+            <img src="assets/judgment_takayuki.jpg" alt="Такаюкі Яґамі (Judgment)">
+            <span class="badge">Judgment</span>
+          </div>
+          <div class="content">
+            <h3>Judgment</h3>
+            <p><strong>Нуарний детективний трилер</strong> у Камуро-чьо з юридичними розслідуваннями. Підтримуємо інтерфейс, субтитри, туторіали.</p>
+            <div class="progress" title="Готовність 73%"><span style="width:73%"></span></div>
+            <small style="color:var(--muted)">Готовність українізатора: <strong>73%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+          </div>
+        </article>
+
+        <!-- Yakuza Kiwami 2 -->
+        <article class="card glass">
+          <div class="thumb">
+            <img src="assets/yakuza_kiwami2.jpg" alt="Yakuza Kiwami 2">
+            <span class="badge">Yakuza — Kiwami 2</span>
+          </div>
+          <div class="content">
+            <h3>Yakuza Kiwami 2</h3>
+            <p>Камуро-чьо та Сотенборі, драма клану Тоджьо, божевільні сабсторі. Адаптуємо ідіоми та гумор серії.</p>
+            <div class="progress" title="Готовність 30%"><span style="width:30%"></span></div>
+            <small style="color:var(--muted)">Готовність: <strong>≈30%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+          </div>
+        </article>
+
+        <!-- Yakuza 3 Remastered -->
+        <article class="card glass">
+          <div class="thumb">
+            <img src="assets/yakuza_3_remastered.jpg" alt="Yakuza 3 Remastered">
+            <span class="badge">Yakuza — 3 Remastered</span>
+          </div>
+          <div class="content">
+            <h3>Yakuza 3 Remastered</h3>
+            <p>«Ранкова зірка», вибір, дорослішання. Перекладаємо емоційні сцени з повагою до характерів.</p>
+            <div class="progress" title="Готовність 30%"><span style="width:30%"></span></div>
+            <small style="color:var(--muted)">Готовність: <strong>≈30%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+          </div>
+        </article>
+
+        <!-- No More Heroes (1) -->
+        <article class="card glass">
+          <div class="thumb">
+            <img src="assets/no_more_heroes_travis.jpg" alt="Travis Touchdown — No More Heroes">
+            <span class="badge">No More Heroes</span>
+          </div>
+          <div class="content">
+            <h3>No More Heroes</h3>
+            <p>Санта-Дестрой, променева катана і фірмовий гумор. Передаємо стиль і UI, статус: у роботі.</p>
+            <div class="progress" title="У роботі"><span style="width:55%"></span></div>
+            <small style="color:var(--muted)">Прогрес: <strong>активно триває</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+          </div>
+        </article>
+
+        <!-- No More Heroes 2 -->
+        <article class="card glass">
+          <div class="thumb">
+            <img src="assets/no_more_heroes_2.jpg" alt="No More Heroes 2: Desperate Struggle">
+            <span class="badge">No More Heroes 2</span>
+          </div>
+          <div class="content">
+            <h3>No More Heroes 2: Desperate Struggle</h3>
+            <p>Брутальна помста, ще більше панчу та стилю. Окремі інтерфейси, жарти та бойові репліки — у процесі.</p>
+            <div class="progress" title="Статус у роботі"><span style="width:45%"></span></div>
+            <small style="color:var(--muted)">Статус: <strong>у роботі</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+          </div>
+        </article>
+
+        <!-- No More Heroes 3 -->
+        <article class="card glass">
+          <div class="thumb">
+            <img src="assets/no_more_heroes_3.jpg" alt="No More Heroes 3">
+            <span class="badge">No More Heroes 3</span>
+          </div>
+          <div class="content">
+            <h3>No More Heroes 3</h3>
+            <p>Космічні лиходії, ультра-стиль та саунд. Підтримуємо UI, діалоги й сабсторі серії, статус: у роботі.</p>
+            <div class="progress" title="Статус у роботі"><span style="width:40%"></span></div>
+            <small style="color:var(--muted)">Статус: <strong>у роботі</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- CONTACTS -->
+    <section id="contacts" class="container">
+      <div class="glass" style="padding:20px">
+        <h2 style="margin-top:0">Контакти</h2>
+        <p style="color:var(--muted)">Маєш питання, хочеш допомогти або запропонувати співпрацю? Напиши нам чи створи issue у репозиторії.</p>
+        <div class="cta">
+          <a class="btn primary" href="#">Telegram</a>
+          <a class="btn" href="#">YouTube</a>
+          <a class="btn" href="#">GitHub Issues</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUPPORT -->
+    <section id="support" class="container">
+      <div class="glass" style="padding:20px">
+        <h2 style="margin-top:0">Фінансова підтримка</h2>
+        <p style="color:var(--muted)">Підтримка допомагає пришвидшити локалізації та покрити витрати на інструменти. Додаймо сюди посилання на донати.</p>
+        <div class="cta">
+          <a class="btn primary" href="#">Donatty / Patreon</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div class="glass" style="padding:14px 16px; text-align:center; color:#93a4bc; font-size:13px">
+      © <span id="y"></span> Little Bit · З любов’ю до української мови
+    </div>
+  </footer>
+
+  <script>
+    // Mobile drawer logic
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+    const openBtn = document.getElementById('openDrawer');
+    const closeBtn = document.getElementById('closeDrawer');
+    function open(){ drawer.classList.add('open'); backdrop.classList.add('show'); openBtn.setAttribute('aria-expanded','true'); drawer.setAttribute('aria-hidden','false'); backdrop.setAttribute('aria-hidden','false'); }
+    function close(){ drawer.classList.remove('open'); backdrop.classList.remove('show'); openBtn.setAttribute('aria-expanded','false'); drawer.setAttribute('aria-hidden','true'); backdrop.setAttribute('aria-hidden','true'); }
+    openBtn?.addEventListener('click', open);
+    closeBtn?.addEventListener('click', close);
+    backdrop?.addEventListener('click', close);
+    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
+
+    // Animate progress bars after load + year
+    window.addEventListener('load',()=>{
+      document.querySelectorAll('.progress > span').forEach(el=>{ const w = el.style.width; el.style.width = '0'; requestAnimationFrame(()=>{ el.style.width = w; }); });
+      document.getElementById('y').textContent = new Date().getFullYear();
+    });
+  </script>
+</body>
+</html>
