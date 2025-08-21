@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Little Bit — Українізатори</title>
+  <title>Українська локалізація від «Little Bit»</title>
+  <link rel="icon" type="image/x-icon" href="logo.ico">
   <meta name="description" content="Спілка Little Bit — українські локалізації відеоігор: Judgment, Yakuza, No More Heroes." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,9 +39,7 @@
     .blob.two{ width: 520px; height:520px; right:-120px; top:20vh; background:linear-gradient(135deg, #06b6d4, #ec4899); animation-delay: -6s; }
     .blob.three{ width: 480px; height:480px; left:20vw; bottom:-140px; background:linear-gradient(135deg, #34d399, #60a5fa); animation-delay: -3s; }
     @keyframes float{ 0%,100%{ transform:translateY(0) translateX(0) scale(1)} 50%{ transform:translateY(-30px) translateX(10px) scale(1.05)} }
-    @media (prefers-reduced-motion: reduce){
-      .blob{animation:none}
-    }
+    @media (prefers-reduced-motion: reduce){ .blob{animation:none} }
 
     /* Header & nav */
     header{position:sticky; top:0; -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
@@ -75,6 +74,7 @@
     .hero h1{ font-size: clamp(28px, 3.6vw, 48px); margin:0 0 10px 0; line-height:1.05 }
     .pill{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:rgba(125,211,252,.12); border:1px solid rgba(125,211,252,.35); color:#dbeafe; font-weight:600; font-size:12px}
     .lead{color:var(--muted); font-size: 16px; line-height:1.7}
+
     .cta{display:flex; gap:12px; margin-top:12px; flex-wrap:wrap}
     .btn{padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); color:var(--text); text-decoration:none; display:inline-flex; gap:10px; align-items:center; transition:transform .2s, background .2s, border-color .2s}
     .btn.primary{background:linear-gradient(135deg, rgba(125,211,252,.25), rgba(167,139,250,.25)); border-color: rgba(167,139,250,.45)}
@@ -129,7 +129,7 @@
 
   <header>
     <nav class="nav">
-      <div class="brand">Little Bit</div>
+      <div class="brand">«Little Bit»</div>
       <div class="spacer"></div>
       <div class="nav-links">
         <a href="#projects">Наші проєкти</a>
@@ -150,9 +150,6 @@
           <span class="pill">Українські локалізації ↗</span>
           <h1>Спілка «Little Bit» — робимо ігри українськими з любов’ю до мови</h1>
           <p class="lead">Ми займаємося повними перекладами ігор українською: діалоги, інтерфейси, шрифти, адаптація гумору та стилю.</p>
-          <div class="cta">
-            <a class="btn primary" href="#projects">Дивитися проєкти</a>
-          </div>
         </div>
         <div class="glass" style="padding:16px">
           <h2 style="margin:6px 0 10px">Що ми робимо</h2>
@@ -173,7 +170,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/judgment_takayuki.jpg" alt="Такаюкі Яґамі (Judgment)">
-            <span class="badge">Judgment</span>
+            <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>Judgment</h3>
@@ -188,7 +185,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/yakuza_kiwami2.jpg" alt="Yakuza Kiwami 2">
-            <span class="badge">Yakuza — Kiwami 2</span>
+            <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>Yakuza Kiwami 2</h3>
@@ -203,7 +200,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/yakuza_3_remastered.jpg" alt="Yakuza 3 Remastered">
-            <span class="badge">Yakuza — 3 Remastered</span>
+            <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>Yakuza 3 Remastered</h3>
@@ -217,14 +214,14 @@
         <!-- No More Heroes (1) -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/no_more_heroes_travis.jpg" alt="Travis Touchdown — No More Heroes">
-            <span class="badge">No More Heroes</span>
+            <img src="assets/no_more_heroes_travis.jpg" alt="Travis Touchdown — No More Heroes (2007)">
+            <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>No More Heroes</h3>
-            <p>Санта-Дестрой, променева катана і фірмовий гумор. Передаємо стиль і UI, статус: у роботі.</p>
-            <div class="progress" title="У роботі"><span style="width:55%"></span></div>
-            <small style="color:var(--muted)">Прогрес: <strong>активно триває</strong></small>
+            <p>Санта-Дестрой, променева катана і фірмовий гумор. Передаємо стиль і UI.</p>
+            <div class="progress" title="Прогрес 80%"><span style="width:80%"></span></div>
+            <small style="color:var(--muted)">Прогрес: <strong>80%</strong></small>
             <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
           </div>
         </article>
@@ -233,11 +230,26 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_2.jpg" alt="No More Heroes 2: Desperate Struggle">
-            <span class="badge">No More Heroes 2</span>
+            <span class="badge">У процесі малювання та тестування</span>
           </div>
           <div class="content">
             <h3>No More Heroes 2: Desperate Struggle</h3>
-            <p>Брутальна помста, ще більше панчу та стилю. Окремі інтерфейси, жарти та бойові репліки — у процесі.</p>
+            <p>Брутальна помста, ще більше панчу та стилю. Окремі інтерфейси, жарти та бойові репліки.</p>
+            <div class="progress" title="Прогрес 100%"><span style="width:100%"></span></div>
+            <small style="color:var(--muted)">Прогрес: <strong>100%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+          </div>
+        </article>
+
+        <!-- Travis Strikes Again: No More Heroes -->
+        <article class="card glass">
+          <div class="thumb">
+            <img src="assets/travis_strikes_again.jpg" alt="Travis Strikes Again: No More Heroes">
+            <span class="badge">У процесі локалізації</span>
+          </div>
+          <div class="content">
+            <h3>Travis Strikes Again: No More Heroes</h3>
+            <p>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</p>
             <div class="progress" title="Статус у роботі"><span style="width:45%"></span></div>
             <small style="color:var(--muted)">Статус: <strong>у роботі</strong></small>
             <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
@@ -248,13 +260,13 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_3.jpg" alt="No More Heroes 3">
-            <span class="badge">No More Heroes 3</span>
+            <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>No More Heroes 3</h3>
-            <p>Космічні лиходії, ультра-стиль та саунд. Підтримуємо UI, діалоги й сабсторі серії, статус: у роботі.</p>
-            <div class="progress" title="Статус у роботі"><span style="width:40%"></span></div>
-            <small style="color:var(--muted)">Статус: <strong>у роботі</strong></small>
+            <p>Космічні лиходії, ультра-стиль та саунд. Підтримуємо UI, діалоги й сабсторі серії.</p>
+            <div class="progress" title="Прогрес 70%"><span style="width:70%"></span></div>
+            <small style="color:var(--muted)">Прогрес: <strong>70%</strong></small>
             <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
           </div>
         </article>
@@ -265,11 +277,10 @@
     <section id="contacts" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
         <h2 style="margin-top:0">Контакти</h2>
-        <p style="color:var(--muted)">Маєш питання, хочеш допомогти або запропонувати співпрацю? Напиши нам чи створи issue у репозиторії.</p>
+        <p style="color:var(--muted)">Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.</p>
         <div class="cta">
-          <a class="btn primary" href="#">Telegram</a>
-          <a class="btn" href="#">YouTube</a>
-          <a class="btn" href="#">GitHub Issues</a>
+          <a class="btn primary" href="https://t.me/LittleBitUA" target="_blank" rel="noopener">Telegram</a>
+          <a class="btn" href="https://www.youtube.com/@UA_LittleBit" target="_blank" rel="noopener">YouTube</a>
         </div>
       </div>
     </section>
@@ -278,19 +289,13 @@
     <section id="support" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
         <h2 style="margin-top:0">Фінансова підтримка</h2>
-        <p style="color:var(--muted)">Підтримка допомагає пришвидшити локалізації та покрити витрати на інструменти. Додаймо сюди посилання на донати.</p>
+        <p style="color:var(--muted)">Якщо подобається наша робота, можна підтримати нас донатом:</p>
         <div class="cta">
-          <a class="btn primary" href="#">Donatty / Patreon</a>
+          <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener">Donatello</a>
         </div>
       </div>
     </section>
   </main>
-
-  <footer class="container">
-    <div class="glass" style="padding:14px 16px; text-align:center; color:#93a4bc; font-size:13px">
-      © <span id="y"></span> Little Bit · З любов’ю до української мови
-    </div>
-  </footer>
 
   <script>
     // Mobile drawer logic
@@ -307,12 +312,11 @@
     // Close on nav link click (mobile)
     document.querySelectorAll('.drawer .links a').forEach(a=>a.addEventListener('click', close));
 
-    // Animate progress bars after load + year
+    // Animate progress bars after load
     window.addEventListener('load',()=>{
       document.querySelectorAll('.progress > span').forEach(el=>{
         const w = el.style.width; el.style.width = '0'; requestAnimationFrame(()=>{ el.style.width = w; });
       });
-      document.getElementById('y').textContent = new Date().getFullYear();
     });
   </script>
 </body>
