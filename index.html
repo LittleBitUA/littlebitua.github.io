@@ -103,6 +103,30 @@
 
     @media (min-width: 880px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
     @media (max-width: 860px){ .nav-links{ display:none } .burger{display:inline-flex} }
+
+    /* === Logos over thumbnails === */
+    .thumb::after{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height:42%;
+      background:linear-gradient(to top, rgba(2,6,23,.82), rgba(2,6,23,0));
+      pointer-events:none;
+    }
+    .thumb .logo{
+      position:absolute;
+      left:12px; bottom:12px;
+      max-width:70%;
+      max-height:48%;
+      height:auto; width:auto;
+      object-fit:contain;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.55)) drop-shadow(0 0 1px rgba(255,255,255,.12));
+      pointer-events:none; /* click passes through */
+      user-select:none;
+    }
+    @media (max-width: 360px){
+      .thumb .logo{ max-width:78%; }
+    }
   </style>
 </head>
 <body>
@@ -172,6 +196,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/judgment_takayuki.jpg" alt="Такаюкі Яґамі (Judgment)">
+            <img class="logo" src="assets/judgment_logo.png" alt="Логотип Judgment">
             <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
@@ -187,6 +212,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/yakuza_kiwami2.jpg" alt="Yakuza Kiwami 2">
+            <img class="logo" src="assets/yakuza_kiwami2_logo.png" alt="Логотип Yakuza Kiwami 2">
             <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
@@ -202,6 +228,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/yakuza_3_remastered.jpg" alt="Yakuza 3 Remastered">
+            <img class="logo" src="assets/yakuza3_logo.png" alt="Логотип Yakuza 3 Remastered">
             <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
@@ -217,6 +244,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_travis.jpg" alt="Travis Touchdown — No More Heroes (2007)">
+            <img class="logo" src="assets/no_more_heroes_logo.png" alt="Логотип No More Heroes">
             <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
@@ -232,6 +260,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_2.jpg" alt="No More Heroes 2: Desperate Struggle">
+            <img class="logo" src="assets/no_more_heroes2_logo.png" alt="Логотип No More Heroes 2: Desperate Struggle">
             <span class="badge">У процесі малювання та тестування</span>
           </div>
           <div class="content">
@@ -247,6 +276,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/travis_strikes_again.jpg" alt="Travis Strikes Again: No More Heroes">
+            <img class="logo" src="assets/travis_strikes_again_logo.png" alt="Логотип Travis Strikes Again: No More Heroes">
             <span class="badge">У процесі локалізації</span>
           </div>
           <div class="content">
@@ -262,6 +292,7 @@
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_3.jpg" alt="No More Heroes 3">
+            <img class="logo" src="assets/no_more_heroes3_logo.png" alt="Логотип No More Heroes 3">
             <span class="badge">У процесі локалізації</span>
           </div>
         
