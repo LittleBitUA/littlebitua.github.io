@@ -79,7 +79,9 @@
     .btn{padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); color:var(--text); text-decoration:none; display:inline-flex; gap:10px; align-items:center; transition:transform .2s, background .2s, border-color .2s}
     .btn.primary{background:linear-gradient(135deg, rgba(125,211,252,.25), rgba(167,139,250,.25)); border-color: rgba(167,139,250,.45)}
     .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,0.35)}
-    .btn.disabled{background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.45); border:1px solid rgba(255,255,255,0.12); cursor:not-allowed;}
+    /* Make disabled buttons truly inert */
+    .btn.disabled{background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.45); border:1px solid rgba(255,255,255,0.12); cursor:not-allowed; pointer-events:none; user-select:none;}
+    .btn.disabled:focus{outline: none;}
 
     h2{font-size: clamp(22px, 3vw, 32px); margin:0 0 18px}
 
@@ -176,7 +178,7 @@
             <h3>Judgment</h3>
             <p><strong>Нуарний детективний трилер</strong> у Камуро-чьо з юридичними розслідуваннями. Підтримуємо інтерфейс, субтитри, туторіали.</p>
             <div class="progress" title="Готовність 73%"><span style="width:73%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>73%</strong></small>
+            <small style="color:var(--muted)">Готовність українізатора: <strong>73%</strong></small>
             <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
           </div>
         </article>
