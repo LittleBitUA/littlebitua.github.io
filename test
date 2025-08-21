@@ -1,5 +1,0 @@
-git pull
-touch .nojekyll
-git add .nojekyll
-git commit -m "pages: disable jekyll"
-git push
