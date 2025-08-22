@@ -63,6 +63,15 @@
     .burger.active .icon-bars{display:none}
     .burger.active .icon-x{display:block}
 
+    /* FIX: робимо лінії видимими для SVG-іконок */
+    .burger svg path{
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
     /* Drawer */
     .drawer{position:fixed; inset:0 0 0 auto; width:78%; max-width:320px; transform:translateX(100%); transition:transform .25s ease;
       background:rgba(13,18,34,.88); -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
@@ -164,7 +173,7 @@
     <div class="head">
       <div style="font-weight:800">Меню</div>
       <button id="closeDrawer" aria-label="Закрити" class="burger">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18L18 6M6 6l12 12"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
     <div class="links">
@@ -186,11 +195,11 @@
       <!-- ТА САМА КНОПКА-БУРГЕР, тепер з двома іконками -->
       <button id="openDrawer" class="burger" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false">
         <!-- | | | -->
-        <svg class="icon-bars" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
         <!-- X -->
-        <svg class="icon-x" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <svg class="icon-x" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
