@@ -58,12 +58,10 @@
       align-items:center; justify-content:center;
     }
     .burger svg{width:22px; height:22px; display:block}
-    /* показуємо | | | за замовчуванням, X — коли відкрито меню */
     .burger .icon-x{display:none}
     .burger.active .icon-bars{display:none}
     .burger.active .icon-x{display:block}
-    /* FIX: stroke для ліній у SVG-іконках */
-    .burger svg path{
+    .burger svg path{ /* видимі лінії у SVG */
       stroke: currentColor;
       stroke-width: 2;
       fill: none;
@@ -74,13 +72,13 @@
     /* Drawer */
     .drawer{position:fixed; inset:0 0 0 auto; width:78%; max-width:320px; transform:translateX(100%); transition:transform .25s ease;
       background:rgba(13,18,34,.88); -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
-      border-left:1px solid rgba(255,255,255,.08); z-index:50; display:flex; flex-direction:column}
+      border-left:1px solid rgba(255,255,255,.08); z-index:50; display:flex; flex-direction:column; will-change: transform}
     .drawer.open{transform:translateX(0)}
     .drawer .head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
     .drawer .links{display:flex; flex-direction:column; padding:10px}
     .drawer .links a{padding:12px 12px; border-radius:12px; margin:4px 0; color:var(--text); text-decoration:none; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08)}
 
-    .backdrop{position:fixed; inset:0; background:rgba(2,6,23,.55); opacity:0; visibility:hidden; transition:all .25s; z-index:45}
+    .backdrop{position:fixed; inset:0; background:rgba(2,6,23,.55); opacity:0; visibility:hidden; transition:all .25s; z-index:45; will-change: opacity}
     .backdrop.show{opacity:1; visibility:visible}
 
     .container{max-width:1100px; margin:0 auto; padding:56px 20px}
@@ -107,13 +105,18 @@
       gap:14px;
       align-items:stretch;
     }
-    .card{ overflow:hidden; position:relative; display:flex; flex-direction:column }
+    .card{ overflow:hidden; position:relative; display:flex; flex-direction:column; contain: paint; }
     .thumb{ position:relative; aspect-ratio: 16/9; background:#0f172a; overflow:hidden }
     .thumb img{ width:100%; height:100%; object-fit:cover; opacity:.92; transform: scale(1.02); transition:transform .5s ease }
-    .card:hover .thumb img{ transform: scale(1.07) }
+    /* обмежуємо ховер-ефект лише для миші */
+    @media (hover:hover) and (pointer:fine){
+      .card:hover .thumb img{ transform: scale(1.07) }
+    }
+    @media (hover:none){
+      .thumb img{ transform:none }
+    }
     .badge{position:absolute; top:12px; left:12px; background:rgba(2,6,23,.55); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700}
 
-    /* Контент картки: однакові низи */
     .content{
       padding:14px 14px 16px;
       display:grid;
@@ -130,9 +133,17 @@
     footer{ color:#93a4bc; padding:30px 0 60px; font-size:13px; text-align:center }
 
     @media (min-width: 880px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
-    @media (max-width: 860px){ .nav-links{ display:none } .burger{display:inline-flex} }
+    @media (max-width: 860px){
+      .nav-links{ display:none } .burger{display:inline-flex}
+      /* Мобільний режим продуктивності: відключаємо важкі фільтри */
+      header{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(10,16,29,0.9) }
+      .drawer{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(13,18,34,.96) }
+      .glass{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(255,255,255,0.06); box-shadow: 0 6px 24px rgba(2,6,23,.25), inset 0 1px 0 rgba(255,255,255,0.04) }
+      .blob{ display:none } /* прибираємо великі розмиті анімації */
+      .thumb .logo{ filter:none } /* знімаємо подвійний drop-shadow з логотипів */
+    }
 
-    /* === Logos over thumbnails === */
+    /* Logos over thumbnails */
     .thumb::after{
       content:"";
       position:absolute;
@@ -190,13 +201,10 @@
         <a href="#contacts">Контакти</a>
         <a href="#support">Фінансова підтримка</a>
       </div>
-      <!-- ТА САМА КНОПКА-БУРГЕР, тепер з двома іконками -->
       <button id="openDrawer" class="burger" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false">
-        <!-- | | | -->
         <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
-        <!-- X -->
         <svg class="icon-x" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 18L18 6M6 6l12 12"/>
         </svg>
@@ -205,7 +213,6 @@
   </header>
 
   <main>
-    <!-- HERO -->
     <section id="home" class="container">
       <div class="hero glass">
         <div>
@@ -224,11 +231,9 @@
       </div>
     </section>
 
-    <!-- PROJECTS -->
     <section id="projects" class="container" style="scroll-margin-top:80px">
       <h2>Наші проєкти</h2>
       <div class="grid">
-        <!-- Judgment -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/judgment_takayuki.webp" alt="Такаюкі Яґамі (Judgment)">
@@ -244,7 +249,6 @@
           </div>
         </article>
 
-        <!-- Lost Judgment (NEW) -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/lost_judgment.webp" alt="Такаюкі Яґамі (Lost Judgment)">
@@ -262,7 +266,6 @@
           </div>
         </article>
 
-        <!-- Yakuza Kiwami 2 -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/yakuza_kiwami2.webp" alt="Yakuza Kiwami 2">
@@ -278,7 +281,6 @@
           </div>
         </article>
 
-        <!-- Yakuza 3 Remastered -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/yakuza_3_remastered.webp" alt="Yakuza 3 Remastered">
@@ -294,7 +296,6 @@
           </div>
         </article>
 
-        <!-- No More Heroes (1) -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_travis.webp" alt="Travis Touchdown — No More Heroes (2007)">
@@ -310,7 +311,6 @@
           </div>
         </article>
 
-        <!-- No More Heroes 2 -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_2.webp" alt="No More Heroes 2: Desperate Struggle">
@@ -326,7 +326,6 @@
           </div>
         </article>
 
-        <!-- Travis Strikes Again: No More Heroes -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/travis_strikes_again.webp" alt="Travis Strikes Again: No More Heroes">
@@ -342,7 +341,6 @@
           </div>
         </article>
 
-        <!-- No More Heroes 3 -->
         <article class="card glass">
           <div class="thumb">
             <img src="assets/no_more_heroes_3.webp" alt="No More Heroes 3">
@@ -360,7 +358,6 @@
       </div>
     </section>
 
-    <!-- CONTACTS -->
     <section id="contacts" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
         <h2 style="margin-top:0">Контакти</h2>
@@ -372,7 +369,6 @@
       </div>
     </section>
 
-    <!-- SUPPORT -->
     <section id="support" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
         <h2 style="margin-top:0">Фінансова підтримка</h2>
@@ -410,7 +406,6 @@
       backdrop.setAttribute('aria-hidden','true');
     }
 
-    // Перемикач у тій самій кнопці: | | | ↔ X
     openBtn?.addEventListener('click', () => {
       if (drawer.classList.contains('open')) { close(); } else { open(); }
     });
@@ -418,7 +413,6 @@
     closeBtn?.addEventListener('click', close);
     backdrop?.addEventListener('click', close);
     window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
-    // Close on nav link click (mobile)
     document.querySelectorAll('.drawer .links a').forEach(a=>a.addEventListener('click', close));
 
     // Animate progress bars after load
