@@ -62,8 +62,7 @@
     .burger .icon-x{display:none}
     .burger.active .icon-bars{display:none}
     .burger.active .icon-x{display:block}
-
-    /* FIX: робимо лінії видимими для SVG-іконок */
+    /* FIX: stroke для ліній у SVG-іконках */
     .burger svg path{
       stroke: currentColor;
       stroke-width: 2;
@@ -96,7 +95,6 @@
     .btn{padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); color:var(--text); text-decoration:none; display:inline-flex; gap:10px; align-items:center; transition:transform .2s, background .2s, border-color .2s}
     .btn.primary{background:linear-gradient(135deg, rgba(125,211,252,.25), rgba(167,139,250,.25)); border-color: rgba(167,139,250,.45)}
     .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,0.35)}
-    /* Make disabled buttons truly inert */
     .btn.disabled{background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.45); border:1px solid rgba(255,255,255,0.12); cursor:not-allowed; pointer-events:none; user-select:none;}
     .btn.disabled:focus{outline: none;}
 
@@ -119,7 +117,7 @@
     .content{
       padding:14px 14px 16px;
       display:grid;
-      grid-template-rows: auto 1fr auto auto auto; /* заголовок | опис | прогрес | підпис | кнопка */
+      grid-template-rows: auto 1fr auto auto auto;
       gap:8px;
       flex:1;
     }
@@ -233,7 +231,7 @@
         <!-- Judgment -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/judgment_takayuki.jpg" alt="Такаюкі Яґамі (Judgment)">
+            <img src="assets/judgment_takayuki.webp" alt="Такаюкі Яґамі (Judgment)">
             <img class="logo" src="assets/judgment_logo.png" alt="Логотип Judgment">
             <span class="badge">У процесі локалізації</span>
           </div>
@@ -249,7 +247,7 @@
         <!-- Lost Judgment (NEW) -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/lost_judgment.jpg" alt="Такаюкі Яґамі (Lost Judgment)">
+            <img src="assets/lost_judgment.webp" alt="Такаюкі Яґамі (Lost Judgment)">
             <img class="logo" src="assets/lost_judgment_logo.png" alt="Логотип Lost Judgment">
             <span class="badge">Збір на локалізацію</span>
           </div>
@@ -267,7 +265,7 @@
         <!-- Yakuza Kiwami 2 -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/yakuza_kiwami2.jpg" alt="Yakuza Kiwami 2">
+            <img src="assets/yakuza_kiwami2.webp" alt="Yakuza Kiwami 2">
             <img class="logo" src="assets/yakuza_kiwami2_logo.png" alt="Логотип Yakuza Kiwami 2">
             <span class="badge">У процесі локалізації</span>
           </div>
@@ -283,7 +281,7 @@
         <!-- Yakuza 3 Remastered -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/yakuza_3_remastered.jpg" alt="Yakuza 3 Remastered">
+            <img src="assets/yakuza_3_remastered.webp" alt="Yakuza 3 Remastered">
             <img class="logo" src="assets/yakuza3_logo.png" alt="Логотип Yakuza 3 Remastered">
             <span class="badge">У процесі локалізації</span>
           </div>
@@ -299,7 +297,7 @@
         <!-- No More Heroes (1) -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/no_more_heroes_travis.jpg" alt="Travis Touchdown — No More Heroes (2007)">
+            <img src="assets/no_more_heroes_travis.webp" alt="Travis Touchdown — No More Heroes (2007)">
             <img class="logo" src="assets/no_more_heroes_logo.png" alt="Логотип No More Heroes">
             <span class="badge">У процесі локалізації</span>
           </div>
@@ -315,7 +313,7 @@
         <!-- No More Heroes 2 -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/no_more_heroes_2.jpg" alt="No More Heroes 2: Desperate Struggle">
+            <img src="assets/no_more_heroes_2.webp" alt="No More Heroes 2: Desperate Struggle">
             <img class="logo" src="assets/no_more_heroes2_logo.png" alt="Логотип No More Heroes 2: Desperate Struggle">
             <span class="badge">У процесі малювання та тестування</span>
           </div>
@@ -331,7 +329,7 @@
         <!-- Travis Strikes Again: No More Heroes -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/travis_strikes_again.jpg" alt="Travis Strikes Again: No More Heroes">
+            <img src="assets/travis_strikes_again.webp" alt="Travis Strikes Again: No More Heroes">
             <img class="logo" src="assets/travis_strikes_again_logo.png" alt="Логотип Travis Strikes Again: No More Heroes">
             <span class="badge">У процесі локалізації</span>
           </div>
@@ -347,7 +345,7 @@
         <!-- No More Heroes 3 -->
         <article class="card glass">
           <div class="thumb">
-            <img src="assets/no_more_heroes_3.jpg" alt="No More Heroes 3">
+            <img src="assets/no_more_heroes_3.webp" alt="No More Heroes 3">
             <img class="logo" src="assets/no_more_heroes3_logo.png" alt="Логотип No More Heroes 3">
             <span class="badge">У процесі локалізації</span>
           </div>
