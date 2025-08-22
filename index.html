@@ -51,17 +51,27 @@
     .nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:10px; transition:all .25s}
     .nav a:hover{color:var(--text); background:rgba(255,255,255,0.06)}
 
+    /* Language switcher */
+    .lang{display:flex; align-items:center; gap:4px; border:1px solid rgba(255,255,255,.15); padding:4px; border-radius:999px; background:rgba(255,255,255,.06)}
+    .lang .lang-btn{
+      background:transparent; border:none; color:var(--text); font-weight:700;
+      padding:6px 8px; border-radius:999px; display:flex; align-items:center; gap:6px; cursor:pointer; opacity:.7
+    }
+    .lang .lang-btn .flag{font-size:18px; line-height:1}
+    .lang .lang-btn.active{ background:rgba(255,255,255,.12); opacity:1 }
+
     /* Burger */
     .burger{
-      display:none; background:transparent; border:1px solid rgba(255,255,255,.15);
+      background:transparent; border:1px solid rgba(255,255,255,.15);
       border-radius:10px; padding:8px; color:var(--text);
       align-items:center; justify-content:center;
     }
+    .burger{display:none}
     .burger svg{width:22px; height:22px; display:block}
     .burger .icon-x{display:none}
     .burger.active .icon-bars{display:none}
     .burger.active .icon-x{display:block}
-    .burger svg path{ /* видимі лінії у SVG */
+    .burger svg path{
       stroke: currentColor;
       stroke-width: 2;
       fill: none;
@@ -77,6 +87,7 @@
     .drawer .head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
     .drawer .links{display:flex; flex-direction:column; padding:10px}
     .drawer .links a{padding:12px 12px; border-radius:12px; margin:4px 0; color:var(--text); text-decoration:none; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08)}
+    .drawer .lang{ margin:10px; align-self:flex-start }
 
     .backdrop{position:fixed; inset:0; background:rgba(2,6,23,.55); opacity:0; visibility:hidden; transition:all .25s; z-index:45; will-change: opacity}
     .backdrop.show{opacity:1; visibility:visible}
@@ -108,7 +119,6 @@
     .card{ overflow:hidden; position:relative; display:flex; flex-direction:column; contain: paint; }
     .thumb{ position:relative; aspect-ratio: 16/9; background:#0f172a; overflow:hidden }
     .thumb img{ width:100%; height:100%; object-fit:cover; opacity:.92; transform: scale(1.02); transition:transform .5s ease }
-    /* обмежуємо ховер-ефект лише для миші */
     @media (hover:hover) and (pointer:fine){
       .card:hover .thumb img{ transform: scale(1.07) }
     }
@@ -135,12 +145,11 @@
     @media (min-width: 880px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
     @media (max-width: 860px){
       .nav-links{ display:none } .burger{display:inline-flex}
-      /* Мобільний режим продуктивності: відключаємо важкі фільтри */
       header{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(10,16,29,0.9) }
       .drawer{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(13,18,34,.96) }
       .glass{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(255,255,255,0.06); box-shadow: 0 6px 24px rgba(2,6,23,.25), inset 0 1px 0 rgba(255,255,255,0.04) }
-      .blob{ display:none } /* прибираємо великі розмиті анімації */
-      .thumb .logo{ filter:none } /* знімаємо подвійний drop-shadow з логотипів */
+      .blob{ display:none }
+      .thumb .logo{ filter:none }
     }
 
     /* Logos over thumbnails */
@@ -178,17 +187,21 @@
   <!-- mobile backdrop -->
   <div id="backdrop" class="backdrop" aria-hidden="true"></div>
   <!-- drawer -->
-  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Мобільне меню">
+  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Мобільне меню" data-i18n-aria="drawer_label">
     <div class="head">
-      <div style="font-weight:800">Меню</div>
-      <button id="closeDrawer" aria-label="Закрити" class="burger">
+      <div style="font-weight:800" data-i18n="drawer_title">Меню</div>
+      <button id="closeDrawer" aria-label="Закрити" class="burger" type="button">
         <svg viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
     <div class="links">
-      <a href="#projects">Наші проєкти</a>
-      <a href="#contacts">Контакти</a>
-      <a href="#support">Фінансова підтримка</a>
+      <a href="#projects" data-i18n="nav_projects">Наші проєкти</a>
+      <a href="#contacts" data-i18n="nav_contacts">Контакти</a>
+      <a href="#support" data-i18n="nav_support">Фінансова підтримка</a>
+      <div class="lang" id="langSwitchDrawer" aria-label="Language switcher">
+        <button type="button" class="lang-btn" data-lang="uk" aria-label="Українська"><span class="flag">🇺🇦</span><span>UA</span></button>
+        <button type="button" class="lang-btn" data-lang="en" aria-label="English"><span class="flag">🇬🇧</span><span>EN</span></button>
+      </div>
     </div>
   </aside>
 
@@ -197,11 +210,18 @@
       <div class="brand">«Little Bit»</div>
       <div class="spacer"></div>
       <div class="nav-links">
-        <a href="#projects">Наші проєкти</a>
-        <a href="#contacts">Контакти</a>
-        <a href="#support">Фінансова підтримка</a>
+        <a href="#projects" data-i18n="nav_projects">Наші проєкти</a>
+        <a href="#contacts" data-i18n="nav_contacts">Контакти</a>
+        <a href="#support" data-i18n="nav_support">Фінансова підтримка</a>
       </div>
-      <button id="openDrawer" class="burger" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false">
+
+      <!-- Language switcher (desktop) -->
+      <div class="lang" id="langSwitch" aria-label="Language switcher">
+        <button type="button" class="lang-btn" data-lang="uk" aria-label="Українська"><span class="flag">🇺🇦</span><span>UA</span></button>
+        <button type="button" class="lang-btn" data-lang="en" aria-label="English"><span class="flag">🇬🇧</span><span>EN</span></button>
+      </div>
+
+      <button id="openDrawer" class="burger" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false" data-i18n-aria-open="open_menu" data-i18n-aria-close="close_menu" type="button">
         <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -217,35 +237,35 @@
       <div class="hero glass">
         <div>
           <h1>«Little Bit»</h1>
-          <h1>Грайте українською — відчувайте по-новому.</h1>
-          <p class="lead">Улюблені історії — українською, від серця.</p>
+          <h1 data-i18n="hero_title2">Грайте українською — відчувайте по-новому.</h1>
+          <p class="lead" data-i18n="hero_lead">Улюблені історії — українською, від серця.</p>
         </div>
         <div class="glass" style="padding:16px">
-          <h2 style="margin:6px 0 10px">Що ми робимо</h2>
+          <h2 style="margin:6px 0 10px" data-i18n="what_we_do_title">Що ми робимо</h2>
           <ul style="margin:0; padding-left:18px; line-height:1.8; color:var(--muted)">
-            <li>Повна текстова локалізація (інтерфейс, субтитри, навчальні матеріали/туторіали, внутрішньоігрові тексти)</li>
-            <li>Підтримка та інтеграція шрифтів, технічний супровід</li>
-            <li>Художня адаптація з дотриманням чинного українського правопису</li>
+            <li data-i18n="li1">Повна текстова локалізація (інтерфейс, субтитри, навчальні матеріали/туторіали, внутрішньоігрові тексти)</li>
+            <li data-i18n="li2">Підтримка та інтеграція шрифтів, технічний супровід</li>
+            <li data-i18n="li3">Художня адаптація з дотриманням чинного українського правопису</li>
           </ul>
         </div>
       </div>
     </section>
 
     <section id="projects" class="container" style="scroll-margin-top:80px">
-      <h2>Наші проєкти</h2>
+      <h2 data-i18n="projects_title">Наші проєкти</h2>
       <div class="grid">
         <article class="card glass">
           <div class="thumb">
             <img src="assets/judgment_takayuki.webp">
             <img class="logo" src="assets/judgment_logo.png">
-            <span class="badge">У процесі локалізації</span>
+            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>Judgment</h3>
-            <p><strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
-            <div class="progress" title="Готовність 73%"><span style="width:73%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>73%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+            <p data-i18n="judgment_desc"><strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
+            <div class="progress" data-progress="73" title="Готовність 73%"><span style="width:73%"></span></div>
+            <small style="color:var(--muted)" data-i18n-progress data-progress="73">Готовність: <strong>73%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
 
@@ -253,32 +273,32 @@
           <div class="thumb">
             <img src="assets/lost_judgment.webp">
             <img class="logo" src="assets/lost_judgment_logo.png">
-            <span class="badge">Збір на локалізацію</span>
+            <span class="badge" data-i18n="badge_fundraising">Збір на локалізацію</span>
           </div>
           <div class="content">
             <h3>Lost Judgment</h3>
-            <p><strong>Продовження неонуарної історії про детектива Яґамі.</strong> Йде добровільний збір на локалізацію гри.</p>
-            <div class="progress" title="Готовність 0%"><span style="width:0%"></span></div>
-            <small style="color:var(--muted)">Статус: <strong>збір коштів</strong></small>
+            <p data-i18n="lostjudgment_desc"><strong>Продовження неонуарної історії про детектива Яґамі.</strong> Йде добровільний збір на локалізацію гри.</p>
+            <div class="progress" data-progress="0" title="Готовність 0%"><span style="width:0%"></span></div>
+            <small style="color:var(--muted)" data-i18n="status_fundraising">Статус: <strong>збір коштів</strong></small>
             <div class="cta">
-              <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener">Спонсорувати</a>
+              <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener" data-i18n="btn_sponsor">Спонсорувати</a>
             </div>
           </div>
         </article>
-		
-		  <article class="card glass">
+
+        <article class="card glass">
           <div class="thumb">
             <img src="assets/Ishin.webp">
             <img class="logo" src="assets/Ishin.png">
-            <span class="badge">Збір на локалізацію</span>
+            <span class="badge" data-i18n="badge_fundraising">Збір на локалізацію</span>
           </div>
           <div class="content">
             <h3>Like a Dragon: Ishin!</h3>
-            <p><strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Йде добровільний збір на локалізацію гри.</p>
-            <div class="progress" title="Готовність 0%"><span style="width:0%"></span></div>
-            <small style="color:var(--muted)">Статус: <strong>збір коштів</strong></small>
+            <p data-i18n="ishin_desc"><strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Йде добровільний збір на локалізацію гри.</p>
+            <div class="progress" data-progress="0" title="Готовність 0%"><span style="width:0%"></span></div>
+            <small style="color:var(--muted)" data-i18n="status_fundraising">Статус: <strong>збір коштів</strong></small>
             <div class="cta">
-              <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener">Спонсорувати</a>
+              <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener" data-i18n="btn_sponsor">Спонсорувати</a>
             </div>
           </div>
         </article>
@@ -287,14 +307,14 @@
           <div class="thumb">
             <img src="assets/yakuza_kiwami2.webp">
             <img class="logo" src="assets/yakuza_kiwami2_logo.png">
-            <span class="badge">У процесі локалізації</span>
+            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>Yakuza Kiwami 2</h3>
-            <p><strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
-            <div class="progress" title="Готовність 45%"><span style="width:45%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>45%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+            <p data-i18n="yk2_desc"><strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
+            <div class="progress" data-progress="45" title="Готовність 45%"><span style="width:45%"></span></div>
+            <small style="color:var(--muted)" data-i18n-progress data-progress="45">Готовність: <strong>45%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
 
@@ -302,14 +322,14 @@
           <div class="thumb">
             <img src="assets/yakuza_3_remastered.webp">
             <img class="logo" src="assets/yakuza3_logo.png">
-            <span class="badge">У процесі локалізації</span>
+            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>Yakuza 3 Remastered</h3>
-            <p><strong>Той самий пляжний епізод.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
-            <div class="progress" title="Готовність 10%"><span style="width:10%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>10%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+            <p data-i18n="y3_desc"><strong>Той самий пляжний епізод.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
+            <div class="progress" data-progress="10" title="Готовність 10%"><span style="width:10%"></span></div>
+            <small style="color:var(--muted)" data-i18n-progress data-progress="10">Готовність: <strong>10%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
 
@@ -317,14 +337,14 @@
           <div class="thumb">
             <img src="assets/no_more_heroes_travis.webp">
             <img class="logo" src="assets/no_more_heroes_logo.png">
-            <span class="badge">У процесі локалізації</span>
+            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>No More Heroes</h3>
-            <p><strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" title="Готовність 80%"><span style="width:80%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>80%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+            <p data-i18n="nmh1_desc"><strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
+            <div class="progress" data-progress="80" title="Готовність 80%"><span style="width:80%"></span></div>
+            <small style="color:var(--muted)" data-i18n-progress data-progress="80">Готовність: <strong>80%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
 
@@ -332,14 +352,14 @@
           <div class="thumb">
             <img src="assets/no_more_heroes_2.webp">
             <img class="logo" src="assets/no_more_heroes2_logo.png">
-            <span class="badge">У процесі малювання та тестування</span>
+            <span class="badge" data-i18n="badge_art_qa">У процесі малювання та тестування</span>
           </div>
           <div class="content">
             <h3>No More Heroes 2: Desperate Struggle</h3>
-            <p><strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" title="Готовність 100%"><span style="width:100%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>100%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+            <p data-i18n="nmh2_desc"><strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
+            <div class="progress" data-progress="100" title="Готовність 100%"><span style="width:100%"></span></div>
+            <small style="color:var(--muted)" data-i18n-progress data-progress="100">Готовність: <strong>100%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
 
@@ -347,14 +367,14 @@
           <div class="thumb">
             <img src="assets/travis_strikes_again.webp">
             <img class="logo" src="assets/travis_strikes_again_logo.png">
-            <span class="badge">У процесі локалізації</span>
+            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>Travis Strikes Again: No More Heroes</h3>
-             <p><strong>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" title="Готовність 21%%"><span style="width:21%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>21%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+             <p data-i18n="tsa_desc"><strong>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
+            <div class="progress" data-progress="21" title="Готовність 21%"><span style="width:21%"></span></div>
+            <small style="color:var(--muted)" data-i18n-progress data-progress="21">Готовність: <strong>21%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
 
@@ -362,14 +382,14 @@
           <div class="thumb">
             <img src="assets/no_more_heroes_3.webp">
             <img class="logo" src="assets/no_more_heroes3_logo.png">
-            <span class="badge">У процесі локалізації</span>
+            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
           </div>
           <div class="content">
             <h3>No More Heroes 3</h3>
-            <p><strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" title="Готовність 80%"><span style="width:80%"></span></div>
-            <small style="color:var(--muted)">Готовність: <strong>80%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1">Завантажити</a></div>
+            <p data-i18n="nmh3_desc"><strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
+            <div class="progress" data-progress="80" title="Готовність 80%"><span style="width:80%"></span></div>
+            <small style="color:var(--muted)" data-i18n-progress data-progress="80">Готовність: <strong>80%</strong></small>
+            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
       </div>
@@ -377,8 +397,8 @@
 
     <section id="contacts" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
-        <h2 style="margin-top:0">Контакти</h2>
-        <p style="color:var(--muted)">Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.</p>
+        <h2 style="margin-top:0" data-i18n="contacts_title">Контакти</h2>
+        <p style="color:var(--muted)" data-i18n="contacts_text">Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.</p>
         <div class="cta">
           <a class="btn primary" href="https://t.me/LittleBitUA" target="_blank" rel="noopener">Telegram</a>
           <a class="btn" href="https://www.youtube.com/@UA_LittleBit" target="_blank" rel="noopener">YouTube</a>
@@ -388,8 +408,8 @@
 
     <section id="support" class="container" style="scroll-margin-top:80px">
       <div class="glass" style="padding:20px">
-        <h2 style="margin-top:0">Фінансова підтримка</h2>
-        <p style="color:var(--muted)">Якщо подобається наша робота, можна підтримати нас донатом:</p>
+        <h2 style="margin-top:0" data-i18n="support_title">Фінансова підтримка</h2>
+        <p style="color:var(--muted)" data-i18n="support_text">Якщо подобається наша робота, можна підтримати нас донатом:</p>
         <div class="cta">
           <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener">Donatello</a>
         </div>
@@ -398,7 +418,161 @@
   </main>
 
   <script>
-    // Mobile drawer logic
+    // ===== i18n dictionary =====
+    const I18N = {
+      uk: {
+        title: 'Українська локалізація від «Little Bit»',
+        meta_desc: '«Little Bit» — українські локалізації відеоігор: Judgment, Yakuza, No More Heroes.',
+        nav_projects: 'Наші проєкти',
+        nav_contacts: 'Контакти',
+        nav_support: 'Фінансова підтримка',
+        drawer_title: 'Меню',
+        drawer_label: 'Мобільне меню',
+        open_menu: 'Відкрити меню',
+        close_menu: 'Закрити меню',
+        hero_title2: 'Грайте українською — відчувайте по-новому.',
+        hero_lead: 'Улюблені історії — українською, від серця.',
+        what_we_do_title: 'Що ми робимо',
+        li1: 'Повна текстова локалізація (інтерфейс, субтитри, навчальні матеріали/туторіали, внутрішньоігрові тексти)',
+        li2: 'Підтримка та інтеграція шрифтів, технічний супровід',
+        li3: 'Художня адаптація з дотриманням чинного українського правопису',
+        projects_title: 'Наші проєкти',
+
+        badge_in_progress: 'У процесі локалізації',
+        badge_fundraising: 'Збір на локалізацію',
+        badge_art_qa: 'У процесі малювання та тестування',
+
+        btn_download: 'Завантажити',
+        btn_sponsor: 'Спонсорувати',
+
+        progress_label: (n) => `Готовність: <strong>${n}%</strong>`,
+        progress_title: (n) => `Готовність ${n}%`,
+        status_fundraising: 'Статус: <strong>збір коштів</strong>',
+
+        judgment_desc: '<strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
+        lostjudgment_desc: '<strong>Продовження неонуарної історії про детектива Яґамі.</strong> Йде добровільний збір на локалізацію гри.',
+        ishin_desc: '<strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Йде добровільний збір на локалізацію гри.',
+        yk2_desc: '<strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
+        y3_desc: '<strong>Той самий пляжний епізод.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
+        nmh1_desc: '<strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+        nmh2_desc: '<strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+        tsa_desc: '<strong>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+        nmh3_desc: '<strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+
+        contacts_title: 'Контакти',
+        contacts_text: 'Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.',
+        support_title: 'Фінансова підтримка',
+        support_text: 'Якщо подобається наша робота, можна підтримати нас донатом:',
+      },
+      en: {
+        title: 'Ukrainian Game Localizations by “Little Bit”',
+        meta_desc: '“Little Bit” — Ukrainian localizations of video games: Judgment, Yakuza, No More Heroes.',
+        nav_projects: 'Our Projects',
+        nav_contacts: 'Contacts',
+        nav_support: 'Support Us',
+        drawer_title: 'Menu',
+        drawer_label: 'Mobile menu',
+        open_menu: 'Open menu',
+        close_menu: 'Close menu',
+        hero_title2: 'Play in Ukrainian — feel it anew.',
+        hero_lead: 'Your favorite stories — in Ukrainian, from the heart.',
+        what_we_do_title: 'What We Do',
+        li1: 'Full text localization (UI, subtitles, tutorials, in-game materials)',
+        li2: 'Font support and technical integration',
+        li3: 'Creative adaptation following contemporary Ukrainian orthography',
+        projects_title: 'Our Projects',
+
+        badge_in_progress: 'In localization',
+        badge_fundraising: 'Fundraising',
+        badge_art_qa: 'Art & QA in progress',
+
+        btn_download: 'Download',
+        btn_sponsor: 'Sponsor',
+
+        progress_label: (n) => `Progress: <strong>${n}%</strong>`,
+        progress_title: (n) => `Progress ${n}%`,
+        status_fundraising: 'Status: <strong>fundraising</strong>',
+
+        judgment_desc: '<strong>Neo-noir detective action from the creators of Yakuza.</strong> Full Ukrainian translation: side cases, tutorials, UI, and more.',
+        lostjudgment_desc: '<strong>The neo-noir story of detective Yagami continues.</strong> We\'re raising funds for the localization.',
+        ishin_desc: '<strong>Sharpen your blade and join the revolution in this historical adventure.</strong> We\'re raising funds for the localization.',
+        yk2_desc: '<strong>A cult remake on the upgraded engine.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.',
+        y3_desc: '<strong>The iconic beach episode returns.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.',
+        nmh1_desc: '<strong>The first, unmatched adventure of Travis Touchdown.</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+        nmh2_desc: '<strong>Even more style and combat!</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+        tsa_desc: '<strong>An experimental spin-off with metafictional levels and mini-genres.</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+        nmh3_desc: '<strong>Kick some alien butt!</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+
+        contacts_title: 'Contacts',
+        contacts_text: 'Got questions, want to help, or propose a collaboration? Message us on Telegram or subscribe on YouTube.',
+        support_title: 'Financial Support',
+        support_text: 'If you like our work, you can support us with a donation:',
+      }
+    };
+
+    function detectInitialLang(){
+      const saved = localStorage.getItem('lb_lang');
+      if (saved && (saved === 'uk' || saved === 'en')) return saved;
+      const navLang = (navigator.languages && navigator.languages[0] || navigator.language || '').toLowerCase();
+      if (navLang.startsWith('uk') || navLang.startsWith('ua')) return 'uk';
+      return 'en';
+    }
+
+    function t(key){
+      const lang = document.documentElement.lang || 'uk';
+      const dict = I18N[lang] || I18N.uk;
+      return dict[key];
+    }
+
+    function applyLang(lang){
+      if (!I18N[lang]) lang = 'uk';
+      document.documentElement.lang = lang;
+
+      // title + meta description
+      document.title = I18N[lang].title;
+      const m = document.querySelector('meta[name="description"]');
+      if (m) m.setAttribute('content', I18N[lang].meta_desc);
+
+      // Simple [data-i18n] nodes (innerHTML)
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        const val = I18N[lang][key];
+        if (typeof val === 'string') el.innerHTML = val;
+      });
+
+      // Progress labels + titles
+      document.querySelectorAll('[data-i18n-progress]').forEach(el=>{
+        const n = el.getAttribute('data-progress') || '0';
+        el.innerHTML = I18N[lang].progress_label(n);
+        const prog = el.previousElementSibling;
+        if (prog && prog.classList.contains('progress')) {
+          prog.setAttribute('title', I18N[lang].progress_title(n));
+        }
+      });
+
+      // Drawer aria label
+      const drawer = document.getElementById('drawer');
+      if (drawer) drawer.setAttribute('aria-label', I18N[lang].drawer_label);
+
+      // Burger aria labels depend on state
+      const openBtn = document.getElementById('openDrawer');
+      if (openBtn){
+        const isOpen = openBtn.classList.contains('active');
+        openBtn.setAttribute('aria-label', isOpen ? I18N[lang].close_menu : I18N[lang].open_menu);
+      }
+
+      // Update active state on language buttons
+      document.querySelectorAll('.lang .lang-btn').forEach(btn=>{
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+    }
+
+    function setLang(lang){
+      localStorage.setItem('lb_lang', lang);
+      applyLang(lang);
+    }
+
+    // ===== Mobile drawer logic =====
     const drawer = document.getElementById('drawer');
     const backdrop = document.getElementById('backdrop');
     const openBtn = document.getElementById('openDrawer');
@@ -409,7 +583,7 @@
       backdrop.classList.add('show');
       openBtn.classList.add('active');
       openBtn.setAttribute('aria-expanded','true');
-      openBtn.setAttribute('aria-label','Закрити меню');
+      openBtn.setAttribute('aria-label', t('close_menu'));
       drawer.setAttribute('aria-hidden','false');
       backdrop.setAttribute('aria-hidden','false');
     }
@@ -418,7 +592,7 @@
       backdrop.classList.remove('show');
       openBtn.classList.remove('active');
       openBtn.setAttribute('aria-expanded','false');
-      openBtn.setAttribute('aria-label','Відкрити меню');
+      openBtn.setAttribute('aria-label', t('open_menu'));
       drawer.setAttribute('aria-hidden','true');
       backdrop.setAttribute('aria-hidden','true');
     }
@@ -438,6 +612,20 @@
         const w = el.style.width; el.style.width = '0'; requestAnimationFrame(()=>{ el.style.width = w; });
       });
     });
+
+    // --- Language switching via event delegation (works for header & drawer) ---
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.lang-btn[data-lang]');
+      if (!btn) return;
+      e.preventDefault();
+      const lang = btn.dataset.lang;
+      setLang(lang);
+    });
+
+    // Init language
+    const initialLang = detectInitialLang();
+    document.documentElement.lang = initialLang;
+    applyLang(initialLang);
   </script>
 </body>
 </html>
