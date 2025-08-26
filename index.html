@@ -278,7 +278,7 @@
           <div class="content">
             <h3>Lost Judgment</h3>
             <p data-i18n="lostjudgment_desc"><strong>Продовження неонуарної історії про детектива Яґамі.</strong> Йде добровільний збір на локалізацію гри.</p>
-            <div class="progress" data-progress="0" title="Готовність 0%"><span style="width:0%"></span></div>
+            <div class="progress" data-progress="0" data-raised="400" data-goal="25000" title="Готовність 0%"><span style="width:0%"></span></div>
             <small style="color:var(--muted)" data-i18n="status_fundraising">Статус: <strong>збір коштів</strong></small>
             <div class="cta">
               <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener" data-i18n="btn_sponsor">Спонсорувати</a>
@@ -295,7 +295,7 @@
           <div class="content">
             <h3>Like a Dragon: Ishin!</h3>
             <p data-i18n="ishin_desc"><strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Йде добровільний збір на локалізацію гри.</p>
-            <div class="progress" data-progress="0" title="Готовність 0%"><span style="width:0%"></span></div>
+            <div class="progress" data-progress="0" data-raised="400" data-goal="25000" title="Готовність 0%"><span style="width:0%"></span></div>
             <small style="color:var(--muted)" data-i18n="status_fundraising">Статус: <strong>збір коштів</strong></small>
             <div class="cta">
               <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener" data-i18n="btn_sponsor">Спонсорувати</a>
@@ -510,6 +510,37 @@
       }
     };
 
+    // === Added helpers for fundraising display ===
+    // Format numbers with thin space as thousands separator: 25000 -> "25 000"
+    function formatUA(n){
+      return (Number(n)||0).toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' ');
+    }
+
+    // Update fundraising cards: label "400₴ \ 25 000₴" and progress width
+    function updateFundraising(){
+      document.querySelectorAll('.content').forEach(card=>{
+        const prog = card.querySelector('.progress');
+        const label = card.querySelector('[data-i18n="status_fundraising"]');
+        if(!prog || !label) return;
+
+        const raised = parseInt(prog.dataset.raised || '0', 10);
+        const goal   = parseInt(prog.dataset.goal   || '0', 10);
+
+        if(goal > 0){
+          const pct = Math.max(0, Math.min(100, Math.round((raised/goal)*100)));
+          const bar = prog.querySelector('span');
+          if (bar) bar.style.width = pct + '%';
+
+          const isEN = (document.documentElement.lang || 'uk') === 'en';
+          prog.setAttribute('title', isEN ? `Progress ${pct}%` : `Готовність ${pct}%`);
+
+          // Show "400₴ \ 25 000₴"
+          const prefix = isEN ? 'Raised:' : 'Зібрано:';
+          label.innerHTML = `${prefix} ${formatUA(raised)}₴ \\ ${formatUA(goal)}₴`;
+        }
+      });
+    }
+
     function detectInitialLang(){
       const saved = localStorage.getItem('lb_lang');
       if (saved && (saved === 'uk' || saved === 'en')) return saved;
@@ -565,6 +596,9 @@
       document.querySelectorAll('.lang .lang-btn').forEach(btn=>{
         btn.classList.toggle('active', btn.dataset.lang === lang);
       });
+
+      // Ensure fundraising cards show "400₴ \ 25 000₴" (overrides default i18n placeholder)
+      updateFundraising();
     }
 
     function setLang(lang){
@@ -608,8 +642,14 @@
 
     // Animate progress bars after load
     window.addEventListener('load',()=>{
+      // First update fundraising labels and widths
+      updateFundraising();
+
+      // Then animate to the computed widths
       document.querySelectorAll('.progress > span').forEach(el=>{
-        const w = el.style.width; el.style.width = '0'; requestAnimationFrame(()=>{ el.style.width = w; });
+        const w = el.style.width || '0%';
+        el.style.width = '0%';
+        requestAnimationFrame(()=>{ el.style.width = w; });
       });
     });
 
