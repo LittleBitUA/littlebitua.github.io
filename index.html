@@ -175,6 +175,15 @@
     @media (max-width: 360px){
       .thumb .logo{ max-width:78%; }
     }
+  
+    /* Searchbar */
+    .searchbar{ display:flex; gap:8px; align-items:center; margin:8px 0 16px }
+    .searchbar input[type="search"]{ width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--text) }
+    .searchbar button{ padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.08); color:var(--text); cursor:pointer }
+    .searchbar button:hover{ border-color:rgba(255,255,255,.35) }
+    .visually-hidden{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,1px,1px); white-space:nowrap; border:0 }
+    .no-results{ margin:10px 0; padding:12px; border-radius:12px; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#fecaca }
+
   </style>
 </head>
 <body>
@@ -253,7 +262,15 @@
 
     <section id="projects" class="container" style="scroll-margin-top:80px">
       <h2 data-i18n="projects_title">Наші проєкти</h2>
-      <div class="grid">
+      <div class="searchbar" role="search">
+        <label class="visually-hidden" for="projSearch" data-i18n="search_label">Пошук проєкту</label>
+        <input id="projSearch" type="search" inputmode="search" placeholder="Пошук проєкту…" data-i18n-placeholder="search_placeholder" aria-controls="projectsGrid" aria-label="Пошук проєкту" />
+        <button type="button" id="clearSearch" aria-label="Очистити" title="Очистити">×</button>
+      </div>
+      <p id="searchMeta" style="color:var(--muted); font-size:13px; margin:6px 2px 12px"></p>
+      <div id="noResults" class="no-results" hidden data-i18n="no_results">Нічого не знайдено за цим запитом.</div>
+
+      <div class="grid" id="projectsGrid">
         <article class="card glass">
           <div class="thumb">
             <img src="assets/judgment_takayuki.webp">
@@ -666,6 +683,137 @@
     const initialLang = detectInitialLang();
     document.documentElement.lang = initialLang;
     applyLang(initialLang);
+  
+    // ==== Search i18n additions ====
+    I18N.uk.search_label = 'Пошук проєкту';
+    I18N.uk.search_placeholder = 'Пошук проєкту…';
+    I18N.uk.search_clear = 'Очистити';
+    I18N.uk.no_results = 'Нічого не знайдено за цим запитом.';
+    I18N.uk.search_found = (n) => `Знайдено: ${n}`;
+
+    I18N.en.search_label = 'Project search';
+    I18N.en.search_placeholder = 'Search project…';
+    I18N.en.search_clear = 'Clear';
+    I18N.en.no_results = 'No results for this query.';
+    I18N.en.search_found = (n) => `Found: ${n}`;
+
+    // Helper: normalize string (lowercase, strip diacritics, punctuation)
+    function normalizeStr(s){
+      try {
+        return (s||'')
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/\p{Diacritic}/gu,'')
+          .replace(/[^\p{L}\p{N}\s]/gu,' ')
+          .replace(/\s+/g,' ')
+          .trim();
+      } catch(e){
+        // Fallback for older browsers
+        return (s||'').toLowerCase().replace(/[^\w\s]/g,' ').replace(/\s+/g,' ').trim();
+      }
+    }
+
+    function updateSearchI18N(){
+      const lang = document.documentElement.lang || 'uk';
+      const dict = I18N[lang] || I18N.uk;
+      const $input = document.getElementById('projSearch');
+      const $label = document.querySelector('label[for="projSearch"]');
+      const $clear = document.getElementById('clearSearch');
+      const $no = document.getElementById('noResults');
+      if ($input) $input.setAttribute('placeholder', dict.search_placeholder);
+      if ($label) $label.innerHTML = dict.search_label;
+      if ($clear){ $clear.setAttribute('aria-label', dict.search_clear); $clear.title = dict.search_clear; }
+      if ($no) $no.innerHTML = dict.no_results;
+    }
+
+    // Wrap applyLang to also update placeholder/texts for search UI
+    (function(){
+      const __origApplyLang = applyLang;
+      applyLang = function(lang){
+        __origApplyLang(lang);
+        updateSearchI18N();
+        // Refresh fundraising (already in orig), and also re-run current search to reflect language
+        const q = (document.getElementById('projSearch')?.value || '').trim();
+        if (q) { runProjectSearch(q); } else { runProjectSearch(''); }
+      };
+    })();
+
+    // Core search
+    function runProjectSearch(query){
+      const lang = document.documentElement.lang || 'uk';
+      const dict = I18N[lang] || I18N.uk;
+      const grid = document.getElementById('projectsGrid');
+      const cards = grid ? Array.from(grid.querySelectorAll('.card')) : [];
+      const qn = normalizeStr(query);
+      let shown = 0;
+
+      cards.forEach(card => {
+        const text = normalizeStr(card.innerText);
+        const match = !qn || text.includes(qn);
+        card.style.display = match ? '' : 'none';
+        if (match) shown++;
+      });
+
+      // Update meta and empty state
+      const meta = document.getElementById('searchMeta');
+      if (meta) meta.innerHTML = dict.search_found(shown);
+      const empty = document.getElementById('noResults');
+      if (empty) empty.hidden = (shown !== 0);
+
+      // Write the query into URL (without reloading)
+      try {
+        const url = new URL(window.location);
+        if (qn) url.searchParams.set('q', query);
+        else url.searchParams.delete('q');
+        history.replaceState({}, '', url);
+      } catch(e){ /* no-op */ }
+    }
+
+    // Set up listeners
+    (function initProjectSearch(){
+      const input = document.getElementById('projSearch');
+      const clearBtn = document.getElementById('clearSearch');
+      if (!input) return;
+
+      updateSearchI18N();
+
+      let tId = null;
+      function onInput(){
+        const v = input.value;
+        clearTimeout(tId);
+        tId = setTimeout(()=> runProjectSearch(v), 80);
+      }
+
+      input.addEventListener('input', onInput);
+      input.addEventListener('keydown', (e)=>{
+        if (e.key === 'Escape'){
+          input.value = '';
+          runProjectSearch('');
+        }
+      });
+      clearBtn?.addEventListener('click', ()=>{
+        input.value = '';
+        input.focus();
+        runProjectSearch('');
+      });
+
+      // Seed from URL ?q=
+      try {
+        const url = new URL(window.location);
+        const q = url.searchParams.get('q') || '';
+        if (q){
+          input.value = q;
+          runProjectSearch(q);
+          // Scroll to projects section when loading a query
+          document.getElementById('projects')?.scrollIntoView({behavior:'smooth', block:'start'});
+        } else {
+          runProjectSearch('');
+        }
+      } catch(e){
+        runProjectSearch('');
+      }
+    })();
+
   </script>
 </body>
 </html>
