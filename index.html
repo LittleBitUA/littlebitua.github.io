@@ -198,6 +198,58 @@
     @keyframes sheen{ to{ transform: translateX(100%) } }
     @media (prefers-reduced-motion: reduce){ .progress > span::after{ animation:none } }
     
+  
+    /* === Animated "Download" buttons for No More Heroes 2 & 3 === */
+    .btn.download-anim{
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+      background:linear-gradient(135deg, rgba(125,211,252,.28), rgba(167,139,250,.28));
+      border-color: rgba(167,139,250,.55);
+      animation: lb-pulseGlow 2.6s ease-in-out infinite;
+      will-change: transform, box-shadow;
+    }
+    .btn.download-anim:hover{
+      transform: translateY(-2px) scale(1.02);
+    }
+    /* moving light sweep */
+    .btn.download-anim::after{
+      content:"";
+      position:absolute;
+      top:0; bottom:0;
+      left:-160%; width:140%;
+      transform: skewX(-20deg);
+      background: linear-gradient(120deg, rgba(255,255,255,0) 35%, rgba(255,255,255,.35) 50%, rgba(255,255,255,0) 65%);
+      animation: lb-sweep 3.2s ease-in-out infinite;
+      pointer-events:none;
+      mix-blend-mode: screen;
+    }
+    /* subtle outer glow */
+    @keyframes lb-pulseGlow{
+      0%,100%{
+        box-shadow:
+          0 0 0 1px rgba(167,139,250,.65),
+          0 0 0 0 rgba(125,211,252,0),
+          0 10px 28px rgba(2,6,23,.30);
+      }
+      50%{
+        box-shadow:
+          0 0 0 1px rgba(167,139,250,.95),
+          0 0 24px 10px rgba(125,211,252,.16),
+          0 14px 34px rgba(2,6,23,.45);
+      }
+    }
+    @keyframes lb-sweep{
+      0%{ left:-160% }
+      55%{ left:120% }
+      100%{ left:120% }
+    }
+    /* respect reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      .btn.download-anim{ animation:none }
+      .btn.download-anim::after{ animation:none }
+    }
+
   </style>
 </head>
 <body>
@@ -390,7 +442,7 @@
             <p data-i18n="nmh2_desc"><strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
             <div class="progress" data-progress="100" title="Готовність 100%"><span style="width:100%"></span></div>
             <small style="color:var(--muted)" data-i18n-progress data-progress="100">Готовність: <strong>100%</strong></small>
-            <div class="cta"><a class="btn" href="https://t.me/LittleBitUA/95" target="_blank" rel="noopener" data-i18n="btn_download">Завантажити</a></div>
+            <div class="cta"><a class="btn download-anim" href="https://t.me/LittleBitUA/95" target="_blank" rel="noopener" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
 
@@ -420,7 +472,7 @@
             <p data-i18n="nmh3_desc"><strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
             <div class="progress" data-progress="100" title="Готовність 100%"><span style="width:100%"></span></div>
             <small style="color:var(--muted)" data-i18n-progress data-progress="100">Готовність: <strong>100%</strong></small>
-            <div class="cta"><a class="btn" href="https://t.me/LittleBitUA/95" target="_blank" rel="noopener" data-i18n="btn_download">Завантажити</a></div>
+            <div class="cta"><a class="btn download-anim" href="https://t.me/LittleBitUA/95" target="_blank" rel="noopener" data-i18n="btn_download">Завантажити</a></div>
           </div>
         </article>
       </div>
