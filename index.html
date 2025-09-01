@@ -3,253 +3,147 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Українська локалізація від «Little Bit»</title>
-  <link rel="icon" type="image/x-icon" href="logo.ico">
+  <title>«Little Bit» — українські локалізації ігор</title>
   <meta name="description" content="«Little Bit» — українські локалізації відеоігор: Judgment, Yakuza, No More Heroes." />
+  <meta name="theme-color" content="#0b1220"/>
+  <link rel="icon" type="image/x-icon" href="logo.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --glass-bg: rgba(255,255,255,0.08);
-      --glass-brd: rgba(255,255,255,0.25);
+      --bg: #0b1220;
       --text: #f5f7fb;
       --muted: #cdd4e1;
+      --glass: rgba(255,255,255,.06);
+      --brd: rgba(255,255,255,.12);
       --accent: #7dd3fc;
       --accent-2: #a78bfa;
+      --accent-10: rgba(125,211,252,.10);
+      --accent-30: rgba(125,211,252,.30);
     }
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0; padding:0}
+    html,body{height:100%; margin:0}
     body{
       font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Noto Sans', sans-serif;
       color:var(--text);
-      background:#0b1220; overflow-x:hidden;
+      background: var(--bg);
+      overflow-x:hidden;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      letter-spacing: .1px;
     }
-
-    /* Background liquid */
-    .bg{position:fixed; inset:0; z-index:-2; background:
-        radial-gradient(1200px 800px at 10% 10%, #1e293b 0%, transparent 60%),
-        radial-gradient(1000px 600px at 90% 20%, #111827 0%, transparent 55%),
-        radial-gradient(1000px 900px at 20% 90%, #0a0f1d 0%, transparent 60%);
+    .visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .bg{position:fixed; inset:0; z-index:-3;
+      background:
+        radial-gradient(1100px 700px at 10% 10%, #14203b 0%, transparent 60%),
+        radial-gradient(900px 550px at 85% 15%, #0f172a 0%, transparent 55%),
+        radial-gradient(1000px 800px at 20% 90%, #0a0f1d 0%, transparent 60%);
     }
-    .blob{position:absolute; filter: blur(60px); opacity:.55; mix-blend-mode:screen; animation:float 18s ease-in-out infinite;}
-    .blob.one{ width: 420px; height:420px; left:-80px; top:-60px; background:linear-gradient(135deg, #22d3ee, #818cf8); }
-    .blob.two{ width: 520px; height:520px; right:-120px; top:20vh; background:linear-gradient(135deg, #06b6d4, #ec4899); animation-delay: -6s; }
-    .blob.three{ width: 480px; height:480px; left:20vw; bottom:-140px; background:linear-gradient(135deg, #34d399, #60a5fa); animation-delay: -3s; }
-    @keyframes float{ 0%,100%{ transform:translateY(0) translateX(0) scale(1)} 50%{ transform:translateY(-30px) translateX(10px) scale(1.05)} }
+    .blob{position:absolute; filter: blur(64px); opacity:.55; mix-blend-mode:screen; animation:float 18s ease-in-out infinite;}
+    .blob.one{ width: 460px; height:460px; left:-80px; top:-60px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); }
+    .blob.two{ width: 560px; height:560px; right:-120px; top:18vh; background:linear-gradient(135deg, var(--accent-2), var(--accent)); animation-delay: -6s; }
+    .blob.three{ width: 520px; height:520px; left:22vw; bottom:-140px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); animation-delay: -3s; }
+    @keyframes float{ 0%,100%{ transform:translateY(0) translateX(0) scale(1)} 50%{ transform:translateY(-26px) translateX(10px) scale(1.05)} }
     @media (prefers-reduced-motion: reduce){ .blob{animation:none} }
-
-    /* Header & nav */
-    header{position:sticky; top:0; -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
-      background:linear-gradient(180deg, rgba(10,16,29,0.7), rgba(10,16,29,0.35)); border-bottom:1px solid rgba(255,255,255,0.08); z-index:40}
-    .nav{max-width:1100px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; gap:12px}
-    .brand{font-weight:800; letter-spacing:.4px; font-size:18px}
+    header{position:sticky; top:0; z-index:40; background: linear-gradient(180deg, rgba(10,16,29,.75), rgba(10,16,29,.35));
+      -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%); border-bottom:1px solid rgba(255,255,255,.08)}
+    .nav{max-width:1200px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; gap:12px}
+    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.4px; font-size:18px}
+    .brand .dot{width:10px; height:10px; border-radius:999px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow:0 0 18px rgba(125,211,252,.35)}
     .spacer{flex:1}
     .nav-links{display:flex; gap:8px}
     .nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:10px; transition:all .25s}
     .nav a:hover{color:var(--text); background:rgba(255,255,255,0.06)}
-
-    /* Language switcher */
     .lang{display:flex; align-items:center; gap:4px; border:1px solid rgba(255,255,255,.15); padding:4px; border-radius:999px; background:rgba(255,255,255,.06)}
-    .lang .lang-btn{
-      background:transparent; border:none; color:var(--text); font-weight:700;
-      padding:6px 8px; border-radius:999px; display:flex; align-items:center; gap:6px; cursor:pointer; opacity:.7
-    }
-    .lang .lang-btn .flag{font-size:18px; line-height:1}
+    .lang .lang-btn{ background:transparent; border:none; color:var(--text); font-weight:700; padding:6px 8px; border-radius:999px; display:flex; align-items:center; gap:6px; cursor:pointer; opacity:.75 }
     .lang .lang-btn.active{ background:rgba(255,255,255,.12); opacity:1 }
-
-    /* Burger */
-    .burger{
-      background:transparent; border:1px solid rgba(255,255,255,.15);
-      border-radius:10px; padding:8px; color:var(--text);
-      align-items:center; justify-content:center;
-    }
-    .burger{display:none}
+    .burger{display:none; background:transparent; border:1px solid rgba(255,255,255,.15); border-radius:10px; padding:8px; color:var(--text); align-items:center; justify-content:center;}
     .burger svg{width:22px; height:22px; display:block}
     .burger .icon-x{display:none}
     .burger.active .icon-bars{display:none}
     .burger.active .icon-x{display:block}
-    .burger svg path{
-      stroke: currentColor;
-      stroke-width: 2;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    /* Drawer */
+    .burger svg path{ stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
     .drawer{position:fixed; inset:0 0 0 auto; width:78%; max-width:320px; transform:translateX(100%); transition:transform .25s ease;
-      background:rgba(13,18,34,.88); -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%);
-      border-left:1px solid rgba(255,255,255,.08); z-index:50; display:flex; flex-direction:column; will-change: transform}
+      background:rgba(13,18,34,.95); border-left:1px solid rgba(255,255,255,.08); z-index:50; display:flex; flex-direction:column}
     .drawer.open{transform:translateX(0)}
     .drawer .head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
     .drawer .links{display:flex; flex-direction:column; padding:10px}
     .drawer .links a{padding:12px 12px; border-radius:12px; margin:4px 0; color:var(--text); text-decoration:none; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08)}
     .drawer .lang{ margin:10px; align-self:flex-start }
-
-    .backdrop{position:fixed; inset:0; background:rgba(2,6,23,.55); opacity:0; visibility:hidden; transition:all .25s; z-index:45; will-change: opacity}
+    .backdrop{position:fixed; inset:0; background:rgba(2,6,23,.55); opacity:0; visibility:hidden; transition:all .25s; z-index:45}
     .backdrop.show{opacity:1; visibility:visible}
-
-    .container{max-width:1100px; margin:0 auto; padding:56px 20px}
-    .glass{background: var(--glass-bg); border: 1px solid var(--glass-brd); border-radius: 18px; -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%); box-shadow: 0 10px 50px rgba(2,6,23, .35), inset 0 1px 0 rgba(255,255,255,0.06)}
-
-    .hero{ display:grid; grid-template-columns: 1fr; gap:20px; align-items:center; padding:22px; }
-    .hero h1{ font-size: clamp(28px, 3.6vw, 48px); margin:0 0 10px 0; line-height:1.05 }
-    .pill{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background:rgba(125,211,252,.12); border:1px solid rgba(125,211,252,.35); color:#dbeafe; font-weight:600; font-size:12px}
-    .lead{color:var(--muted); font-size: 16px; line-height:1.7}
-
-    .cta{display:flex; gap:12px; margin-top:10px; flex-wrap:wrap}
+    .container{max-width:1200px; margin:0 auto; padding:56px 20px}
+    .glass{background: var(--glass); border: 1px solid var(--brd); border-radius: 18px; -webkit-backdrop-filter: blur(16px) saturate(140%); backdrop-filter: blur(16px) saturate(140%); box-shadow: 0 10px 50px rgba(2,6,23,.32), inset 0 1px 0 rgba(255,255,255,0.06)}
+    .hero{ display:grid; grid-template-columns: 1fr; gap:22px; align-items:center; padding:22px; position:relative; overflow:hidden }
+    .hero h1{ font-size: clamp(28px, 3.6vw, 48px); margin:0 0 6px 0; line-height:1.05 }
+    .hero .lead{ color:var(--muted); font-size: clamp(16px, 2.1vw, 18px); line-height:1.7 }
+    .pill{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background: rgba(125,211,252,.10); border:1px solid rgba(125,211,252,.30); color:var(--text); font-weight:700; font-size:12px}
+    .cta{display:flex; gap:12px; margin-top:12px; flex-wrap:wrap}
     .btn{padding:10px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.12); color:var(--text); text-decoration:none; display:inline-flex; gap:10px; align-items:center; transition:transform .2s, background .2s, border-color .2s}
-    .btn.primary{background:linear-gradient(135deg, rgba(125,211,252,.25), rgba(167,139,250,.25)); border-color: rgba(167,139,250,.45)}
+    .btn.primary{background:linear-gradient(135deg, rgba(125,211,252,.28), rgba(167,139,250,.28)); border-color: rgba(167,139,250,.55)}
     .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,0.35)}
     .btn.disabled{background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.45); border:1px solid rgba(255,255,255,0.12); cursor:not-allowed; pointer-events:none; user-select:none;}
-    .btn.disabled:focus{outline: none;}
-
+    .swatches{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    .swatches button{width:28px; height:28px; border-radius:8px; border:1px solid rgba(255,255,255,.22); background:#111827; padding:0; cursor:pointer}
+    .swatches button[data-accent="violet"]{ background: linear-gradient(135deg, #a78bfa, #7dd3fc) }
+    .swatches button[data-accent="emerald"]{ background: linear-gradient(135deg, #34d399, #60a5fa) }
+    .swatches button[data-accent="rose"]{ background: linear-gradient(135deg, #f43f5e, #06b6d4) }
+    .swatches button[data-accent="amber"]{ background: linear-gradient(135deg, #f59e0b, #22d3ee) }
     h2{font-size: clamp(22px, 3vw, 32px); margin:0 0 18px}
-
-    /* Grid */
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap:14px;
-      align-items:stretch;
-    }
+    .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:14px; align-items:stretch; }
     .card{ overflow:hidden; position:relative; display:flex; flex-direction:column; contain: paint; }
     .thumb{ position:relative; aspect-ratio: 16/9; background:#0f172a; overflow:hidden }
     .thumb img{ width:100%; height:100%; object-fit:cover; opacity:.92; transform: scale(1.02); transition:transform .5s ease }
-    @media (hover:hover) and (pointer:fine){
-      .card:hover .thumb img{ transform: scale(1.07) }
-    }
-    @media (hover:none){
-      .thumb img{ transform:none }
-    }
+    @media (hover:hover) and (pointer:fine){ .card:hover .thumb img{ transform: scale(1.07) } }
+    .thumb::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:42%; background:linear-gradient(to top, rgba(2,6,23,.82), rgba(2,6,23,0)); pointer-events:none; }
+    .thumb .logo{ position:absolute; left:12px; bottom:12px; max-width:70%; max-height:48%; height:auto; width:auto; object-fit:contain; filter: drop-shadow(0 10px 18px rgba(0,0,0,.55)) drop-shadow(0 0 1px rgba(255,255,255,.12)); pointer-events:none; user-select:none; }
     .badge{position:absolute; top:12px; left:12px; background:rgba(2,6,23,.55); border:1px solid rgba(255,255,255,.25); border-radius:999px; padding:6px 10px; font-size:12px; font-weight:700}
-
-    .content{
-      padding:14px 14px 16px;
-      display:grid;
-      grid-template-rows: auto 1fr auto auto auto;
-      gap:8px;
-      flex:1;
-    }
+    .content{ padding:14px 14px 16px; display:grid; grid-template-rows: auto 1fr auto auto auto; gap:8px; flex:1; }
     .content h3{margin:0; font-size:18px}
     .content p{margin:0; color:var(--muted); line-height:1.6; font-size:14px}
-
-    .progress{ height:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:999px; overflow:hidden; }
+    .progress{ height:10px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:999px; overflow:hidden; position:relative }
     .progress > span{ display:block; height:100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width:0; transition: width 1200ms cubic-bezier(.2,.7,.2,1) }
-
+    .progress > span::after{ content:""; position:absolute; inset:0; background: linear-gradient(120deg, rgba(255,255,255,0) 45%, rgba(255,255,255,.25) 50%, rgba(255,255,255,0) 55%); mix-blend-mode: screen; transform: translateX(-100%); animation: sheen 2.6s linear infinite; pointer-events: none; }
+    @keyframes sheen{ to{ transform: translateX(100%) } }
+    .toolbar{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:8px 0 16px }
+    .toolbar .search{ flex:1; min-width:220px; position:relative }
+    .toolbar input[type="search"]{ width:100%; padding:10px 12px 10px 34px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--text) }
+    .toolbar .icon{ position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:14px; opacity:.7 }
+    .chips{ display:flex; gap:6px; flex-wrap:wrap }
+    .chip{ border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--text); padding:8px 10px; border-radius:999px; font-size:13px; cursor:pointer; user-select:none }
+    .chip.active{ background:rgba(255,255,255,.16) }
+    .no-results{ margin:10px 0; padding:12px; border-radius:12px; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#fecaca }
+    .stats{ display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:10px }
+    .stat{ padding:14px; border:1px solid var(--brd); border-radius:14px; background:rgba(255,255,255,.05); text-align:center }
+    .stat .num{ font-size:22px; font-weight:800 }
+    .stat .sub{ font-size:12px; color:var(--muted) }
     footer{ color:#93a4bc; padding:30px 0 60px; font-size:13px; text-align:center }
-
-    @media (min-width: 880px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
+    @media (min-width: 920px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
     @media (max-width: 860px){
       .nav-links{ display:none } .burger{display:inline-flex}
       header{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(10,16,29,0.9) }
       .drawer{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(13,18,34,.96) }
       .glass{ -webkit-backdrop-filter:none; backdrop-filter:none; background:rgba(255,255,255,0.06); box-shadow: 0 6px 24px rgba(2,6,23,.25), inset 0 1px 0 rgba(255,255,255,0.04) }
       .blob{ display:none }
-      .thumb .logo{ filter:none }
     }
-
-    /* Logos over thumbnails */
-    .thumb::after{
-      content:"";
-      position:absolute;
-      left:0; right:0; bottom:0;
-      height:42%;
-      background:linear-gradient(to top, rgba(2,6,23,.82), rgba(2,6,23,0));
-      pointer-events:none;
-    }
-    .thumb .logo{
-      position:absolute;
-      left:12px; bottom:12px;
-      max-width:70%;
-      max-height:48%;
-      height:auto; width:auto;
-      object-fit:contain;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.55)) drop-shadow(0 0 1px rgba(255,255,255,.12));
-      pointer-events:none;
-      user-select:none;
-    }
-    @media (max-width: 360px){
-      .thumb .logo{ max-width:78%; }
-    }
-  
-    /* Searchbar */
-    .searchbar{ display:flex; gap:8px; align-items:center; margin:8px 0 16px }
-    .searchbar input[type="search"]{ width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:var(--text) }
-    .searchbar button{ padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.08); color:var(--text); cursor:pointer }
-    .searchbar button:hover{ border-color:rgba(255,255,255,.35) }
-    .visually-hidden{ position:absolute !important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,1px,1px); white-space:nowrap; border:0 }
-    .no-results{ margin:10px 0; padding:12px; border-radius:12px; background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.35); color:#fecaca }
-
-  
-    /* Progress shimmer (minimal) */
-    .progress{ position:relative; overflow:hidden }
-    .progress > span{ position:relative; overflow:clip; contain:paint }
-    .progress > span::after{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(120deg, rgba(255,255,255,0) 45%, rgba(255,255,255,.25) 50%, rgba(255,255,255,0) 55%);
-      mix-blend-mode: screen; transform: translateX(-100%);
-      animation: sheen 2.6s linear infinite;
-      pointer-events: none;
-    }
-    @keyframes sheen{ to{ transform: translateX(100%) } }
-    @media (prefers-reduced-motion: reduce){ .progress > span::after{ animation:none } }
-    
-  
-    /* === Animated "Download" buttons for No More Heroes 2 & 3 === */
     .btn.download-anim{
-      position:relative;
-      overflow:hidden;
-      isolation:isolate;
+      position:relative; overflow:hidden; isolation:isolate;
       background:linear-gradient(135deg, rgba(125,211,252,.28), rgba(167,139,250,.28));
       border-color: rgba(167,139,250,.55);
       animation: lb-pulseGlow 2.6s ease-in-out infinite;
       will-change: transform, box-shadow;
     }
-    .btn.download-anim:hover{
-      transform: translateY(-2px) scale(1.02);
-    }
-    /* moving light sweep */
-    .btn.download-anim::after{
-      content:"";
-      position:absolute;
-      top:0; bottom:0;
-      left:-160%; width:140%;
-      transform: skewX(-20deg);
+    .btn.download-anim:hover{ transform: translateY(-2px) scale(1.02); }
+    .btn.download-anim::after{ content:""; position:absolute; top:0; bottom:0; left:-160%; width:140%; transform: skewX(-20deg);
       background: linear-gradient(120deg, rgba(255,255,255,0) 35%, rgba(255,255,255,.35) 50%, rgba(255,255,255,0) 65%);
-      animation: lb-sweep 3.2s ease-in-out infinite;
-      pointer-events:none;
-      mix-blend-mode: screen;
-    }
-    /* subtle outer glow */
+      animation: lb-sweep 3.2s ease-in-out infinite; pointer-events:none; mix-blend-mode: screen; }
     @keyframes lb-pulseGlow{
-      0%,100%{
-        box-shadow:
-          0 0 0 1px rgba(167,139,250,.65),
-          0 0 0 0 rgba(125,211,252,0),
-          0 10px 28px rgba(2,6,23,.30);
-      }
-      50%{
-        box-shadow:
-          0 0 0 1px rgba(167,139,250,.95),
-          0 0 24px 10px rgba(125,211,252,.16),
-          0 14px 34px rgba(2,6,23,.45);
-      }
+      0%,100%{ box-shadow: 0 0 0 1px rgba(167,139,250,.65), 0 0 0 0 rgba(125,211,252,0), 0 10px 28px rgba(2,6,23,.30); }
+      50%{ box-shadow: 0 0 0 1px rgba(167,139,250,.95), 0 0 24px 10px rgba(125,211,252,.16), 0 14px 34px rgba(2,6,23,.45); }
     }
-    @keyframes lb-sweep{
-      0%{ left:-160% }
-      55%{ left:120% }
-      100%{ left:120% }
-    }
-    /* respect reduced motion */
-    @media (prefers-reduced-motion: reduce){
-      .btn.download-anim{ animation:none }
-      .btn.download-anim::after{ animation:none }
-    }
-
+    @keyframes lb-sweep{ 0%{ left:-160% } 55%{ left:120% } 100%{ left:120% } }
+    @media (prefers-reduced-motion: reduce){ .btn.download-anim{ animation:none } .btn.download-anim::after{ animation:none } }
   </style>
 </head>
 <body>
@@ -259,10 +153,8 @@
     <div class="blob three"></div>
   </div>
 
-  <!-- mobile backdrop -->
   <div id="backdrop" class="backdrop" aria-hidden="true"></div>
-  <!-- drawer -->
-  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Мобільне меню" data-i18n-aria="drawer_label">
+  <aside id="drawer" class="drawer" aria-hidden="true" aria-label="Мобільне меню">
     <div class="head">
       <div style="font-weight:800" data-i18n="drawer_title">Меню</div>
       <button id="closeDrawer" aria-label="Закрити" class="burger" type="button">
@@ -282,27 +174,20 @@
 
   <header>
     <nav class="nav">
-      <div class="brand">«Little Bit»</div>
+      <div class="brand"><span class="dot"></span> «Little Bit»</div>
       <div class="spacer"></div>
       <div class="nav-links">
         <a href="#projects" data-i18n="nav_projects">Наші проєкти</a>
         <a href="#contacts" data-i18n="nav_contacts">Контакти</a>
         <a href="#support" data-i18n="nav_support">Фінансова підтримка</a>
       </div>
-
-      <!-- Language switcher (desktop) -->
       <div class="lang" id="langSwitch" aria-label="Language switcher">
         <button type="button" class="lang-btn" data-lang="uk" aria-label="Українська"><span class="flag">🇺🇦</span><span>UA</span></button>
         <button type="button" class="lang-btn" data-lang="en" aria-label="English"><span class="flag">🇬🇧</span><span>EN</span></button>
       </div>
-
-      <button id="openDrawer" class="burger" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false" data-i18n-aria-open="open_menu" data-i18n-aria-close="close_menu" type="button">
-        <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-        <svg class="icon-x" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 18L18 6M6 6l12 12"/>
-        </svg>
+      <button id="openDrawer" class="burger" aria-label="Відкрити меню" aria-controls="drawer" aria-expanded="false" type="button">
+        <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <svg class="icon-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </nav>
   </header>
@@ -311,9 +196,31 @@
     <section id="home" class="container">
       <div class="hero glass">
         <div>
+          <span class="pill" data-i18n="pill_subtitle">UA Localizations</span>
           <h1>«Little Bit»</h1>
           <h1 data-i18n="hero_title2">Грайте українською — відчувайте по-новому.</h1>
           <p class="lead" data-i18n="hero_lead">Улюблені історії — українською, від серця.</p>
+          <div class="swatches" style="margin-top:10px">
+            <small style="color:var(--muted);margin-right:6px" data-i18n="accent_label">Акцент:</small>
+            <button data-accent="violet" aria-label="Фіолетовий"></button>
+            <button data-accent="emerald" aria-label="Смарагдовий"></button>
+            <button data-accent="rose" aria-label="Рожевий"></button>
+            <button data-accent="amber" aria-label="Бурштиновий"></button>
+          </div>
+          <div class="stats" aria-label="Статистика сайту">
+            <div class="stat">
+              <div class="num" id="statProjects">—</div>
+              <div class="sub" data-i18n="stat_projects">проєктів у переліку</div>
+            </div>
+            <div class="stat">
+              <div class="num" id="statAvg">—</div>
+              <div class="sub" data-i18n="stat_avg">середня готовність</div>
+            </div>
+            <div class="stat">
+              <div class="num" id="statEA">—</div>
+              <div class="sub" data-i18n="stat_early">ранній доступ</div>
+            </div>
+          </div>
         </div>
         <div class="glass" style="padding:16px">
           <h2 style="margin:6px 0 10px" data-i18n="what_we_do_title">Що ми робимо</h2>
@@ -328,154 +235,22 @@
 
     <section id="projects" class="container" style="scroll-margin-top:80px">
       <h2 data-i18n="projects_title">Наші проєкти</h2>
-      <div class="searchbar" role="search">
-        <label class="visually-hidden" for="projSearch" data-i18n="search_label">Пошук проєкту</label>
-        <input id="projSearch" type="search" inputmode="search" placeholder="Пошук проєкту…" data-i18n-placeholder="search_placeholder" aria-controls="projectsGrid" aria-label="Пошук проєкту" />
-        <button type="button" id="clearSearch" aria-label="Очистити" title="Очистити">×</button>
+      <div class="toolbar">
+        <div class="search" role="search">
+          <span class="icon">🔎</span>
+          <label class="visually-hidden" for="projSearch" data-i18n="search_label">Пошук проєкту</label>
+          <input id="projSearch" type="search" inputmode="search" placeholder="Пошук проєкту…" data-i18n-placeholder="search_placeholder" aria-controls="projectsGrid" aria-label="Пошук проєкту" />
+        </div>
+        <div class="chips" id="chips">
+          <button class="chip active" data-filter="all"   data-i18n="filter_all">Усе</button>
+          <button class="chip" data-filter="in-progress"  data-i18n="filter_in">У процесі</button>
+          <button class="chip" data-filter="fundraising"  data-i18n="filter_fund">Збір коштів</button>
+          <button class="chip" data-filter="early-access" data-i18n="filter_ea">Ранній доступ</button>
+        </div>
       </div>
       <p id="searchMeta" style="color:var(--muted); font-size:13px; margin:6px 2px 12px"></p>
       <div id="noResults" class="no-results" hidden data-i18n="no_results">Нічого не знайдено за цим запитом.</div>
-
-      <div class="grid" id="projectsGrid">
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/judgment_takayuki.webp">
-            <img class="logo" src="assets/judgment_logo.png">
-            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
-          </div>
-          <div class="content">
-            <h3>Judgment</h3>
-            <p data-i18n="judgment_desc"><strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
-            <div class="progress" data-progress="78" title="Готовність 78%"><span style="width:78%"></span></div>
-            <small style="color:var(--muted)" data-i18n-progress data-progress="78">Готовність: <strong>78%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/lost_judgment.webp">
-            <img class="logo" src="assets/lost_judgment_logo.png">
-            <span class="badge" data-i18n="badge_fundraising">Збір на локалізацію</span>
-          </div>
-          <div class="content">
-            <h3>Lost Judgment</h3>
-            <p data-i18n="lostjudgment_desc"><strong>Продовження неонуарної історії про детектива Яґамі.</strong> Йде добровільний збір на локалізацію гри.</p>
-            <div class="progress" data-progress="0" data-raised="3650" data-goal="25000" title="Готовність 0%"><span style="width:0%"></span></div>
-            <small style="color:var(--muted)" data-i18n="status_fundraising">Статус: <strong>збір коштів</strong></small>
-            <div class="cta">
-              <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener" data-i18n="btn_sponsor">Спонсорувати</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/Ishin.webp">
-            <img class="logo" src="assets/Ishin.png">
-            <span class="badge" data-i18n="badge_fundraising">Збір на локалізацію</span>
-          </div>
-          <div class="content">
-            <h3>Like a Dragon: Ishin!</h3>
-            <p data-i18n="ishin_desc"><strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Йде добровільний збір на локалізацію гри.</p>
-            <div class="progress" data-progress="0" data-raised="3650" data-goal="25000" title="Готовність 0%"><span style="width:0%"></span></div>
-            <small style="color:var(--muted)" data-i18n="status_fundraising">Статус: <strong>збір коштів</strong></small>
-            <div class="cta">
-              <a class="btn primary" href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener" data-i18n="btn_sponsor">Спонсорувати</a>
-            </div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/yakuza_kiwami2.webp">
-            <img class="logo" src="assets/yakuza_kiwami2_logo.png">
-            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
-          </div>
-          <div class="content">
-            <h3>Yakuza Kiwami 2</h3>
-            <p data-i18n="yk2_desc"><strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
-            <div class="progress" data-progress="47" title="Готовність 47%"><span style="width:47%"></span></div>
-            <small style="color:var(--muted)" data-i18n-progress data-progress="47">Готовність: <strong>47%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/yakuza_3_remastered.webp">
-            <img class="logo" src="assets/yakuza3_logo.png">
-            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
-          </div>
-          <div class="content">
-            <h3>Yakuza 3 Remastered</h3>
-            <p data-i18n="y3_desc"><strong>Той самий пляжний епізод.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.</p>
-            <div class="progress" data-progress="10" title="Готовність 10%"><span style="width:10%"></span></div>
-            <small style="color:var(--muted)" data-i18n-progress data-progress="10">Готовність: <strong>10%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/no_more_heroes_travis.webp">
-            <img class="logo" src="assets/no_more_heroes_logo.png">
-            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
-          </div>
-          <div class="content">
-            <h3>No More Heroes</h3>
-            <p data-i18n="nmh1_desc"><strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" data-progress="86" title="Готовність 86%"><span style="width:86%"></span></div>
-            <small style="color:var(--muted)" data-i18n-progress data-progress="86">Готовність: <strong>86%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/no_more_heroes_2.webp">
-            <img class="logo" src="assets/no_more_heroes2_logo.png">
-            <span class="badge" data-i18n="badge_early_access">Ранній доступ</span>
-          </div>
-          <div class="content">
-            <h3>No More Heroes 2: Desperate Struggle</h3>
-            <p data-i18n="nmh2_desc"><strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" data-progress="100" title="Готовність 100%"><span style="width:100%"></span></div>
-            <small style="color:var(--muted)" data-i18n-progress data-progress="100">Готовність: <strong>100%</strong></small>
-            <div class="cta"><a class="btn download-anim" href="https://t.me/LittleBitUA/95" target="_blank" rel="noopener" data-i18n="btn_download">Завантажити</a></div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/travis_strikes_again.webp">
-            <img class="logo" src="assets/travis_strikes_again_logo.png">
-            <span class="badge" data-i18n="badge_in_progress">У процесі локалізації</span>
-          </div>
-          <div class="content">
-            <h3>Travis Strikes Again: No More Heroes</h3>
-             <p data-i18n="tsa_desc"><strong>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" data-progress="23" title="Готовність 23%"><span style="width:23%"></span></div>
-            <small style="color:var(--muted)" data-i18n-progress data-progress="23">Готовність: <strong>23%</strong></small>
-            <div class="cta"><a class="btn disabled" href="#" aria-disabled="true" tabindex="-1" data-i18n="btn_download">Завантажити</a></div>
-          </div>
-        </article>
-
-        <article class="card glass">
-          <div class="thumb">
-            <img src="assets/no_more_heroes_3.webp">
-            <img class="logo" src="assets/no_more_heroes3_logo.png">
-            <span class="badge" data-i18n="badge_early_access">Ранній доступ</span>
-          </div>
-          <div class="content">
-            <h3>No More Heroes 3</h3>
-            <p data-i18n="nmh3_desc"><strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.</p>
-            <div class="progress" data-progress="100" title="Готовність 100%"><span style="width:100%"></span></div>
-            <small style="color:var(--muted)" data-i18n-progress data-progress="100">Готовність: <strong>100%</strong></small>
-            <div class="cta"><a class="btn download-anim" href="https://t.me/LittleBitUA/95" target="_blank" rel="noopener" data-i18n="btn_download">Завантажити</a></div>
-          </div>
-        </article>
-      </div>
+      <div class="grid" id="projectsGrid" aria-live="polite"></div>
     </section>
 
     <section id="contacts" class="container" style="scroll-margin-top:80px">
@@ -500,386 +275,263 @@
     </section>
   </main>
 
+  <footer>
+    © <span id="year"></span> «Little Bit». <span data-i18n="rights">Усі права захищено.</span>
+  </footer>
+
   <script>
-    // ===== i18n dictionary =====
+    // --- Data ---
+    const PROJECTS = [
+      { id:'judgment', title:'Judgment', cover:'assets/judgment_takayuki.webp', logo:'assets/judgment_logo.png', status:'in-progress', progress:78,
+        desc_uk:'<strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
+        desc_en:'<strong>Neo-noir detective action from the creators of Yakuza.</strong> Full Ukrainian translation: side cases, tutorials, UI, and more.',
+        cta:{type:'disabled',label_uk:'Завантажити',label_en:'Download',url:'#'}},
+      { id:'lost-judgment', title:'Lost Judgment', cover:'assets/lost_judgment.webp', logo:'assets/lost_judgment_logo.png', status:'fundraising', progress:0, raised:3650, goal:25000,
+        desc_uk:'<strong>Продовження неонуарної історії про детектива Яґамі.</strong> Йде добровільний збір на локалізацію гри.',
+        desc_en:'<strong>The neo-noir story of detective Yagami continues.</strong> We\'re raising funds for the localization.',
+        cta:{type:'link',label_uk:'Спонсорувати',label_en:'Sponsor',url:'https://donatello.to/LittleBitUA',primary:true}},
+      { id:'ishin', title:'Like a Dragon: Ishin!', cover:'assets/Ishin.webp', logo:'assets/Ishin.png', status:'fundraising', progress:0, raised:3650, goal:25000,
+        desc_uk:'<strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Йде добровільний збір на локалізацію гри.',
+        desc_en:'<strong>Sharpen your blade and join the revolution in this historical adventure.</strong> We\'re raising funds for the localization.',
+        cta:{type:'link',label_uk:'Спонсорувати',label_en:'Sponsor',url:'https://donatello.to/LittleBitUA',primary:true}},
+      { id:'yk2', title:'Yakuza Kiwami 2', cover:'assets/yakuza_kiwami2.webp', logo:'assets/yakuza_kiwami2_logo.png', status:'in-progress', progress:47,
+        desc_uk:'<strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
+        desc_en:'<strong>A cult remake on the upgraded engine.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.',
+        cta:{type:'disabled',label_uk:'Завантажити',label_en:'Download',url:'#'}},
+      { id:'y3', title:'Yakuza 3 Remastered', cover:'assets/yakuza_3_remastered.webp', logo:'assets/yakuza3_logo.png', status:'in-progress', progress:10,
+        desc_uk:'<strong>Той самий пляжний епізод.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
+        desc_en:'<strong>The iconic beach episode returns.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.',
+        cta:{type:'disabled',label_uk:'Завантажити',label_en:'Download',url:'#'}},
+      { id:'nmh1', title:'No More Heroes', cover:'assets/no_more_heroes_travis.webp', logo:'assets/no_more_heroes_logo.png', status:'in-progress', progress:86,
+        desc_uk:'<strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+        desc_en:'<strong>The first, unmatched adventure of Travis Touchdown.</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+        cta:{type:'disabled',label_uk:'Завантажити',label_en:'Download',url:'#'}},
+      { id:'nmh2', title:'No More Heroes 2: Desperate Struggle', cover:'assets/no_more_heroes_2.webp', logo:'assets/no_more_heroes2_logo.png', status:'early-access', progress:100,
+        desc_uk:'<strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+        desc_en:'<strong>Even more style and combat!</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+        cta:{type:'link',label_uk:'Завантажити',label_en:'Download',url:'https://t.me/LittleBitUA/95',animated:true}},
+      { id:'tsa', title:'Travis Strikes Again: No More Heroes', cover:'assets/travis_strikes_again.webp', logo:'assets/travis_strikes_again_logo.png', status:'in-progress', progress:23,
+        desc_uk:'<strong>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+        desc_en:'<strong>An experimental spin-off with metafictional levels and mini-genres.</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+        cta:{type:'disabled',label_uk:'Завантажити',label_en:'Download',url:'#'}},
+      { id:'nmh3', title:'No More Heroes 3', cover:'assets/no_more_heroes_3.webp', logo:'assets/no_more_heroes3_logo.png', status:'early-access', progress:100,
+        desc_uk:'<strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
+        desc_en:'<strong>Kick some alien butt!</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
+        cta:{type:'link',label_uk:'Завантажити',label_en:'Download',url:'https://t.me/LittleBitUA/95',animated:true}},
+    ];
+
     const I18N = {
-      uk: {
-        title: 'Українська локалізація від «Little Bit»',
-        meta_desc: '«Little Bit» — українські локалізації відеоігор: Judgment, Yakuza, No More Heroes.',
-        nav_projects: 'Наші проєкти',
-        nav_contacts: 'Контакти',
-        nav_support: 'Фінансова підтримка',
-        drawer_title: 'Меню',
-        drawer_label: 'Мобільне меню',
-        open_menu: 'Відкрити меню',
-        close_menu: 'Закрити меню',
-        hero_title2: 'Грайте українською — відчувайте по-новому.',
-        hero_lead: 'Улюблені історії — українською, від серця.',
-        what_we_do_title: 'Що ми робимо',
-        li1: 'Повна текстова локалізація (інтерфейс, субтитри, навчальні матеріали/туторіали, внутрішньоігрові тексти)',
-        li2: 'Підтримка та інтеграція шрифтів, технічний супровід',
-        li3: 'Художня адаптація з дотриманням чинного українського правопису',
-        projects_title: 'Наші проєкти',
-
-        badge_in_progress: 'У процесі локалізації',
-        badge_fundraising: 'Збір на локалізацію',
-
-        badge_early_access: 'Ранній доступ',
-        btn_download: 'Завантажити',
-        btn_sponsor: 'Спонсорувати',
-
-        progress_label: (n) => `Готовність: <strong>${n}%</strong>`,
-        progress_title: (n) => `Готовність ${n}%`,
-        status_fundraising: 'Статус: <strong>збір коштів</strong>',
-
-        judgment_desc: '<strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
-        lostjudgment_desc: '<strong>Продовження неонуарної історії про детектива Яґамі.</strong> Йде добровільний збір на локалізацію гри.',
-        ishin_desc: '<strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Йде добровільний збір на локалізацію гри.',
-        yk2_desc: '<strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
-        y3_desc: '<strong>Той самий пляжний епізод.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
-        nmh1_desc: '<strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
-        nmh2_desc: '<strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
-        tsa_desc: '<strong>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
-        nmh3_desc: '<strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.',
-
-        contacts_title: 'Контакти',
-        contacts_text: 'Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.',
-        support_title: 'Фінансова підтримка',
-        support_text: 'Якщо подобається наша робота, можна підтримати нас донатом:',
-      },
-      en: {
-        title: 'Ukrainian Game Localizations by “Little Bit”',
-        meta_desc: '“Little Bit” — Ukrainian localizations of video games: Judgment, Yakuza, No More Heroes.',
-        nav_projects: 'Our Projects',
-        nav_contacts: 'Contacts',
-        nav_support: 'Support Us',
-        drawer_title: 'Menu',
-        drawer_label: 'Mobile menu',
-        open_menu: 'Open menu',
-        close_menu: 'Close menu',
-        hero_title2: 'Play in Ukrainian — feel it anew.',
-        hero_lead: 'Your favorite stories — in Ukrainian, from the heart.',
-        what_we_do_title: 'What We Do',
-        li1: 'Full text localization (UI, subtitles, tutorials, in-game materials)',
-        li2: 'Font support and technical integration',
-        li3: 'Creative adaptation following contemporary Ukrainian orthography',
-        projects_title: 'Our Projects',
-
-        badge_in_progress: 'In localization',
-        badge_fundraising: 'Fundraising',
-
-        badge_early_access: 'Early Access',
-        btn_download: 'Download',
-        btn_sponsor: 'Sponsor',
-
-        progress_label: (n) => `Progress: <strong>${n}%</strong>`,
-        progress_title: (n) => `Progress ${n}%`,
-        status_fundraising: 'Status: <strong>fundraising</strong>',
-
-        judgment_desc: '<strong>Neo-noir detective action from the creators of Yakuza.</strong> Full Ukrainian translation: side cases, tutorials, UI, and more.',
-        lostjudgment_desc: '<strong>The neo-noir story of detective Yagami continues.</strong> We\'re raising funds for the localization.',
-        ishin_desc: '<strong>Sharpen your blade and join the revolution in this historical adventure.</strong> We\'re raising funds for the localization.',
-        yk2_desc: '<strong>A cult remake on the upgraded engine.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.',
-        y3_desc: '<strong>The iconic beach episode returns.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.',
-        nmh1_desc: '<strong>The first, unmatched adventure of Travis Touchdown.</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
-        nmh2_desc: '<strong>Even more style and combat!</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
-        tsa_desc: '<strong>An experimental spin-off with metafictional levels and mini-genres.</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
-        nmh3_desc: '<strong>Kick some alien butt!</strong> Full Ukrainian translation: story, tutorials, UI, and more.',
-
-        contacts_title: 'Contacts',
-        contacts_text: 'Got questions, want to help, or propose a collaboration? Message us on Telegram or subscribe on YouTube.',
-        support_title: 'Financial Support',
-        support_text: 'If you like our work, you can support us with a donation:',
-      }
+      uk:{ title:'«Little Bit» — українські локалізації ігор',
+        meta_desc:'«Little Bit» — українські локалізації відеоігор: Judgment, Yakuza, No More Heroes.',
+        nav_projects:'Наші проєкти', nav_contacts:'Контакти', nav_support:'Фінансова підтримка',
+        drawer_title:'Меню', drawer_label:'Мобільне меню', open_menu:'Відкрити меню', close_menu:'Закрити меню',
+        pill_subtitle:'UA Localizations', hero_title2:'Грайте українською — відчувайте по-новому.', hero_lead:'Улюблені історії — українською, від серця.',
+        what_we_do_title:'Що ми робимо', li1:'Повна текстова локалізація (інтерфейс, субтитри, навчальні матеріали/туторіали, внутрішньоігрові тексти)',
+        li2:'Підтримка та інтеграція шрифтів, технічний супровід', li3:'Художня адаптація з дотриманням чинного українського правопису',
+        projects_title:'Наші проєкти', badge_in_progress:'У процесі локалізації', badge_fundraising:'Збір на локалізацію', badge_early_access:'Ранній доступ',
+        btn_download:'Завантажити', btn_sponsor:'Спонсорувати', btn_view_projects:'До проєктів', btn_support:'Підтримати',
+        status_fundraising:'Статус: <strong>збір коштів</strong>', raised_prefix:'Зібрано:', search_label:'Пошук проєкту', search_placeholder:'Пошук проєкту…',
+        no_results:'Нічого не знайдено за цим запитом.', search_found:(n)=>`Знайдено: ${n}`, filter_all:'Усе', filter_in:'У процесі', filter_fund:'Збір коштів', filter_ea:'Ранній доступ',
+        stat_projects:'проєктів у переліку', stat_avg:'середня готовність', stat_early:'ранній доступ', accent_label:'Акцент:', rights:'Усі права захищено.' },
+      en:{ title:'“Little Bit” — Ukrainian Game Localizations', meta_desc:'“Little Bit” — Ukrainian localizations of video games: Judgment, Yakuza, No More Heroes.',
+        nav_projects:'Our Projects', nav_contacts:'Contacts', nav_support:'Support Us', drawer_title:'Menu', drawer_label:'Mobile menu', open_menu:'Open menu', close_menu:'Close menu',
+        pill_subtitle:'UA Localizations', hero_title2:'Play in Ukrainian — feel it anew.', hero_lead:'Your favorite stories — in Ukrainian, from the heart.',
+        what_we_do_title:'What We Do', li1:'Full text localization (UI, subtitles, tutorials, in-game materials)', li2:'Font support and technical integration', li3:'Creative adaptation following contemporary Ukrainian orthography',
+        projects_title:'Our Projects', badge_in_progress:'In localization', badge_fundraising:'Fundraising', badge_early_access:'Early Access', btn_download:'Download', btn_sponsor:'Sponsor',
+        btn_view_projects:'See projects', btn_support:'Support us', status_fundraising:'Status: <strong>fundraising</strong>', raised_prefix:'Raised:', search_label:'Project search', search_placeholder:'Search project…',
+        no_results:'No results for this query.', search_found:(n)=>`Found: ${n}`, filter_all:'All', filter_in:'In progress', filter_fund:'Fundraising', filter_ea:'Early access',
+        stat_projects:'projects listed', stat_avg:'average progress', stat_early:'early access', accent_label:'Accent:', rights:'All rights reserved.' }
     };
 
-    // === Added helpers for fundraising display ===
-    // Format numbers with thin space as thousands separator: 25000 -> "25 000"
-    function formatUA(n){
-      return (Number(n)||0).toString().replace(/\\B(?=(\\d{3})+(?!\\d))/g, ' ');
-    }
-
-    // Update fundraising cards: label "400₴ \ 25 000₴" and progress width
-    function updateFundraising(){
-      document.querySelectorAll('.content').forEach(card=>{
-        const prog = card.querySelector('.progress');
-        const label = card.querySelector('[data-i18n="status_fundraising"]');
-        if(!prog || !label) return;
-
-        const raised = parseInt(prog.dataset.raised || '0', 10);
-        const goal   = parseInt(prog.dataset.goal   || '0', 10);
-
-        if(goal > 0){
-          const pct = Math.max(0, Math.min(100, Math.round((raised/goal)*100)));
-          const bar = prog.querySelector('span');
-          if (bar) bar.style.width = pct + '%';
-
-          const isEN = (document.documentElement.lang || 'uk') === 'en';
-          prog.setAttribute('title', isEN ? `Progress ${pct}%` : `Готовність ${pct}%`);
-
-          // Show "400₴ \ 25 000₴"
-          const prefix = isEN ? 'Raised:' : 'Зібрано:';
-          label.innerHTML = `${prefix} ${formatUA(raised)}₴ \\ ${formatUA(goal)}₴`;
-        }
-      });
-    }
-
+    // --- Helpers ---
     function detectInitialLang(){
-      const saved = localStorage.getItem('lb_lang');
-      if (saved && (saved === 'uk' || saved === 'en')) return saved;
+      try{
+        const saved = localStorage.getItem('lb_lang');
+        if (saved && (saved === 'uk' || saved === 'en')) return saved;
+      }catch(e){}
       const navLang = (navigator.languages && navigator.languages[0] || navigator.language || '').toLowerCase();
-      if (navLang.startsWith('uk') || navLang.startsWith('ua')) return 'uk';
+      if (navLang.indexOf('uk')===0 || navLang.indexOf('ua')===0) return 'uk';
       return 'en';
     }
-
-    function t(key){
-      const lang = document.documentElement.lang || 'uk';
-      const dict = I18N[lang] || I18N.uk;
-      return dict[key];
-    }
-
-    function applyLang(lang){
-      if (!I18N[lang]) lang = 'uk';
-      document.documentElement.lang = lang;
-
-      // title + meta description
-      document.title = I18N[lang].title;
-      const m = document.querySelector('meta[name="description"]');
-      if (m) m.setAttribute('content', I18N[lang].meta_desc);
-
-      // Simple [data-i18n] nodes (innerHTML)
-      document.querySelectorAll('[data-i18n]').forEach(el=>{
-        const key = el.getAttribute('data-i18n');
-        const val = I18N[lang][key];
-        if (typeof val === 'string') el.innerHTML = val;
-      });
-
-      // Progress labels + titles
-      document.querySelectorAll('[data-i18n-progress]').forEach(el=>{
-        const n = el.getAttribute('data-progress') || '0';
-        el.innerHTML = I18N[lang].progress_label(n);
-        const prog = el.previousElementSibling;
-        if (prog && prog.classList.contains('progress')) {
-          prog.setAttribute('title', I18N[lang].progress_title(n));
-        }
-      });
-
-      // Drawer aria label
-      const drawer = document.getElementById('drawer');
-      if (drawer) drawer.setAttribute('aria-label', I18N[lang].drawer_label);
-
-      // Burger aria labels depend on state
-      const openBtn = document.getElementById('openDrawer');
-      if (openBtn){
-        const isOpen = openBtn.classList.contains('active');
-        openBtn.setAttribute('aria-label', isOpen ? I18N[lang].close_menu : I18N[lang].open_menu);
-      }
-
-      // Update active state on language buttons
-      document.querySelectorAll('.lang .lang-btn').forEach(btn=>{
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-      });
-
-      // Ensure fundraising cards show "400₴ \ 25 000₴" (overrides default i18n placeholder)
-      updateFundraising();
-    }
-
-    function setLang(lang){
-      localStorage.setItem('lb_lang', lang);
-      applyLang(lang);
-    }
-
-    // ===== Mobile drawer logic =====
-    const drawer = document.getElementById('drawer');
-    const backdrop = document.getElementById('backdrop');
-    const openBtn = document.getElementById('openDrawer');
-    const closeBtn = document.getElementById('closeDrawer');
-
-    function open(){
-      drawer.classList.add('open');
-      backdrop.classList.add('show');
-      openBtn.classList.add('active');
-      openBtn.setAttribute('aria-expanded','true');
-      openBtn.setAttribute('aria-label', t('close_menu'));
-      drawer.setAttribute('aria-hidden','false');
-      backdrop.setAttribute('aria-hidden','false');
-    }
-    function close(){
-      drawer.classList.remove('open');
-      backdrop.classList.remove('show');
-      openBtn.classList.remove('active');
-      openBtn.setAttribute('aria-expanded','false');
-      openBtn.setAttribute('aria-label', t('open_menu'));
-      drawer.setAttribute('aria-hidden','true');
-      backdrop.setAttribute('aria-hidden','true');
-    }
-
-    openBtn?.addEventListener('click', () => {
-      if (drawer.classList.contains('open')) { close(); } else { open(); }
-    });
-
-    closeBtn?.addEventListener('click', close);
-    backdrop?.addEventListener('click', close);
-    window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') close(); });
-    document.querySelectorAll('.drawer .links a').forEach(a=>a.addEventListener('click', close));
-
-    // Animate progress bars after load
-    window.addEventListener('load',()=>{
-      // First update fundraising labels and widths
-      updateFundraising();
-
-      // Then animate to the computed widths
-      document.querySelectorAll('.progress > span').forEach(el=>{
-        const w = el.style.width || '0%';
-        el.style.width = '0%';
-        requestAnimationFrame(()=>{ el.style.width = w; });
-      });
-    });
-
-    // --- Language switching via event delegation (works for header & drawer) ---
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.lang-btn[data-lang]');
-      if (!btn) return;
-      e.preventDefault();
-      const lang = btn.dataset.lang;
-      setLang(lang);
-    });
-
-    // Init language
-    const initialLang = detectInitialLang();
-    document.documentElement.lang = initialLang;
-    applyLang(initialLang);
-  
-    // ==== Search i18n additions ====
-    I18N.uk.search_label = 'Пошук проєкту';
-    I18N.uk.search_placeholder = 'Пошук проєкту…';
-    I18N.uk.search_clear = 'Очистити';
-    I18N.uk.no_results = 'Нічого не знайдено за цим запитом.';
-    I18N.uk.search_found = (n) => `Знайдено: ${n}`;
-
-    I18N.en.search_label = 'Project search';
-    I18N.en.search_placeholder = 'Search project…';
-    I18N.en.search_clear = 'Clear';
-    I18N.en.no_results = 'No results for this query.';
-    I18N.en.search_found = (n) => `Found: ${n}`;
-
-    // Helper: normalize string (lowercase, strip diacritics, punctuation)
-    function normalizeStr(s){
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+    function formatUA(n){ return (Number(n)||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+    function norm(s){
       try {
         return (s||'')
           .toLowerCase()
           .normalize('NFD')
-          .replace(/\p{Diacritic}/gu,'')
-          .replace(/[^\p{L}\p{N}\s]/gu,' ')
+          .replace(/[\u0300-\u036f]/g,'')  // remove combining marks (compatible)
+          .replace(/[^\w\s]/g,' ')
           .replace(/\s+/g,' ')
           .trim();
       } catch(e){
-        // Fallback for older browsers
         return (s||'').toLowerCase().replace(/[^\w\s]/g,' ').replace(/\s+/g,' ').trim();
       }
     }
 
-    function updateSearchI18N(){
-      const lang = document.documentElement.lang || 'uk';
-      const dict = I18N[lang] || I18N.uk;
-      const $input = document.getElementById('projSearch');
-      const $label = document.querySelector('label[for="projSearch"]');
-      const $clear = document.getElementById('clearSearch');
-      const $no = document.getElementById('noResults');
-      if ($input) $input.setAttribute('placeholder', dict.search_placeholder);
-      if ($label) $label.innerHTML = dict.search_label;
-      if ($clear){ $clear.setAttribute('aria-label', dict.search_clear); $clear.title = dict.search_clear; }
-      if ($no) $no.innerHTML = dict.no_results;
+    // --- Accent ---
+    function setAccent(a){
+      const root=document.documentElement;
+      if (a==='emerald'){ root.style.setProperty('--accent','#34d399'); root.style.setProperty('--accent-2','#60a5fa'); }
+      else if (a==='rose'){ root.style.setProperty('--accent','#f43f5e'); root.style.setProperty('--accent-2','#06b6d4'); }
+      else if (a==='amber'){ root.style.setProperty('--accent','#f59e0b'); root.style.setProperty('--accent-2','#22d3ee'); }
+      else { root.style.setProperty('--accent','#7dd3fc'); root.style.setProperty('--accent-2','#a78bfa'); a='violet'; }
+      try{ localStorage.setItem('lb_accent', a); }catch(e){}
     }
 
-    // Wrap applyLang to also update placeholder/texts for search UI
-    (function(){
-      const __origApplyLang = applyLang;
-      applyLang = function(lang){
-        __origApplyLang(lang);
-        updateSearchI18N();
-        // Refresh fundraising (already in orig), and also re-run current search to reflect language
-        const q = (document.getElementById('projSearch')?.value || '').trim();
-        if (q) { runProjectSearch(q); } else { runProjectSearch(''); }
-      };
-    })();
-
-    // Core search
-    function runProjectSearch(query){
-      const lang = document.documentElement.lang || 'uk';
-      const dict = I18N[lang] || I18N.uk;
-      const grid = document.getElementById('projectsGrid');
-      const cards = grid ? Array.from(grid.querySelectorAll('.card')) : [];
-      const qn = normalizeStr(query);
-      let shown = 0;
-
-      cards.forEach(card => {
-        const text = normalizeStr(card.innerText);
-        const match = !qn || text.includes(qn);
-        card.style.display = match ? '' : 'none';
-        if (match) shown++;
+    // --- Language ---
+    function applyLang(lang){
+      if (!I18N[lang]) lang='uk';
+      document.documentElement.lang=lang;
+      const dict = I18N[lang];
+      document.title = dict.title;
+      const m=document.querySelector('meta[name="description"]'); if (m) m.setAttribute('content', dict.meta_desc);
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key=el.getAttribute('data-i18n'); const val=dict[key];
+        if (typeof val==='string') el.innerHTML=val;
       });
-
-      // Update meta and empty state
-      const meta = document.getElementById('searchMeta');
-      if (meta) meta.innerHTML = dict.search_found(shown);
-      const empty = document.getElementById('noResults');
-      if (empty) empty.hidden = (shown !== 0);
-
-      // Write the query into URL (without reloading)
-      try {
-        const url = new URL(window.location);
-        if (qn) url.searchParams.set('q', query);
-        else url.searchParams.delete('q');
-        history.replaceState({}, '', url);
-      } catch(e){ /* no-op */ }
+      // placeholders
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+        const key=el.getAttribute('data-i18n-placeholder'); const val=dict[key];
+        if (typeof val==='string') el.setAttribute('placeholder', val);
+      });
+      // burger aria
+      const burger=document.getElementById('openDrawer');
+      if (burger){
+        burger.setAttribute('aria-label', burger.classList.contains('active')? dict.close_menu : dict.open_menu);
+      }
+      // drawer label
+      const drawer=document.getElementById('drawer'); if (drawer) drawer.setAttribute('aria-label', dict.drawer_label);
+      // active lang buttons
+      document.querySelectorAll('.lang .lang-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.lang===lang));
+    }
+    function setLang(lang){
+      try{ localStorage.setItem('lb_lang', lang); }catch(e){}
+      applyLang(lang);
+      renderProjects(filteredNow());
     }
 
-    // Set up listeners
-    (function initProjectSearch(){
-      const input = document.getElementById('projSearch');
-      const clearBtn = document.getElementById('clearSearch');
-      if (!input) return;
+    // --- Cards ---
+    function badgeText(status){
+      const d=I18N[document.documentElement.lang||'uk'];
+      return status==='in-progress'? d.badge_in_progress : status==='fundraising'? d.badge_fundraising : status==='early-access'? d.badge_early_access : '';
+    }
+    function projectCard(p){
+      const lang=document.documentElement.lang||'uk';
+      const d=I18N[lang];
+      const desc= lang==='en'? p.desc_en : p.desc_uk;
+      const pct=clamp(Math.round(p.progress||0),0,100);
+      const fundraising = p.status==='fundraising' && (p.goal>0);
+      const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
+      const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
+      const cls = ['btn']; if (p.cta?.primary) cls.push('primary'); if (p.cta?.animated) cls.push('download-anim'); if (p.cta?.type==='disabled') cls.push('disabled');
+      const href = p.cta?.url || '#';
+      const attrs = (p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"';
+      return `
+        <article class="card glass" data-status="${p.status}" data-title="${p.title}">
+          <div class="thumb">
+            <img src="${p.cover}" loading="lazy" alt="${p.title} cover">
+            <img class="logo" src="${p.logo}" alt="${p.title} logo" loading="lazy">
+            <span class="badge">${badgeText(p.status)}</span>
+          </div>
+          <div class="content">
+            <h3>${p.title}</h3>
+            <p>${desc}</p>
+            <div class="progress" title="${(lang==='en'?'Progress':'Готовність')} ${pct}%"><span style="width:${pct}%"></span></div>
+            ${fundraising ? `<small style="color:var(--muted)">${raisedLabel}</small>` : `<small style="color:var(--muted)">${(lang==='en'?'Progress:':'Готовність:')} <strong>${pct}%</strong></small>`}
+            <div class="cta"><a class="${cls.join(' ')}" href="${href}" ${attrs}>${label}</a></div>
+          </div>
+        </article>`;
+    }
+    function updateStats(list){
+      const total=list.length;
+      const avg=total? Math.round(list.reduce((a,p)=>a+(p.progress||0),0)/total):0;
+      const ea=list.filter(p=>p.status==='early-access').length;
+      const sp=document.getElementById('statProjects'), sa=document.getElementById('statAvg'), se=document.getElementById('statEA');
+      if (sp) sp.textContent=total;
+      if (sa) sa.textContent=avg+'%';
+      if (se) se.textContent=ea;
+    }
+    function renderProjects(list){
+      const grid=document.getElementById('projectsGrid'); if (!grid) return;
+      grid.innerHTML=list.map(projectCard).join('');
+      requestAnimationFrame(()=>{
+        document.querySelectorAll('.progress > span').forEach(el=>{
+          const w=el.style.width||'0%'; el.style.width='0%'; requestAnimationFrame(()=>{ el.style.width=w; });
+        });
+      });
+      updateStats(list);
+      const meta=document.getElementById('searchMeta');
+      const fn= I18N[document.documentElement.lang||'uk'].search_found;
+      if (meta) meta.textContent = (typeof fn==='function'? fn(list.length) : String(fn).replace('{n}', String(list.length)));
+      const nr=document.getElementById('noResults'); if (nr) nr.hidden = list.length!==0;
+    }
 
-      updateSearchI18N();
+    // --- Filters + Search ---
+    let CURRENT_FILTER='all';
+    function filteredNow(){
+      const input=document.getElementById('projSearch');
+      const q = input? norm(input.value) : '';
+      return PROJECTS.filter(p=>{
+        const ok = (CURRENT_FILTER==='all') || p.status===CURRENT_FILTER;
+        const text = (document.documentElement.lang==='en' ? p.title+' '+p.desc_en : p.title+' '+p.desc_uk).toLowerCase();
+        return ok && (!q || text.includes(q));
+      });
+    }
+    function applyFilters(){ renderProjects(filteredNow()); }
 
-      let tId = null;
-      function onInput(){
-        const v = input.value;
-        clearTimeout(tId);
-        tId = setTimeout(()=> runProjectSearch(v), 80);
-      }
+    // --- Drawer controls (avoid clobbering window.open/close) ---
+    const drawerEl=document.getElementById('drawer');
+    const backdrop=document.getElementById('backdrop');
+    const openBtn=document.getElementById('openDrawer');
+    const closeBtn=document.getElementById('closeDrawer');
+    function openDrawerMenu(){
+      if (!drawerEl||!backdrop||!openBtn) return;
+      drawerEl.classList.add('open'); backdrop.classList.add('show'); openBtn.classList.add('active');
+      openBtn.setAttribute('aria-expanded','true'); openBtn.setAttribute('aria-label', I18N[document.documentElement.lang].close_menu);
+      drawerEl.setAttribute('aria-hidden','false'); backdrop.setAttribute('aria-hidden','false');
+    }
+    function closeDrawerMenu(){
+      if (!drawerEl||!backdrop||!openBtn) return;
+      drawerEl.classList.remove('open'); backdrop.classList.remove('show'); openBtn.classList.remove('active');
+      openBtn.setAttribute('aria-expanded','false'); openBtn.setAttribute('aria-label', I18N[document.documentElement.lang].open_menu);
+      drawerEl.setAttribute('aria-hidden','true'); backdrop.setAttribute('aria-hidden','true');
+    }
+    openBtn?.addEventListener('click', ()=>{ if (drawerEl.classList.contains('open')) closeDrawerMenu(); else openDrawerMenu(); });
+    closeBtn?.addEventListener('click', closeDrawerMenu);
+    backdrop?.addEventListener('click', closeDrawerMenu);
+    window.addEventListener('keydown', (e)=>{ if (e.key==='Escape') closeDrawerMenu(); });
 
+    // --- Delegation: language, accent, chips ---
+    document.addEventListener('click', (e)=>{
+      const langBtn=e.target.closest('.lang-btn[data-lang]'); if (langBtn){ e.preventDefault(); setLang(langBtn.dataset.lang); }
+      const sw=e.target.closest('.swatches button[data-accent]'); if (sw){ setAccent(sw.dataset.accent); /* visual refresh not required — CSS vars */ }
+      const chip=e.target.closest('.chip'); if (chip){ document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c===chip)); CURRENT_FILTER=chip.dataset.filter; applyFilters(); }
+    });
+
+    // --- Search init ---
+    (function initSearch(){
+      const input=document.getElementById('projSearch'); if (!input) return;
+      let tId=null;
+      function onInput(){ clearTimeout(tId); tId=setTimeout(()=>applyFilters(),80); }
       input.addEventListener('input', onInput);
-      input.addEventListener('keydown', (e)=>{
-        if (e.key === 'Escape'){
-          input.value = '';
-          runProjectSearch('');
-        }
-      });
-      clearBtn?.addEventListener('click', ()=>{
-        input.value = '';
-        input.focus();
-        runProjectSearch('');
-      });
-
-      // Seed from URL ?q=
-      try {
-        const url = new URL(window.location);
-        const q = url.searchParams.get('q') || '';
-        if (q){
-          input.value = q;
-          runProjectSearch(q);
-          // Scroll to projects section when loading a query
-          document.getElementById('projects')?.scrollIntoView({behavior:'smooth', block:'start'});
-        } else {
-          runProjectSearch('');
-        }
-      } catch(e){
-        runProjectSearch('');
-      }
+      input.addEventListener('keydown', (e)=>{ if (e.key==='Escape'){ input.value=''; applyFilters(); }});
     })();
 
+    // --- Init ---
+    (function init(){
+      const lang = detectInitialLang();
+      document.documentElement.lang = lang;
+      // Accent
+      let savedAccent=null; try{ savedAccent = localStorage.getItem('lb_accent'); }catch(e){}
+      if (savedAccent) setAccent(savedAccent);
+      // Texts
+      applyLang(lang);
+      // First render
+      renderProjects(PROJECTS);
+    })();
+
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
