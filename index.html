@@ -17,10 +17,10 @@
       --muted: #cdd4e1;
       --glass: rgba(255,255,255,.06);
       --brd: rgba(255,255,255,.12);
-      --accent: #7dd3fc;
-      --accent-2: #a78bfa;
-      --accent-10: rgba(125,211,252,.10);
-      --accent-30: rgba(125,211,252,.30);
+      --accent: #f43f5e;
+      --accent-2: #06b6d4;
+      --accent-10: rgba(244,63,94,.10);
+      --accent-30: rgba(244,63,94,.30);
     }
     *{box-sizing:border-box}
     html,body{height:100%; margin:0}
@@ -50,7 +50,6 @@
       -webkit-backdrop-filter: blur(14px) saturate(120%); backdrop-filter: blur(14px) saturate(120%); border-bottom:1px solid rgba(255,255,255,.08)}
     .nav{max-width:1200px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; gap:12px}
     .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.4px; font-size:18px}
-    .brand .dot{width:10px; height:10px; border-radius:999px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow:0 0 18px rgba(125,211,252,.35)}
     .spacer{flex:1}
     .nav-links{display:flex; gap:8px}
     .nav a{color:var(--muted); text-decoration:none; padding:8px 12px; border-radius:10px; transition:all .25s}
@@ -174,7 +173,7 @@
 
   <header>
     <nav class="nav">
-      <div class="brand"><span class="dot"></span> «Little Bit»</div>
+      <div class="brand"> «Little Bit»</div>
       <div class="spacer"></div>
       <div class="nav-links">
         <a href="#projects" data-i18n="nav_projects">Наші проєкти</a>
@@ -199,14 +198,7 @@
           <h1>«Little Bit»</h1>
           <h1 data-i18n="hero_title2">Грайте українською — відчувайте по-новому.</h1>
           <p class="lead" data-i18n="hero_lead">Улюблені історії — українською, від серця.</p>
-          <div class="swatches" style="margin-top:10px">
-            <small style="color:var(--muted);margin-right:6px" data-i18n="accent_label">Стиль:</small>
-            <button data-accent="violet" aria-label="Фіолетовий"></button>
-            <button data-accent="emerald" aria-label="Смарагдовий"></button>
-            <button data-accent="rose" aria-label="Рожевий"></button>
-            <button data-accent="amber" aria-label="Бурштиновий"></button>
-          </div>
-          <div class="stats" aria-label="Статистика сайту">
+<div class="stats" aria-label="Статистика сайту">
             <div class="stat">
               <div class="num" id="statProjects">—</div>
               <div class="sub" data-i18n="stat_projects">проєктів у переліку</div>
@@ -499,8 +491,7 @@
     // --- Delegation: language, accent, chips ---
     document.addEventListener('click', (e)=>{
       const langBtn=e.target.closest('.lang-btn[data-lang]'); if (langBtn){ e.preventDefault(); setLang(langBtn.dataset.lang); }
-      const sw=e.target.closest('.swatches button[data-accent]'); if (sw){ setAccent(sw.dataset.accent); /* visual refresh not required — CSS vars */ }
-      const chip=e.target.closest('.chip'); if (chip){ document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c===chip)); CURRENT_FILTER=chip.dataset.filter; applyFilters(); }
+const chip=e.target.closest('.chip'); if (chip){ document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active', c===chip)); CURRENT_FILTER=chip.dataset.filter; applyFilters(); }
     });
 
     // --- Search init ---
@@ -516,9 +507,8 @@
     (function init(){
       const lang = detectInitialLang();
       document.documentElement.lang = lang;
-      // Accent
-      let savedAccent=null; try{ savedAccent = localStorage.getItem('lb_accent'); }catch(e){}
-      if (savedAccent) setAccent(savedAccent);
+      // Accent (fixed to "rose")
+      setAccent("rose");
       // Texts
       applyLang(lang);
       // First render
