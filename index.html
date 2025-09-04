@@ -91,7 +91,16 @@
     .swatches button[data-accent="amber"]{ background: linear-gradient(135deg, #f59e0b, #22d3ee) }
     h2{font-size: clamp(22px, 3vw, 32px); margin:0 0 18px}
     .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:14px; align-items:stretch; }
-    .card{ overflow:hidden; position:relative; display:flex; flex-direction:column; contain: paint; }
+    .card{
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  /* було: contain: paint; */
+  contain: content;
+  content-visibility: auto;
+  contain-intrinsic-size: 420px;
+}
     .thumb{ position:relative; aspect-ratio: 16/9; background:#0f172a; overflow:hidden }
     .thumb img{ width:100%; height:100%; object-fit:cover; opacity:.92; transform: scale(1.02); transition:transform .5s ease }
     @media (hover:hover) and (pointer:fine){ .card:hover .thumb img{ transform: scale(1.07) } }
@@ -447,32 +456,35 @@
       return status==='in-progress'? d.badge_in_progress : status==='fundraising'? d.badge_fundraising : status==='early-access'? d.badge_early_access : '';
     }
     function projectCard(p){
-      const lang=document.documentElement.lang||'uk';
-      const d=I18N[lang];
-      const desc= lang==='en'? p.desc_en : p.desc_uk;
-      const pct=clamp(Math.round(p.progress||0),0,100);
-      const fundraising = p.status==='fundraising' && (p.goal>0);
-      const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
-      const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
-      const cls = ['btn']; if (p.cta?.primary) cls.push('primary'); if (p.cta?.animated) cls.push('download-anim'); if (p.cta?.type==='disabled') cls.push('disabled');
-      const href = p.cta?.url || '#';
-      const attrs = (p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"';
-      return `
-        <article class="card glass" data-status="${p.status}" data-title="${p.title}">
-          <div class="thumb">
-            <img src="${p.cover}" loading="lazy" alt="" aria-hidden="true">
-            <img class="logo" src="${p.logo}" alt="" aria-hidden="true" loading="lazy">
-            <span class="badge">${badgeText(p.status)}</span>
-          </div>
-          <div class="content">
-            <h3>${p.title}</h3>
-            <p>${desc}</p>
-            <div class="progress" title="${(lang==='en'?'Progress':'Готовність')} ${pct}%"><span style="width:${pct}%"></span></div>
-            ${fundraising ? `<small style="color:var(--muted)">${raisedLabel}</small>` : `<small style="color:var(--muted)">${(lang==='en'?'Progress:':'Готовність:')} <strong>${pct}%</strong></small>`}
-            <div class="cta"><a class="${cls.join(' ')}" href="${href}" ${attrs}>${label}</a></div>
-          </div>
-        </article>`;
-    }
+  const lang=document.documentElement.lang||'uk';
+  const d=I18N[lang];
+  const desc= lang==='en'? p.desc_en : p.desc_uk;
+  const pct=clamp(Math.round(p.progress||0),0,100);
+  const fundraising = p.status==='fundraising' && (p.goal>0);
+  const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \ ${formatUA(p.goal||0)}₴` : null;
+  const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
+  const cls = ['btn']; if (p.cta?.primary) cls.push('primary'); if (p.cta?.animated) cls.push('download-anim'); if (p.cta?.type==='disabled') cls.push('disabled');
+  const href = p.cta?.url || '#';
+  const attrs = (p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"';
+
+  return `
+    <article class="card glass" data-status="${p.status}" data-title="${p.title}">
+      <div class="thumb">
+        <img data-role="cover" src="${p.cover}" alt="" aria-hidden="true"
+             loading="lazy" decoding="async" width="1280" height="720">
+        <img class="logo" data-role="logo" src="${p.logo}" alt="" aria-hidden="true"
+             loading="lazy" decoding="async" fetchpriority="low">
+        <span class="badge">${badgeText(p.status)}</span>
+      </div>
+      <div class="content">
+        <h3>${p.title}</h3>
+        <p>${desc}</p>
+        <div class="progress" title="${(lang==='en'?'Progress':'Готовність')} ${pct}%"><span style="width:${pct}%"></span></div>
+        ${fundraising ? `<small style="color:var(--muted)">${raisedLabel}</small>` : `<small style="color:var(--muted)">${(lang==='en'?'Progress:':'Готовність:')} <strong>${pct}%</strong></small>`}
+        <div class="cta"><a class="${cls.join(' ')}" href="${href}" ${attrs}>${label}</a></div>
+      </div>
+    </article>`;
+}
     function updateStats(list){
       const total=list.length;
       const avg=total? Math.round(list.reduce((a,p)=>a+(p.progress||0),0)/total):0;
@@ -483,19 +495,56 @@
       if (se) se.textContent=ea;
     }
     function renderProjects(list){
-      const grid=document.getElementById('projectsGrid'); if (!grid) return;
-      grid.innerHTML=list.map(projectCard).join('');
-      requestAnimationFrame(()=>{
-        document.querySelectorAll('.progress > span').forEach(el=>{
-          const w=el.style.width||'0%'; el.style.width='0%'; requestAnimationFrame(()=>{ el.style.width=w; });
-        });
-      });
-      updateStats(list);
-      const meta=document.getElementById('searchMeta');
-      const fn= I18N[document.documentElement.lang||'uk'].search_found;
-      if (meta) meta.textContent = (typeof fn==='function'? fn(list.length) : String(fn).replace('{n}', String(list.length)));
-      const nr=document.getElementById('noResults'); if (nr) nr.hidden = list.length!==0;
+  const grid=document.getElementById('projectsGrid'); if (!grid) return;
+  grid.innerHTML=list.map(projectCard).join('');
+
+  // 1) High priority for first 2 covers
+  const covers = grid.querySelectorAll('.thumb img[data-role="cover"]');
+  covers.forEach((img, i)=>{
+    if (i < 2){
+      img.setAttribute('fetchpriority','high');
+      img.setAttribute('loading','eager');
+    } else {
+      img.setAttribute('fetchpriority','low');
     }
+  });
+
+  // 2) Animate progress bars only when visible
+  const bars = grid.querySelectorAll('.progress > span');
+  const animate = (el)=>{ const w=el.style.width||'0%'; el.style.width='0%'; requestAnimationFrame(()=>{ el.style.width=w; }); };
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{
+        if (e.isIntersecting){
+          animate(e.target);
+          io.unobserve(e.target);
+        }
+      });
+    }, {rootMargin: '120px 0px'});
+    bars.forEach(b=>io.observe(b));
+  } else {
+    requestAnimationFrame(()=>bars.forEach(animate));
+  }
+
+  updateStats(list);
+  const meta=document.getElementById('searchMeta');
+  const fn= I18N[document.documentElement.lang||'uk'].search_found;
+  if (meta) meta.textContent = (typeof fn==='function'? fn(list.length) : String(fn).replace('{n}', String(list.length)));
+  const nr=document.getElementById('noResults'); if (nr) nr.hidden = list.length!==0;
+
+  // 3) Prefetch remaining images when idle
+  const prefetchRest = ()=>{
+    Array.from(covers).slice(2).forEach(img=>{
+      const link=document.createElement('link');
+      link.rel='prefetch';
+      link.as='image';
+      link.href=img.currentSrc || img.src;
+      document.head.appendChild(link);
+    });
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(prefetchRest, {timeout: 2000});
+  else setTimeout(prefetchRest, 1200);
+}
 
     // --- Filters + Search ---
     let CURRENT_FILTER='all';
@@ -587,5 +636,12 @@ const chip=e.target.closest('.chip'); if (chip){ document.querySelectorAll('.chi
 })();
 </script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+</script>
 </body>
 </html>
