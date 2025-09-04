@@ -424,8 +424,8 @@
       return `
         <article class="card glass" data-status="${p.status}" data-title="${p.title}">
           <div class="thumb">
-            <img src="${p.cover}" loading="lazy" alt="${p.title} cover">
-            <img class="logo" src="${p.logo}" alt="${p.title} logo" loading="lazy">
+            <img src="${p.cover}" loading="lazy" alt="" aria-hidden="true">
+            <img class="logo" src="${p.logo}" alt="" aria-hidden="true" loading="lazy">
             <span class="badge">${badgeText(p.status)}</span>
           </div>
           <div class="content">
