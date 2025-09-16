@@ -173,6 +173,39 @@ html[data-tab-hidden="true"] [data-anim]{ animation-play-state: paused !importan
 [data-anim].will-animate{ backface-visibility: hidden; transform: translateZ(0); }
 </style>
 
+<script type="module" defer>
+  import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
+  polyfillCountryFlagEmojis();
+</script>
+<style>
+  /* Use the polyfill font only where needed */
+  .flag, .emoji-flag { 
+    font-family: "Twemoji Country Flags", "Segoe UI Emoji", system-ui, sans-serif; 
+  }
+</style>
+<!-- Uniform flag rendering across browsers via Twemoji (SVG) -->
+<script src="https://cdn.jsdelivr.net/npm/twemoji@14.0.2/dist/twemoji.min.js" crossorigin="anonymous"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const targets = document.querySelectorAll('.flag, .emoji-flag');
+  targets.forEach(el => {
+    const txt = el.textContent;
+    // Replace only if there's at least one regional-indicator pair (flag emoji)
+    if (/\uD83C[\uDDE6-\uDDFF]\uD83C[\uDDE6-\uDDFF]/.test(txt)) {
+      el.innerHTML = twemoji.parse(txt.trim(), {
+        folder: 'svg',
+        ext: '.svg',
+        base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/'
+      });
+    }
+  });
+});
+</script>
+<style>
+.flag img.emoji, .emoji-flag img.emoji { 
+  height: 1em; width: auto; vertical-align: -0.15em;
+}
+</style>
 </head>
 <body>
   <div class="bg">
