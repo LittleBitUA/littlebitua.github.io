@@ -366,6 +366,12 @@ document.addEventListener('DOMContentLoaded', () => {
   <script>
     // --- Data ---
     const PROJECTS = [
+
+      { id:'jojo-asbr', title:"JoJo's Bizarre Adventure: All-Star Battle R", cover:'assets/jojo_asbr.webp', logo:'assets/jojo_asbr_logo.webp', status:'fundraising', progress:0, goal:10000, raised:0,
+        desc_uk:'<strong>Легендарні бійці та стенди в арені мрії.</strong> Відкриваємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.',
+        desc_en:'<strong>Legendary fighters and Stands in a dream arena.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.',
+        cta:{type:'enable',label_uk:'Спонсорувати',label_en:'Sponsor',url:'https://donatello.to/LittleBitUA',primary:true}},
+
       { id:'judgment', title:'Judgment', cover:'assets/judgment_takayuki.webp', logo:'assets/judgment_logo.webp', status:'in-progress', progress:87,
         desc_uk:'<strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.',
         desc_en:'<strong>Neo-noir detective action from the creators of Yakuza.</strong> Full Ukrainian translation: side cases, tutorials, UI, and more.',
@@ -409,9 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
 { id:'dp2', title:'Deadly Premonition 2: A Blessing in Disguise', cover:'assets/DP2.webp', logo:'assets/DP2_Logo.webp', status:'in-progress', progress:15,
         desc_uk:'<strong>Сиквел культового трилера з дивакуватим шармом.</strong> Повний український переклад у розробці: сюжет, інтерфейс, субтитри.',
         desc_en:'<strong>Sequel to the cult, quirky thriller.</strong> Full Ukrainian translation in progress: story, UI, subtitles.',
-        cta:{type:'disabled',label_uk:'Завантажити',label_en:'Download',url:'#'}},
-
-    ];
+        cta:{type:'disabled',label_uk:'Завантажити',label_en:'Download',url:'#'}},    ];
 
     const I18N = {
       uk:{ title:'«Little Bit» — українські локалізації ігор',
