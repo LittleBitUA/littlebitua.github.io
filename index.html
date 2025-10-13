@@ -387,7 +387,12 @@ document.addEventListener('DOMContentLoaded', () => {
   </main>
   <script>
     // --- Data ---
-    const PROJECTS = [{ id:'mgs2', title:'METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version', cover:'assets/MGS2.webp', logo:'assets/MGS2_Logo.webp', status:'fundraising', platforms:['Steam'], raised:1553, goal:25000, progress:0,
+    const PROJECTS = [
+
+  { id:'lad', title:'Yakuza: Like a Dragon', cover:'assets/LaD.webp', logo:'assets/LaD_logo.webp', status:'fundraising', raised:25, goal:35000, progress:0,
+        desc_uk:'<strong>Збір на українську локалізацію: інтерфейс, субтитри.</strong>',
+        desc_en:'<strong>Fundraising for a Ukrainian localization.</strong> UI and subtitles.',
+        cta:{type:'enable',label_uk:'Спонсорувати',label_en:'Sponsor',url:'https://donatello.to/LittleBitUA',primary:true}},{ id:'mgs2', title:'METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version', cover:'assets/MGS2.webp', logo:'assets/MGS2_Logo.webp', status:'fundraising', platforms:['Steam'], raised:1553, goal:25000, progress:0,
         desc_uk:'Збір на українську локалізацію: інтерфейс, субтитри.',
         desc_en:'<strong>Iconic stealth‑action classic by Hideo Kojima (Master Collection).</strong> Fundraising for a Ukrainian localization: UI and subtitles.',
         cta:{type:'enable',label_uk:'Спонсорувати',label_en:'Sponsor',url:'https://donatello.to/LittleBitUA',primary:true}},
