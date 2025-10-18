@@ -10,7 +10,15 @@
     "progress": 0,
     "desc_uk": "<strong>Збір на українську локалізацію: інтерфейс, субтитри.</strong>",
     "desc_en": "<strong>Fundraising for a Ukrainian localization.</strong> UI and subtitles.",
-    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true }
+    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
+    "steam": "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
+    "images_ua": [
+      "https://i.imgur.com/oy6E3vu.jpeg",
+      "https://i.imgur.com/0bX2fLx.jpeg"
+    ],
+    "videos_ua": [
+      "https://www.youtube.com/watch?v=VxW7cX1c7oI"
+    ]
   },
   {
     "id": "mgs2",
@@ -24,7 +32,13 @@
     "progress": 0,
     "desc_uk": "Збір на українську локалізацію: інтерфейс, субтитри.",
     "desc_en": "<strong>Iconic stealth‑action classic by Hideo Kojima (Master Collection).</strong> Fundraising for a Ukrainian localization: UI and subtitles.",
-    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true }
+    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
+    "steam": "https://store.steampowered.com/app/2131660/METAL_GEAR_SOLID_Master_Collection_Vol1__MGS2Sons_of_Liberty/",
+    "images_ua": [
+      "https://i.imgur.com/OwL1l0w.jpeg",
+      "https://i.imgur.com/Dz0sQGD.jpeg"
+    ],
+    "videos_ua": []
   },
   {
     "id": "uncharted-df",
@@ -36,7 +50,9 @@
     "platforms": ["PS3"],
     "desc_uk": "<strong>Повна українська локалізація.</strong> Інтерфейс і субтитри.",
     "desc_en": "<strong>Full Ukrainian localization.</strong> UI & subtitles.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "uncharted-2",
@@ -50,7 +66,9 @@
     "progress": 0,
     "desc_uk": "<strong>Збір на українську локалізацію: інтерфейс, субтитри.</strong>",
     "desc_en": "<strong>Fundraising for a Ukrainian localization.</strong> UI and subtitles.",
-    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true }
+    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "hotel-barcelona",
@@ -62,8 +80,10 @@
     "goal": 5000,
     "raised": 3500,
     "desc_uk": "<strong>Авторський проєкт SWERY та SUDA51.</strong> Починаємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
-    "desc_en": "<strong>An auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
-    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true }
+    "desc_en": "<strong>Ан auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
+    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
+    "images_ua": [],
+    "videos_ua": ["https://www.youtube.com/watch?v=7qS1rRJoYDE"]
   },
   {
     "id": "jojo-asbr",
@@ -77,7 +97,10 @@
     "raised": 8099,
     "desc_uk": "<strong>Легендарні бійці та стенди в арені мрії.</strong> Відкриваємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
     "desc_en": "<strong>Legendary fighters and Stands in a dream arena.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
-    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true }
+    "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
+    "steam": "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
+    "images_ua": ["https://i.imgur.com/R7zF4Kh.jpeg"],
+    "videos_ua": []
   },
   {
     "id": "judgment",
@@ -89,7 +112,16 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.",
     "desc_en": "<strong>Neo-noir detective action from the creators of Yakuza.</strong> Full Ukrainian translation: side cases, tutorials, UI, and more.",
-    "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://donatello.to/post/68de432ff7753d8d33210ca4/ukrayinizator-dlya-judgment-ranniy-dostup-donatello-2-02-10-2025", "animated": true }
+    "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://donatello.to/post/68de432ff7753d8d33210ca4/ukrayinizator-dlya-judgment-ranniy-dostup-donatello-2-02-10-2025", "animated": true },
+    "steam": "https://store.steampowered.com/app/1404220/Judgment/",
+    "images_ua": [
+      "https://i.imgur.com/1g4Q3jS.jpeg",
+      "https://i.imgur.com/8TQw3Qq.jpeg",
+      "https://i.imgur.com/AV2N2wY.jpeg"
+    ],
+    "videos_ua": [
+      "https://www.youtube.com/watch?v=Zr7w3gE0wPQ"
+    ]
   },
   {
     "id": "lost-judgment",
@@ -101,7 +133,10 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Продовження неонуарної історії про детектива Яґамі.</strong> Повний український переклад у розробці: сюжет, інтерфейс, субтитри.",
     "desc_en": "<strong>The neo-noir story of detective Yagami continues.</strong> Full Ukrainian translation in progress: story, UI, subtitles.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/2058180/Lost_Judgment/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "ishin",
@@ -113,7 +148,10 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Наточіть свій меч та приєднуйтесь до революції у цій історичній пригоді.</strong> Повний український переклад у розробці: сюжет, інтерфейс, субтитри.",
     "desc_en": "<strong>Sharpen your blade and join the revolution in this historical adventure.</strong> Full Ukrainian translation in progress: story, UI, subtitles.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/1805480/Like_a_Dragon_ISHIN/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "yk2",
@@ -125,7 +163,10 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.",
     "desc_en": "<strong>A cult remake on the upgraded engine.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/927380/Yakuza_Kiwami_2/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "y3",
@@ -137,7 +178,10 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Той самий пляжний епізод.</strong> Повний український переклад оригінальної гри та ремейку: підісторії (побічні завдання), туторіали, інтерфейс та інше.",
     "desc_en": "<strong>The iconic beach episode returns.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/1088710/Yakuza_3_Remastered/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "nmh1",
@@ -149,7 +193,10 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.",
     "desc_en": "<strong>The first, unmatched adventure of Travis Touchdown.</strong> Full Ukrainian translation: story, tutorials, UI, and more.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/1420310/No_More_Heroes/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "nmh2",
@@ -161,7 +208,10 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.",
     "desc_en": "<strong>Even more style and combat!</strong> Full Ukrainian translation: story, tutorials, UI, and more.",
-    "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true }
+    "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true },
+    "steam": "https://store.steampowered.com/app/1420340/No_More_Heroes_2_Desperate_Struggle/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "tsa",
@@ -173,7 +223,10 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Експериментальний спін-оф із метафікційними рівнями й мініжанрами.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.",
     "desc_en": "<strong>An experimental spin-off with metafictional levels and mini-genres.</strong> Full Ukrainian translation: story, tutorials, UI, and more.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/1010100/Travis_Strikes_Again_No_More_Heroes_Complete_Edition/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "nmh3",
@@ -185,7 +238,10 @@
     "platforms": ["Steam", "Nintendo Switch"],
     "desc_uk": "<strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.",
     "desc_en": "<strong>Kick some alien butt!</strong> Full Ukrainian translation: story, tutorials, UI, and more.",
-    "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true }
+    "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true },
+    "steam": "https://store.steampowered.com/app/1420290/No_More_Heroes_3/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "dp1",
@@ -197,7 +253,10 @@
     "platforms": ["Steam", "Nintendo Switch"],
     "desc_uk": "<strong>Культовий містичний трилер із дивакуватим шармом.</strong> Повний український переклад у розробці: сюжет, інтерфейс, субтитри.",
     "desc_en": "<strong>Cult mystery thriller with quirky charm.</strong> Full Ukrainian translation in progress: story, UI, subtitles.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/247660/Deadly_Premonition_Directors_Cut/",
+    "images_ua": [],
+    "videos_ua": []
   },
   {
     "id": "dp2",
@@ -209,6 +268,9 @@
     "platforms": ["Steam"],
     "desc_uk": "<strong>Сиквел культового трилера з дивакуватим шармом.</strong> Повний український переклад у розробці: сюжет, інтерфейс, субтитри.",
     "desc_en": "<strong>Sequel to the cult, quirky thriller.</strong> Full Ukrainian translation in progress: story, UI, subtitles.",
-    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" }
+    "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
+    "steam": "https://store.steampowered.com/app/1732190/Deadly_Premonition_2_A_Blessing_in_Disguise/",
+    "images_ua": [],
+    "videos_ua": []
   }
 ]
