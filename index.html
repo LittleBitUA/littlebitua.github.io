@@ -92,7 +92,7 @@
     h2{font-size: clamp(22px, 3vw, 32px); margin:0 0 18px}
     .grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:14px; align-items:stretch; }
     .card{ overflow:hidden; position:relative; display:flex; flex-direction:column; contain: paint; }
-    .thumb{ position:relative; aspect-ratio: 16/9; background:#0f172a; overflow:hidden }
+    .thumb{ position:relative; aspect-ratio: 16/9; background:#0f172a; overflow:hidden; cursor:pointer }
     .thumb img{ width:100%; height:100%; object-fit:cover; opacity:.92; transform: scale(1.02); transition:transform .5s ease }
     @media (hover:hover) and (pointer:fine){ .card:hover .thumb img{ transform: scale(1.07) } }
     .thumb::after{ content:""; position:absolute; left:0; right:0; bottom:0; height:42%; background:linear-gradient(to top, rgba(2,6,23,.82), rgba(2,6,23,0)); pointer-events:none; }
@@ -118,6 +118,28 @@
     .stat .num{ font-size:22px; font-weight:800 }
     .stat .sub{ font-size:12px; color:var(--muted) }
     footer{ color:#93a4bc; padding:30px 0 60px; font-size:13px; text-align:center }
+    /* --- Modal --- */
+    body.modal-open{ overflow:hidden }
+    .modal{ position:fixed; inset:0; z-index:60; display:none; align-items:center; justify-content:center }
+    .modal.open{ display:flex }
+    .modal__overlay{ position:absolute; inset:0; background:rgba(2,6,23,.65) }
+    .modal__dialog{ position:relative; z-index:1; width:min(1020px, 94vw); max-height:88vh; display:grid; grid-template-rows:auto auto auto 1fr; gap:0; background:var(--glass); border:1px solid var(--brd); border-radius:18px; box-shadow:0 14px 60px rgba(2,6,23,.45); overflow:hidden }
+    .modal__close{ position:absolute; top:10px; right:10px; width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.15); color:var(--text); border-radius:10px; cursor:pointer }
+    .modal__header{ display:flex; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--brd) }
+    .modal__logo{ width:auto; height:40px; object-fit:contain; max-width:50% }
+    .modal__title{ font-size:18px; font-weight:800 }
+    .modal__desc{ padding:10px 14px; color:var(--muted); border-bottom:1px solid var(--brd); line-height:1.6 }
+    .modal__links{ display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--brd) }
+    .steam-link{ display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:10px; color:var(--text); text-decoration:none; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12) }
+    .steam-link:hover{ border-color:rgba(255,255,255,.35) }
+    .steam-link svg{ width:18px; height:18px; display:block; fill:currentColor }
+    .modal__body{ padding:12px; overflow:auto; display:grid; gap:12px }
+    .carousel{ position:relative; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:#0f172a; border:1px solid var(--brd) }
+    .carousel img{ width:100%; height:100%; object-fit:cover }
+    .carousel .nav{ position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:0 8px; pointer-events:none }
+    .carousel .nav button{ pointer-events:all; width:40px; height:40px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:rgba(2,6,23,.55); color:var(--text); cursor:pointer }
+    .video-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:10px }
+    .video-grid iframe{ width:100%; aspect-ratio:16/9; border:1px solid var(--brd); border-radius:10px; background:#0b1220 }
     @media (min-width: 920px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
     @media (max-width: 860px){
       .nav-links{ display:none } .burger{display:inline-flex}
@@ -395,6 +417,32 @@ document.addEventListener('DOMContentLoaded', () => {
     </section>
 
   </main>
+  
+  <!-- Project modal -->
+  <div id="projectModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="modal__overlay" data-close></div>
+    <div class="modal__dialog glass">
+      <button class="modal__close" type="button" aria-label="Закрити" data-close>
+        ✕
+      </button>
+      <div class="modal__header">
+        <img id="pmLogo" class="modal__logo" alt="">
+        <div id="pmTitle" class="modal__title"></div>
+      </div>
+      <div id="pmDesc" class="modal__desc"></div>
+      <div id="pmLinks" class="modal__links"></div>
+      <div class="modal__body">
+        <div id="pmCarousel" class="carousel" hidden>
+          <img id="pmCarouselImg" alt="">
+          <div class="nav">
+            <button id="pmPrev" type="button" aria-label="Попереднє зображення">‹</button>
+            <button id="pmNext" type="button" aria-label="Наступне зображення">›</button>
+          </div>
+        </div>
+        <div id="pmVideos" class="video-grid"></div>
+      </div>
+    </div>
+  </div>
   <script>
     // --- Data ---
     let PROJECTS = [];
@@ -488,6 +536,11 @@ document.addEventListener('DOMContentLoaded', () => {
       try{ localStorage.setItem('lb_lang', lang); }catch(e){}
       applyLang(lang);
       renderProjects(filteredNow());
+      // update modal static labels if open
+      if (document.body.classList.contains('modal-open')){
+        const closeBtn=document.querySelector('#projectModal .modal__close');
+        if (closeBtn) closeBtn.setAttribute('aria-label', lang==='en'?'Close':'Закрити');
+      }
     }
 
     // --- Cards ---
@@ -513,9 +566,9 @@ document.addEventListener('DOMContentLoaded', () => {
       const href = p.cta?.url || '#';
       const attrs = (p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"';
       return `
-        <article class="card glass" data-status="${p.status}" data-title="${p.title}">
-          <div class="thumb">
-            <img src="${p.cover}" loading="lazy" alt="" aria-hidden="true">
+        <article class="card glass" data-id="${p.id}" data-status="${p.status}" data-title="${p.title}">
+          <div class="thumb" role="button" aria-label="Відкрити подробиці проєкту">
+            <img src="${p.cover}" data-role="cover" loading="lazy" alt="" aria-hidden="true">
             <img class="logo" src="${p.logo}" alt="" aria-hidden="true" loading="lazy">
             <span class="badge">${badgeText(p.status)}</span>\n            
             <div class="badges-right">${platformBadges(p)}</div>
@@ -551,7 +604,101 @@ document.addEventListener('DOMContentLoaded', () => {
       const fn= I18N[document.documentElement.lang||'uk'].search_found;
       if (meta) meta.textContent = (typeof fn==='function'? fn(list.length) : String(fn).replace('{n}', String(list.length)));
       const nr=document.getElementById('noResults'); if (nr) nr.hidden = list.length!==0;
+      // bind click openers
+      grid.querySelectorAll('.card .thumb').forEach(el=>{
+        el.addEventListener('click', (e)=>{
+          const card=e.currentTarget.closest('.card');
+          const id=card?.dataset.id; if(!id) return;
+          const proj = PROJECTS.find(p=>p.id===id); if (!proj) return;
+          openProjectModal(proj);
+        }, { once:false });
+      });
     }
+
+    // --- Modal logic ---
+    let CAROUSEL_INDEX=0;
+    function setModalOpen(open){
+      const modal=document.getElementById('projectModal'); if (!modal) return;
+      modal.classList.toggle('open', !!open);
+      document.body.classList.toggle('modal-open', !!open);
+      modal.setAttribute('aria-hidden', open? 'false':'true');
+      const backdrop=document.getElementById('backdrop');
+      if (backdrop) backdrop.classList.toggle('show', !!open);
+    }
+    function buildSteamLink(p){
+      let url = p && p.steam;
+      const hasSteam = Array.isArray(p?.platforms) && p.platforms.includes('Steam');
+      if (!url && hasSteam && p?.title){
+        const q = encodeURIComponent(p.title);
+        url = `https://store.steampowered.com/search/?term=${q}`;
+      }
+      if (!url) return '';
+      return `<a class="steam-link" href="${url}" target="_blank" rel="noopener">${steamIcon()}<span>Steam</span></a>`;
+    }
+    function steamIcon(){
+      return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3a4.5 4.5 0 0 0-4.243 5.982l-4.76 3.41a3.25 3.25 0 1 0 1.108 3.842l4.76-3.41A4.5 4.5 0 1 0 20.5 3Zm0 2a2.5 2.5 0 1 1-2.122 3.748l-.02-.036a2.5 2.5 0 0 1 2.142-3.712Z"/></svg>`;
+    }
+    function ytEmbed(id){
+      return `<iframe src="https://www.youtube.com/embed/${id}" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>`;
+    }
+    let CAROUSEL_IMAGES = [];
+    function openProjectModal(p){
+      const lang=document.documentElement.lang||'uk';
+      const desc = lang==='en'? p.desc_en : p.desc_uk;
+      const titleEl=document.getElementById('pmTitle');
+      const logoEl=document.getElementById('pmLogo');
+      const descEl=document.getElementById('pmDesc');
+      const linksEl=document.getElementById('pmLinks');
+      const car=document.getElementById('pmCarousel');
+      const carImg=document.getElementById('pmCarouselImg');
+      const vids=document.getElementById('pmVideos');
+      // set header
+      titleEl.textContent=p.title||'';
+      logoEl.src=p.logo||''; logoEl.alt=p.title||'';
+      // description
+      descEl.innerHTML = desc||'';
+      // links: Steam
+      linksEl.innerHTML = buildSteamLink(p);
+      // images carousel
+      const images = Array.isArray(p.images_ua)? p.images_ua : [];
+      CAROUSEL_IMAGES = images;
+      if (images.length){
+        CAROUSEL_INDEX=0;
+        car.hidden=false;
+        carImg.src = images[0];
+      } else {
+        car.hidden=true;
+        carImg.removeAttribute('src');
+      }
+      // videos
+      vids.innerHTML='';
+      const vidsUa = Array.isArray(p.videos_ua)? p.videos_ua : [];
+      vidsUa.forEach(v=>{
+        const id = (v||'').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/); const vid=id? id[1] : null;
+        if (vid) vids.insertAdjacentHTML('beforeend', ytEmbed(vid));
+      });
+      // bind arrows
+      document.getElementById('pmPrev').onclick = ()=>{ if (!CAROUSEL_IMAGES.length) return; CAROUSEL_INDEX=(CAROUSEL_INDEX-1+CAROUSEL_IMAGES.length)%CAROUSEL_IMAGES.length; carImg.src=CAROUSEL_IMAGES[CAROUSEL_INDEX]; };
+      document.getElementById('pmNext').onclick = ()=>{ if (!CAROUSEL_IMAGES.length) return; CAROUSEL_INDEX=(CAROUSEL_INDEX+1)%CAROUSEL_IMAGES.length; carImg.src=CAROUSEL_IMAGES[CAROUSEL_INDEX]; };
+      // open
+      setModalOpen(true);
+    }
+    // close interactions
+    document.addEventListener('click', (e)=>{
+      if (e.target && e.target.hasAttribute('data-close')){ setModalOpen(false); }
+    });
+    window.addEventListener('keydown', (e)=>{
+      if (e.key==='Escape') { setModalOpen(false); return; }
+      const modalOpen = document.body.classList.contains('modal-open');
+      if (!modalOpen) return;
+      if (e.key==='ArrowLeft' || e.key==='ArrowRight'){
+        const img=document.getElementById('pmCarouselImg');
+        if (!img || !CAROUSEL_IMAGES.length) return;
+        if (e.key==='ArrowLeft') CAROUSEL_INDEX=(CAROUSEL_INDEX-1+CAROUSEL_IMAGES.length)%CAROUSEL_IMAGES.length;
+        else CAROUSEL_INDEX=(CAROUSEL_INDEX+1)%CAROUSEL_IMAGES.length;
+        img.src = CAROUSEL_IMAGES[CAROUSEL_INDEX];
+      }
+    });
 
     // --- Filters + Search ---
     let CURRENT_FILTER='all';
