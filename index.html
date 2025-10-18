@@ -692,10 +692,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     // close interactions
     document.addEventListener('click', (e)=>{
-      if (e.target && e.target.hasAttribute('data-close')){ setModalOpen(false); }
+      if (e.target && e.target.hasAttribute('data-close')){ 
+        try{ const wrap=document.getElementById('pmVideos'); if (wrap) wrap.innerHTML=''; }catch(e){}
+        try{ document.querySelectorAll('#projectModal video, #projectModal audio').forEach(el=>{ try{ el.pause(); el.currentTime=0; }catch(_){}}); }catch(e){}
+        setModalOpen(false); 
+      }
     });
     window.addEventListener('keydown', (e)=>{
-      if (e.key==='Escape') { setModalOpen(false); return; }
+      if (e.key==='Escape') { 
+        try{ const wrap=document.getElementById('pmVideos'); if (wrap) wrap.innerHTML=''; }catch(e){}
+        try{ document.querySelectorAll('#projectModal video, #projectModal audio').forEach(el=>{ try{ el.pause(); el.currentTime=0; }catch(_){}}); }catch(e){}
+        setModalOpen(false); return; 
+      }
       const modalOpen = document.body.classList.contains('modal-open');
       if (!modalOpen) return;
       if (e.key==='ArrowLeft' || e.key==='ArrowRight'){
