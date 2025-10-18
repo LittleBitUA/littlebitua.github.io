@@ -643,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return `<a class="steam-link" href="${url}" target="_blank" rel="noopener">${steamIcon()}<span>Steam</span></a>`;
     }
     function steamIcon(){
-      return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3a4.5 4.5 0 0 0-4.243 5.982l-4.76 3.41a3.25 3.25 0 1 0 1.108 3.842l4.76-3.41A4.5 4.5 0 1 0 20.5 3Zm0 2a2.5 2.5 0 1 1-2.122 3.748l-.02-.036a2.5 2.5 0 0 1 2.142-3.712Z"/></svg>`;
+      return `<svg viewBox="0 0 24 24" aria-hidden="true" role="img"><path d="M20.5 3.5a4.5 4.5 0 0 0-6.266 5.662l-4.527 3.254a3.25 3.25 0 1 0 1.108 3.84l4.527-3.254A4.5 4.5 0 1 0 20.5 3.5Zm-3.75 1.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM7.5 16.25a1.75 1.75 0 1 1-.001-3.5 1.75 1.75 0 0 1 .001 3.5Z"/></svg>`;
     }
     function ytEmbed(id){
       return `<iframe src="https://www.youtube.com/embed/${id}" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen loading="lazy"></iframe>`;

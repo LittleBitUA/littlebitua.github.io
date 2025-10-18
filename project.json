@@ -70,12 +70,14 @@
     "cover": "assets/barcelona.webp",
     "logo": "assets/barcelona_logo.webp",
     "status": "fundraising",
+    "platforms": ["Steam"],
     "progress": 50,
     "goal": 5000,
     "raised": 3500,
     "desc_uk": "<strong>Авторський проєкт SWERY та SUDA51.</strong> Починаємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
     "desc_en": "<strong>Ан auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
     "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
+    "steam": "https://store.steampowered.com/app/2286600/HOTEL_BARCELONA/",
     "images_ua": [],
     "videos_ua": ["https://www.youtube.com/watch?v=VW4ZfUZ1wI4"]
   },
@@ -107,7 +109,7 @@
     "desc_uk": "<strong>Неонуарний детективний бойовик від авторів Yakuza.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.",
     "desc_en": "<strong>Neo-noir detective action from the creators of Yakuza.</strong> Full Ukrainian translation: side cases, tutorials, UI, and more.",
     "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://donatello.to/post/68de432ff7753d8d33210ca4/ukrayinizator-dlya-judgment-ranniy-dostup-donatello-2-02-10-2025", "animated": true },
-    "steam": "https://store.steampowered.com/app/1404220/Judgment/",
+    "steam": "https://store.steampowered.com/app/2058180/Judgment/",
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=8cnFlWRILKY"
@@ -184,7 +186,7 @@
     "desc_uk": "<strong>Перша та неповторна пригода Тревіса Тачдауна.</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.",
     "desc_en": "<strong>The first, unmatched adventure of Travis Touchdown.</strong> Full Ukrainian translation: story, tutorials, UI, and more.",
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
-    "steam": "https://store.steampowered.com/app/1420310/No_More_Heroes/",
+    "steam": "https://store.steampowered.com/app/1420290/No_More_Heroes/",
     "images_ua": [],
     "videos_ua": ["https://www.youtube.com/watch?v=tkDdmZFxWbE"]
   },
@@ -199,7 +201,7 @@
     "desc_uk": "<strong>Ще більше стилю та боїв!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.",
     "desc_en": "<strong>Even more style and combat!</strong> Full Ukrainian translation: story, tutorials, UI, and more.",
     "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true },
-    "steam": "https://store.steampowered.com/app/1420340/No_More_Heroes_2_Desperate_Struggle/",
+    "steam": "https://store.steampowered.com/app/1420300/No_More_Heroes_2_Desperate_Struggle/",
     "images_ua": [],
     "videos_ua": ["https://www.youtube.com/watch?v=8HGKIRc7MB8"]
   },
@@ -229,7 +231,7 @@
     "desc_uk": "<strong>Надери дупу прибульцям!</strong> Повний український переклад: Сюжет, туторіали, інтерфейс та інше.",
     "desc_en": "<strong>Kick some alien butt!</strong> Full Ukrainian translation: story, tutorials, UI, and more.",
     "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true },
-    "steam": "https://store.steampowered.com/app/1420290/No_More_Heroes_3/",
+    "steam": "https://store.steampowered.com/app/1744330/No_More_Heroes_3/",
     "images_ua": [],
     "videos_ua": ["https://www.youtube.com/watch?v=ZmbOIwUhC24"]
   },
@@ -259,7 +261,7 @@
     "desc_uk": "<strong>Сиквел культового трилера з дивакуватим шармом.</strong> Повний український переклад у розробці: сюжет, інтерфейс, субтитри.",
     "desc_en": "<strong>Sequel to the cult, quirky thriller.</strong> Full Ukrainian translation in progress: story, UI, subtitles.",
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
-    "steam": "https://store.steampowered.com/app/1732190/Deadly_Premonition_2_A_Blessing_in_Disguise/",
+    "steam": "https://store.steampowered.com/app/1271100/Deadly_Premonition_2_A_Blessing_in_Disguise/",
     "images_ua": [],
     "videos_ua": ["https://www.youtube.com/watch?v=66F3TanyZzI"]
   }
