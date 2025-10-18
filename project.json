@@ -12,10 +12,7 @@
     "desc_en": "<strong>Fundraising for a Ukrainian localization.</strong> UI and subtitles.",
     "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
     "steam": "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
-    "images_ua": [
-      "https://i.imgur.com/oy6E3vu.jpeg",
-      "https://i.imgur.com/0bX2fLx.jpeg"
-    ],
+    "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=dhObkWG-goU"
     ]
@@ -34,10 +31,7 @@
     "desc_en": "<strong>Iconic stealth‑action classic by Hideo Kojima (Master Collection).</strong> Fundraising for a Ukrainian localization: UI and subtitles.",
     "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
     "steam": "https://store.steampowered.com/app/2131660/METAL_GEAR_SOLID_Master_Collection_Vol1__MGS2Sons_of_Liberty/",
-    "images_ua": [
-      "https://i.imgur.com/OwL1l0w.jpeg",
-      "https://i.imgur.com/Dz0sQGD.jpeg"
-    ],
+    "images_ua": [],
     "videos_ua": []
   },
   {
@@ -99,7 +93,7 @@
     "desc_en": "<strong>Legendary fighters and Stands in a dream arena.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
     "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
     "steam": "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
-    "images_ua": ["https://i.imgur.com/R7zF4Kh.jpeg"],
+    "images_ua": [],
     "videos_ua": ["https://www.youtube.com/watch?v=MMTx8IkFBXg"]
   },
   {
@@ -114,11 +108,7 @@
     "desc_en": "<strong>Neo-noir detective action from the creators of Yakuza.</strong> Full Ukrainian translation: side cases, tutorials, UI, and more.",
     "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://donatello.to/post/68de432ff7753d8d33210ca4/ukrayinizator-dlya-judgment-ranniy-dostup-donatello-2-02-10-2025", "animated": true },
     "steam": "https://store.steampowered.com/app/1404220/Judgment/",
-    "images_ua": [
-      "https://i.imgur.com/1g4Q3jS.jpeg",
-      "https://i.imgur.com/8TQw3Qq.jpeg",
-      "https://i.imgur.com/AV2N2wY.jpeg"
-    ],
+    "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=8cnFlWRILKY"
     ]
