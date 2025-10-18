@@ -17,7 +17,7 @@
       "https://i.imgur.com/0bX2fLx.jpeg"
     ],
     "videos_ua": [
-      "https://www.youtube.com/watch?v=VxW7cX1c7oI"
+      "https://www.youtube.com/watch?v=dhObkWG-goU"
     ]
   },
   {
@@ -52,7 +52,7 @@
     "desc_en": "<strong>Full Ukrainian localization.</strong> UI & subtitles.",
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=3O6n4R-69sc"]
   },
   {
     "id": "uncharted-2",
@@ -83,7 +83,7 @@
     "desc_en": "<strong>Ан auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
     "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
     "images_ua": [],
-    "videos_ua": ["https://www.youtube.com/watch?v=7qS1rRJoYDE"]
+    "videos_ua": ["https://www.youtube.com/watch?v=VW4ZfUZ1wI4"]
   },
   {
     "id": "jojo-asbr",
@@ -100,7 +100,7 @@
     "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
     "steam": "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     "images_ua": ["https://i.imgur.com/R7zF4Kh.jpeg"],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=MMTx8IkFBXg"]
   },
   {
     "id": "judgment",
@@ -120,7 +120,7 @@
       "https://i.imgur.com/AV2N2wY.jpeg"
     ],
     "videos_ua": [
-      "https://www.youtube.com/watch?v=Zr7w3gE0wPQ"
+      "https://www.youtube.com/watch?v=8cnFlWRILKY"
     ]
   },
   {
@@ -136,7 +136,7 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/2058180/Lost_Judgment/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=wx2OMw06t58"]
   },
   {
     "id": "ishin",
@@ -151,7 +151,7 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/1805480/Like_a_Dragon_ISHIN/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=eRTaJJn9ldI"]
   },
   {
     "id": "yk2",
@@ -166,7 +166,7 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/927380/Yakuza_Kiwami_2/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=wKe05u8sT_s"]
   },
   {
     "id": "y3",
@@ -181,7 +181,7 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/1088710/Yakuza_3_Remastered/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=N25iZVyPLeI"]
   },
   {
     "id": "nmh1",
@@ -196,7 +196,7 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/1420310/No_More_Heroes/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=tkDdmZFxWbE"]
   },
   {
     "id": "nmh2",
@@ -211,7 +211,7 @@
     "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true },
     "steam": "https://store.steampowered.com/app/1420340/No_More_Heroes_2_Desperate_Struggle/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=8HGKIRc7MB8"]
   },
   {
     "id": "tsa",
@@ -226,7 +226,7 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/1010100/Travis_Strikes_Again_No_More_Heroes_Complete_Edition/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=YP8a4amktGE"]
   },
   {
     "id": "nmh3",
@@ -241,7 +241,7 @@
     "cta": { "type": "link", "label_uk": "Завантажити", "label_en": "Download", "url": "https://t.me/LittleBitUA/95", "animated": true },
     "steam": "https://store.steampowered.com/app/1420290/No_More_Heroes_3/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=ZmbOIwUhC24"]
   },
   {
     "id": "dp1",
@@ -256,7 +256,7 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/247660/Deadly_Premonition_Directors_Cut/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=zIdPzW-H8gI"]
   },
   {
     "id": "dp2",
@@ -271,6 +271,6 @@
     "cta": { "type": "disabled", "label_uk": "Завантажити", "label_en": "Download", "url": "#" },
     "steam": "https://store.steampowered.com/app/1732190/Deadly_Premonition_2_A_Blessing_in_Disguise/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": ["https://www.youtube.com/watch?v=66F3TanyZzI"]
   }
 ]
