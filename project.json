@@ -32,7 +32,8 @@
     "cta": { "type": "enable", "label_uk": "Спонсорувати", "label_en": "Sponsor", "url": "https://donatello.to/LittleBitUA", "primary": true },
     "steam": "https://store.steampowered.com/app/2131660/METAL_GEAR_SOLID_Master_Collection_Vol1__MGS2Sons_of_Liberty/",
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": [
+      "https://www.youtube.com/watch?v=14EBz2UG1vI"
   },
   {
     "id": "uncharted-df",
