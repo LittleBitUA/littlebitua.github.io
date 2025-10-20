@@ -583,11 +583,17 @@ document.addEventListener('DOMContentLoaded', () => {
         </article>`;
     }
     function updateStats(list){
-      const total=list.length;
-      const avg=total? Math.round(list.reduce((a,p)=>a+(p.progress||0),0)/total):0;
-      const ea=list.filter(p=>p.status==='early-access').length;
+      // Average readiness should include ONLY actual localization progress,
+      // i.e. statuses "in-progress" and "early-access".
+      // Fundraising cards are excluded from the average because their "progress"
+      // represents donation progress, not localization readiness.
+      const count = list.length; // how many cards are currently listed (any status)
+      const eligible = list.filter(p => p.status === 'in-progress' || p.status === 'early-access');
+      const totalEligible = eligible.length;
+      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+(p.progress||0),0)/totalEligible) : 0;
+      const ea = list.filter(p=>p.status==='early-access').length;
       const sp=document.getElementById('statProjects'), sa=document.getElementById('statAvg'), se=document.getElementById('statEA');
-      if (sp) sp.textContent=total;
+      if (sp) sp.textContent=count;
       if (sa) sa.textContent=avg+'%';
       if (se) se.textContent=ea;
     }
