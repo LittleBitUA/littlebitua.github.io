@@ -167,6 +167,16 @@
     @media (prefers-reduced-motion: reduce){ .btn.download-anim{ animation:none } .btn.download-anim::after{ animation:none } }
   
 #benefactors .chip { cursor: default; }
+
+/* YouTube outlined button */
+.btn.youtube-outline{
+  background: transparent !important;
+  color: var(--accent-600, #e11d48) !important;        /* rose-600 fallback */
+  border: 2px solid var(--accent-600, #e11d48) !important;
+}
+.btn.youtube-outline:hover{
+  background: color-mix(in srgb, var(--accent-600, #e11d48) 10%, transparent);
+}
 </style>
 
 <style id="perf-card-override">
@@ -337,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p style="color:var(--muted)" data-i18n="contacts_text">Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.</p>
         <div class="cta">
           <a class="btn primary" href="https://t.me/LittleBitUA" target="_blank" rel="noopener">Telegram</a>
-          <a class="btn" href="https://www.youtube.com/@UA_LittleBit" target="_blank" rel="noopener">YouTube</a>
+          <a class="btn youtube-outline" href="https://www.youtube.com/@UA_LittleBit" target="_blank" rel="noopener">YouTube</a>
         </div>
       </div>
     </section>
@@ -459,7 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btn_download:'Завантажити', btn_sponsor:'Спонсорувати', btn_view_projects:'До проєктів', btn_support:'Підтримати',
         status_fundraising:'Статус: <strong>збір коштів</strong>', raised_prefix:'Зібрано:', search_label:'Пошук проєкту', search_placeholder:'Пошук проєкту...',
         no_results:'Нічого не знайдено за цим запитом.', search_found:(n)=>`Знайдено: ${n}`, filter_all:'Усе', filter_in:'У процесі', filter_fund:'Збір коштів', filter_ea:'Ранній доступ',
-        stat_projects:'проєктів у переліку', stat_avg:'середня готовність', stat_early:'ранній доступ', accent_label:'Стиль:', rights:'Усі права захищено.', nav_benefactors:'Доброчинці', benefactors_title:'Доброчинці', benefactors_desc:'Це — список усіх людей, які коли-небудь підтримали діяльність нашої спілки, ми щиро їм вдячні:'},
+        stat_projects:'проєктів у переліку', stat_avg:'середня готовність', stat_early:'ранній доступ', accent_label:'Стиль:', rights:'Усі права захищено.', nav_benefactors:'Доброчинці', benefactors_title:'Доброчинці', benefactors_desc:'Це — список усіх людей, які коли-небудь підтримали діяльність нашої спілки, ми щиро їм вдячні:', support_title:'Фінансова підтримка', support_text:'Якщо подобається наша робота, можна підтримати нас донатом:', contacts_title:'Контакти', contacts_text:'Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.'},
       en:{ title:'“Little Bit” — Ukrainian Game Localizations', meta_desc:'“Little Bit” — Ukrainian localizations of video games: Judgment, Yakuza, No More Heroes.',
         nav_projects:'Our Projects', nav_contacts:'Contacts', nav_support:'Support Us', drawer_title:'Menu', drawer_label:'Mobile menu', open_menu:'Open menu', close_menu:'Close menu',
         pill_subtitle:'UA Localizations', hero_title2:'Play in Ukrainian — feel it anew.', hero_lead:'Your favorite stories — in Ukrainian, from the heart.',
