@@ -168,7 +168,7 @@
   
 #benefactors .chip { cursor: default; }
 
-/* YouTube outlined button */
+/* removed-old-youtube-outline */
 .btn.youtube-outline{
   background: transparent !important;
   color: var(--accent-600, #e11d48) !important;        /* rose-600 fallback */
@@ -176,6 +176,17 @@
 }
 .btn.youtube-outline:hover{
   background: color-mix(in srgb, var(--accent-600, #e11d48) 10%, transparent);
+}
+
+/* YouTube primary (like Telegram, but red/accent) */
+.btn.youtube-primary{
+  background: linear-gradient(135deg, var(--accent-10, rgba(244,63,94,.10)), var(--accent-30, rgba(244,63,94,.30)));
+  border-color: color-mix(in srgb, var(--accent, #f43f5e), #ffffff 35%);
+}
+/* Preserve the same hover/transition feel as .btn.primary */
+.btn.youtube-primary:hover{
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent, #f43f5e), #ffffff 50%);
 }
 </style>
 
@@ -347,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p style="color:var(--muted)" data-i18n="contacts_text">Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.</p>
         <div class="cta">
           <a class="btn primary" href="https://t.me/LittleBitUA" target="_blank" rel="noopener">Telegram</a>
-          <a class="btn youtube-outline" href="https://www.youtube.com/@UA_LittleBit" target="_blank" rel="noopener">YouTube</a>
+          <a class="btn primary youtube-primary" href="https://www.youtube.com/@UA_LittleBit" target="_blank" rel="noopener">YouTube</a>
         </div>
       </div>
     </section>
@@ -800,7 +811,7 @@ const chip=e.target.closest('.chip'); if (chip){ document.querySelectorAll('.chi
   </script>
 
   <footer>
-    © <span id="year"></span> «Little Bit». Усі права захищено.
+    © <span id="year"></span> «Little Bit». <span data-i18n="rights">Усі права захищено.</span>
   </footer>
 
 
@@ -892,6 +903,47 @@ if ('serviceWorker' in navigator) {
     if (document.hidden) document.documentElement.setAttribute('data-tab-hidden','true');
     else document.documentElement.removeAttribute('data-tab-hidden');
   });
+})();
+</script>
+
+
+<script>
+// Ensure Contacts / Support / Footer rights always localized even if I18N keys are missing
+(function(){
+  const MAP = {
+    uk: {
+      contacts_title: 'Контакти',
+      contacts_text: 'Маєш питання, хочеш допомогти або запропонувати співпрацю? Пиши нам у Telegram або підписуйся на YouTube.',
+      support_title: 'Фінансова підтримка',
+      support_text: 'Якщо подобається наша робота, можна підтримати нас донатом:',
+      rights: 'Усі права захищено.'
+    },
+    en: {
+      contacts_title: 'Contacts',
+      contacts_text: 'Got a question, want to help, or propose a collaboration? Message us on Telegram or subscribe on YouTube.',
+      support_title: 'Financial Support',
+      support_text: 'If you like our work, you can support us with a donation:',
+      rights: 'All rights reserved.'
+    }
+  };
+  if (typeof window.applyLang === 'function'){
+    const __origApply = window.applyLang;
+    window.applyLang = function(lang){
+      __origApply(lang);
+      const dict = MAP[lang] || MAP.uk;
+      function setI18N(selector, key){
+        const el = document.querySelector(selector);
+        if (el && dict[key]) el.innerHTML = dict[key];
+      }
+      setI18N('[data-i18n="contacts_title"]','contacts_title');
+      setI18N('[data-i18n="contacts_text"]','contacts_text');
+      setI18N('[data-i18n="support_title"]','support_title');
+      setI18N('[data-i18n="support_text"]','support_text');
+      setI18N('[data-i18n="rights"]','rights');
+    };
+    // Re-apply for the current language so UI updates immediately
+    try{ window.applyLang(document.documentElement.lang || 'uk'); }catch(_){}
+  }
 })();
 </script>
 
