@@ -134,16 +134,13 @@
       "Steam"
     ],
     "progress": 4,
-    "goal": 10000,
-    "raised": 8099,
-    "desc_uk": "<strong>Легендарні бійці та стенди в арені мрії.</strong> Відкриваємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
-    "desc_en": "<strong>Legendary fighters and Stands in a dream arena.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
+    "desc_uk": "<strong>Повна українська локалізація.</strong> Інтерфейс і субтитри.",
+    "desc_en": "<strong>Full Ukrainian localization.</strong> UI & subtitles.",
     "cta": {
-      "type": "enable",
-      "label_uk": "Спонсорувати",
-      "label_en": "Sponsor",
-      "url": "https://donatello.to/LittleBitUA",
-      "primary": true
+      "type": "disabled",
+      "label_uk": "Завантажити",
+      "label_en": "Download",
+      "url": "#"
     },
     "steam": "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     "images_ua": [],
