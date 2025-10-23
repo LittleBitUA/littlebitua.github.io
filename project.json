@@ -1,5 +1,23 @@
 [
   {
+    "id": "dispatch",
+    "title": "Dispatch",
+    "cover": "assets/Dispatch.webp",
+    "logo": "assets/Dispatch_logo.webp",
+    "status": "in-progress",
+    "progress": 15,
+    "desc_uk": "<strong>Українська локалізація першого епізоду.</strong> Інтерфейс і субтитри.",
+    "desc_en": "<strong>Ukrainian localization (episodic game).</strong> UI & subtitles.",
+    "cta": {
+      "type": "disabled",
+      "label_uk": "Завантажити",
+      "label_en": "Download",
+      "url": "#"
+    },
+    "images_ua": [],
+    "videos_ua": []
+  },
+  {
     "id": "lad",
     "title": "Yakuza: Like a Dragon",
     "cover": "assets/LaD.webp",
@@ -416,23 +434,5 @@
     "videos_ua": [
       "https://www.youtube.com/watch?v=66F3TanyZzI"
     ]
-  },
-  {
-    "id": "dispatch",
-    "title": "Dispatch",
-    "cover": "assets/Dispatch.webp",
-    "logo": "assets/Dispatch_logo.webp",
-    "status": "in-progress",
-    "progress": 10,
-    "desc_uk": "<strong>Українська локалізація першого епізоду.</strong> Інтерфейс і субтитри.",
-    "desc_en": "<strong>Ukrainian localization (episodic game).</strong> UI & subtitles.",
-    "cta": {
-      "type": "disabled",
-      "label_uk": "Завантажити",
-      "label_en": "Download",
-      "url": "#"
-    },
-    "images_ua": [],
-    "videos_ua": []
   }
 ]
