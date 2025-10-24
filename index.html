@@ -651,11 +651,6 @@ document.addEventListener('DOMContentLoaded', () => {
           const proj = PROJECTS.find(p=>p.id===id); if (!proj) return;
           const vids = Array.isArray(proj.videos_ua) ? proj.videos_ua : [];
           const imgs = Array.isArray(proj.images_ua) ? proj.images_ua : [];
-          if (vids.length===0 && imgs.length===0){
-            // Placeholder action when no media available
-            try { window.location.hash = '#'; } catch(e) {}
-            return;
-          }
           openProjectModal(proj);
         }, { once:false });
       });
