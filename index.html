@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
       const desc= lang==='en'? p.desc_en : p.desc_uk;
-      const pct=clamp(Math.round(p.progress||0),0,100);
+      const pct=lbCalcOverall(p);
       const fundraising = p.status==='fundraising' && (p.goal>0);
       const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
       const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
@@ -623,14 +623,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const count = list.length; // how many cards are currently listed (any status)
       const eligible = list.filter(p => p.status === 'in-progress' || p.status === 'early-access');
       const totalEligible = eligible.length;
-      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+(p.progress||0),0)/totalEligible) : 0;
+      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+lbCalcOverall(p),0)/totalEligible) : 0;
       const ea = list.filter(p=>p.status==='early-access').length;
       const sp=document.getElementById('statProjects'), sa=document.getElementById('statAvg'), se=document.getElementById('statEA');
       if (sp) sp.textContent=count;
       if (sa) sa.textContent=avg+'%';
       if (se) se.textContent=ea;
     }
-    function renderProjects(list){
+    
+<script>
+// --- Auto overall progress calculator ---
+(function(){
+  window.lbCalcOverall = function(p){
+    function clamp(n){ n = Math.round(Number(n)||0); if(n<0) return 0; if(n>100) return 100; return n; }
+    // Fundraising cards keep showing donation progress, not localization readiness
+    if (p && p.status === 'fundraising') return clamp(p.progress||0);
+    // If detailed parts are missing, fall back to existing progress
+    var hasParts = (p && (typeof p.progress_text==='number' || typeof p.progress_textures==='number' || typeof p.progress_fonts==='number'));
+    if (!hasParts) return clamp(p && p.progress);
+    var t = clamp(p.progress_text), x = clamp(p.progress_textures), f = clamp(p.progress_fonts);
+    // Weights: text 70%, textures 25%, fonts 5% — edit here if потрібно
+    var Wt = 0.70, Wx = 0.25, Wf = 0.05;
+    return clamp(t*Wt + x*Wx + f*Wf);
+  };
+})();
+</script>
+function renderProjects(list){
       const grid=document.getElementById('projectsGrid'); if (!grid) return;
       grid.innerHTML=list.map(projectCard).join('');
       requestAnimationFrame(()=>{
