@@ -188,7 +188,18 @@
   transform: translateY(-1px);
   border-color: color-mix(in srgb, var(--accent, #f43f5e), #ffffff 50%);
 }
-</style>
+
+    /* Progress panel inside modal */
+    .progress-panel{ display:grid; gap:10px; padding:10px; border:1px solid var(--brd); border-radius:12px; background:rgba(255,255,255,.05) }
+    .progress-row{ display:grid; grid-template-columns: 180px 1fr auto; gap:10px; align-items:center }
+    .progress-row .label{ font-size:13px; color:var(--muted) }
+    .progress-row .pct{ font-size:12px; color:var(--muted); min-width:36px; text-align:right }
+    @media (max-width: 640px){
+      .progress-row{ grid-template-columns: 1fr; gap:6px }
+      .progress-row .pct{ text-align:left }
+    }
+
+  </style>
 
 <style id="perf-card-override">
 /* PERF override: do not change visuals, just isolate layout & skip offscreen paint */
@@ -460,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button id="pmNext" type="button" aria-label="Наступне зображення">›</button>
           </div>
         </div>
+                <div id="pmProgress" class="progress-panel" hidden></div>
         <div id="pmVideos" class="video-grid"></div>
       </div>
     </div>
@@ -686,6 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const car=document.getElementById('pmCarousel');
       const carImg=document.getElementById('pmCarouselImg');
       const vids=document.getElementById('pmVideos');
+            renderProgressPanel(p);
       // set header
       titleEl.textContent=p.title||'';
       logoEl.src=p.logo||''; logoEl.alt=p.title||'';
@@ -944,6 +957,45 @@ if ('serviceWorker' in navigator) {
     // Re-apply for the current language so UI updates immediately
     try{ window.applyLang(document.documentElement.lang || 'uk'); }catch(_){}
   }
+})();
+</script>
+
+
+<script>
+(function(){
+  function labels(){
+    try{
+      var lng = document.documentElement.lang === 'en' ? 'en' : 'uk';
+    }catch(_){ var lng='uk'; }
+    if (lng==='en'){
+      return { overall:'Overall readiness', text:'Text readiness', textures:'Textures readiness', fonts:'Fonts readiness' };
+    }
+    return { overall:'Загальна готовність', text:'Готовність тексту', textures:'Готовність текстур', fonts:'Готовність шрифтів' };
+  }
+  window.renderProgressPanel = function(p){
+    var wrap = document.getElementById('pmProgress');
+    if (!wrap) return;
+    var L = labels();
+    function pick(k){
+      var v = (typeof p[k] === 'number') ? p[k] : null;
+      return (v!=null && v>=0 && v<=100) ? Math.round(v) : null;
+    }
+    var items = [
+      { key:'progress', label: L.overall },
+      { key:'progress_text', label: L.text },
+      { key:'progress_textures', label: L.textures },
+      { key:'progress_fonts', label: L.fonts }
+    ].map(function(it){ it.val = pick(it.key); return it; }).filter(function(it){ return it.val !== null; });
+    if (!items.length){ wrap.hidden = true; wrap.innerHTML=''; return; }
+    wrap.hidden = false;
+    wrap.innerHTML = items.map(function(it){
+      return '<div class="progress-row">'
+           +   '<span class="label">'+it.label+'</span>'
+           +   '<div class="progress" title="'+it.label+': '+it.val+'%"><span style="width:'+it.val+'%"></span></div>'
+           +   '<span class="pct">'+it.val+'%</span>'
+           + '</div>';
+    }).join('');
+  };
 })();
 </script>
 
