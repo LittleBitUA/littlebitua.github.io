@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
       const desc= lang==='en'? p.desc_en : p.desc_uk;
-      const pct=lbCalcOverall(p);
+      \1lbCalcOverall(p)\3
       const fundraising = p.status==='fundraising' && (p.goal>0);
       const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
       const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
@@ -631,23 +631,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (se) se.textContent=ea;
     }
     
-<script>
+
 // --- Auto overall progress calculator ---
-(function(){
-  window.lbCalcOverall = function(p){
-    function clamp(n){ n = Math.round(Number(n)||0); if(n<0) return 0; if(n>100) return 100; return n; }
-    // Fundraising cards keep showing donation progress, not localization readiness
-    if (p && p.status === 'fundraising') return clamp(p.progress||0);
-    // If detailed parts are missing, fall back to existing progress
-    var hasParts = (p && (typeof p.progress_text==='number' || typeof p.progress_textures==='number' || typeof p.progress_fonts==='number'));
-    if (!hasParts) return clamp(p && p.progress);
-    var t = clamp(p.progress_text), x = clamp(p.progress_textures), f = clamp(p.progress_fonts);
-    // Weights: text 70%, textures 25%, fonts 5% — edit here if потрібно
-    var Wt = 0.70, Wx = 0.25, Wf = 0.05;
-    return clamp(t*Wt + x*Wx + f*Wf);
-  };
-})();
-</script>
+window.lbCalcOverall = function(p){
+  function clamp(n){ n = Math.round(Number(n)||0); if(n<0) return 0; if(n>100) return 100; return n; }
+  if (p && p.status === 'fundraising') return clamp(p.progress||0);
+  var hasParts = (p && (typeof p.progress_text==='number' || typeof p.progress_textures==='number' || typeof p.progress_fonts==='number'));
+  if (!hasParts) return clamp(p && p.progress);
+  var t = clamp(p.progress_text), x = clamp(p.progress_textures), f = clamp(p.progress_fonts);
+  var Wt = 0.70, Wx = 0.25, Wf = 0.05; // edit weights here if needed
+  return clamp(t*Wt + x*Wx + f*Wf);
+};
+
 function renderProjects(list){
       const grid=document.getElementById('projectsGrid'); if (!grid) return;
       grid.innerHTML=list.map(projectCard).join('');
