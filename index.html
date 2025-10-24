@@ -594,11 +594,23 @@ document.addEventListener('DOMContentLoaded', () => {
       const pct=jsonOverall(p);
       const fundraising = p.status==='fundraising' && (p.goal>0);
       const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
-      const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
-      const cls = ['btn']; if (p.cta?.primary) cls.push('primary'); if (p.cta?.animated) cls.push('download-anim'); if (p.cta?.type==='disabled') cls.push('disabled');
-      const href = p.cta?.url || '#';
-      const attrs = (p.status==='early-access') ? 'target="_blank" rel="noopener"' : ((p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"');
-      return `
+      
+const d = I18N[lang];
+let label = (p.cta?.label_uk && lang==='uk') ? p.cta.label_uk
+          : (p.cta?.label_en && lang==='en') ? p.cta.label_en
+          : (lang==='en' ? (d.btn_download||'Download') : (d.btn_download||'Завантажити'));
+let href = p.cta?.url || '#';
+let attrs = (p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"';
+
+// Early access: override label (and optionally URL)
+if (p.status === 'early-access'){
+  label = (lang==='en' ? (d.btn_for_sponsors||'For Sponsors') : (d.btn_for_sponsors||'Для спонсорів'));
+  href = '#support';
+  attrs = 'target="_blank" rel="noopener"';
+}
+
+// Fundraising: keep default label/url (or p.cta), we only show raisedLabel above
+return `
         <article class="card glass" data-id="${p.id}" data-status="${p.status}" data-title="${p.title}">
           <div class="thumb" role="button" aria-label="Відкрити подробиці проєкту">
             <img src="${p.cover}" data-role="cover" loading="lazy" alt="" aria-hidden="true">
