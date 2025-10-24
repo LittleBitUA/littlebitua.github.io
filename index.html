@@ -597,7 +597,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
       const cls = ['btn']; if (p.cta?.primary) cls.push('primary'); if (p.cta?.animated) cls.push('download-anim'); if (p.cta?.type==='disabled') cls.push('disabled');
       const href = p.cta?.url || '#';
-      const attrs = (p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"';
+      const attrs = (p.status==='early-access') ? 'target="_blank" rel="noopener"' : ((p.cta?.type==='disabled') ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"');
       return `
         <article class="card glass" data-id="${p.id}" data-status="${p.status}" data-title="${p.title}">
           <div class="thumb" role="button" aria-label="Відкрити подробиці проєкту">
@@ -1032,6 +1032,16 @@ if ('serviceWorker' in navigator) {
       return Math.min.apply(null, vals);
     };
   }
+})();
+</script>
+
+
+<script>
+(function(){
+  try{
+    if (window.I18N && I18N.uk){ I18N.uk.btn_for_sponsors = 'Для спонсорів'; }
+    if (window.I18N && I18N.en){ I18N.en.btn_for_sponsors = 'For Sponsors'; }
+  }catch(e){}
 })();
 </script>
 
