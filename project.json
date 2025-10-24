@@ -15,7 +15,10 @@
       "url": "#"
     },
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": [],
+    "progress_text": 65,
+    "progress_textures": 0,
+    "progress_fonts": 30
   },
   {
     "id": "lad",
@@ -39,7 +42,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=dhObkWG-goU"
-    ]
+    ],
+    "progress_text": 15,
+    "progress_textures": 7,
+    "progress_fonts": 60
   },
   {
     "id": "mgs2",
@@ -66,7 +72,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=14EBz2UG1vI"
-    ]
+    ],
+    "progress_text": 3,
+    "progress_textures": 0,
+    "progress_fonts": 0
   },
   {
     "id": "uncharted-df",
@@ -89,7 +98,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=3O6n4R-69sc"
-    ]
+    ],
+    "progress_text": 82,
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "uncharted-2",
@@ -113,7 +125,10 @@
       "primary": true
     },
     "images_ua": [],
-    "videos_ua": []
+    "videos_ua": [],
+    "progress_text": 0,
+    "progress_textures": 0,
+    "progress_fonts": 0
   },
   {
     "id": "hotel-barcelona",
@@ -128,7 +143,7 @@
     "goal": 5000,
     "raised": 3500,
     "desc_uk": "<strong>Авторський проєкт SWERY та SUDA51.</strong> Починаємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
-    "desc_en": "<strong>Ан auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
+    "desc_en": "<strong>An auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
     "cta": {
       "type": "enable",
       "label_uk": "Спонсорувати",
@@ -140,7 +155,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=VW4ZfUZ1wI4"
-    ]
+    ],
+    "progress_text": 50,
+    "progress_textures": 0,
+    "progress_fonts": 70
   },
   {
     "id": "jojo-asbr",
@@ -164,7 +182,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=MMTx8IkFBXg"
-    ]
+    ],
+    "progress_text": 4,
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "judgment",
@@ -189,7 +210,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=8cnFlWRILKY"
-    ]
+    ],
+    "progress_text": 89,
+    "progress_textures": 50,
+    "progress_fonts": 100
   },
   {
     "id": "lost-judgment",
@@ -213,7 +237,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=wx2OMw06t58"
-    ]
+    ],
+    "progress_text": 6,
+    "progress_textures": 0,
+    "progress_fonts": 5
   },
   {
     "id": "ishin",
@@ -237,7 +264,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=eRTaJJn9ldI"
-    ]
+    ],
+    "progress_text": 15,
+    "progress_textures": 0,
+    "progress_fonts": 50
   },
   {
     "id": "yk2",
@@ -261,7 +291,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=wKe05u8sT_s"
-    ]
+    ],
+    "progress_text": 60,
+    "progress_textures": 30,
+    "progress_fonts": 100
   },
   {
     "id": "y3",
@@ -285,7 +318,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=N25iZVyPLeI"
-    ]
+    ],
+    "progress_text": 14,
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "nmh1",
@@ -309,7 +345,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=tkDdmZFxWbE"
-    ]
+    ],
+    "progress_text": 86,
+    "progress_textures": 60,
+    "progress_fonts": 90
   },
   {
     "id": "nmh2",
@@ -334,7 +373,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=8HGKIRc7MB8"
-    ]
+    ],
+    "progress_text": 100,
+    "progress_textures": 60,
+    "progress_fonts": 100
   },
   {
     "id": "tsa",
@@ -358,7 +400,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=YP8a4amktGE"
-    ]
+    ],
+    "progress_text": 23,
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "nmh3",
@@ -384,7 +429,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=ZmbOIwUhC24"
-    ]
+    ],
+    "progress_text": 100,
+    "progress_textures": 60,
+    "progress_fonts": 100
   },
   {
     "id": "dp1",
@@ -409,7 +457,10 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=zIdPzW-H8gI"
-    ]
+    ],
+    "progress_text": 37,
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "dp2",
@@ -433,6 +484,9 @@
     "images_ua": [],
     "videos_ua": [
       "https://www.youtube.com/watch?v=66F3TanyZzI"
-    ]
+    ],
+    "progress_text": 15,
+    "progress_textures": 0,
+    "progress_fonts": 100
   }
 ]

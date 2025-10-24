@@ -140,6 +140,17 @@
     .carousel .nav button{ pointer-events:all; width:40px; height:40px; border-radius:999px; border:1px solid rgba(255,255,255,.22); background:rgba(2,6,23,.55); color:var(--text); cursor:pointer }
     .video-grid{ display:grid; grid-template-columns: 1fr; gap:12px }
     .video-grid iframe{ width:100%; aspect-ratio:16/9; border:1px solid var(--brd); border-radius:10px; background:#0b1220 }
+
+    /* Progress panel inside modal */
+    .progress-panel{ display:grid; gap:10px; padding:10px; border:1px solid var(--brd); border-radius:12px; background:rgba(255,255,255,.05) }
+    .progress-row{ display:grid; grid-template-columns: 180px 1fr auto; gap:10px; align-items:center }
+    .progress-row .label{ font-size:13px; color:var(--muted) }
+    .progress-row .pct{ font-size:12px; color:var(--muted); min-width:36px; text-align:right }
+    @media (max-width: 640px){
+      .progress-row{ grid-template-columns: 1fr; gap:6px }
+      .progress-row .pct{ text-align:left }
+    }
+
     @media (min-width: 920px){ .hero{ grid-template-columns: 1.2fr .8fr; } }
     @media (max-width: 860px){
       .nav-links{ display:none } .burger{display:inline-flex}
@@ -460,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button id="pmNext" type="button" aria-label="Наступне зображення">›</button>
           </div>
         </div>
+                <div id="pmProgress" class="progress-panel" hidden></div>
         <div id="pmVideos" class="video-grid"></div>
       </div>
     </div>
@@ -489,6 +501,14 @@ document.addEventListener('DOMContentLoaded', () => {
         btn_view_projects:'See projects', btn_support:'Support us', status_fundraising:'Status: <strong>fundraising</strong>', raised_prefix:'Raised:', search_label:'Project search', search_placeholder:'Search project…',
         no_results:'No results for this query.', search_found:(n)=>`Found: ${n}`, filter_all:'All', filter_in:'In progress', filter_fund:'Fundraising', filter_ea:'Early access',
         stat_projects:'projects listed', stat_avg:'average progress', stat_early:'early access', accent_label:'Accent:', rights:'All rights reserved.', nav_benefactors:'Benefactors', benefactors_title:'Benefactors', benefactors_desc:'This is a list of everyone who has ever supported our work — we are truly grateful:'}
+        progress_overall: "Загальна готовність",
+        progress_text: "Готовність тексту",
+        progress_textures: "Готовність текстур",
+        progress_fonts: "Готовність шрифтів",
+        progress_overall: "Overall readiness",
+        progress_text: "Text readiness",
+        progress_textures: "Textures readiness",
+        progress_fonts: "Fonts readiness",
     };
 
     // --- Helpers ---
@@ -705,10 +725,36 @@ document.addEventListener('DOMContentLoaded', () => {
         carImg.removeAttribute('src');
       }
       // videos
+      renderProgressPanel(p);
       vids.innerHTML='';
       const vidsUa = Array.isArray(p.videos_ua)? p.videos_ua : [];
       vidsUa.forEach(v=>{
-        const id = (v||'').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/); const vid=id? id[1] : null;
+        const id = (v||'').match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})
+
+    function renderProgressPanel(p){
+      const wrap = document.getElementById('pmProgress');
+      if (!wrap) return;
+      const get = (k)=>{
+        const v = (typeof p[k] === 'number') ? p[k] : null;
+        return (v!=null && v>=0 && v<=100) ? Math.round(v) : null;
+      };
+      const items = [
+        { key:'progress', label: I18N[lang||'uk'].progress_overall },
+        { key:'progress_text', label: I18N[lang||'uk'].progress_text },
+        { key:'progress_textures', label: I18N[lang||'uk'].progress_textures },
+        { key:'progress_fonts', label: I18N[lang||'uk'].progress_fonts },
+      ].map(it=>({ ...it, val: get(it.key) })).filter(it => it.val !== null);
+      if (!items.length){ wrap.hidden = true; wrap.innerHTML=''; return; }
+      wrap.hidden = false;
+      wrap.innerHTML = items.map(it => `
+        <div class="progress-row">
+          <span class="label">${it.label}</span>
+          <div class="progress" title="${it.label}: ${it.val}%"><span style="width:${it.val}%"></span></div>
+          <span class="pct">${it.val}%</span>
+        </div>
+      `).join('');
+    }
+/); const vid=id? id[1] : null;
         if (vid) vids.insertAdjacentHTML('beforeend', ytEmbed(vid));
       });
       // bind arrows
