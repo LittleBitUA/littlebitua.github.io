@@ -601,7 +601,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
       const desc= lang==='en'? p.desc_en : p.desc_uk;
-      const pct=computeOverallFromJson(p);
+      const pct=Math.round(computeOverallFromJson(p));
       const fundraising = p.status==='fundraising' && (p.goal>0);
       const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
       const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
