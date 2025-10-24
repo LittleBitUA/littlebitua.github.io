@@ -1010,27 +1010,78 @@ if ('serviceWorker' in navigator) {
 </script>
 
 
+
+
+
 <script>
 (function(){
   // Computes overall strictly from project.json fields.
-  // If component fields exist, overall = min(progress, progress_text, progress_textures, progress_fonts).
-  // Else overall = progress.
+  // Strategy: if any of the component fields exist, overall = min(progress, progress_text, progress_textures, progress_fonts) over PRESENT values;
+  // otherwise overall = progress.
   if (!window.jsonOverall){
     window.jsonOverall = function(p){
-      function isNum(v){ return typeof v === 'number' && isFinite(v); }
-      function clamp01(v){ v = Math.round(Number(v)||0); if (v<0) return 0; if (v>100) return 100; return v; }
-      var vals = [];
-      if (p && isNum(p.progress)) vals.push(clamp01(p.progress));
-      var t = p && isNum(p.progress_text) ? clamp01(p.progress_text) : null;
-      var x = p && isNum(p.progress_textures) ? clamp01(p.progress_textures) : null;
-      var f = p && isNum(p.progress_fonts) ? clamp01(p.progress_fonts) : null;
-      // include components ONLY if present (so missing fields don't drag to 0)
-      if (t !== null) vals.push(t);
-      if (x !== null) vals.push(x);
-      if (f !== null) vals.push(f);
-      if (vals.length === 0) return 0;
-      return Math.min.apply(null, vals);
+      function toNum(v){
+        if (v === null || v === undefined) return null;
+        // accept numbers and numeric-like strings (e.g., "23", "23.0")
+        var n = Number(v);
+        return isFinite(n) ? n : null;
+      }
+      function clamp01(n){
+        n = Math.round(n||0);
+        if (n < 0) n = 0; if (n > 100) n = 100;
+        return n;
+      }
+      var values = [];
+      var prog = toNum(p && p.progress);
+      var t = toNum(p && p.progress_text);
+      var x = toNum(p && p.progress_textures);
+      var f = toNum(p && p.progress_fonts);
+
+      // If at least one component exists, include only present fields in min()
+      var componentsPresent = (t !== null) || (x !== null) || (f !== null);
+      if (componentsPresent){
+        if (prog !== null) values.push(clamp01(prog));
+        if (t !== null) values.push(clamp01(t));
+        if (x !== null) values.push(clamp01(x));
+        if (f !== null) values.push(clamp01(f));
+      }else{
+        if (prog !== null) values.push(clamp01(prog));
+      }
+      if (!values.length) return 0;
+      return Math.min.apply(null, values);
     };
+  } else {
+    // If it exists, override with robust version
+    window.jsonOverall = (function(old){
+      return function(p){
+        function toNum(v){
+          if (v === null || v === undefined) return null;
+          var n = Number(v);
+          return isFinite(n) ? n : null;
+        }
+        function clamp01(n){
+          n = Math.round(n||0);
+          if (n < 0) n = 0; if (n > 100) n = 100;
+          return n;
+        }
+        var values = [];
+        var prog = toNum(p && p.progress);
+        var t = toNum(p && p.progress_text);
+        var x = toNum(p && p.progress_textures);
+        var f = toNum(p && p.progress_fonts);
+        var componentsPresent = (t !== null) || (x !== null) || (f !== null);
+        if (componentsPresent){
+          if (prog !== null) values.push(clamp01(prog));
+          if (t !== null) values.push(clamp01(t));
+          if (x !== null) values.push(clamp01(x));
+          if (f !== null) values.push(clamp01(f));
+        }else{
+          if (prog !== null) values.push(clamp01(prog));
+        }
+        if (!values.length) return 0;
+        return Math.min.apply(null, values);
+      }
+    })(window.jsonOverall);
   }
 })();
 </script>
