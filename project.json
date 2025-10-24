@@ -17,8 +17,8 @@
     "images_ua": [],
     "videos_ua": [],
     "progress_text": 65,
-    "progress_textures": 65,
-    "progress_fonts": 65
+    "progress_textures": 0,
+    "progress_fonts": 10
   },
   {
     "id": "lad",
@@ -43,9 +43,9 @@
     "videos_ua": [
       "https://www.youtube.com/watch?v=dhObkWG-goU"
     ],
-    "progress_text": 0,
-    "progress_textures": 0,
-    "progress_fonts": 0
+    "progress_text": 15,
+    "progress_textures": 25,
+    "progress_fonts": 50
   },
   {
     "id": "mgs2",
@@ -73,9 +73,9 @@
     "videos_ua": [
       "https://www.youtube.com/watch?v=14EBz2UG1vI"
     ],
-    "progress_text": 0,
+    "progress_text": 3,
     "progress_textures": 0,
-    "progress_fonts": 0
+    "progress_fonts": 10
   },
   {
     "id": "uncharted-df",
@@ -100,8 +100,8 @@
       "https://www.youtube.com/watch?v=3O6n4R-69sc"
     ],
     "progress_text": 82,
-    "progress_textures": 82,
-    "progress_fonts": 82
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "uncharted-2",
@@ -128,7 +128,7 @@
     "videos_ua": [],
     "progress_text": 0,
     "progress_textures": 0,
-    "progress_fonts": 0
+    "progress_fonts": 100
   },
   {
     "id": "hotel-barcelona",
@@ -143,7 +143,7 @@
     "goal": 5000,
     "raised": 3500,
     "desc_uk": "<strong>Авторський проєкт SWERY та SUDA51.</strong> Починаємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
-    "desc_en": "<strong>Ан auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
+    "desc_en": "<strong>An auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
     "cta": {
       "type": "enable",
       "label_uk": "Спонсорувати",
@@ -157,8 +157,8 @@
       "https://www.youtube.com/watch?v=VW4ZfUZ1wI4"
     ],
     "progress_text": 50,
-    "progress_textures": 50,
-    "progress_fonts": 50
+    "progress_textures": 0,
+    "progress_fonts": 80
   },
   {
     "id": "jojo-asbr",
@@ -184,8 +184,8 @@
       "https://www.youtube.com/watch?v=MMTx8IkFBXg"
     ],
     "progress_text": 4,
-    "progress_textures": 4,
-    "progress_fonts": 4
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "judgment",
@@ -212,8 +212,8 @@
       "https://www.youtube.com/watch?v=8cnFlWRILKY"
     ],
     "progress_text": 89,
-    "progress_textures": 89,
-    "progress_fonts": 89
+    "progress_textures": 50,
+    "progress_fonts": 100
   },
   {
     "id": "lost-judgment",
@@ -239,8 +239,8 @@
       "https://www.youtube.com/watch?v=wx2OMw06t58"
     ],
     "progress_text": 6,
-    "progress_textures": 6,
-    "progress_fonts": 6
+    "progress_textures": 0,
+    "progress_fonts": 60
   },
   {
     "id": "ishin",
@@ -266,8 +266,8 @@
       "https://www.youtube.com/watch?v=eRTaJJn9ldI"
     ],
     "progress_text": 15,
-    "progress_textures": 15,
-    "progress_fonts": 15
+    "progress_textures": 0,
+    "progress_fonts": 40
   },
   {
     "id": "yk2",
@@ -293,8 +293,8 @@
       "https://www.youtube.com/watch?v=wKe05u8sT_s"
     ],
     "progress_text": 60,
-    "progress_textures": 60,
-    "progress_fonts": 60
+    "progress_textures": 30,
+    "progress_fonts": 100
   },
   {
     "id": "y3",
@@ -320,8 +320,8 @@
       "https://www.youtube.com/watch?v=N25iZVyPLeI"
     ],
     "progress_text": 14,
-    "progress_textures": 14,
-    "progress_fonts": 14
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "nmh1",
@@ -347,7 +347,7 @@
       "https://www.youtube.com/watch?v=tkDdmZFxWbE"
     ],
     "progress_text": 86,
-    "progress_textures": 86,
+    "progress_textures": 50,
     "progress_fonts": 86
   },
   {
@@ -375,7 +375,7 @@
       "https://www.youtube.com/watch?v=8HGKIRc7MB8"
     ],
     "progress_text": 100,
-    "progress_textures": 100,
+    "progress_textures": 50,
     "progress_fonts": 100
   },
   {
@@ -402,8 +402,8 @@
       "https://www.youtube.com/watch?v=YP8a4amktGE"
     ],
     "progress_text": 23,
-    "progress_textures": 23,
-    "progress_fonts": 23
+    "progress_textures": 0,
+    "progress_fonts": 100
   },
   {
     "id": "nmh3",
@@ -431,7 +431,7 @@
       "https://www.youtube.com/watch?v=ZmbOIwUhC24"
     ],
     "progress_text": 100,
-    "progress_textures": 100,
+    "progress_textures": 50,
     "progress_fonts": 100
   },
   {
@@ -459,8 +459,8 @@
       "https://www.youtube.com/watch?v=zIdPzW-H8gI"
     ],
     "progress_text": 37,
-    "progress_textures": 37,
-    "progress_fonts": 37
+    "progress_textures": 0,
+    "progress_fonts": 80
   },
   {
     "id": "dp2",
@@ -486,7 +486,7 @@
       "https://www.youtube.com/watch?v=66F3TanyZzI"
     ],
     "progress_text": 15,
-    "progress_textures": 15,
-    "progress_fonts": 15
+    "progress_textures": 0,
+    "progress_fonts": 100
   }
 ]
