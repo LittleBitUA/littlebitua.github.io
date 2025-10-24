@@ -1075,5 +1075,36 @@ if ('serviceWorker' in navigator) {
 })();
 </script>
 
+
+<script>
+(function(){
+  function toNum(v){ if(v===null||v===undefined) return null; var n=Number(v); return isFinite(n)? n : null; }
+  function clamp(n){ n = Number(n)||0; if(n<0)n=0; if(n>100)n=100; return Math.round(n); }
+  window.computeOverallFromJson = function(p){
+    if(!p) return 0;
+    // fundraising -> show donation progress
+    if (p.status === 'fundraising'){
+      var raised = toNum(p.raised), goal = toNum(p.goal);
+      if (goal && goal>0 && raised!==null) return clamp((raised/goal)*100);
+      return 0;
+    }
+    var vals = [];
+    var t = toNum(p.progress_text);
+    var x = toNum(p.progress_textures);
+    var f = toNum(p.progress_fonts);
+    if (t !== null) vals.push(clamp(t));
+    if (x !== null) vals.push(clamp(x));
+    if (f !== null) vals.push(clamp(f));
+    if (vals.length){
+      var sum = 0; for (var i=0;i<vals.length;i++) sum += vals[i];
+      return clamp(sum / vals.length);
+    }
+    // No components -> fallback to progress
+    var prog = toNum(p.progress);
+    return prog!==null ? clamp(prog) : 0;
+  };
+})();
+</script>
+
 </body>
 </html>
