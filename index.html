@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
       const desc= lang==='en'? p.desc_en : p.desc_uk;
-      const pct=lbCalcOverall(p);
+      const pct=(typeof p.progress==='number' ? Math.round(p.progress) : 0);
       const fundraising = p.status==='fundraising' && (p.goal>0);
       const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
       const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const count = list.length; // how many cards are currently listed (any status)
       const eligible = list.filter(p => p.status === 'in-progress' || p.status === 'early-access');
       const totalEligible = eligible.length;
-      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+lbCalcOverall(p),0)/totalEligible) : 0;
+      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+(p.progress||0),0)/totalEligible) : 0;
       const ea = list.filter(p=>p.status==='early-access').length;
       const sp=document.getElementById('statProjects'), sa=document.getElementById('statAvg'), se=document.getElementById('statEA');
       if (sp) sp.textContent=count;
