@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
       const desc= lang==='en'? p.desc_en : p.desc_uk;
-      const pct=(Number(p.progress)||0);
+      const pct=computeOverallFromJson(p);
       const fundraising = p.status==='fundraising' && (p.goal>0);
       const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
       const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const count = list.length; // how many cards are currently listed (any status)
       const eligible = list.filter(p => p.status === 'in-progress' || p.status === 'early-access');
       const totalEligible = eligible.length;
-      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+(Number(p.progress)||0),0)/totalEligible) : 0;
+      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+computeOverallFromJson(p),0)/totalEligible) : 0;
       const ea = list.filter(p=>p.status==='early-access').length;
       const sp=document.getElementById('statProjects'), sa=document.getElementById('statAvg'), se=document.getElementById('statEA');
       if (sp) sp.textContent=count;
@@ -1033,6 +1033,44 @@ if ('serviceWorker' in navigator) {
       return m;
     }
     return (prog !== null) ? clamp(prog) : 0;
+  };
+})();
+</script>
+
+
+<script>
+(function(){
+  // Overall readiness from JSON fields only.
+  // If any of progress_text / progress_textures / progress_fonts exist (even 0), overall = min of present components.
+  // Otherwise overall = progress.
+  // Fundraising (if used): show percent of raised/goal.
+  function toNum(v){ if(v===null||v===undefined) return null; var n=Number(v); return isFinite(n)? n : null; }
+  function clamp(n){ n = Math.round(Number(n)||0); if(n<0)n=0; if(n>100)n=100; return n; }
+  window.computeOverallFromJson = function(p){
+    if(!p) return 0;
+    if (p.status === 'fundraising'){
+      var raised = toNum(p.raised), goal = toNum(p.goal);
+      if (goal && goal>0 && raised!==null) return clamp((raised/goal)*100);
+      return 0;
+    }
+    var t = toNum(p.progress_text);
+    var x = toNum(p.progress_textures);
+    var f = toNum(p.progress_fonts);
+    var compVals = [];
+    if (t !== null) compVals.push(clamp(t));
+    if (x !== null) compVals.push(clamp(x));
+    if (f !== null) compVals.push(clamp(f));
+    if (compVals.length){
+      // If 'progress' exists and is LOWER than comps, include it to respect manual cap
+      var prog = toNum(p.progress);
+      if (prog !== null) compVals.push(clamp(prog));
+      var m = compVals[0];
+      for (var i=1;i<compVals.length;i++) if (compVals[i] < m) m = compVals[i];
+      return m;
+    }
+    // No components present -> fallback to progress
+    var prog = toNum(p.progress);
+    return prog!==null ? clamp(prog) : 0;
   };
 })();
 </script>
