@@ -591,7 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
       const desc= lang==='en'? p.desc_en : p.desc_uk;
-      const pct=(typeof p.progress==='number' ? Math.round(p.progress) : 0);
+      const pct=jsonOverall(p);
       const fundraising = p.status==='fundraising' && (p.goal>0);
       const raisedLabel = fundraising ? `${d.raised_prefix} ${formatUA(p.raised||0)}₴ \\ ${formatUA(p.goal||0)}₴` : null;
       const label = (p.cta?.label_uk && lang==='uk')? p.cta.label_uk : (p.cta?.label_en && lang==='en')? p.cta.label_en : (lang==='uk'? d.btn_download : 'Download');
@@ -623,7 +623,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const count = list.length; // how many cards are currently listed (any status)
       const eligible = list.filter(p => p.status === 'in-progress' || p.status === 'early-access');
       const totalEligible = eligible.length;
-      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+(p.progress||0),0)/totalEligible) : 0;
+      const avg = totalEligible ? Math.round(eligible.reduce((a,p)=>a+jsonOverall(p),0)/totalEligible) : 0;
       const ea = list.filter(p=>p.status==='early-access').length;
       const sp=document.getElementById('statProjects'), sa=document.getElementById('statAvg'), se=document.getElementById('statEA');
       if (sp) sp.textContent=count;
@@ -1006,6 +1006,32 @@ if ('serviceWorker' in navigator) {
     var Wt = 0.70, Wx = 0.25, Wf = 0.05;
     return clamp(t*Wt + x*Wx + f*Wf);
   };
+})();
+</script>
+
+
+<script>
+(function(){
+  // Computes overall strictly from project.json fields.
+  // If component fields exist, overall = min(progress, progress_text, progress_textures, progress_fonts).
+  // Else overall = progress.
+  if (!window.jsonOverall){
+    window.jsonOverall = function(p){
+      function isNum(v){ return typeof v === 'number' && isFinite(v); }
+      function clamp01(v){ v = Math.round(Number(v)||0); if (v<0) return 0; if (v>100) return 100; return v; }
+      var vals = [];
+      if (p && isNum(p.progress)) vals.push(clamp01(p.progress));
+      var t = p && isNum(p.progress_text) ? clamp01(p.progress_text) : null;
+      var x = p && isNum(p.progress_textures) ? clamp01(p.progress_textures) : null;
+      var f = p && isNum(p.progress_fonts) ? clamp01(p.progress_fonts) : null;
+      // include components ONLY if present (so missing fields don't drag to 0)
+      if (t !== null) vals.push(t);
+      if (x !== null) vals.push(x);
+      if (f !== null) vals.push(f);
+      if (vals.length === 0) return 0;
+      return Math.min.apply(null, vals);
+    };
+  }
 })();
 </script>
 
