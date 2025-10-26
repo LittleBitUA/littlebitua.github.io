@@ -12,10 +12,10 @@
     "desc_uk": "<strong>Українська локалізація першого епізоду.</strong> Інтерфейс і субтитри.",
     "desc_en": "<strong>Ukrainian localization (episodic game).</strong> UI & subtitles.",
     "cta": {
-      "type": "disabled",
+      "type": "enabled",
       "label_uk": "Завантажити",
       "label_en": "Download",
-      "url": "#"
+      "url": "https://drive.google.com/file/d/1PxV-wsFB8PS5a2RaCHhxfS7OaAGfRt7R/view?usp=sharing"
     },
     "images_ua": [],
     "videos_ua": [
