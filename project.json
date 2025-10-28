@@ -28,7 +28,7 @@
     "cover": "assets/LaD.webp",
     "logo": "assets/LaD_logo.webp",
     "status": "fundraising",
-    "raised": 425,
+    "raised": 2600,
     "goal": 35000,
     "progress": 0,
     "progress_text": 15,
@@ -58,7 +58,7 @@
     "platforms": [
       "Steam"
     ],
-    "raised": 1953,
+    "raised": 4127,
     "goal": 25000,
     "progress": 0,
     "progress_text": 2,
@@ -146,7 +146,7 @@
     "progress_textures": 0,
     "progress_fonts": 70,
     "goal": 5000,
-    "raised": 4150,
+    "raised": 5000,
     "desc_uk": "<strong>Авторський проєкт SWERY та SUDA51.</strong> Починаємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
     "desc_en": "<strong>Ан auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
     "cta": {
