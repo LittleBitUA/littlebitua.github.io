@@ -137,7 +137,7 @@
     "title": "HOTEL BARCELONA",
     "cover": "assets/barcelona.webp",
     "logo": "assets/barcelona_logo.webp",
-    "status": "fundraising",
+    "status": "in-progress",
     "platforms": [
       "Steam"
     ],
@@ -145,16 +145,13 @@
     "progress_text": 50,
     "progress_textures": 0,
     "progress_fonts": 70,
-    "goal": 5000,
-    "raised": 5000,
-    "desc_uk": "<strong>Авторський проєкт SWERY та SUDA51.</strong> Починаємо збір на повну українську локалізацію: інтерфейс, субтитри, туторіали.",
-    "desc_en": "<strong>Ан auteur project by SWERY and SUDA51.</strong> Fundraising for a full Ukrainian localization: UI, subtitles, tutorials.",
+    "desc_uk": "<strong>Авторський проєкт SWERY та SUDA51.</strong> Повна українська локалізація у процесі: інтерфейс, субтитри, туторіали.",
+    "desc_en": "<strong>An auteur project by SWERY and SUDA51.</strong> Full Ukrainian localization in progress: UI, subtitles, tutorials.",
     "cta": {
-      "type": "enable",
-      "label_uk": "Спонсорувати",
-      "label_en": "Sponsor",
-      "url": "https://donatello.to/LittleBitUA",
-      "primary": true
+      "type": "disabled",
+      "label_uk": "Завантажити",
+      "label_en": "Download",
+      "url": "#"
     },
     "steam": "https://store.steampowered.com/app/2286600/HOTEL_BARCELONA/",
     "images_ua": [],
