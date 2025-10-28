@@ -333,7 +333,7 @@
     "status": "early-access",
     "progress": 86,
     "progress_text": 86,
-    "progress_textures": 50,
+    "progress_textures": 70,
     "progress_fonts": 90,
     "platforms": [
       "Steam"
