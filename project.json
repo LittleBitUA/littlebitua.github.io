@@ -61,7 +61,7 @@
     "raised": 4127,
     "goal": 25000,
     "progress": 0,
-    "progress_text": 2,
+    "progress_text": 5,
     "progress_textures": 0,
     "progress_fonts": 100,
     "desc_uk": "Збір на українську локалізацію: інтерфейс, субтитри.",
