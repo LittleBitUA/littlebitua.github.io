@@ -805,27 +805,49 @@ document.addEventListener('DOMContentLoaded', () => {
       const parts = readinessParts(p);
       const d=I18N[lang];
       
-        // Dispatch-specific: show episodes instead of text/textures
-        if (p && (p.id==='dispatch' || p.progress_mode==='episodes' || p.progress_ep1!=null || p.progress_ep2!=null || p.progress_ep3!=null)){
+        // Dispatch-specific: episodes 1–8 (fallback labels; no i18n changes needed)
+        if (p && (p.id==='dispatch' || p.progress_mode==='episodes' || p.progress_ep1!=null || p.progress_ep2!=null)){
           const lang = document.documentElement.lang || 'uk';
-          const EP1 = lang==='en' ? 'Episode 1 readiness' : 'Готовність першого епізоду';
-          const EP2 = lang==='en' ? 'Episode 2 readiness' : 'Готовність другого епізоду';
-          const EP3 = lang==='en' ? 'Episode 3 readiness' : 'Готовність третього епізоду';
-          const ep1 = pct(p.progress_ep1);
-          const ep2 = pct(p.progress_ep2);
-          const ep3 = pct(p.progress_ep3);
+          const label = (n)=>{
+            if (lang==='en') return `Episode ${n} readiness`;
+            const ua = {1:'першого',2:'другого',3:'третього',4:'четвертого',5:'п’ятого',6:'шостого',7:'сьомого',8:'восьмого'};
+            return `Готовність ${ua[n]} епізоду`;
+          };
+          const ep1=pct(p.progress_ep1), ep2=pct(p.progress_ep2), ep3=pct(p.progress_ep3),
+                ep4=pct(p.progress_ep4), ep5=pct(p.progress_ep5), ep6=pct(p.progress_ep6),
+                ep7=pct(p.progress_ep7), ep8=pct(p.progress_ep8);
           rdEl.innerHTML = `
             <div class="readiness-item">
-              <div class="row"><span class="label">${EP1}:</span><span class="percent">${ep1}%</span></div>
-              <div class="progress sm" aria-label="${EP1}"><span style="width:${ep1}%"></span></div>
+              <div class="row"><span class="label">${label(1)}:</span><span class="percent">${ep1}%</span></div>
+              <div class="progress sm" aria-label="${label(1)}"><span style="width:${ep1}%"></span></div>
             </div>
             <div class="readiness-item">
-              <div class="row"><span class="label">${EP2}:</span><span class="percent">${ep2}%</span></div>
-              <div class="progress sm" aria-label="${EP2}"><span style="width:${ep2}%"></span></div>
+              <div class="row"><span class="label">${label(2)}:</span><span class="percent">${ep2}%</span></div>
+              <div class="progress sm" aria-label="${label(2)}"><span style="width:${ep2}%"></span></div>
             </div>
             <div class="readiness-item">
-              <div class="row"><span class="label">${EP3}:</span><span class="percent">${ep3}%</span></div>
-              <div class="progress sm" aria-label="${EP3}"><span style="width:${ep3}%"></span></div>
+              <div class="row"><span class="label">${label(3)}:</span><span class="percent">${ep3}%</span></div>
+              <div class="progress sm" aria-label="${label(3)}"><span style="width:${ep3}%"></span></div>
+            </div>
+            <div class="readiness-item">
+              <div class="row"><span class="label">${label(4)}:</span><span class="percent">${ep4}%</span></div>
+              <div class="progress sm" aria-label="${label(4)}"><span style="width:${ep4}%"></span></div>
+            </div>
+            <div class="readiness-item">
+              <div class="row"><span class="label">${label(5)}:</span><span class="percent">${ep5}%</span></div>
+              <div class="progress sm" aria-label="${label(5)}"><span style="width:${ep5}%"></span></div>
+            </div>
+            <div class="readiness-item">
+              <div class="row"><span class="label">${label(6)}:</span><span class="percent">${ep6}%</span></div>
+              <div class="progress sm" aria-label="${label(6)}"><span style="width:${ep6}%"></span></div>
+            </div>
+            <div class="readiness-item">
+              <div class="row"><span class="label">${label(7)}:</span><span class="percent">${ep7}%</span></div>
+              <div class="progress sm" aria-label="${label(7)}"><span style="width:${ep7}%"></span></div>
+            </div>
+            <div class="readiness-item">
+              <div class="row"><span class="label">${label(8)}:</span><span class="percent">${ep8}%</span></div>
+              <div class="progress sm" aria-label="${label(8)}"><span style="width:${ep8}%"></span></div>
             </div>`;
         } else {
           rdEl.innerHTML = `
