@@ -605,7 +605,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return clamp(Math.round(t*WEIGHTS.text + tx*WEIGHTS.textures + f*WEIGHTS.fonts), 0, 100);
     }
     function readinessParts(p){
-      return { overall: weightedProgress(p), text: pct(p.progress_text), textures: pct(p.progress_textures) };
+      const hasEpisodes = (p.progress_mode==='episodes') || (p.progress_ep1!=null || p.progress_ep2!=null || p.progress_ep3!=null);
+      if (hasEpisodes){
+        return {
+          mode: 'episodes',
+          ep1: pct(p.progress_ep1),
+          ep2: pct(p.progress_ep2),
+          ep3: pct(p.progress_ep3)
+        };
+      }
+      return { mode: 'default', overall: weightedProgress(p), text: pct(p.progress_text), textures: pct(p.progress_textures) };
+    };
     }
     function formatUA(n){ return (Number(n)||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
     function norm(s){
@@ -804,7 +814,22 @@ document.addEventListener('DOMContentLoaded', () => {
       // readiness grid
       const parts = readinessParts(p);
       const d=I18N[lang];
-      rdEl.innerHTML = `
+      if (parts.mode==='episodes'){
+        rdEl.innerHTML = `
+        <div class="readiness-item">
+          <div class="row"><span class="label">${d.readiness_ep1}:</span><span class="percent">${parts.ep1}%</span></div>
+          <div class="progress sm" aria-label="${d.readiness_ep1}"><span style="width:${parts.ep1}%"></span></div>
+        </div>
+        <div class="readiness-item">
+          <div class="row"><span class="label">${d.readiness_ep2}:</span><span class="percent">${parts.ep2}%</span></div>
+          <div class="progress sm" aria-label="${d.readiness_ep2}"><span style="width:${parts.ep2}%"></span></div>
+        </div>
+        <div class="readiness-item">
+          <div class="row"><span class="label">${d.readiness_ep3}:</span><span class="percent">${parts.ep3}%</span></div>
+          <div class="progress sm" aria-label="${d.readiness_ep3}"><span style="width:${parts.ep3}%"></span></div>
+        </div>`;
+      } else {
+        rdEl.innerHTML = `
         <div class="readiness-item">
           <div class="row"><span class="label">${d.readiness_overall}:</span><span class="percent">${parts.overall}%</span></div>
           <div class="progress sm" aria-label="${d.readiness_overall}"><span style="width:${parts.overall}%"></span></div>
@@ -817,6 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="row"><span class="label">${d.readiness_textures}:</span><span class="percent">${parts.textures}%</span></div>
           <div class="progress sm" aria-label="${d.readiness_textures}"><span style="width:${parts.textures}%"></span></div>
         </div>`;
+      }
       // images carousel
       const images = Array.isArray(p.images_ua)? p.images_ua : [];
       CAROUSEL_IMAGES = images;
