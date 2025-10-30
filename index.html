@@ -605,7 +605,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return clamp(Math.round(t*WEIGHTS.text + tx*WEIGHTS.textures + f*WEIGHTS.fonts), 0, 100);
     }
     function readinessParts(p){
-      const hasEpisodes = (p.progress_mode==='episodes') || (p.progress_ep1!=null || p.progress_ep2!=null || p.progress_ep3!=null);
+      const hasEpisodes = (p && (p.progress_mode==='episodes' || p.progress_ep1!=null || p.progress_ep2!=null || p.progress_ep3!=null));
       if (hasEpisodes){
         return {
           mode: 'episodes',
@@ -615,8 +615,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       }
       return { mode: 'default', overall: weightedProgress(p), text: pct(p.progress_text), textures: pct(p.progress_textures) };
-    };
     }
+
     function formatUA(n){ return (Number(n)||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
     function norm(s){
       try {
@@ -693,6 +693,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function projectCard(p){
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
+      const ep1Label = (d.readiness_ep1||'Готовність першого епізоду');
+      const ep2Label = (d.readiness_ep2||'Готовність другого епізоду');
+      const ep3Label = (d.readiness_ep3||'Готовність третього епізоду');
       const desc= lang==='en'? p.desc_en : p.desc_uk;
       const pct = (p.status==='fundraising') ? clamp(Math.round(p.progress||0),0,100) : weightedProgress(p);
       const fundraising = p.status==='fundraising' && (p.goal>0);
@@ -817,16 +820,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (parts.mode==='episodes'){
         rdEl.innerHTML = `
         <div class="readiness-item">
-          <div class="row"><span class="label">${d.readiness_ep1}:</span><span class="percent">${parts.ep1}%</span></div>
-          <div class="progress sm" aria-label="${d.readiness_ep1}"><span style="width:${parts.ep1}%"></span></div>
+          <div class="row"><span class="label">${ep1Label}:</span><span class="percent">${parts.ep1}%</span></div>
+          <div class="progress sm" aria-label="${ep1Label}"><span style="width:${parts.ep1}%"></span></div>
         </div>
         <div class="readiness-item">
-          <div class="row"><span class="label">${d.readiness_ep2}:</span><span class="percent">${parts.ep2}%</span></div>
-          <div class="progress sm" aria-label="${d.readiness_ep2}"><span style="width:${parts.ep2}%"></span></div>
+          <div class="row"><span class="label">${ep2Label}:</span><span class="percent">${parts.ep2}%</span></div>
+          <div class="progress sm" aria-label="${ep2Label}"><span style="width:${parts.ep2}%"></span></div>
         </div>
         <div class="readiness-item">
-          <div class="row"><span class="label">${d.readiness_ep3}:</span><span class="percent">${parts.ep3}%</span></div>
-          <div class="progress sm" aria-label="${d.readiness_ep3}"><span style="width:${parts.ep3}%"></span></div>
+          <div class="row"><span class="label">${ep3Label}:</span><span class="percent">${parts.ep3}%</span></div>
+          <div class="progress sm" aria-label="${ep3Label}"><span style="width:${parts.ep3}%"></span></div>
         </div>`;
       } else {
         rdEl.innerHTML = `
