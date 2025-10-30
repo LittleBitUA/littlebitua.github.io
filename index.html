@@ -80,7 +80,6 @@
     .pill{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background: rgba(125,211,252,.10); border:1px solid rgba(125,211,252,.30); color:var(--text); font-weight:700; font-size:12px}
     .cta{display:flex; gap:12px; margin-top:12px; flex-wrap:wrap}
     
-.icon-btn{ z-index:2; pointer-events:auto; }
 .icon-btn{
   position:relative;
   display:inline-flex; align-items:center; justify-content:center;
@@ -606,18 +605,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return clamp(Math.round(t*WEIGHTS.text + tx*WEIGHTS.textures + f*WEIGHTS.fonts), 0, 100);
     }
     function readinessParts(p){
-      const hasEpisodes = (p && (p.progress_mode==='episodes' || p.progress_ep1!=null || p.progress_ep2!=null || p.progress_ep3!=null));
-      if (hasEpisodes){
-        return {
-          mode: 'episodes',
-          ep1: pct(p.progress_ep1),
-          ep2: pct(p.progress_ep2),
-          ep3: pct(p.progress_ep3)
-        };
-      }
-      return { mode: 'default', overall: weightedProgress(p), text: pct(p.progress_text), textures: pct(p.progress_textures) };
+      return { overall: weightedProgress(p), text: pct(p.progress_text), textures: pct(p.progress_textures) };
     }
-
     function formatUA(n){ return (Number(n)||0).toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
     function norm(s){
       try {
@@ -694,9 +683,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function projectCard(p){
       const lang=document.documentElement.lang||'uk';
       const d=I18N[lang];
-      const ep1Label = (d.readiness_ep1||'Готовність першого епізоду');
-      const ep2Label = (d.readiness_ep2||'Готовність другого епізоду');
-      const ep3Label = (d.readiness_ep3||'Готовність третього епізоду');
       const desc= lang==='en'? p.desc_en : p.desc_uk;
       const pct = (p.status==='fundraising') ? clamp(Math.round(p.progress||0),0,100) : weightedProgress(p);
       const fundraising = p.status==='fundraising' && (p.goal>0);
@@ -759,19 +745,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // bind click openers (image disabled)
       // Image click disabled – use info icon instead
       // grid.querySelectorAll('.card .thumb').forEach(el=>{ /* no-op */ });
-      
-      // Delegated click handler for info button and thumbnail (robust for all cards, including Dispatch)
-      grid.addEventListener('click', function(e){
-        const trigger = e.target.closest('.info-btn, .thumb');
-        if (!trigger || !grid.contains(trigger)) return;
-        const card = trigger.closest('.card');
-        const id = card && card.dataset ? card.dataset.id : null;
-        if (!id) return;
-        const proj = (Array.isArray(PROJECTS) ? PROJECTS.find(p => p.id === id) : null);
-        if (!proj) return;
-        safeOpenProjectModal(proj);
-      }, { passive: true });
-}
+      grid.querySelectorAll('.card .info-btn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const card = e.currentTarget.closest('.card');
+          const id = card?.dataset.id; if (!id) return;
+          const proj = PROJECTS.find(p=>p.id===id); if (!proj) return;
+          openProjectModal(proj);
+        }, { once:false });
+      });
+    
+    }
 
 // --- Modal logic ---
     let CAROUSEL_INDEX=0;
@@ -821,22 +804,31 @@ document.addEventListener('DOMContentLoaded', () => {
       // readiness grid
       const parts = readinessParts(p);
       const d=I18N[lang];
-      if (parts.mode==='episodes'){
-        rdEl.innerHTML = `
-        <div class="readiness-item">
-          <div class="row"><span class="label">${ep1Label}:</span><span class="percent">${parts.ep1}%</span></div>
-          <div class="progress sm" aria-label="${ep1Label}"><span style="width:${parts.ep1}%"></span></div>
-        </div>
-        <div class="readiness-item">
-          <div class="row"><span class="label">${ep2Label}:</span><span class="percent">${parts.ep2}%</span></div>
-          <div class="progress sm" aria-label="${ep2Label}"><span style="width:${parts.ep2}%"></span></div>
-        </div>
-        <div class="readiness-item">
-          <div class="row"><span class="label">${ep3Label}:</span><span class="percent">${parts.ep3}%</span></div>
-          <div class="progress sm" aria-label="${ep3Label}"><span style="width:${parts.ep3}%"></span></div>
-        </div>`;
-      } else {
-        rdEl.innerHTML = `
+      
+        // Dispatch-specific: show episodes instead of text/textures
+        if (p && (p.id==='dispatch' || p.progress_mode==='episodes' || p.progress_ep1!=null || p.progress_ep2!=null || p.progress_ep3!=null)){
+          const lang = document.documentElement.lang || 'uk';
+          const EP1 = lang==='en' ? 'Episode 1 readiness' : 'Готовність першого епізоду';
+          const EP2 = lang==='en' ? 'Episode 2 readiness' : 'Готовність другого епізоду';
+          const EP3 = lang==='en' ? 'Episode 3 readiness' : 'Готовність третього епізоду';
+          const ep1 = pct(p.progress_ep1);
+          const ep2 = pct(p.progress_ep2);
+          const ep3 = pct(p.progress_ep3);
+          rdEl.innerHTML = `
+            <div class="readiness-item">
+              <div class="row"><span class="label">${EP1}:</span><span class="percent">${ep1}%</span></div>
+              <div class="progress sm" aria-label="${EP1}"><span style="width:${ep1}%"></span></div>
+            </div>
+            <div class="readiness-item">
+              <div class="row"><span class="label">${EP2}:</span><span class="percent">${ep2}%</span></div>
+              <div class="progress sm" aria-label="${EP2}"><span style="width:${ep2}%"></span></div>
+            </div>
+            <div class="readiness-item">
+              <div class="row"><span class="label">${EP3}:</span><span class="percent">${ep3}%</span></div>
+              <div class="progress sm" aria-label="${EP3}"><span style="width:${ep3}%"></span></div>
+            </div>`;
+        } else {
+          rdEl.innerHTML = `
         <div class="readiness-item">
           <div class="row"><span class="label">${d.readiness_overall}:</span><span class="percent">${parts.overall}%</span></div>
           <div class="progress sm" aria-label="${d.readiness_overall}"><span style="width:${parts.overall}%"></span></div>
@@ -849,7 +841,8 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="row"><span class="label">${d.readiness_textures}:</span><span class="percent">${parts.textures}%</span></div>
           <div class="progress sm" aria-label="${d.readiness_textures}"><span style="width:${parts.textures}%"></span></div>
         </div>`;
-      }
+        }
+
       // images carousel
       const images = Array.isArray(p.images_ua)? p.images_ua : [];
       CAROUSEL_IMAGES = images;
