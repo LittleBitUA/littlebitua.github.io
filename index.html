@@ -80,6 +80,7 @@
     .pill{display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; background: rgba(125,211,252,.10); border:1px solid rgba(125,211,252,.30); color:var(--text); font-weight:700; font-size:12px}
     .cta{display:flex; gap:12px; margin-top:12px; flex-wrap:wrap}
     
+.icon-btn{ z-index:2; pointer-events:auto; }
 .icon-btn{
   position:relative;
   display:inline-flex; align-items:center; justify-content:center;
@@ -758,17 +759,18 @@ document.addEventListener('DOMContentLoaded', () => {
       // bind click openers (image disabled)
       // Image click disabled – use info icon instead
       // grid.querySelectorAll('.card .thumb').forEach(el=>{ /* no-op */ });
-      grid.querySelectorAll('.card .info-btn').forEach(btn=>{
-        btn.addEventListener('click', (e)=>{
-          const card = e.currentTarget.closest('.card');
-          const id = card?.dataset.id; if (!id) return;
-          const proj = PROJECTS.find(p=>p.id===id); if (!proj) return;
-          openProjectModal(proj);
-        }, { once:false });
-      });
-    
-    }
-
+      
+      // Delegated click handler for info button and thumbnail (robust for all cards, including Dispatch)
+      grid.addEventListener('click', function(e){
+        const trigger = e.target.closest('.info-btn, .thumb');
+        if (!trigger || !grid.contains(trigger)) return;
+        const card = trigger.closest('.card');
+        const id = card && card.dataset ? card.dataset.id : null;
+        if (!id) return;
+        const proj = (Array.isArray(PROJECTS) ? PROJECTS.find(p => p.id === id) : null);
+        if (!proj) return;
+        safeOpenProjectModal(proj);
+      }, { passive: true });
 // --- Modal logic ---
     let CAROUSEL_INDEX=0;
     function setModalOpen(open){
