@@ -290,7 +290,7 @@
     "platforms": [
       "Steam"
     ],
-    "desc_uk": "<strong>Культовий ремейк на оновленому рушії.</strong> Повний український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.",
+    "desc_uk": "<strong>Культовий ремейк на оновленому рушії.</strong> Повний текстовий український переклад: підісторії (побічні завдання), туторіали, інтерфейс та інше.",
     "desc_en": "<strong>A cult remake on the upgraded engine.</strong> Full Ukrainian translation: substories, tutorials, UI, and more.",
     "cta": {
       "type": "disabled",
