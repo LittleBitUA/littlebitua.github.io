@@ -101,8 +101,8 @@
     "platforms": [
       "PS3"
     ],
-    "desc_uk": "<strong>Повна українська локалізація.</strong> Інтерфейс і субтитри.",
-    "desc_en": "<strong>Full Ukrainian localization.</strong> UI & subtitles.",
+    "desc_uk": "<strong>Повний текстовий переклад.</strong> Інтерфейс і субтитри.",
+    "desc_en": "<strong>Ukrainian localization.</strong> UI & subtitles.",
     "cta": {
       "type": "disabled",
       "label_uk": "Завантажити",
