@@ -37,7 +37,7 @@
     "cover": "assets/LaD.webp",
     "logo": "assets/LaD_logo.webp",
     "status": "fundraising",
-    "raised": 3000,
+    "raised": 3970,
     "goal": 35000,
     "progress": 0,
     "progress_text": 17,
@@ -67,7 +67,7 @@
     "platforms": [
       "Steam"
     ],
-    "raised": 4127,
+    "raised": 8527,
     "goal": 25000,
     "progress": 0,
     "progress_text": 5,
