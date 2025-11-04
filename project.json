@@ -37,7 +37,7 @@
     "cover": "assets/LaD.webp",
     "logo": "assets/LaD_logo.webp",
     "status": "fundraising",
-    "raised": 3970,
+    "raised": 4520,
     "goal": 35000,
     "progress": 0,
     "progress_text": 17,
@@ -123,10 +123,10 @@
     "platforms": [
       "PS3"
     ],
-    "raised": 100,
+    "raised": 300,
     "goal": 8000,
     "progress": 0,
-    "progress_text": 2,
+    "progress_text": 5,
     "progress_textures": 0,
     "progress_fonts": 100,
     "desc_uk": "<strong>Збір на українську локалізацію: інтерфейс, субтитри.</strong>",
