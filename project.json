@@ -9,7 +9,7 @@
     "progress_text": 5,
     "progress_textures": 0,
     "progress_fonts": 100,
-    "desc_uk": "<strong>Плануємо повну українську локалізацію.</strong> Інтерфейс і субтитри.",
+    "desc_uk": "<strong>Інтерфейс і субтитри українською.</strong>",
     "desc_en": "<strong>Ukrainian localization in progress.</strong> UI & subtitles.",
     "cta": {
       "type": "disabled",
@@ -30,7 +30,7 @@
     "progress_text": 100,
     "progress_textures": 100,
     "progress_fonts": 100,
-    "desc_uk": "<strong>Українська локалізація першого епізоду.</strong> Інтерфейс і субтитри.",
+    "desc_uk": "<strong>Українська локалізація першого та другого епізоду.</strong> Інтерфейс і субтитри.",
     "desc_en": "<strong>Ukrainian localization (episodic game).</strong> UI & subtitles.",
     "cta": {
       "type": "enabled",
