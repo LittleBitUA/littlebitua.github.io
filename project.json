@@ -6,7 +6,7 @@
     "logo": "assets/nier_replicant_logo.webp",
     "status": "in-progress",
     "progress": 0,
-    "progress_text": 5,
+    "progress_text": 6,
     "progress_textures": 0,
     "progress_fonts": 100,
     "desc_uk": "<strong>Інтерфейс і субтитри українською.</strong>",
