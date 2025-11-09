@@ -144,7 +144,7 @@
     "platforms": [
       "PS3"
     ],
-    "raised": 300,
+    "raised": 500,
     "goal": 8000,
     "progress": 0,
     "progress_text": 8,
@@ -305,7 +305,7 @@
     "logo": "assets/yakuza_kiwami2_logo.webp",
     "status": "in-progress",
     "progress": 60,
-    "progress_text": 64,
+    "progress_text": 70,
     "progress_textures": 30,
     "progress_fonts": 100,
     "platforms": [
