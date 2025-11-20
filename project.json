@@ -47,7 +47,7 @@
     "progress_ep2": 100,
     "progress_ep3": 100,
     "progress_ep4": 100,
-    "progress_ep5": 11,
+    "progress_ep5": 58,
     "progress_ep6": 0,
     "progress_ep7": 0,
     "progress_ep8": 0
@@ -58,10 +58,10 @@
     "cover": "assets/LaD.webp",
     "logo": "assets/LaD_logo.webp",
     "status": "fundraising",
-    "raised": 5900,
+    "raised": 11020,
     "goal": 35000,
     "progress": 0,
-    "progress_text": 17,
+    "progress_text": 18,
     "progress_textures": 35,
     "progress_fonts": 90,
     "desc_uk": "<strong>Збір на українську локалізацію: інтерфейс, субтитри.</strong>",
@@ -88,10 +88,10 @@
     "platforms": [
       "Steam"
     ],
-    "raised": 13146,
+    "raised": 13246,
     "goal": 25000,
     "progress": 0,
-    "progress_text": 13,
+    "progress_text": 15,
     "progress_textures": 0,
     "progress_fonts": 100,
     "desc_uk": "Збір на українську локалізацію: інтерфейс, субтитри.",
@@ -144,7 +144,7 @@
     "platforms": [
       "PS3"
     ],
-    "raised": 910,
+    "raised": 1110,
     "goal": 8000,
     "progress": 0,
     "progress_text": 8,
@@ -305,7 +305,7 @@
     "logo": "assets/yakuza_kiwami2_logo.webp",
     "status": "in-progress",
     "progress": 60,
-    "progress_text": 70,
+    "progress_text": 90,
     "progress_textures": 30,
     "progress_fonts": 100,
     "platforms": [
