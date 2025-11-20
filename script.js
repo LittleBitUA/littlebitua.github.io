@@ -85,10 +85,17 @@ document.addEventListener('DOMContentLoaded', () => {
             let metaVal = `${p.progress}%`;
             let btnClass = 'btn-grad-blue';
 
+            // Автоматичний розрахунок прогресу для збору коштів
+            let displayProgress = p.progress;
+
             if(p.status === 'fundraising') {
                 stClass = 'st-fund'; stText = t.st_fund; barColor = 'var(--neon-orange)';
                 metaLabel = t.lbl_raised;
-                if(p.goal) metaVal = `${(p.raised/1000).toFixed(1)}k / ${(p.goal/1000).toFixed(1)}k`;
+                if(p.goal) {
+                    metaVal = `${(p.raised/1000).toFixed(1)}k / ${(p.goal/1000).toFixed(1)}k`;
+                    // Автоматично розраховуємо прогрес збору коштів
+                    displayProgress = Math.min(Math.round((p.raised/p.goal)*100), 100);
+                }
                 btnClass = 'btn-fund';
             } else if(p.status === 'early-access') {
                 stClass = 'st-early'; stText = t.st_early; barColor = 'var(--neon-purple)';
@@ -116,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="progress-wrap">
                         <div class="p-meta"><span>${metaLabel}</span><span>${metaVal}</span></div>
                         <div class="p-track">
-                            <div class="p-bar" style="width:${p.progress}%; background:${barColor}; box-shadow:0 0 10px ${barColor}"></div>
+                            <div class="p-bar" style="width:${displayProgress}%; background:${barColor}; box-shadow:0 0 10px ${barColor}"></div>
                         </div>
                     </div>
                     <div class="card-actions">
@@ -131,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.getElementById('stat-count').innerText = filtered.length;
         document.getElementById('stat-ea').innerText = filtered.filter(p => p.status === 'early-access').length;
+
+        // Розрахунок середньої готовності з урахуванням автоматичного прогресу збору
         const active = filtered.filter(p => p.status !== 'fundraising');
         const avg = active.length ? Math.round(active.reduce((a,b)=>a+(b.progress||0),0)/active.length) : 0;
         document.getElementById('stat-avg').innerText = avg + "%";
