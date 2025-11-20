@@ -555,7 +555,7 @@
         } else if (p.status === 'fundraising') {
              const pct = Math.round((p.raised / p.goal) * 100);
              statsBox.innerHTML += createBar(t.lbl_raised, Math.min(pct, 100));
-             statsBox.innerHTML += createBar(`${t.lbl_text} (Tech)`, p.progress_text || 0);
+             statsBox.innerHTML += createBar(t.lbl_text, p.progress_text || 0);
         } else {
             if(p.progress_text !== undefined) statsBox.innerHTML += createBar(t.lbl_text, p.progress_text);
             if(p.progress_textures !== undefined) statsBox.innerHTML += createBar(t.lbl_textures, p.progress_textures);
