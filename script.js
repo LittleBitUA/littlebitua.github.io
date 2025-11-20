@@ -96,7 +96,7 @@
         "cover": "assets/nier_replicant.webp",
         "logo": "assets/nier_replicant_logo.webp",
         "status": "in-progress",
-        "progress": 0, "progress_text": 8, "progress_textures": 0, "progress_fonts": 100,
+        "progress": 8, "progress_text": 8, "progress_textures": 0, "progress_fonts": 100,
         "desc": "Інтерфейс і субтитри українською.",
         "desc_en": "UI and subtitles in Ukrainian.",
         "cta": { "type": "disabled", "label": "Завантажити", "label_en": "Download", "url": "#" },
@@ -108,12 +108,12 @@
         "cover": "assets/Dispatch.webp",
         "logo": "assets/Dispatch_logo.webp",
         "status": "in-progress",
-        "progress": 38,
+        "progress": 50,
         "progress_mode": "episodes",
         "progress_ep1": 100, "progress_ep2": 100, "progress_ep3": 100, "progress_ep4": 100,
         "progress_ep5": 58, "progress_ep6": 0, "progress_ep7": 0, "progress_ep8": 0,
-        "desc": "Українська локалізація першого та другого епізоду.",
-        "desc_en": "Ukrainian localization of the first and second episodes.",
+        "desc": "Текстова українська локалізація чотирьох епізодів.",
+        "desc_en": "Text Ukrainian localization of four episodes.",
         "cta": { "type": "enabled", "label": "Завантажити", "label_en": "Download", "url": "https://drive.google.com/file/d/1PxV-wsFB8PS5a2RaCHhxfS7OaAGfRt7R/view?usp=sharing", "primary": true },
         "videos": ["https://www.youtube.com/watch?v=JnsQQNCTCPs"]
       },
@@ -425,8 +425,13 @@
             // Button Logic
             let btnHtml = `<span class="btn btn-primary" style="opacity:0.5; cursor:default">${label || t.status_in_progress}</span>`;
             if(p.cta.type !== 'disabled') {
-                const activeClass = (p.status === 'early-access' || p.status === 'done') ? 'btn-primary-active' : 'btn-primary';
-                btnHtml = `<a href="${p.cta.url}" target="_blank" class="btn ${activeClass}">${label}</a>`;
+                let btnClass = 'btn-primary';
+                if (p.status === 'early-access' || p.status === 'done') {
+                    btnClass = 'btn-primary-active';
+                } else if (p.status === 'fundraising') {
+                    btnClass = 'btn-primary-sponsor';
+                }
+                btnHtml = `<a href="${p.cta.url}" target="_blank" class="btn ${btnClass}">${label}</a>`;
             }
 
             const card = document.createElement('article');
@@ -460,8 +465,8 @@
             `;
             grid.appendChild(card);
         });
-        
-        updateStats(projectsData); // Always calc stats based on full list
+
+        updateStats(list); // Calc stats based on filtered list
     }
 
     // --- RENDER BENEFACTORS ---
@@ -526,7 +531,6 @@
         const t = translations[currentLang];
 
         // Basic Info
-        document.getElementById('m-title').innerText = p.title;
         document.getElementById('m-logo').src = p.logo;
         document.getElementById('m-desc').innerHTML = currentLang === 'uk' ? p.desc : p.desc_en;
 
