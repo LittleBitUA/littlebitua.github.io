@@ -274,6 +274,15 @@ document.addEventListener('DOMContentLoaded', () => {
             slides[currentIndex].classList.add('active');
             dots[currentIndex].classList.add('active');
 
+            // Перезапуск анімації прогрес-бару
+            const progressBar = slides[currentIndex].querySelector('.slide-progress-bar');
+            if (progressBar) {
+                progressBar.style.animation = 'none';
+                // Примусовий reflow для перезапуску анімації
+                void progressBar.offsetWidth;
+                progressBar.style.animation = '';
+            }
+
             resetAutoplay();
         };
 
@@ -301,7 +310,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const resetAutoplay = () => {
             stopAutoplay();
-            startAutoplay();
+            // Затримка перед перезапуском автоплею після ручного перемикання
+            setTimeout(() => {
+                startAutoplay();
+            }, 3000); // 3 секунди пауза після ручного перемикання
         };
 
         // Події для кнопок

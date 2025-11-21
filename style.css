@@ -76,7 +76,7 @@ body {
 
 .news-slider {
     position: relative;
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
 }
 
@@ -205,25 +205,72 @@ body {
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     width: fit-content;
+    position: relative;
+    overflow: hidden;
+}
+
+.news-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.news-btn:hover::before {
+    left: 100%;
 }
 
 .news-btn:hover {
     background: rgba(255, 255, 255, 0.2);
     border-color: white;
-    transform: translateX(5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.2);
 }
 
 .news-btn svg {
-    transition: transform 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .news-btn:hover svg {
     transform: translateX(5px);
+}
+
+/* Progress Bar */
+.slide-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--neon-blue);
+    box-shadow: 0 0 10px var(--neon-blue);
+    z-index: 10;
+    transition: width 0.1s linear;
+}
+
+.news-slide.active .slide-progress-bar {
+    animation: progressSlide 5s linear forwards;
+}
+
+.news-slider:hover .slide-progress-bar {
+    animation-play-state: paused;
+}
+
+@keyframes progressSlide {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
 }
 
 /* Slider Navigation */
@@ -247,22 +294,49 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.slider-nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 242, 255, 0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.slider-nav:hover::before {
+    opacity: 1;
 }
 
 .slider-nav svg {
     width: 20px;
     height: 20px;
     color: white;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .slider-nav:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(0, 242, 255, 0.5);
-    box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+    box-shadow: 0 0 25px rgba(0, 242, 255, 0.4), 0 4px 15px rgba(0, 0, 0, 0.3);
+    transform: scale(1.15);
+}
+
+.slider-nav:hover svg {
     transform: scale(1.1);
+}
+
+.slider-nav:active {
+    transform: scale(1.05);
 }
 
 /* Slider Dots */
@@ -277,9 +351,24 @@ body {
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.4);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     border: none;
     padding: 0;
+    position: relative;
+}
+
+.slider-dot::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 242, 255, 0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.slider-dot:hover::before {
+    opacity: 1;
 }
 
 .slider-dot:hover {
@@ -291,7 +380,11 @@ body {
     width: 30px;
     border-radius: 5px;
     background: var(--neon-blue);
-    box-shadow: 0 0 15px var(--neon-blue);
+    box-shadow: 0 0 20px var(--neon-blue), 0 2px 8px rgba(0, 242, 255, 0.4);
+}
+
+.slider-dot.active::before {
+    opacity: 0;
 }
 
 /* Responsive */
@@ -417,8 +510,14 @@ body {
     }
 
     .news-btn {
-        padding: 9px 18px;
-        font-size: 0.8rem;
+        padding: 9px 16px;
+        font-size: 0.75rem;
+        gap: 6px;
+    }
+
+    .news-btn svg {
+        width: 14px;
+        height: 14px;
     }
 
     .slider-controls {
