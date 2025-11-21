@@ -234,4 +234,131 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('click', e => { if(e.target === modal) closeM(); });
 
     renderGrid();
+
+    // === NEWS SLIDER ===
+    const initNewsSlider = () => {
+        const slider = document.querySelector('.news-slider');
+        if (!slider) return;
+
+        const slides = Array.from(slider.querySelectorAll('.news-slide'));
+        const dotsContainer = slider.querySelector('.slider-dots');
+        const prevBtn = slider.querySelector('.slider-prev');
+        const nextBtn = slider.querySelector('.slider-next');
+
+        let currentIndex = 0;
+        let autoplayInterval = null;
+        const AUTOPLAY_DELAY = 5000; // 5 секунд
+
+        // Створюємо dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.className = 'slider-dot';
+            if (index === 0) dot.classList.add('active');
+            dot.setAttribute('aria-label', `Перейти до новини ${index + 1}`);
+            dot.addEventListener('click', () => goToSlide(index));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = Array.from(dotsContainer.querySelectorAll('.slider-dot'));
+
+        // Функція переходу до слайду
+        const goToSlide = (index) => {
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+
+            slides[currentIndex].classList.remove('active');
+            dots[currentIndex].classList.remove('active');
+
+            currentIndex = index;
+
+            slides[currentIndex].classList.add('active');
+            dots[currentIndex].classList.add('active');
+
+            resetAutoplay();
+        };
+
+        // Наступний слайд
+        const nextSlide = () => {
+            goToSlide(currentIndex + 1);
+        };
+
+        // Попередній слайд
+        const prevSlide = () => {
+            goToSlide(currentIndex - 1);
+        };
+
+        // Автоплей
+        const startAutoplay = () => {
+            autoplayInterval = setInterval(nextSlide, AUTOPLAY_DELAY);
+        };
+
+        const stopAutoplay = () => {
+            if (autoplayInterval) {
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+            }
+        };
+
+        const resetAutoplay = () => {
+            stopAutoplay();
+            startAutoplay();
+        };
+
+        // Події для кнопок
+        prevBtn.addEventListener('click', prevSlide);
+        nextBtn.addEventListener('click', nextSlide);
+
+        // Пауза при наведенні
+        slider.addEventListener('mouseenter', stopAutoplay);
+        slider.addEventListener('mouseleave', startAutoplay);
+
+        // Підтримка свайпів на мобільних
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        slider.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            stopAutoplay();
+        }, { passive: true });
+
+        slider.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+            startAutoplay();
+        }, { passive: true });
+
+        const handleSwipe = () => {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        };
+
+        // Підтримка клавіатури
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+        });
+
+        // Запуск автоплею
+        startAutoplay();
+
+        // Зупинка при виході з вкладки
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                stopAutoplay();
+            } else {
+                startAutoplay();
+            }
+        });
+    };
+
+    // Ініціалізація слайдера
+    initNewsSlider();
 });
