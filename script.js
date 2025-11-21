@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const vBox = document.getElementById('m-video'); vBox.innerHTML = '';
         if(p.videos && p.videos.length) {
              const vID = p.videos[0].match(/v=([a-zA-Z0-9_-]+)/)?.[1];
-             if(vID) vBox.innerHTML = `<iframe width="100%" height="300" src="https://www.youtube.com/embed/${vID}" frameborder="0" allowfullscreen></iframe>`;
+             if(vID) vBox.innerHTML = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${vID}" frameborder="0" allowfullscreen></iframe></div>`;
         }
 
         // Кнопки дій

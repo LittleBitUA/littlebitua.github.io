@@ -390,6 +390,26 @@ body {
 .stat-fill { height: 100%; background: var(--neon-blue); border-radius: 4px; box-shadow: 0 0 10px var(--neon-blue); transition: width 0.3s; }
 .stat-row .stat-val { font-weight: 700; min-width: 45px; text-align: left; font-size: 0.85rem; }
 
+/* --- RESPONSIVE VIDEO --- */
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
 @media (max-width: 900px) {
     .hero-stats { flex-direction: column; padding: 0; width: 100%; }
     .stat { border-right: none; border-bottom: 1px solid var(--border); padding: 15px; }
