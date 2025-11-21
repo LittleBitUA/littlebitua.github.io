@@ -301,7 +301,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const resetAutoplay = () => {
             stopAutoplay();
-            startAutoplay();
+            // Затримка перед перезапуском автоплею після ручного перемикання
+            setTimeout(() => {
+                startAutoplay();
+            }, 3000); // 3 секунди пауза після ручного перемикання
         };
 
         // Події для кнопок
