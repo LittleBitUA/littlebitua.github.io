@@ -89,20 +89,31 @@ document.addEventListener('DOMContentLoaded', () => {
             let stClass = 'st-prog', stText = t.st_prog;
             let barColor = 'var(--neon-blue)';
             let metaLabel = t.lbl_readiness;
-            let metaVal = `${p.progress}%`;
             let btnClass = 'btn-grad-blue';
 
-            // Автоматичний розрахунок прогресу для збору коштів
+            // Автоматичний розрахунок загального прогресу на основі компонентів
             let displayProgress = p.progress;
+            if (p.progress_text !== undefined || p.progress_textures !== undefined || p.progress_fonts !== undefined) {
+                const components = [];
+                if (p.progress_text !== undefined) components.push(p.progress_text);
+                if (p.progress_textures !== undefined) components.push(p.progress_textures);
+                if (p.progress_fonts !== undefined) components.push(p.progress_fonts);
+
+                if (components.length > 0) {
+                    displayProgress = Math.round(components.reduce((a, b) => a + b, 0) / components.length);
+                }
+            }
+
+            // Встановлюємо metaVal після розрахунку displayProgress
+            let metaVal = `${displayProgress}%`;
 
             if(p.status === 'fundraising') {
                 stClass = 'st-fund'; stText = t.st_fund; barColor = 'var(--neon-orange)';
                 metaLabel = t.lbl_raised;
                 if(p.goal) {
                     metaVal = `${(p.raised/1000).toFixed(1)}k / ${(p.goal/1000).toFixed(1)}k`;
-                    // Автоматично розраховуємо прогрес збору коштів
-                    displayProgress = Math.min(Math.round((p.raised/p.goal)*100), 100);
                 }
+                // Використовуємо прогрес перекладу (progress), а не збору коштів
                 btnClass = 'btn-fund';
             } else if(p.status === 'early-access') {
                 stClass = 'st-early'; stText = t.st_early; barColor = 'var(--neon-purple)';
@@ -148,6 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Розрахунок середньої статистики залежно від фільтру
         let avg = 0;
+        const statAvgLabel = document.querySelector('.stat[data-label="avg"] .stat-lbl');
+
         if (activeFilter === 'fundraising') {
             // Для збору коштів рахуємо середній прогрес збору
             const fundraising = filtered.filter(p => p.status === 'fundraising' && p.goal);
@@ -157,10 +170,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 0);
                 avg = Math.round(totalProgress / fundraising.length);
             }
+            // Змінюємо текст на "Зібрано"
+            if (statAvgLabel) {
+                statAvgLabel.setAttribute('data-i18n', 'stat_fundraising');
+                statAvgLabel.innerText = currentLang === 'uk' ? 'ЗІБРАНО' : 'FUNDRAISED';
+            }
         } else {
-            // Для інших фільтрів рахуємо середню готовність (без fundraising)
+            // Для інших фільтрів рахуємо середню готовність з автоматичним розрахунком
             const active = filtered.filter(p => p.status !== 'fundraising');
-            avg = active.length ? Math.round(active.reduce((a,b)=>a+(b.progress||0),0)/active.length) : 0;
+            if (active.length) {
+                const totalProgress = active.reduce((sum, p) => {
+                    // Автоматичний розрахунок прогресу для кожного проєкту
+                    let projectProgress = p.progress;
+                    if (p.progress_text !== undefined || p.progress_textures !== undefined || p.progress_fonts !== undefined) {
+                        const components = [];
+                        if (p.progress_text !== undefined) components.push(p.progress_text);
+                        if (p.progress_textures !== undefined) components.push(p.progress_textures);
+                        if (p.progress_fonts !== undefined) components.push(p.progress_fonts);
+                        if (components.length > 0) {
+                            projectProgress = Math.round(components.reduce((a, b) => a + b, 0) / components.length);
+                        }
+                    }
+                    return sum + (projectProgress || 0);
+                }, 0);
+                avg = Math.round(totalProgress / active.length);
+            }
+            // Повертаємо текст на "СЕР. ГОТОВНІСТЬ"
+            if (statAvgLabel) {
+                statAvgLabel.setAttribute('data-i18n', 'stat_avg');
+                statAvgLabel.innerText = currentLang === 'uk' ? 'СЕР. ГОТОВНІСТЬ' : 'AVG. READINESS';
+            }
         }
         document.getElementById('stat-avg').innerText = avg + "%";
     }
@@ -171,7 +210,24 @@ document.addEventListener('DOMContentLoaded', () => {
         activeFilter = b.dataset.filter;
         renderGrid();
     }));
-    document.getElementById('search').addEventListener('input', renderGrid);
+
+    // Yakuza Easter Egg
+    const yakuzaSound = new Audio('assets/sound.mp3');
+    let yakuzaSoundPlayed = false;
+
+    document.getElementById('search').addEventListener('input', (e) => {
+        const searchValue = e.target.value.toLowerCase();
+
+        // Перевірка на "yakuza" або "якудза"
+        if ((searchValue.includes('yakuza') || searchValue.includes('якудза')) && !yakuzaSoundPlayed) {
+            yakuzaSound.play().catch(err => console.log('Audio play failed:', err));
+            yakuzaSoundPlayed = true;
+        } else if (!searchValue.includes('yakuza') && !searchValue.includes('якудза')) {
+            yakuzaSoundPlayed = false;
+        }
+
+        renderGrid();
+    });
 
     const bList = document.getElementById('benefactors-list');
     benefactorsList.forEach(b => {
