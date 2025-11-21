@@ -55,14 +55,14 @@ body {
 
 /* --- NEWS SLIDER --- */
 .news-slider-wrapper {
-    padding: 40px 0;
+    padding: 20px 0 40px;
     position: relative;
     overflow: hidden;
 }
 
 .news-slider-header {
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 25px;
 }
 
 .news-slider-header h2 {
@@ -82,7 +82,7 @@ body {
 
 .slider-track {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 20px;
 }
 
