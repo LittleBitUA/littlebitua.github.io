@@ -243,6 +243,36 @@ body {
     transform: translateX(5px);
 }
 
+/* Progress Bar */
+.slide-progress-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--neon-blue);
+    box-shadow: 0 0 10px var(--neon-blue);
+    z-index: 10;
+    transition: width 0.1s linear;
+}
+
+.news-slide.active .slide-progress-bar {
+    animation: progressSlide 5s linear forwards;
+}
+
+.news-slider:hover .slide-progress-bar {
+    animation-play-state: paused;
+}
+
+@keyframes progressSlide {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
 /* Slider Navigation */
 .slider-controls {
     position: absolute;
