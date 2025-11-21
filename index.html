@@ -60,12 +60,6 @@
                 <h2>НОВИНИ</h2>
             </div>
             <div class="news-slider">
-                <button class="slider-nav slider-prev" aria-label="Попередня новина">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 18l-6-6 6-6"/>
-                    </svg>
-                </button>
-
                 <div class="slider-track">
                     <!-- Slide 1: Judgment - Ранній доступ -->
                     <div class="news-slide active" style="background-image: url('assets/judgment_takayuki.webp');">
@@ -132,13 +126,19 @@
                     </div>
                 </div>
 
-                <button class="slider-nav slider-next" aria-label="Наступна новина">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M9 18l6-6-6-6"/>
-                    </svg>
-                </button>
-
-                <div class="slider-dots"></div>
+                <div class="slider-controls">
+                    <div class="slider-dots"></div>
+                    <button class="slider-nav slider-prev" aria-label="Попередня новина">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <button class="slider-nav slider-next" aria-label="Наступна новина">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -321,6 +321,7 @@
     </div>
 
     <script src="data.js"></script>
+    <script src="news-data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
