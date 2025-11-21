@@ -259,11 +259,11 @@ body {
 }
 
 .slider-prev {
-    left: -50px;
+    left: 15px;
 }
 
 .slider-next {
-    right: -50px;
+    right: 15px;
 }
 
 /* Slider Dots */
@@ -275,10 +275,10 @@ body {
 }
 
 .slider-dot {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
@@ -286,15 +286,15 @@ body {
 }
 
 .slider-dot:hover {
-    background: rgba(255, 255, 255, 0.5);
-    transform: scale(1.2);
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.3);
 }
 
 .slider-dot.active {
-    width: 24px;
-    border-radius: 4px;
+    width: 30px;
+    border-radius: 5px;
     background: var(--neon-blue);
-    box-shadow: 0 0 10px var(--neon-blue);
+    box-shadow: 0 0 15px var(--neon-blue);
 }
 
 /* Responsive */
