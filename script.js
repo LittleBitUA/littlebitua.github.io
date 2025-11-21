@@ -234,4 +234,252 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('click', e => { if(e.target === modal) closeM(); });
 
     renderGrid();
+
+    // === NEWS SLIDER ===
+    const initNewsSlider = () => {
+        const slider = document.querySelector('.news-slider');
+        if (!slider) return;
+
+        const sliderTrack = slider.querySelector('.slider-track');
+        const dotsContainer = slider.querySelector('.slider-dots');
+        const prevBtn = slider.querySelector('.slider-prev');
+        const nextBtn = slider.querySelector('.slider-next');
+
+        // Рендеримо слайди з newsSlides
+        if (typeof newsSlides !== 'undefined' && newsSlides.length > 0) {
+            sliderTrack.innerHTML = newsSlides.map((slide, index) => {
+                const badgeClass = `news-badge-${slide.badgeType}`;
+                const isActive = index === 0 ? 'active' : '';
+
+                return `
+                    <div class="news-slide ${isActive}" style="background-image: url('${slide.image}');">
+                        <div class="news-slide-overlay"></div>
+                        <div class="news-slide-content">
+                            <div class="news-badge ${badgeClass}">${slide.badge}</div>
+                            <h2 class="news-title">${slide.title}</h2>
+                            <p class="news-description">${slide.description}</p>
+                            <a href="${slide.link}" target="_blank" class="news-btn">
+                                <span>${slide.buttonText}</span>
+                            </a>
+                        </div>
+                        <div class="slide-progress-bar"></div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        const slides = Array.from(slider.querySelectorAll('.news-slide'));
+
+        let currentIndex = 0;
+        let autoplayInterval = null;
+        let progressInterval = null;
+        let isPaused = false;
+        let isWaitingAfterManual = false; // Чи очікуємо після ручного перемикання
+        let currentProgress = 0;
+        const AUTOPLAY_DELAY = 5000; // 5 секунд
+
+        // Створюємо dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.className = 'slider-dot';
+            if (index === 0) dot.classList.add('active');
+            dot.setAttribute('aria-label', `Перейти до новини ${index + 1}`);
+            dot.addEventListener('click', () => {
+                goToSlide(index, true);
+            });
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = Array.from(dotsContainer.querySelectorAll('.slider-dot'));
+
+        // Анімація прогрес-бару
+        const startProgressBar = (startFrom = 0) => {
+            const progressBar = slides[currentIndex].querySelector('.slide-progress-bar');
+            if (!progressBar) return;
+
+            // Зупинка попереднього інтервалу
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+
+            currentProgress = startFrom;
+            progressBar.style.width = startFrom + '%';
+            const increment = 100 / (AUTOPLAY_DELAY / 16); // 60 FPS
+
+            progressInterval = setInterval(() => {
+                if (isPaused) return;
+
+                currentProgress += increment;
+                if (currentProgress >= 100) {
+                    currentProgress = 100;
+                    progressBar.style.width = '100%';
+                } else {
+                    progressBar.style.width = currentProgress + '%';
+                }
+            }, 16);
+        };
+
+        const stopProgressBar = () => {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+        };
+
+        // Функція переходу до слайду
+        const goToSlide = (index, isManual = false) => {
+            if (index < 0) index = slides.length - 1;
+            if (index >= slides.length) index = 0;
+
+            // Зміна слайдів
+            slides[currentIndex].classList.remove('active');
+            dots[currentIndex].classList.remove('active');
+            currentIndex = index;
+            slides[currentIndex].classList.add('active');
+            dots[currentIndex].classList.add('active');
+
+            // Обнуляємо ВСІ прогрес-бари візуально
+            slides.forEach(slide => {
+                const progressBar = slide.querySelector('.slide-progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '0%';
+                }
+            });
+
+            // Скид та перезапуск прогрес-бару
+            stopProgressBar();
+            currentProgress = 0;
+
+            if (!isManual) {
+                // Автоматичне перемикання - запускаємо прогрес-бар
+                startProgressBar(0);
+            } else {
+                // Ручне перемикання - ресет автоплею з паузою
+                resetAutoplay();
+            }
+        };
+
+        // Автоплей
+        const startAutoplay = () => {
+            stopAutoplay();
+            isPaused = false;
+
+            // Запуск або продовження прогрес-бару
+            startProgressBar(currentProgress);
+
+            // Розрахунок залишку часу
+            const remainingTime = AUTOPLAY_DELAY * ((100 - currentProgress) / 100);
+
+            // Таймер для переходу на наступний слайд
+            autoplayInterval = setTimeout(() => {
+                if (!isPaused) {
+                    goToSlide(currentIndex + 1, false);
+                    // Запуск автоплею для наступного слайду
+                    autoplayInterval = setInterval(() => {
+                        goToSlide(currentIndex + 1, false);
+                    }, AUTOPLAY_DELAY);
+                }
+            }, remainingTime);
+        };
+
+        const stopAutoplay = () => {
+            if (autoplayInterval) {
+                clearTimeout(autoplayInterval);
+                clearInterval(autoplayInterval);
+                autoplayInterval = null;
+            }
+            stopProgressBar();
+        };
+
+        const resetAutoplay = () => {
+            stopAutoplay();
+            isPaused = false;
+            isWaitingAfterManual = true;
+            currentProgress = 0;
+
+            // Пауза 3 секунди після ручного перемикання
+            setTimeout(() => {
+                if (isWaitingAfterManual) {
+                    isWaitingAfterManual = false;
+                    currentProgress = 0;
+                    startAutoplay();
+                }
+            }, 3000);
+        };
+
+        // Події для кнопок
+        prevBtn.addEventListener('click', () => {
+            goToSlide(currentIndex - 1, true);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            goToSlide(currentIndex + 1, true);
+        });
+
+        // Пауза при наведенні
+        slider.addEventListener('mouseenter', () => {
+            // Не реагуємо якщо очікуємо після ручного перемикання
+            if (isWaitingAfterManual) return;
+
+            isPaused = true;
+            stopAutoplay();
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            // Не реагуємо якщо очікуємо після ручного перемикання
+            if (isWaitingAfterManual) return;
+
+            isPaused = false;
+            startAutoplay();
+        });
+
+        // Підтримка свайпів на мобільних
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        slider.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        slider.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    goToSlide(currentIndex + 1, true);
+                } else {
+                    goToSlide(currentIndex - 1, true);
+                }
+            }
+        }, { passive: true });
+
+        // Підтримка клавіатури
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1, true);
+            if (e.key === 'ArrowRight') goToSlide(currentIndex + 1, true);
+        });
+
+        // Запуск автоплею
+        startAutoplay();
+
+        // Зупинка при виході з вкладки
+        document.addEventListener('visibilitychange', () => {
+            // Не реагуємо якщо очікуємо після ручного перемикання
+            if (isWaitingAfterManual) return;
+
+            if (document.hidden) {
+                isPaused = true;
+                stopAutoplay();
+            } else {
+                isPaused = false;
+                startAutoplay();
+            }
+        });
+    };
+
+    // Ініціалізація слайдера
+    initNewsSlider();
 });

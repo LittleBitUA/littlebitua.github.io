@@ -3,7 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- Primary Meta Tags -->
     <title>«Little Bit» — українські локалізації ігор</title>
+    <meta name="title" content="«Little Bit» — українські локалізації ігор" />
+    <meta name="description" content="Українські локалізації відеоігор: Judgment, Yakuza, No More Heroes, Deadly Premonition, HOTEL BARCELONA, JoJo's Bizarre Adventure: All-Star Battle R, Dispatch та інших!" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://littlebitua.github.io/" />
+    <meta property="og:title" content="«Little Bit» — українські локалізації ігор" />
+    <meta property="og:description" content="Українські локалізації відеоігор: Judgment, Yakuza, No More Heroes, Deadly Premonition, HOTEL BARCELONA, JoJo's Bizarre Adventure: All-Star Battle R, Dispatch та інших!" />
+    <meta property="og:image" content="https://littlebitua.github.io/assets/logo.png" />
+
+    <!-- X (Twitter) -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://littlebitua.github.io/" />
+    <meta property="twitter:title" content="«Little Bit» — українські локалізації ігор" />
+    <meta property="twitter:description" content="Українські локалізації відеоігор: Judgment, Yakuza, No More Heroes, Deadly Premonition, HOTEL BARCELONA, JoJo's Bizarre Adventure: All-Star Battle R, Dispatch та інших!" />
+    <meta property="twitter:image" content="https://littlebitua.github.io/assets/logo.png" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +68,32 @@
                 <div class="stat">
                     <span class="stat-val" id="stat-ea">0</span>
                     <span class="stat-lbl" data-i18n="stat_ea">РАННІЙ ДОСТУП</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEWS SLIDER -->
+        <section class="news-slider-wrapper">
+            <div class="news-slider-header">
+                <h2>НОВИНИ</h2>
+            </div>
+            <div class="news-slider">
+                <div class="slider-track">
+                    <!-- Слайди рендеряться динамічно з news-data.js -->
+                </div>
+
+                <div class="slider-controls">
+                    <div class="slider-dots"></div>
+                    <button class="slider-nav slider-prev" aria-label="Попередня новина">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                    </button>
+                    <button class="slider-nav slider-next" aria-label="Наступна новина">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 18l6-6-6-6"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </section>
@@ -233,6 +277,7 @@
     </div>
 
     <script src="data.js"></script>
+    <script src="news-data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
