@@ -15,7 +15,7 @@ const newsSlides = [
         badge: "ЗБІР КОШТІВ",
         badgeType: "progress",
         title: "Yakuza: Like a Dragon — перекладено 20%!",
-        description: "Зібрано 11 220₴ з 35 000₴. Підтримайте локалізацію легендарної пригоди Ічібана Касуґі українською мовою!",
+        description: "Зібрано 11 220₴ з 35 000₴. Підтримайте локалізацію легендарної пригоди Ічібана Касуґи українською мовою!",
         image: "assets/yakuza_news.webp",
         link: "https://donatello.to/LittleBitUA",
         buttonText: "Підтримати"
