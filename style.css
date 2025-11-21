@@ -55,21 +55,35 @@ body {
 
 /* --- NEWS SLIDER --- */
 .news-slider-wrapper {
-    padding: 85px 0 40px;
+    padding: 40px 0;
     position: relative;
     overflow: hidden;
 }
 
+.news-slider-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.news-slider-header h2 {
+    font-family: var(--font-head);
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
 .news-slider {
     position: relative;
-    max-width: 1400px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .slider-track {
     position: relative;
     overflow: hidden;
-    border-radius: 24px;
+    border-radius: 20px;
 }
 
 .news-slide {
@@ -77,12 +91,12 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 450px;
+    height: 280px;
     opacity: 0;
     visibility: hidden;
     transform: scale(0.95);
     transition: opacity 0.8s ease, transform 0.8s ease, visibility 0.8s;
-    border-radius: 24px;
+    border-radius: 20px;
     overflow: hidden;
     background-size: cover;
     background-position: center;
@@ -100,9 +114,9 @@ body {
     position: absolute;
     inset: 0;
     background: linear-gradient(to right,
-        rgba(5, 11, 20, 0.95) 0%,
-        rgba(5, 11, 20, 0.85) 40%,
-        rgba(5, 11, 20, 0.6) 70%,
+        rgba(5, 11, 20, 0.93) 0%,
+        rgba(5, 11, 20, 0.8) 40%,
+        rgba(5, 11, 20, 0.5) 70%,
         transparent 100%
     );
     z-index: 1;
@@ -110,9 +124,9 @@ body {
 
 .news-slide-content {
     position: relative;
-    padding: 60px;
+    padding: 40px 50px;
     z-index: 2;
-    max-width: 700px;
+    max-width: 650px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -121,13 +135,13 @@ body {
 
 .news-badge {
     display: inline-block;
-    padding: 8px 16px;
+    padding: 6px 14px;
     border-radius: 6px;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
     border: 1px solid;
     width: fit-content;
 }
@@ -162,34 +176,34 @@ body {
 
 .news-title {
     font-family: var(--font-head);
-    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-size: clamp(1.4rem, 3vw, 2rem);
     font-weight: 700;
     color: white;
-    margin-bottom: 20px;
+    margin-bottom: 14px;
     line-height: 1.2;
     text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
 }
 
 .news-description {
     color: rgba(255, 255, 255, 0.85);
-    font-size: 1.05rem;
-    line-height: 1.7;
-    margin-bottom: 32px;
-    max-width: 600px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-width: 550px;
 }
 
 .news-btn {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 32px;
+    gap: 10px;
+    padding: 11px 26px;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
+    border-radius: 10px;
     color: white;
     text-decoration: none;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 0.9rem;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -290,17 +304,25 @@ body {
     }
 
     .news-slide {
-        height: 400px;
+        height: 260px;
     }
 
     .news-slide-content {
-        padding: 50px 40px;
+        padding: 35px 40px;
     }
 }
 
 @media (max-width: 768px) {
     .news-slider-wrapper {
-        padding: 75px 0 30px;
+        padding: 30px 0;
+    }
+
+    .news-slider-header {
+        margin-bottom: 25px;
+    }
+
+    .news-slider-header h2 {
+        font-size: 1.6rem;
     }
 
     .news-slider {
@@ -308,7 +330,7 @@ body {
     }
 
     .news-slide {
-        height: 380px;
+        height: 240px;
     }
 
     .news-slide-overlay {
@@ -321,22 +343,22 @@ body {
     }
 
     .news-slide-content {
-        padding: 30px;
+        padding: 25px 30px;
         justify-content: flex-end;
         max-width: 100%;
     }
 
     .news-title {
-        font-size: 1.6rem;
+        font-size: 1.3rem;
     }
 
     .news-description {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
 
     .news-btn {
-        padding: 12px 24px;
-        font-size: 0.9rem;
+        padding: 10px 20px;
+        font-size: 0.85rem;
     }
 
     .slider-prev {
@@ -360,8 +382,12 @@ body {
 }
 
 @media (max-width: 480px) {
+    .news-slider-header h2 {
+        font-size: 1.4rem;
+    }
+
     .news-slide {
-        height: 350px;
+        height: 220px;
         border-radius: 16px;
     }
 
@@ -370,27 +396,27 @@ body {
     }
 
     .news-slide-content {
-        padding: 25px 20px;
+        padding: 20px;
     }
 
     .news-badge {
-        font-size: 0.65rem;
-        padding: 6px 12px;
+        font-size: 0.6rem;
+        padding: 5px 10px;
     }
 
     .news-title {
-        font-size: 1.4rem;
-        margin-bottom: 15px;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
     }
 
     .news-description {
-        font-size: 0.9rem;
-        margin-bottom: 20px;
+        font-size: 0.85rem;
+        margin-bottom: 15px;
     }
 
     .news-btn {
-        padding: 11px 20px;
-        font-size: 0.85rem;
+        padding: 9px 18px;
+        font-size: 0.8rem;
     }
 }
 
