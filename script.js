@@ -247,6 +247,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let currentIndex = 0;
         let autoplayInterval = null;
+        let progressInterval = null;
+        let isPaused = false;
         const AUTOPLAY_DELAY = 5000; // 5 секунд
 
         // Створюємо dots
@@ -255,14 +257,42 @@ document.addEventListener('DOMContentLoaded', () => {
             dot.className = 'slider-dot';
             if (index === 0) dot.classList.add('active');
             dot.setAttribute('aria-label', `Перейти до новини ${index + 1}`);
-            dot.addEventListener('click', () => goToSlide(index));
+            dot.addEventListener('click', () => {
+                goToSlide(index, true);
+            });
             dotsContainer.appendChild(dot);
         });
 
         const dots = Array.from(dotsContainer.querySelectorAll('.slider-dot'));
 
+        // Анімація прогрес-бару
+        const animateProgressBar = (progressBar) => {
+            if (!progressBar) return;
+
+            progressBar.style.width = '0%';
+            let width = 0;
+            const increment = 100 / (AUTOPLAY_DELAY / 50); // Оновлення кожні 50мс
+
+            if (progressInterval) {
+                clearInterval(progressInterval);
+            }
+
+            progressInterval = setInterval(() => {
+                if (isPaused) return;
+
+                width += increment;
+                if (width >= 100) {
+                    width = 100;
+                    progressBar.style.width = '100%';
+                    clearInterval(progressInterval);
+                } else {
+                    progressBar.style.width = width + '%';
+                }
+            }, 50);
+        };
+
         // Функція переходу до слайду
-        const goToSlide = (index) => {
+        const goToSlide = (index, isManual = false) => {
             if (index < 0) index = slides.length - 1;
             if (index >= slides.length) index = 0;
 
@@ -274,31 +304,33 @@ document.addEventListener('DOMContentLoaded', () => {
             slides[currentIndex].classList.add('active');
             dots[currentIndex].classList.add('active');
 
-            // Перезапуск анімації прогрес-бару
+            // Перезапуск прогрес-бару
             const progressBar = slides[currentIndex].querySelector('.slide-progress-bar');
             if (progressBar) {
-                progressBar.style.animation = 'none';
-                // Примусовий reflow для перезапуску анімації
-                void progressBar.offsetWidth;
-                progressBar.style.animation = '';
+                if (progressInterval) {
+                    clearInterval(progressInterval);
+                }
+                animateProgressBar(progressBar);
             }
 
-            resetAutoplay();
-        };
-
-        // Наступний слайд
-        const nextSlide = () => {
-            goToSlide(currentIndex + 1);
-        };
-
-        // Попередній слайд
-        const prevSlide = () => {
-            goToSlide(currentIndex - 1);
+            // Перезапуск автоплею тільки при ручному перемиканні
+            if (isManual) {
+                resetAutoplay();
+            }
         };
 
         // Автоплей
         const startAutoplay = () => {
-            autoplayInterval = setInterval(nextSlide, AUTOPLAY_DELAY);
+            stopAutoplay();
+            isPaused = false;
+
+            // Запуск прогрес-бару для поточного слайду
+            const progressBar = slides[currentIndex].querySelector('.slide-progress-bar');
+            animateProgressBar(progressBar);
+
+            autoplayInterval = setInterval(() => {
+                goToSlide(currentIndex + 1, false);
+            }, AUTOPLAY_DELAY);
         };
 
         const stopAutoplay = () => {
@@ -306,23 +338,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 clearInterval(autoplayInterval);
                 autoplayInterval = null;
             }
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
         };
 
         const resetAutoplay = () => {
             stopAutoplay();
-            // Затримка перед перезапуском автоплею після ручного перемикання
+            isPaused = true;
+
+            // Пауза 3 секунди після ручного перемикання
             setTimeout(() => {
+                isPaused = false;
                 startAutoplay();
-            }, 3000); // 3 секунди пауза після ручного перемикання
+            }, 3000);
         };
 
         // Події для кнопок
-        prevBtn.addEventListener('click', prevSlide);
-        nextBtn.addEventListener('click', nextSlide);
+        prevBtn.addEventListener('click', () => {
+            goToSlide(currentIndex - 1, true);
+        });
+
+        nextBtn.addEventListener('click', () => {
+            goToSlide(currentIndex + 1, true);
+        });
 
         // Пауза при наведенні
-        slider.addEventListener('mouseenter', stopAutoplay);
-        slider.addEventListener('mouseleave', startAutoplay);
+        slider.addEventListener('mouseenter', () => {
+            isPaused = true;
+            stopAutoplay();
+        });
+
+        slider.addEventListener('mouseleave', () => {
+            isPaused = false;
+            startAutoplay();
+        });
 
         // Підтримка свайпів на мобільних
         let touchStartX = 0;
@@ -330,32 +381,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         slider.addEventListener('touchstart', (e) => {
             touchStartX = e.changedTouches[0].screenX;
-            stopAutoplay();
         }, { passive: true });
 
         slider.addEventListener('touchend', (e) => {
             touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-            startAutoplay();
-        }, { passive: true });
-
-        const handleSwipe = () => {
             const swipeThreshold = 50;
             const diff = touchStartX - touchEndX;
 
             if (Math.abs(diff) > swipeThreshold) {
                 if (diff > 0) {
-                    nextSlide();
+                    goToSlide(currentIndex + 1, true);
                 } else {
-                    prevSlide();
+                    goToSlide(currentIndex - 1, true);
                 }
             }
-        };
+        }, { passive: true });
 
         // Підтримка клавіатури
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') prevSlide();
-            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') goToSlide(currentIndex - 1, true);
+            if (e.key === 'ArrowRight') goToSlide(currentIndex + 1, true);
         });
 
         // Запуск автоплею
@@ -364,8 +409,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Зупинка при виході з вкладки
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
+                isPaused = true;
                 stopAutoplay();
             } else {
+                isPaused = false;
                 startAutoplay();
             }
         });
