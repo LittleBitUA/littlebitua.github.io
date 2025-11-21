@@ -135,15 +135,16 @@ body {
 
 .news-badge {
     display: inline-block;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 6px;
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 1px;
     margin-bottom: 16px;
     border: 1px solid;
     width: fit-content;
+    white-space: nowrap;
 }
 
 .news-badge-localization {
@@ -226,10 +227,17 @@ body {
 }
 
 /* Slider Navigation */
-.slider-nav {
+.slider-controls {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 10;
+}
+
+.slider-nav {
     width: 40px;
     height: 40px;
     background: rgba(255, 255, 255, 0.08);
@@ -239,7 +247,6 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 10;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -255,23 +262,13 @@ body {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(0, 242, 255, 0.5);
     box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
-    transform: translateY(-50%) scale(1.1);
-}
-
-.slider-prev {
-    left: 15px;
-}
-
-.slider-next {
-    right: 15px;
+    transform: scale(1.1);
 }
 
 /* Slider Dots */
 .slider-dots {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 8px;
 }
 
 .slider-dot {
@@ -348,6 +345,12 @@ body {
         max-width: 100%;
     }
 
+    .news-badge {
+        font-size: 0.55rem;
+        padding: 4px 10px;
+        letter-spacing: 0.5px;
+    }
+
     .news-title {
         font-size: 1.3rem;
     }
@@ -361,12 +364,10 @@ body {
         font-size: 0.85rem;
     }
 
-    .slider-prev {
-        left: 10px;
-    }
-
-    .slider-next {
-        right: 10px;
+    .slider-controls {
+        bottom: 15px;
+        right: 15px;
+        gap: 12px;
     }
 
     .slider-nav {
@@ -400,8 +401,9 @@ body {
     }
 
     .news-badge {
-        font-size: 0.6rem;
-        padding: 5px 10px;
+        font-size: 0.5rem;
+        padding: 3px 8px;
+        letter-spacing: 0.3px;
     }
 
     .news-title {
@@ -417,6 +419,31 @@ body {
     .news-btn {
         padding: 9px 18px;
         font-size: 0.8rem;
+    }
+
+    .slider-controls {
+        bottom: 12px;
+        right: 12px;
+        gap: 10px;
+    }
+
+    .slider-nav {
+        width: 32px;
+        height: 32px;
+    }
+
+    .slider-nav svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .slider-dot {
+        width: 8px;
+        height: 8px;
+    }
+
+    .slider-dot.active {
+        width: 24px;
     }
 }
 
