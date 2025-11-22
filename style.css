@@ -420,8 +420,6 @@ body {
 
     .news-slide {
         height: 400px;
-        background-size: contain;
-        background-position: center top;
     }
 
     .news-slide-overlay {
@@ -491,8 +489,6 @@ body {
     .news-slide {
         height: 360px;
         border-radius: 16px;
-        background-size: contain;
-        background-position: center top;
     }
 
     .slider-track {
@@ -559,8 +555,6 @@ body {
 @media (max-width: 360px) {
     .news-slide {
         height: 340px;
-        background-size: contain;
-        background-position: center top;
     }
 
     .news-slide-content {
@@ -818,26 +812,67 @@ body {
 .support-donate-card {
     position: relative; border-radius: 20px; padding: 40px 30px;
     text-decoration: none; color: white; overflow: hidden;
-    border: 1px solid var(--border); background: var(--glass);
-    transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center;
+    background: rgba(15, 20, 30, 0.95);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    display: flex; flex-direction: column; align-items: center;
     backdrop-filter: blur(10px); min-width: 280px;
     outline: none; -webkit-tap-highlight-color: transparent; user-select: none;
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+    --gradient-angle: 0;
 }
 
-.donate-bg {
-    position: absolute; inset: 0; opacity: 0.8; transition: 0.3s;
-    background: linear-gradient(135deg, rgba(20, 25, 40, 0.8), rgba(20, 25, 40, 0.6));
+/* Градієнт рамки (слідує за курсором) - Donatello та Monobank */
+.support-donate-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    background: conic-gradient(
+        from calc(var(--gradient-angle) * 1deg),
+        #6366f1 0deg,
+        #8b5cf6 90deg,
+        #a78bfa 180deg,
+        #c084fc 270deg,
+        #6366f1 360deg
+    );
+    mask: radial-gradient(
+        circle 150px at var(--mouse-x) var(--mouse-y),
+        black 0%,
+        transparent 100%
+    );
+    -webkit-mask: radial-gradient(
+        circle 150px at var(--mouse-x) var(--mouse-y),
+        black 0%,
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 0;
+}
+
+.support-donate-card:hover::before {
+    opacity: 1;
 }
 
 .donate-gradient {
-    position: absolute; inset: 0; opacity: 1; transition: 0.3s;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.1));
+    position: absolute; inset: 0; opacity: 0; transition: 0.3s;
+    background: radial-gradient(
+        circle at var(--mouse-x) var(--mouse-y),
+        rgba(99, 102, 241, 0.1),
+        transparent 60%
+    );
+    border-radius: 20px;
+    z-index: 1;
+}
+
+.support-donate-card:hover .donate-gradient {
+    opacity: 1;
 }
 
 .support-donate-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
-    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
 }
 
 .donate-content { position: relative; z-index: 2; text-align: center; width: 100%; }
@@ -879,32 +914,99 @@ body {
 .contact-card {
     position: relative; border-radius: 20px; padding: 40px 30px;
     text-decoration: none; color: white; overflow: hidden;
-    border: 1px solid var(--border); background: var(--glass);
-    transition: all 0.3s ease; display: flex; flex-direction: column; align-items: center;
+    background: rgba(15, 20, 30, 0.95);
     backdrop-filter: blur(10px);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    display: flex; flex-direction: column; align-items: center;
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+    --gradient-angle: 0;
 }
 
-.contact-bg {
-    position: absolute; inset: 0; opacity: 0.8; transition: 0.3s;
-    background: linear-gradient(135deg, rgba(20, 25, 40, 0.8), rgba(20, 25, 40, 0.6));
+/* Градієнт рамки для контактів (слідує за курсором) */
+.contact-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    mask: radial-gradient(
+        circle 150px at var(--mouse-x) var(--mouse-y),
+        black 0%,
+        transparent 100%
+    );
+    -webkit-mask: radial-gradient(
+        circle 150px at var(--mouse-x) var(--mouse-y),
+        black 0%,
+        transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 0;
+}
+
+.contact-card:hover::before {
+    opacity: 1;
+}
+
+/* Кольори градієнта для кожної платформи */
+.contact-telegram::before {
+    background: conic-gradient(
+        from calc(var(--gradient-angle) * 1deg),
+        #0088cc 0deg,
+        #64b5e8 90deg,
+        #a8d5f2 180deg,
+        #64b5e8 270deg,
+        #0088cc 360deg
+    );
+}
+
+.contact-youtube::before {
+    background: conic-gradient(
+        from calc(var(--gradient-angle) * 1deg),
+        #FF0000 0deg,
+        #ff4444 90deg,
+        #ff8888 180deg,
+        #ff4444 270deg,
+        #FF0000 360deg
+    );
+}
+
+.contact-tiktok::before {
+    background: conic-gradient(
+        from calc(var(--gradient-angle) * 1deg),
+        #ff0050 0deg,
+        #00f2ea 90deg,
+        #ff0050 180deg,
+        #00f2ea 270deg,
+        #ff0050 360deg
+    );
+}
+
+.contact-twitter::before {
+    background: conic-gradient(
+        from calc(var(--gradient-angle) * 1deg),
+        #1DA1F2 0deg,
+        #4ab3f4 90deg,
+        #89cff7 180deg,
+        #4ab3f4 270deg,
+        #1DA1F2 360deg
+    );
 }
 
 .contact-gradient {
-    position: absolute; inset: 0; opacity: 1; transition: 0.3s;
+    position: absolute; inset: 0; opacity: 0; transition: 0.3s;
+    border-radius: 20px;
+    z-index: 1;
 }
-.contact-telegram .contact-gradient { background: linear-gradient(135deg, rgba(0, 136, 204, 0.2), rgba(0, 136, 204, 0.1)); }
-.contact-youtube .contact-gradient { background: linear-gradient(135deg, rgba(255, 0, 0, 0.2), rgba(196, 48, 43, 0.1)); }
-.contact-tiktok .contact-gradient { background: linear-gradient(135deg, rgba(255, 0, 80, 0.2), rgba(0, 242, 234, 0.1)); }
-.contact-twitter .contact-gradient { background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2)); }
+.contact-telegram .contact-gradient { background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(0, 136, 204, 0.15), transparent 60%); }
+.contact-youtube .contact-gradient { background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 0, 0, 0.15), transparent 60%); }
+.contact-tiktok .contact-gradient { background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(255, 0, 80, 0.15), transparent 60%); }
+.contact-twitter .contact-gradient { background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(99, 102, 241, 0.15), transparent 60%); }
 
 .contact-card:hover {
-    transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-5px); box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
 }
 .contact-card:hover .contact-gradient { opacity: 1; }
-.contact-telegram:hover { border-color: rgba(0, 136, 204, 0.5); }
-.contact-youtube:hover { border-color: rgba(255, 0, 0, 0.5); }
-.contact-tiktok:hover { border-color: rgba(255, 0, 80, 0.5); }
-.contact-twitter:hover { border-color: rgba(255, 255, 255, 0.3); }
 
 .contact-content { position: relative; z-index: 2; text-align: center; width: 100%; }
 
@@ -914,10 +1016,11 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     transition: 0.3s;
 }
+
 .contact-telegram .contact-icon { background: linear-gradient(135deg, #0088cc, #0088cc); }
 .contact-youtube .contact-icon { background: linear-gradient(135deg, #FF0000, #c4302b); }
 .contact-tiktok .contact-icon { background: linear-gradient(135deg, #ff0050, #00f2ea); }
-.contact-twitter .contact-icon { background: linear-gradient(135deg, #000000, #14171a); }
+.contact-twitter .contact-icon { background: linear-gradient(135deg, #1DA1F2, #0c85d0); }
 
 .contact-card:hover .contact-icon { transform: scale(1.1) rotate(5deg); }
 .contact-icon svg { width: 35px; height: 35px; }
