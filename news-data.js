@@ -10,7 +10,7 @@ const newsSlides = [
         description: "Почався безкоштовний первинний доступ до українізатора Judgment! Гру вже можна пройти від початку й до кінця українською мовою.",
         description_en: "Free primary access to the Judgment Ukrainian localization has begun! You can now play the full story and side cases in Ukrainian.",
         image: "assets/judgment_news.webp",
-        link: "https://drive.google.com/file/d/1JIN8E9xhY33iIRVeEJCEd9h8Blug92w7/view?usp=sharing",
+        link: "https://www.dropbox.com/scl/fi/s7baju60jm5qlb5h123m8/Judgment.exe?rlkey=o36lfpwfcr4tlhdvetxgyulwd&st=be1lsyov&dl=1",
         buttonText: "Завантажити",
         buttonText_en: "Download"
     },
