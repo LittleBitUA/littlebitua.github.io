@@ -40,5 +40,11 @@ const benefactorsList = [
     {name: "Микита"}, {name: "Мирослав Сеник"}, {name: "Andryxa"}, {name: "Богдан Городюк"},
     {name: "Дмитро С."}, {name: "Andrii Kravchenko"}, {name: "Вова ЇЖ"}, {name: "Dima Feyleg"},
     {name: "Дмитро"}, {name: "офіцерППО"}, {name: "Ігор"}, {name: "Артем"},
-    {name: "Ton"}, {name: "Ярослав"}, {name: "BlackWolf94"}
+    {name: "Ton"}, {name: "Ярослав"}, {name: "BlackWolf94"}, {name: "Данило"}, {name: "Євген"},
+    {name: "KAREMBO"}, {name: "Сергій"}, {name: "Ігор"}, {name: "Ярило"}, {name: "Dasha"}, {name: "Dzhulios"},
+    {name: "Hugard"}, {name: "Fat_Dude"}, {name: "Дмитро Calcifer"}, {name: "Niktar942"}, {name: "олиро"},
+    {name: "Zerstoren"}, {name: "Orlon242a"}, {name: "Олексій"}, {name: "Ангел охоронець"}, {name: "Mi4i0"},
+    {name: "Dushnila"}, {name: "Влад"}, {name: "Grek"}, {name: "Tarfu09"}, {name: "Merick"}, {name: "DiskiGame"},
+    {name: "Остап"}, {name: "Oneesama"}, {name: "Богдан Городюк"}, {name: "Андрій"}, {name: "Ваноня"}, {name: "Volpe"},
+    {name: "boznahto"}, {name: "Reyloran"}, {name: "Swery65"}, {name: "Andrii Kravchenko"}
 ];
