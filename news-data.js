@@ -51,7 +51,7 @@ const newsSlides = [
         title_en: "Yakuza: Like a Dragon — Localization Fundraising",
         description: "Триває збір коштів на повну текстову локалізацію Yakuza: Like a Dragon українською. Частину гри вже перекладено, долучайтеся до підтримки!",
         description_en: "We are raising funds for a full Ukrainian text localization of Yakuza: Like a Dragon. Part of the game is already translated—support the project!",
-        image: "assets/YakuzaLAD_news.webp",
+        image: "assets/yakuza_news.webp",
         link: "https://donatello.to/LittleBitUA",
         buttonText: "Підтримати",
         buttonText_en: "Support"
@@ -65,7 +65,7 @@ const newsSlides = [
         title_en: "NieR Replicant — Localization Fundraising",
         description: "Збираємо кошти на українську локалізацію NieR Replicant. Атмосферна дія з глибоким сюжетом та музикою заслуговує на українські субтитри.",
         description_en: "We are raising funds for the Ukrainian localization of NieR Replicant. This atmospheric action game with a deep story and soundtrack deserves Ukrainian subtitles.",
-        image: "assets/NieR_news.webp",
+        image: "assets/nier_replicant.webp",
         link: "https://donatello.to/LittleBitUA",
         buttonText: "Підтримати",
         buttonText_en: "Support"
