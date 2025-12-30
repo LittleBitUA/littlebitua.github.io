@@ -2,6 +2,134 @@ document.addEventListener('DOMContentLoaded', () => {
     // Версія для cache busting зображень (синхронізовано з .version)
     const ASSETS_VERSION = '1.4.1';
 
+    // === GIFT BOX ANIMATION ===
+    const initGiftAnimation = () => {
+        const overlay = document.getElementById('gift-overlay');
+        const giftBox = document.querySelector('.gift-box');
+        const giftContainer = document.querySelector('.gift-container');
+        const giftReveal = document.querySelector('.gift-reveal');
+
+        if (!overlay || !giftBox) return;
+
+        // Перевіряємо, чи користувач вже бачив анімацію
+        const giftSeen = sessionStorage.getItem('giftAnimationSeen');
+        if (giftSeen) return;
+
+        // Показуємо overlay
+        document.body.style.overflow = 'hidden';
+        overlay.classList.add('active');
+
+        let isAnimating = false;
+        let animationComplete = false;
+
+        // Функція закриття привітання
+        let farewellTimeout = null;
+        let farewellClosed = false;
+        const closeFarewell = () => {
+            if (farewellClosed) return;
+            farewellClosed = true;
+
+            const farewell = document.querySelector('.gift-farewell');
+            if (!farewell) return;
+
+            if (farewellTimeout) clearTimeout(farewellTimeout);
+
+            farewell.classList.add('fade-out');
+            setTimeout(() => {
+                overlay.classList.add('fade-out');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 500);
+            }, 500);
+        };
+
+        // Функція закриття
+        const closeGiftAnimation = () => {
+            if (animationComplete) return;
+            animationComplete = true;
+            sessionStorage.setItem('giftAnimationSeen', 'true');
+
+            // Показуємо фінальне привітання
+            const farewell = document.querySelector('.gift-farewell');
+            if (farewell) {
+                // Ховаємо контент гри (але не overlay!)
+                giftReveal.classList.add('hide');
+
+                // Показуємо привітання
+                farewell.classList.add('show');
+
+                // Додаємо можливість закрити кліком
+                farewell.addEventListener('click', closeFarewell);
+
+                // Через 3 секунди ховаємо привітання автоматично
+                farewellTimeout = setTimeout(closeFarewell, 3000);
+            } else {
+                overlay.classList.add('fade-out');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                }, 500);
+            }
+        };
+
+        // Запуск анімації при кліку на подарунок
+        const startAnimation = () => {
+            if (isAnimating || animationComplete) return;
+            isAnimating = true;
+
+            // Етап 1: Тряска
+            giftBox.classList.add('shake');
+
+            setTimeout(() => {
+                // Етап 2: Відкриття кришки
+                giftBox.classList.remove('shake');
+                giftBox.classList.add('open');
+
+                // Етап 3: Швидко ховаємо коробку і показуємо картинку
+                setTimeout(() => {
+                    giftContainer.classList.add('revealing');
+
+                    // Показуємо картинку одразу після початку зникнення коробки
+                    setTimeout(() => {
+                        giftReveal.classList.add('show');
+
+                        // Запуск конфеті
+                        const confettiContainer = document.querySelector('.confetti-container');
+                        if (confettiContainer) {
+                            confettiContainer.classList.add('active');
+                        }
+                    }, 200);
+
+                    // Автоматичне закриття через 5 секунд після показу картинки
+                    setTimeout(() => {
+                        closeGiftAnimation();
+                    }, 5000);
+                }, 400);
+            }, 600);
+        };
+
+        // Обробники подій
+        giftBox.addEventListener('click', startAnimation);
+
+        // Закриття по кліку на overlay після показу картинки
+        overlay.addEventListener('click', (e) => {
+            if (giftReveal.classList.contains('show') && e.target === overlay) {
+                closeGiftAnimation();
+            }
+        });
+
+        // Автозапуск анімації через 1.5 секунди
+        setTimeout(() => {
+            if (!isAnimating && !animationComplete) {
+                startAnimation();
+            }
+        }, 1500);
+    };
+
+    // Запускаємо анімацію подарунка
+    initGiftAnimation();
+
     // Функція для додавання версії до URL зображення
     const addImageVersion = (url) => {
         if (!url || url.startsWith('http') || url.startsWith('data:')) return url;
@@ -637,4 +765,66 @@ document.addEventListener('DOMContentLoaded', () => {
             card.style.setProperty('--gradient-angle', 0);
         });
     });
+
+    // === [NEW YEAR] Christmas garland lights for game cards ===
+    const initCardGarlands = () => {
+        // Only on desktop for performance
+        if (window.innerWidth < 900) return;
+
+        const cards = document.querySelectorAll('.game-card');
+        cards.forEach(card => {
+            // Check if already wrapped
+            if (card.parentElement.classList.contains('card-garland-wrapper')) return;
+
+            // Create wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'card-garland-wrapper';
+
+            // Add lights to wrapper
+            const garland = document.createElement('div');
+            garland.className = 'card-garland-lights';
+            for (let i = 1; i <= 16; i++) {
+                const light = document.createElement('span');
+                light.className = `card-gl cgl${i}`;
+                garland.appendChild(light);
+            }
+
+            // Wrap card
+            card.parentNode.insertBefore(wrapper, card);
+            wrapper.appendChild(card);
+            wrapper.appendChild(garland);
+        });
+    };
+
+    // Initialize garlands after cards are rendered
+    setTimeout(initCardGarlands, 500);
+
+    // Re-init when cards might be added (filtering)
+    const observer = new MutationObserver(() => {
+        setTimeout(initCardGarlands, 100);
+    });
+    const gamesGrid = document.querySelector('.games-grid');
+    if (gamesGrid) {
+        observer.observe(gamesGrid, { childList: true, subtree: true });
+    }
+
+    // === [NEW YEAR] Scroll to top button ===
+    const scrollTopBtn = document.getElementById('scroll-top-btn');
+    if (scrollTopBtn) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+    // === [END NEW YEAR] ===
 });

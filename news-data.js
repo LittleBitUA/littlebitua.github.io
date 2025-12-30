@@ -1,18 +1,46 @@
 // ДАНІ ДЛЯ СЛАЙДЕРА НОВИН
 const newsSlides = [
     {
+        id: "as-dusk-falls-release",
+        badge: "РАННІЙ ДОСТУП",
+        badge_en: "EARLY ACCESS",
+        badgeType: "announcement",
+        title: "As Dusk Falls — перший розділ українською!",
+        title_en: "As Dusk Falls — First Chapter in Ukrainian!",
+        description: "Перший розділ першої книги As Dusk Falls українізовано — грати можна вже зараз!",
+        description_en: "The first chapter of As Dusk Falls Book One has been localized into Ukrainian — play now!",
+        image: "assets/AsDuskFalls_news.webp",
+        link: "https://lbklauncher.com/games/as_dusk_falls/little-bit",
+        buttonText: "Завантажити",
+        buttonText_en: "Download"
+    },
+    {
         id: "launcher-release",
         badge: "РАННІЙ ДОСТУП",
         badge_en: "EARLY ACCESS",
         badgeType: "announcement",
-        title: "LB Launcher — нова версія доступна!",
-        title_en: "LB Launcher — first release!",
-        description: "LB Launcher — лаунчер, що збирає українські локалізації в одному місці: завантажуйте, оновлюйте та відкривайте нові ігри українською на Windows, Linux та macOS.",
-        description_en: "LB Launcher is a launcher that brings Ukrainian localizations together in one place: download, update, and discover new games in Ukrainian on Windows, Linux, and macOS.",
+        title: "LB Launcher — наша найновіша розробка!",
+        title_en: "LB Launcher — Our Latest Development!",
+        description: "Усі наші українські локалізації можна завантажити саме тут! LB Launcher збирає переклади в одному місці для Windows, Linux та macOS.",
+        description_en: "All our Ukrainian localizations are available here! LB Launcher brings all translations together in one place for Windows, Linux, and macOS.",
         image: "assets/launcher.webp",
         link: "https://lblauncher.com/",
         buttonText: "Завантажити",
         buttonText_en: "Download"
+    },
+    {
+        id: "dispatch-update",
+        badge: "ОНОВЛЕННЯ",
+        badge_en: "UPDATE",
+        badgeType: "update",
+        title: "Dispatch — оновлення українізатора",
+        title_en: "Dispatch — Localization Updated",
+        description: "Сюжет Dispatch повністю перекладено, приємної гри!",
+        description_en: "The Dispatch story is fully translated — enjoy the game!",
+        image: "assets/Dispatch_news.webp",
+        link: "https://littlebitua.github.io/",
+        buttonText: "Детальніше",
+        buttonText_en: "Learn More"
     },
     {
         id: "uncharted1-early-access",
@@ -28,35 +56,7 @@ const newsSlides = [
         buttonText: "Детальніше",
         buttonText_en: "Learn More"
     },
-    {
-        id: "dispatch-update",
-        badge: "ОНОВЛЕННЯ",
-        badge_en: "UPDATE",
-        badgeType: "update",
-        title: "Dispatch — оновлення українізатора",
-        title_en: "Dispatch — Localization Updated",
-        description: "Переклад Dispatch оновлено — додано українську локалізацію восьмого епізоду!",
-        description_en: "The Dispatch translation has been updated — Ukrainian translation for episode 8 has been added!",
-        image: "assets/Dispatch_news.webp",
-        link: "https://littlebitua.github.io/",
-        buttonText: "Детальніше",
-        buttonText_en: "Learn More"
-    },
-    {
-        id: "yakuza-lad-fundraising",
-        badge: "ЗБІР КОШТІВ",
-        badge_en: "FUNDRAISING",
-        badgeType: "progress",
-        title: "Yakuza: Like a Dragon — збір на локалізацію",
-        title_en: "Yakuza: Like a Dragon — Localization Fundraising",
-        description: "Триває збір коштів на повну текстову локалізацію Yakuza: Like a Dragon українською. Частину гри вже перекладено, долучайтеся до підтримки!",
-        description_en: "We are raising funds for a full Ukrainian text localization of Yakuza: Like a Dragon. Part of the game is already translated—support the project!",
-        image: "assets/yakuza_news.webp",
-        link: "https://donatello.to/LittleBitUA",
-        buttonText: "Підтримати",
-        buttonText_en: "Support"
-    },
-    {
+        {
         id: "nier-replicant-fundraising",
         badge: "ЗБІР КОШТІВ",
         badge_en: "FUNDRAISING",
@@ -66,20 +66,6 @@ const newsSlides = [
         description: "Збираємо кошти на українську локалізацію NieR Replicant. Атмосферна дія з глибоким сюжетом та музикою заслуговує на українські субтитри.",
         description_en: "We are raising funds for the Ukrainian localization of NieR Replicant. This atmospheric action game with a deep story and soundtrack deserves Ukrainian subtitles.",
         image: "assets/nier_replicant.webp",
-        link: "https://donatello.to/LittleBitUA",
-        buttonText: "Підтримати",
-        buttonText_en: "Support"
-    },
-    {
-        id: "mgs2-fundraising",
-        badge: "ЗБІР КОШТІВ",
-        badge_en: "FUNDRAISING",
-        badgeType: "progress",
-        title: "Metal Gear Solid 2 — збір та переклад продовжується!",
-        title_en: "Metal Gear Solid 2 — Fundraising and Translation Continues!",
-        description: "Збираємо кошти на повну текстову українську локалізацію!",
-        description_en: "Raising funds for full Ukrainian text localization!",
-        image: "assets/MGS2_news.webp",
         link: "https://donatello.to/LittleBitUA",
         buttonText: "Підтримати",
         buttonText_en: "Support"
