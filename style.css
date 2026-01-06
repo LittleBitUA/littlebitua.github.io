@@ -798,6 +798,15 @@ body {
     animation: heroFadeSlide 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
 }
 
+.hero-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: heroFadeSlide 1s cubic-bezier(0.23, 1, 0.32, 1) 0.8s forwards;
+}
+
 .hero-stats {
     display: inline-flex; gap: 0; background: var(--glass);
     border: 1px solid var(--border); border-radius: 16px;
