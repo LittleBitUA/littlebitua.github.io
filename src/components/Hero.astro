@@ -24,11 +24,11 @@ const ringOffset = RING_C * (1 - overall / 100);
   <div class="absolute inset-0 -z-10">
     <div class="absolute inset-0 bg-surface-900" />
     <!-- Gradient orbs (animated) -->
-    <div class="orb orb-1 absolute top-[15%] left-[20%] w-[700px] h-[500px] rounded-full opacity-[0.07]
+    <div class="orb orb-1 absolute top-[10%] left-[15%] w-[800px] h-[600px] rounded-full
                 bg-[radial-gradient(ellipse,#6d5dfc_0%,transparent_70%)] will-change-transform" />
-    <div class="orb orb-2 absolute bottom-[10%] right-[15%] w-[500px] h-[400px] rounded-full opacity-[0.05]
+    <div class="orb orb-2 absolute bottom-[5%] right-[10%] w-[600px] h-[500px] rounded-full
                 bg-[radial-gradient(ellipse,#1b9aaa_0%,transparent_70%)] will-change-transform" />
-    <div class="orb orb-3 absolute top-[50%] left-[55%] w-[400px] h-[350px] rounded-full opacity-[0.04]
+    <div class="orb orb-3 absolute top-[45%] left-[50%] w-[500px] h-[400px] rounded-full
                 bg-[radial-gradient(ellipse,#9d4edd_0%,transparent_70%)] will-change-transform" />
     <!-- Grid pattern -->
     <div class="absolute inset-0 opacity-[0.025]"
@@ -269,34 +269,32 @@ const ringOffset = RING_C * (1 - overall / 100);
 <style>
   /* ── Background orb drift ── */
   .orb {
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    opacity: 0.08;
   }
   .orb-1 {
-    animation: drift1 20s ease-in-out infinite alternate;
+    animation: drift1 18s ease-in-out infinite alternate;
   }
   .orb-2 {
-    animation: drift2 25s ease-in-out infinite alternate;
+    animation: drift2 22s ease-in-out infinite alternate;
   }
   .orb-3 {
-    animation: drift3 22s ease-in-out infinite alternate;
+    animation: drift3 20s ease-in-out infinite alternate;
   }
 
   @keyframes drift1 {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(40px, -30px) scale(1.05); }
-    100% { transform: translate(-30px, 20px) scale(0.97); }
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.06; }
+    50%  { transform: translate(80px, -60px) scale(1.15); opacity: 0.12; }
+    100% { transform: translate(-60px, 40px) scale(0.9); opacity: 0.07; }
   }
   @keyframes drift2 {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(-35px, 25px) scale(1.08); }
-    100% { transform: translate(25px, -15px) scale(0.95); }
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.05; }
+    50%  { transform: translate(-70px, 50px) scale(1.2); opacity: 0.11; }
+    100% { transform: translate(50px, -30px) scale(0.85); opacity: 0.06; }
   }
   @keyframes drift3 {
-    0%   { transform: translate(0, 0) scale(1); }
-    50%  { transform: translate(30px, 20px) scale(1.06); }
-    100% { transform: translate(-20px, -25px) scale(0.98); }
+    0%   { transform: translate(0, 0) scale(1); opacity: 0.04; }
+    50%  { transform: translate(60px, 40px) scale(1.18); opacity: 0.10; }
+    100% { transform: translate(-40px, -50px) scale(0.92); opacity: 0.05; }
   }
 
   @media (prefers-reduced-motion: reduce) {
