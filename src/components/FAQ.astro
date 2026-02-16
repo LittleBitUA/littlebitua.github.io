@@ -1,0 +1,68 @@
+---
+// ─── FAQ Section ───────────────────────────────────────────────
+// Frequently Asked Questions about translations
+
+const faqs = [
+  {
+    question: "Чи безкоштовні українські переклади від «Little Bit»?",
+    answer: "Так, звичайно."
+  },
+  {
+    question: "Чи потрібна ліцензійна гра для встановлення перекладу?",
+    answer: "Так, звичайно."
+  },
+  {
+    question: "Як оновити переклад до нової версії?",
+    answer: "LBK Launcher автоматично перевіряє оновлення. Коли вийде нова версія перекладу, ви отримаєте сповіщення та зможете оновити в один клац."
+  }
+];
+---
+
+<section id="faq" class="py-20 bg-white/[0.02]">
+  <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="text-center mb-12" data-animate>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+        Часті питання про переклади
+      </h2>
+      <p class="text-surface-300 max-w-lg mx-auto">
+        Відповіді на найпопулярніші запитання
+      </p>
+    </div>
+
+    <!-- FAQ Items -->
+    <div class="space-y-4" data-animate-stagger>
+      {faqs.map((faq, index) => (
+        <div class="bg-white/[0.03] border border-white/[0.06] rounded-xl p-6 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all duration-300">
+          <h3 class="text-lg font-bold text-white mb-3">
+            {faq.question}
+          </h3>
+          <p class="text-surface-300 leading-relaxed">
+            {faq.answer}
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <!-- Contact CTA -->
+    <div class="mt-12 text-center" data-animate>
+      <p class="text-surface-300 mb-4">
+        Є інші питання?
+      </p>
+      <a
+        href="https://t.me/LittleBitUA"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold rounded-xl
+               bg-accent/15 text-accent-light border border-accent/30
+               hover:bg-accent/25 hover:border-accent/40
+               transition-all duration-200"
+      >
+        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/>
+        </svg>
+        Написати в Telegram
+      </a>
+    </div>
+  </div>
+</section>
