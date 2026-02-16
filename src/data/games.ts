@@ -122,10 +122,10 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1420290/No_More_Heroes/",
     downloadUrl: "https://lbklauncher.com/games/no_more_heroes/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-10",
+    lastUpdate: "2026-01-02",
 
     // Extended data
-    releaseDate: "2026-02-10",
+    releaseDate: "2026-01-02",
     detailedDescription: "Культова гра від Suda51 тепер українською! Тревіс Тачдаун вирушає у божевільну подорож, щоб стати найкращим кілером Санта-Дестрой. Стиль, екшен, абсурдний гумор — усе, що робить цю гру легендарною.",
     gameYear: 2007,
     genre: ["Action", "Hack and Slash", "Аркада"],
@@ -415,19 +415,48 @@ export const games: Game[] = [
     description:
       "Фінальна частина трилогії. Тревіс бореться з інопланетними суперзлодіями у найбожевільнішій грі серії.",
     cover: "/images/nmh3.jpg",
-    progress: 98,
-    status: "early-access",
-    stage: "Редактура",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
     stageDetails: [
-      { label: "Переклад", percent: 98 },
-      { label: "Редактура", percent: 60 },
-      { label: "Текстури", percent: 60 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
+      { label: "Текстури", percent: 100 },
     ],
     tags: ["Action", "Hack and Slash", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1744330/No_More_Heroes_3/",
     downloadUrl: "https://lbklauncher.com/games/no_more_heroes_3/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-14",
+    lastUpdate: "2026-01-14",
+
+    // Extended data
+    releaseDate: "2026-01-14",
+    detailedDescription: "Епічний фінал трилогії No More Heroes! Тревіс Тачдаун проти армії інопланетних суперзлодіїв. Божевільний екшен, відкритий світ та неповторний стиль Suda51.",
+    gameYear: 2021,
+    genre: ["Action", "Hack and Slash", "Відкритий світ"],
+    platform: ["PC", "Switch"],
+    translationSize: "large",
+    team: [
+      { name: "Little Bit Team", role: "Переклад та редакція", link: "https://t.me/LittleBitUA" }
+    ],
+    installInstructions: `## Встановлення локалізації No More Heroes 3
+
+### Через LBK Launcher (рекомендовано)
+1. Завантажте [LBK Launcher](https://lbklauncher.com/)
+2. Знайдіть No More Heroes 3 у списку
+3. Натисніть "Встановити"
+4. Готово!
+
+### Ручне встановлення
+1. [Завантажте патч](https://lbklauncher.com/games/no_more_heroes_3/little-bit)
+2. Розпакуйте в папку гри
+3. Запустіть гру`,
+    progressHistory: [
+      { date: "2025-07-01", progress: 40, milestone: "Початок перекладу" },
+      { date: "2025-09-15", progress: 70, milestone: "Основний сюжет" },
+      { date: "2025-11-30", progress: 90, milestone: "Редактура" },
+      { date: "2026-01-14", progress: 100, milestone: "Реліз!" }
+    ]
   },
   {
     id: "digging-a-hole",
