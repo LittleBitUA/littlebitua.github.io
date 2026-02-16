@@ -7,7 +7,7 @@ import ProgressBar from "./ProgressBar.astro";
 import Tag from "./Tag.astro";
 import type { Game } from "../data/games";
 import { STATUS_LABELS, STATUS_COLORS, STAGE_COLORS } from "../data/games";
-import { Gamepad2 } from "lucide-astro";
+import "@fortawesome/fontawesome-free/css/brands.css";
 
 export interface Props {
   game: Game;
@@ -214,7 +214,7 @@ const hasDetails = game.stageDetails && game.stageDetails.length > 0;
                  hover:bg-surface-500/40 hover:text-white hover:border-white/15"
           aria-label="Сторінка в Steam"
         >
-          <Gamepad2 class="w-4 h-4" />
+          <i class="fa-brands fa-steam"></i>
         </a>
       )}
 
