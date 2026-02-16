@@ -4,11 +4,44 @@
 
 import { games } from "../data/games";
 
-// Get done games with release dates, sorted by date (newest first)
-const releases = games
+// Get done games with release dates
+const doneGames = games
   .filter((g) => g.status === "done" && g.releaseDate)
-  .sort((a, b) => new Date(b.releaseDate!).getTime() - new Date(a.releaseDate!).getTime())
-  .slice(0, 10); // Last 10 releases
+  .map((g) => ({
+    type: 'release' as const,
+    date: g.releaseDate!,
+    title: g.title,
+    series: g.series,
+    description: g.description,
+    id: g.id
+  }));
+
+// Add custom events
+const customEvents = [
+  {
+    type: 'event' as const,
+    date: "2026-12-24",
+    title: "No More Heroes",
+    series: "No More Heroes",
+    description: "Вийшов останній епізод Dispatch. Завершено локалізацію фінальної частини гри.",
+    id: "nmh-dispatch-final",
+    badge: "Останній епізод"
+  },
+  {
+    type: 'event' as const,
+    date: "2025-11-26",
+    title: "Judgment",
+    series: "Judgment",
+    description: "Запуск раннього доступу до української локалізації. Гра доступна для завантаження через LBK Launcher.",
+    id: "judgment-early-access",
+    badge: "Ранній доступ"
+  }
+];
+
+// Combine and sort all events
+const releases = [...doneGames, ...customEvents]
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  .slice(0, 15); // Show last 15 events
 
 // Format date
 function formatDate(dateStr: string) {
@@ -38,45 +71,52 @@ function formatDate(dateStr: string) {
 
       <!-- Timeline items -->
       <div class="space-y-8">
-        {releases.map((game, index) => (
+        {releases.map((item, index) => (
           <div class="relative pl-12">
             <!-- Dot -->
             <div class="absolute left-0 top-1 w-8 h-8 rounded-full bg-surface-900 border-4 border-accent flex items-center justify-center">
-              <svg class="w-3.5 h-3.5 text-accent-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
+              {item.type === 'release' ? (
+                <svg class="w-3.5 h-3.5 text-accent-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              ) : (
+                <svg class="w-3.5 h-3.5 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              )}
             </div>
 
             <!-- Content -->
             <a
-              href={`/projects/${game.id}`}
-              class="block group"
+              href={item.type === 'release' ? `/projects/${item.id}` : '#'}
+              class={`block group ${item.type === 'event' ? 'pointer-events-none' : ''}`}
             >
               <div class="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all">
                 <div class="flex items-start justify-between gap-3 mb-2">
-                  <h4 class="font-bold text-white group-hover:text-accent-light transition-colors line-clamp-1">
-                    {game.title}
-                  </h4>
+                  <div class="flex items-center gap-2">
+                    <h4 class="font-bold text-white group-hover:text-accent-light transition-colors line-clamp-1">
+                      {item.title}
+                    </h4>
+                    {item.type === 'event' && 'badge' in item && (
+                      <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-yellow-400/10 text-yellow-400 border border-yellow-400/20">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
                   <span class="text-xs text-surface-400 whitespace-nowrap">
-                    {formatDate(game.releaseDate!)}
+                    {formatDate(item.date)}
                   </span>
                 </div>
-                {game.series && (
-                  <p class="text-xs text-accent-light font-medium mb-1">{game.series}</p>
+                {item.series && (
+                  <p class="text-xs text-accent-light font-medium mb-1">{item.series}</p>
                 )}
                 <p class="text-xs text-surface-300 line-clamp-2">
-                  {game.description}
+                  {item.description}
                 </p>
               </div>
             </a>
           </div>
         ))}
-      </div>
-
-      <!-- End cap -->
-      <div class="relative pl-12 mt-4">
-        <div class="absolute left-[11px] top-0 w-2 h-2 rounded-full bg-surface-600" />
-        <p class="text-xs text-surface-500 italic">Початок проєкту</p>
       </div>
     </div>
   </div>
