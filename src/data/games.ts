@@ -149,7 +149,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Yakuza Kiwami 2 — ремейк культової кримінальної драми від Ryu Ga Gotoku Studio. Кірю повертається до справ у Камуро-чьо, а війна між кланом Тоджьо та альянсом Омі переносить події до яскравого Сотенборі — з бійками, інтригами та історією про честь, борги й старі рахунки.",
-    cover: "/images/yakuza-kiwami2.jpg",
+    cover: "/images/yakuza-kiwami2.png",
     progress: 95,
     status: "in-progress",
     stage: "Редактура",
