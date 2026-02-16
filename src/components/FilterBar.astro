@@ -96,77 +96,6 @@ const statusList = getStatusList();
     </div>
   </div>
 
-  <!-- Advanced Filters (expandable) -->
-  <div class="space-y-3">
-    <button
-      id="toggle-advanced"
-      class="inline-flex items-center gap-2 text-xs font-semibold text-surface-300 hover:text-white transition-colors"
-    >
-      <svg id="chevron-icon" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
-      Розширені фільтри
-    </button>
-
-    <div id="advanced-filters" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      <!-- Platform filter -->
-      <div>
-        <label class="block text-xs font-semibold text-surface-400 mb-1.5">Платформа</label>
-        <select
-          id="platform-filter"
-          class="w-full px-3 py-2 text-xs rounded-lg border
-                 bg-white/[0.04] border-white/[0.08] text-surface-300
-                 hover:bg-white/[0.08] hover:border-white/[0.15]
-                 focus:outline-none focus:border-accent/40
-                 transition-all duration-200"
-        >
-          <option value="">Усі платформи</option>
-          <option value="PC">PC</option>
-          <option value="PlayStation">PlayStation</option>
-          <option value="Xbox">Xbox</option>
-          <option value="Switch">Switch</option>
-        </select>
-      </div>
-
-      <!-- Translation size filter -->
-      <div>
-        <label class="block text-xs font-semibold text-surface-400 mb-1.5">Розмір перекладу</label>
-        <select
-          id="size-filter"
-          class="w-full px-3 py-2 text-xs rounded-lg border
-                 bg-white/[0.04] border-white/[0.08] text-surface-300
-                 hover:bg-white/[0.08] hover:border-white/[0.15]
-                 focus:outline-none focus:border-accent/40
-                 transition-all duration-200"
-        >
-          <option value="">Будь-який розмір</option>
-          <option value="small">Малий</option>
-          <option value="medium">Середній</option>
-          <option value="large">Великий</option>
-        </select>
-      </div>
-
-      <!-- Year filter -->
-      <div>
-        <label class="block text-xs font-semibold text-surface-400 mb-1.5">Рік випуску гри</label>
-        <select
-          id="year-filter"
-          class="w-full px-3 py-2 text-xs rounded-lg border
-                 bg-white/[0.04] border-white/[0.08] text-surface-300
-                 hover:bg-white/[0.08] hover:border-white/[0.15]
-                 focus:outline-none focus:border-accent/40
-                 transition-all duration-200"
-        >
-          <option value="">Будь-який рік</option>
-          <option value="2020s">2020-ті</option>
-          <option value="2010s">2010-ті</option>
-          <option value="2000s">2000-ті</option>
-          <option value="1990s">1990-ті</option>
-        </select>
-      </div>
-    </div>
-  </div>
-
   <!-- Active tag indicator -->
   <div id="active-tag-filter" class="hidden items-center gap-2">
     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
@@ -206,19 +135,13 @@ const statusList = getStatusList();
   // ── DOM Elements ──
   const searchInput = document.getElementById("search-input") as HTMLInputElement;
   const sortSelect = document.getElementById("sort-select") as HTMLSelectElement;
-  const platformFilter = document.getElementById("platform-filter") as HTMLSelectElement;
-  const sizeFilter = document.getElementById("size-filter") as HTMLSelectElement;
-  const yearFilter = document.getElementById("year-filter") as HTMLSelectElement;
   const filterBar = document.getElementById("filter-bar")!;
   const statusButtons = filterBar.querySelectorAll<HTMLButtonElement>(".filter-btn");
   const resultsCounter = document.getElementById("results-counter")!;
   const resetAllBtn = document.getElementById("reset-all")!;
-  const toggleAdvancedBtn = document.getElementById("toggle-advanced")!;
-  const advancedFilters = document.getElementById("advanced-filters")!;
-  const chevronIcon = document.getElementById("chevron-icon")!;
   const activeTagEl = document.getElementById("active-tag-filter")!;
   const activeTagLabel = document.getElementById("active-tag-label")!;
-  const clearTagBtn = document.getElementById("clear-tag-filter")!;
+  const clearTagBtn = document.getElementById("clear-tag-filter")!
 
   const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-game-id]"));
 
@@ -226,9 +149,6 @@ const statusList = getStatusList();
   let currentStatus = "all";
   let currentSearch = "";
   let currentTag = "";
-  let currentPlatform = "";
-  let currentSize = "";
-  let currentYear = "";
   let currentSort = "progress-desc";
 
   // ── Fuzzy Search Setup ──
@@ -273,31 +193,7 @@ const statusList = getStatusList();
       );
     }
 
-    // 4. Platform filter
-    if (currentPlatform) {
-      filtered = filtered.filter(game =>
-        game.platform.toLowerCase().includes(currentPlatform.toLowerCase())
-      );
-    }
-
-    // 5. Size filter
-    if (currentSize) {
-      filtered = filtered.filter(game => game.translationSize === currentSize);
-    }
-
-    // 6. Year filter
-    if (currentYear) {
-      filtered = filtered.filter(game => {
-        const year = game.gameYear;
-        if (currentYear === "2020s") return year >= 2020;
-        if (currentYear === "2010s") return year >= 2010 && year < 2020;
-        if (currentYear === "2000s") return year >= 2000 && year < 2010;
-        if (currentYear === "1990s") return year >= 1990 && year < 2000;
-        return true;
-      });
-    }
-
-    // 7. Sort
+    // 4. Sort
     filtered.sort((a, b) => {
       switch (currentSort) {
         case "progress-desc":
@@ -340,10 +236,7 @@ const statusList = getStatusList();
     const hasActiveFilters =
       currentSearch ||
       currentStatus !== "all" ||
-      currentTag ||
-      currentPlatform ||
-      currentSize ||
-      currentYear;
+      currentTag;
 
     if (hasActiveFilters) {
       resetAllBtn.classList.remove("hidden");
@@ -382,51 +275,17 @@ const statusList = getStatusList();
     applyFilters();
   });
 
-  // Advanced filters
-  platformFilter.addEventListener("change", () => {
-    currentPlatform = platformFilter.value;
-    applyFilters();
-  });
-
-  sizeFilter.addEventListener("change", () => {
-    currentSize = sizeFilter.value;
-    applyFilters();
-  });
-
-  yearFilter.addEventListener("change", () => {
-    currentYear = yearFilter.value;
-    applyFilters();
-  });
-
-  // Toggle advanced filters
-  toggleAdvancedBtn.addEventListener("click", () => {
-    const isHidden = advancedFilters.classList.contains("hidden");
-    if (isHidden) {
-      advancedFilters.classList.remove("hidden");
-      chevronIcon.style.transform = "rotate(180deg)";
-    } else {
-      advancedFilters.classList.add("hidden");
-      chevronIcon.style.transform = "rotate(0deg)";
-    }
-  });
-
   // Reset all
   resetAllBtn.addEventListener("click", () => {
     // Reset state
     currentSearch = "";
     currentStatus = "all";
     currentTag = "";
-    currentPlatform = "";
-    currentSize = "";
-    currentYear = "";
     currentSort = "progress-desc";
 
     // Reset UI
     searchInput.value = "";
     sortSelect.value = "progress-desc";
-    platformFilter.value = "";
-    sizeFilter.value = "";
-    yearFilter.value = "";
     statusButtons.forEach(b => b.classList.remove("active"));
     statusButtons[0].classList.add("active");
 

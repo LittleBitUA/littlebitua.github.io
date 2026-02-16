@@ -524,11 +524,11 @@ export const games: Game[] = [
     description:
       "Джастін, молода американська детективка, вирушає на, здавалося б, чергову рутинну справу — аж поки дивна аварія не закидає її на край цивілізації… у HOTEL BARCELONA. Тут у стінах готелю застрягли душі, а коридорами блукають сім серійних убивць. Та найстрашніше — в її голові прокидається інша особистість: доктор Карнавал, прадавнє згубне чудовисько.",
     cover: "/images/hotel-barcelona.jpg",
-    progress: 50,
+    progress: 60,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 50 },
+      { label: "Переклад", percent: 60 },
       { label: "Редактура", percent: 0 },
       { label: "Текстури", percent: 0 },
     ],
@@ -536,6 +536,12 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2286600/HOTEL_BARCELONA/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-16",
+    stats: {
+      totalLines: 2238,
+      translatedLines: 1341,
+      totalWords: 22623, // Ukrainian + English
+      totalCharacters: undefined,
+    },
   },
   {
     id: "deadly-premonition-dc",
@@ -555,6 +561,12 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/247660/Deadly_Premonition_The_Directors_Cut/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-16",
+    stats: {
+      totalLines: 16667,
+      translatedLines: 7211,
+      totalWords: 143396, // Ukrainian + English
+      totalCharacters: undefined,
+    },
   },
   {
     id: "travis-strikes-again",
@@ -593,6 +605,12 @@ export const games: Game[] = [
     fundraisingRaised: 4213,
     fundraisingGoal: 50000,
     lastUpdate: "2026-02-16",
+    stats: {
+      totalLines: undefined,
+      translatedLines: undefined,
+      totalWords: 133991,
+      totalCharacters: undefined,
+    },
   },
   {
     id: "deadly-premonition-2",
