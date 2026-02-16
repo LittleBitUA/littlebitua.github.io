@@ -26,6 +26,11 @@ const hasDetails = game.stageDetails && game.stageDetails.length > 0;
   data-status={game.status}
   data-title={game.title}
   data-tags={game.tags.join(",")}
+  data-progress={game.progress}
+  data-platform={game.platform?.join(",") || ""}
+  data-translation-size={game.translationSize || ""}
+  data-game-year={game.gameYear || 0}
+  data-last-update={game.lastUpdate || ""}
   data-animate
 >
   <!-- Cover (Steam 600×900 = 2:3 portrait) -->
@@ -83,8 +88,13 @@ const hasDetails = game.stageDetails && game.stageDetails.length > 0;
   <!-- Content -->
   <div class="p-4 flex flex-col flex-1">
     <!-- Title -->
-    <h3 class="text-base font-bold text-white leading-snug mb-2 group-hover:text-accent-light transition-colors duration-300 line-clamp-2">
-      {game.title}
+    <h3 class="text-base font-bold leading-snug mb-2 line-clamp-2">
+      <a
+        href={`/projects/${game.id}`}
+        class="text-white hover:text-accent-light transition-colors duration-300"
+      >
+        {game.title}
+      </a>
     </h3>
 
     <!-- Description -->

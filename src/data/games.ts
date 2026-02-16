@@ -16,6 +16,28 @@ export interface StageDetail {
   percent: number;
 }
 
+/** Team member information */
+export interface TeamMember {
+  name: string;
+  role: string; // "Перекладач", "Редактор", "Тестувальник", etc.
+  link?: string; // Link to profile (Telegram, GitHub, etc.)
+}
+
+/** Progress history entry for tracking changes over time */
+export interface ProgressEntry {
+  date: string; // ISO date string (YYYY-MM-DD)
+  progress: number; // 0-100
+  milestone?: string; // Optional milestone description
+}
+
+/** Translation statistics */
+export interface TranslationStats {
+  totalLines?: number;
+  translatedLines?: number;
+  totalWords?: number;
+  totalCharacters?: number;
+}
+
 export interface Game {
   id: string;
   title: string;
@@ -33,6 +55,23 @@ export interface Game {
   fundraisingRaised?: number;
   fundraisingGoal?: number;
   lastUpdate?: string;
+
+  // ── Detail Pages Data ──
+  screenshots?: string[]; // Paths to translation screenshots
+  installInstructions?: string; // Markdown instructions
+  team?: TeamMember[]; // Translation team
+  detailedDescription?: string; // Extended description for detail page
+  releaseDate?: string; // Release date (YYYY-MM-DD)
+  gameYear?: number; // Original game release year
+
+  // ── Progress Tracker Data ──
+  progressHistory?: ProgressEntry[]; // Historical progress data
+  stats?: TranslationStats; // Translation statistics
+
+  // ── Search & Filters Data ──
+  genre?: string[]; // Game genres
+  platform?: string[]; // Platforms (PC, PlayStation, Xbox, Switch)
+  translationSize?: "small" | "medium" | "large"; // Translation project size
 }
 
 /** Stage badge color mapping */
@@ -84,6 +123,47 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/no_more_heroes/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-10",
+
+    // Extended data
+    releaseDate: "2026-02-10",
+    detailedDescription: "Культова гра від Suda51 тепер українською! Тревіс Тачдаун вирушає у божевільну подорож, щоб стати найкращим кілером Санта-Дестрой. Стиль, екшен, абсурдний гумор — усе, що робить цю гру легендарною.",
+    gameYear: 2007,
+    genre: ["Action", "Hack and Slash", "Аркада"],
+    platform: ["PC", "Switch"],
+    translationSize: "medium",
+    screenshots: [
+      "/images/screenshots/nmh-battle.jpg",
+      "/images/screenshots/nmh-dialog.jpg"
+    ],
+    team: [
+      { name: "Little Bit Team", role: "Переклад", link: "https://t.me/LittleBitUA" }
+    ],
+    installInstructions: `## Встановлення локалізації No More Heroes
+
+### Через LBK Launcher (найпростіше)
+1. Встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Знайдіть No More Heroes у списку
+3. Натисніть "Встановити"
+4. Запускайте гру!
+
+### Ручне встановлення
+1. [Завантажте патч](https://lbklauncher.com/games/no_more_heroes/little-bit)
+2. Розпакуйте в папку гри
+3. Запустіть гру через Steam`,
+    progressHistory: [
+      { date: "2025-06-01", progress: 0, milestone: "Початок проєкту" },
+      { date: "2025-07-15", progress: 30, milestone: "Переклад основних діалогів" },
+      { date: "2025-09-01", progress: 60, milestone: "Переклад усіх босів" },
+      { date: "2025-11-15", progress: 85, milestone: "Завершено переклад" },
+      { date: "2026-01-20", progress: 95, milestone: "Редактура" },
+      { date: "2026-02-10", progress: 100, milestone: "Реліз!" }
+    ],
+    stats: {
+      totalLines: 8250,
+      translatedLines: 8250,
+      totalWords: 95000,
+      totalCharacters: 450000
+    }
   },
 
   // ── Early Access / In Progress ───────────────────────────
@@ -104,6 +184,27 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2592160/Dispatch/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-08",
+
+    // Extended data
+    detailedDescription: "Станьте диспетчером поліції та керуйте екстреними викликами. Кожне ваше рішення впливає на долі людей. Унікальна стилістика коміксу та нелінійний сюжет.",
+    gameYear: 2024,
+    genre: ["Пригоди", "Симулятор", "Візуальна новела"],
+    platform: ["PC"],
+    translationSize: "small",
+    team: [
+      { name: "Little Bit Team", role: "Переклад та адаптація" }
+    ],
+    progressHistory: [
+      { date: "2026-01-10", progress: 50, milestone: "Почато переклад" },
+      { date: "2026-01-25", progress: 75, milestone: "Перші два епізоди" },
+      { date: "2026-02-08", progress: 90, milestone: "Редактура" }
+    ],
+    stats: {
+      totalLines: 3500,
+      translatedLines: 3150,
+      totalWords: 42000,
+      totalCharacters: 210000
+    }
   },
   {
     id: "uncharted1",
@@ -162,6 +263,50 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/927380/Yakuza_Kiwami_2/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-16",
+
+    // Extended data
+    detailedDescription: "Продовження історії Кадзуми Кір'ю. Рік після подій першої Yakuza Kiwami. Війна між кланами Тодзьо та Омі загрожує спалахнути знову. Перероблена гра на Dragon Engine із покращеною графікою та геймплеєм.",
+    gameYear: 2017,
+    genre: ["Action", "RPG", "Beat 'em up", "Відкритий світ"],
+    platform: ["PC", "PlayStation", "Xbox"],
+    translationSize: "large",
+    screenshots: [
+      "/images/screenshots/yk2-dialog.jpg",
+      "/images/screenshots/yk2-menu.jpg",
+      "/images/screenshots/yk2-combat.jpg"
+    ],
+    team: [
+      { name: "Little Bit Team", role: "Переклад та редакція" }
+    ],
+    installInstructions: `## Встановлення патчу Yakuza Kiwami 2
+
+### Через LBK Launcher (рекомендовано)
+1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Запустіть лаунчер та знайдіть Yakuza Kiwami 2 у списку
+3. Натисніть "Встановити локалізацію"
+4. Запускайте гру через Steam як зазвичай
+
+### Ручне встановлення
+1. Завантажте останню версію патчу
+2. Розпакуйте архів у папку з грою
+3. Підтвердіть заміну файлів
+4. Готово! Запускайте гру
+
+**Важливо:** Патч працює з версією гри Steam.`,
+    progressHistory: [
+      { date: "2025-08-01", progress: 45, milestone: "Почато переклад основної історії" },
+      { date: "2025-09-15", progress: 60, milestone: "Завершено переклад основних місій" },
+      { date: "2025-11-01", progress: 75, milestone: "Перекладено побічні активності" },
+      { date: "2025-12-20", progress: 85, milestone: "Почато редактуру" },
+      { date: "2026-01-15", progress: 90, milestone: "Завершено редагування основного сюжету" },
+      { date: "2026-02-16", progress: 95, milestone: "Фінальна редактура та текстури" }
+    ],
+    stats: {
+      totalLines: 15420,
+      translatedLines: 14649,
+      totalWords: 185000,
+      totalCharacters: 920000
+    }
   },
   {
     id: "yakuza-lad",

@@ -1,0 +1,83 @@
+---
+// ─── Timeline Component ────────────────────────────────────────────
+// Vertical timeline showing completed game releases
+
+import { games } from "../data/games";
+
+// Get done games with release dates, sorted by date (newest first)
+const releases = games
+  .filter((g) => g.status === "done" && g.releaseDate)
+  .sort((a, b) => new Date(b.releaseDate!).getTime() - new Date(a.releaseDate!).getTime())
+  .slice(0, 10); // Last 10 releases
+
+// Format date
+function formatDate(dateStr: string) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("uk-UA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+---
+
+{releases.length > 0 && (
+  <div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 sm:p-8" data-animate>
+    <div class="mb-8">
+      <h3 class="text-xl sm:text-2xl font-black text-white mb-2">
+        Часова лінія релізів
+      </h3>
+      <p class="text-sm text-surface-300">
+        Історія випуску завершених локалізацій
+      </p>
+    </div>
+
+    <div class="relative">
+      <!-- Vertical line -->
+      <div class="absolute left-[15px] top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-steam-blue to-transparent" />
+
+      <!-- Timeline items -->
+      <div class="space-y-8">
+        {releases.map((game, index) => (
+          <div class="relative pl-12">
+            <!-- Dot -->
+            <div class="absolute left-0 top-1 w-8 h-8 rounded-full bg-surface-900 border-4 border-accent flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-accent-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            <!-- Content -->
+            <a
+              href={`/projects/${game.id}`}
+              class="block group"
+            >
+              <div class="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 hover:bg-white/[0.04] hover:border-white/[0.10] transition-all">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                  <h4 class="font-bold text-white group-hover:text-accent-light transition-colors line-clamp-1">
+                    {game.title}
+                  </h4>
+                  <span class="text-xs text-surface-400 whitespace-nowrap">
+                    {formatDate(game.releaseDate!)}
+                  </span>
+                </div>
+                {game.series && (
+                  <p class="text-xs text-accent-light font-medium mb-1">{game.series}</p>
+                )}
+                <p class="text-xs text-surface-300 line-clamp-2">
+                  {game.description}
+                </p>
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <!-- End cap -->
+      <div class="relative pl-12 mt-4">
+        <div class="absolute left-[11px] top-0 w-2 h-2 rounded-full bg-surface-600" />
+        <p class="text-xs text-surface-500 italic">Початок проєкту</p>
+      </div>
+    </div>
+  </div>
+)}

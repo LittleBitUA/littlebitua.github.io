@@ -1,0 +1,175 @@
+---
+// ─── ProgressTracker Component ────────────────────────────────────
+// Interactive chart showing progress history for multiple projects
+
+import { games } from "../data/games";
+
+// Get games with progress history
+const gamesWithHistory = games
+  .filter((g) => g.progressHistory && g.progressHistory.length > 0)
+  .sort((a, b) => b.progress - a.progress)
+  .slice(0, 5); // Top 5 most progressed games
+
+// Prepare data for Chart.js
+const chartData = gamesWithHistory.map((game) => ({
+  label: game.title,
+  data: game.progressHistory!.map((entry) => ({
+    x: entry.date,
+    y: entry.progress,
+  })),
+  color: getColorForGame(game.id),
+}));
+
+// Color palette
+function getColorForGame(id: string) {
+  const colors = [
+    "#6d5dfc", // accent
+    "#1b9aaa", // steam blue
+    "#5cb85c", // steam green
+    "#f39c12", // orange
+    "#e74c3c", // red
+  ];
+  const index = games.findIndex((g) => g.id === id) % colors.length;
+  return colors[index];
+}
+---
+
+<div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6 sm:p-8" data-animate>
+  <div class="flex items-start justify-between mb-6">
+    <div>
+      <h3 class="text-xl sm:text-2xl font-black text-white mb-2">
+        Прогрес у часі
+      </h3>
+      <p class="text-sm text-surface-300">
+        Динаміка розвитку топ-5 активних проєктів
+      </p>
+    </div>
+  </div>
+
+  <div class="relative">
+    <canvas id="progress-tracker-chart" class="w-full" style="max-height: 400px;"></canvas>
+  </div>
+
+  <!-- Legend -->
+  <div class="flex flex-wrap gap-3 mt-6 pt-6 border-t border-white/[0.06]">
+    {gamesWithHistory.map((game, index) => (
+      <div class="flex items-center gap-2">
+        <div
+          class="w-3 h-3 rounded-full"
+          style={`background-color: ${getColorForGame(game.id)}`}
+        />
+        <span class="text-xs text-surface-300 font-medium">{game.title}</span>
+        <span class="text-xs text-white font-bold tabular-nums">{game.progress}%</span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<script define:vars={{ chartData }}>
+  import {
+    Chart,
+    LineController,
+    LineElement,
+    PointElement,
+    LinearScale,
+    TimeScale,
+    Title,
+    Tooltip,
+    Legend,
+    Filler,
+  } from "chart.js";
+  import "chartjs-adapter-date-fns";
+
+  Chart.register(
+    LineController,
+    LineElement,
+    PointElement,
+    LinearScale,
+    TimeScale,
+    Title,
+    Tooltip,
+    Legend,
+    Filler
+  );
+
+  const ctx = document.getElementById("progress-tracker-chart") as HTMLCanvasElement;
+  if (!ctx) throw new Error("Canvas not found");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      datasets: chartData.map((dataset) => ({
+        label: dataset.label,
+        data: dataset.data,
+        borderColor: dataset.color,
+        backgroundColor: `${dataset.color}10`,
+        borderWidth: 3,
+        fill: false,
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: dataset.color,
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
+      })),
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          backgroundColor: "rgba(0, 0, 0, 0.9)",
+          titleColor: "#fff",
+          bodyColor: "#fff",
+          borderColor: "rgba(255, 255, 255, 0.1)",
+          borderWidth: 1,
+          padding: 12,
+          displayColors: true,
+          callbacks: {
+            label: (context) => {
+              return `${context.dataset.label}: ${context.parsed.y}%`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          type: "time",
+          time: {
+            unit: "month",
+            displayFormats: {
+              month: "MMM yyyy",
+            },
+          },
+          ticks: {
+            color: "rgba(255, 255, 255, 0.5)",
+            maxRotation: 0,
+            autoSkip: true,
+          },
+          grid: {
+            color: "rgba(255, 255, 255, 0.05)",
+          },
+        },
+        y: {
+          beginAtZero: true,
+          max: 100,
+          ticks: {
+            callback: (value) => `${value}%`,
+            color: "rgba(255, 255, 255, 0.5)",
+            stepSize: 20,
+          },
+          grid: {
+            color: "rgba(255, 255, 255, 0.05)",
+          },
+        },
+      },
+    },
+  });
+</script>

@@ -1,59 +1,177 @@
 ---
 // ─── FilterBar Component ───────────────────────────────────────
-// Search input + status filter buttons.
-// Tags on game cards are also clickable and trigger tag filtering.
+// Advanced search + filtering + sorting for game projects
+// Features: Fuzzy search (Fuse.js), status/genre/platform/size filters, sorting
 
 import { getStatusList, STATUS_LABELS } from "../data/games";
 
 const statusList = getStatusList();
 ---
 
-<div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-8" data-animate>
-  <!-- Search input -->
-  <div class="relative w-full sm:w-64">
-    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"
-         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-    </svg>
-    <input
-      type="text"
-      id="search-input"
-      placeholder="Пошук за назвою..."
-      class="w-full pl-10 pr-4 py-2 text-sm text-white placeholder-surface-400
-             bg-white/[0.04] border border-white/[0.08] rounded-lg
-             focus:outline-none focus:border-accent/40 focus:bg-white/[0.06]
+<div class="space-y-4 mb-8" data-animate>
+  <!-- Search Bar + Results Counter -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+    <!-- Search input -->
+    <div class="relative w-full sm:flex-1 sm:max-w-md">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Пошук за назвою, серією, тегами..."
+        class="w-full pl-10 pr-4 py-2.5 text-sm text-white placeholder-surface-400
+               bg-white/[0.04] border border-white/[0.08] rounded-lg
+               focus:outline-none focus:border-accent/40 focus:bg-white/[0.06]
+               transition-all duration-200"
+      />
+    </div>
+
+    <!-- Results counter -->
+    <div class="text-xs text-surface-300 font-medium">
+      <span id="results-counter">Завантаження...</span>
+    </div>
+
+    <!-- Reset all button -->
+    <button
+      id="reset-all"
+      class="hidden items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg
+             bg-red-500/10 border border-red-500/30 text-red-400
+             hover:bg-red-500/20 hover:border-red-500/40
              transition-all duration-200"
-    />
+    >
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+      Скинути все
+    </button>
   </div>
 
-  <!-- Divider -->
-  <div class="w-px h-6 bg-white/10 hidden sm:block" />
+  <!-- Filters Row -->
+  <div class="flex flex-col lg:flex-row gap-3">
+    <!-- Status filter -->
+    <div class="flex flex-wrap gap-2" id="filter-bar">
+      <button
+        class="filter-btn active px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
+        data-filter="status"
+        data-value="all"
+      >
+        Усі статуси
+      </button>
 
-  <!-- Status filter buttons -->
-  <div class="flex flex-wrap gap-2" id="filter-bar">
+      {statusList.map((status) => (
+        <button
+          class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
+          data-filter="status"
+          data-value={status}
+        >
+          {STATUS_LABELS[status]}
+        </button>
+      ))}
+    </div>
+
+    <div class="w-px bg-white/10 hidden lg:block" />
+
+    <!-- Sort dropdown -->
+    <div class="relative">
+      <select
+        id="sort-select"
+        class="appearance-none px-4 py-1.5 pr-8 text-xs font-semibold rounded-lg border
+               bg-white/[0.04] border-white/[0.08] text-surface-300
+               hover:bg-white/[0.08] hover:border-white/[0.15] hover:text-white
+               focus:outline-none focus:border-accent/40 focus:text-white
+               transition-all duration-200 cursor-pointer"
+      >
+        <option value="progress-desc">Прогрес ↓</option>
+        <option value="progress-asc">Прогрес ↑</option>
+        <option value="title-asc">Назва (А-Я)</option>
+        <option value="title-desc">Назва (Я-А)</option>
+        <option value="update-desc">Останні оновлення</option>
+      </select>
+      <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-surface-400 pointer-events-none"
+           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- Advanced Filters (expandable) -->
+  <div class="space-y-3">
     <button
-      class="filter-btn active px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
-      data-filter="all"
+      id="toggle-advanced"
+      class="inline-flex items-center gap-2 text-xs font-semibold text-surface-300 hover:text-white transition-colors"
     >
-      Усі
+      <svg id="chevron-icon" class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+      Розширені фільтри
     </button>
 
-    {statusList.map((status) => (
-      <button
-        class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
-        data-filter="status"
-        data-value={status}
-      >
-        {STATUS_LABELS[status]}
-      </button>
-    ))}
+    <div id="advanced-filters" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <!-- Platform filter -->
+      <div>
+        <label class="block text-xs font-semibold text-surface-400 mb-1.5">Платформа</label>
+        <select
+          id="platform-filter"
+          class="w-full px-3 py-2 text-xs rounded-lg border
+                 bg-white/[0.04] border-white/[0.08] text-surface-300
+                 hover:bg-white/[0.08] hover:border-white/[0.15]
+                 focus:outline-none focus:border-accent/40
+                 transition-all duration-200"
+        >
+          <option value="">Усі платформи</option>
+          <option value="PC">PC</option>
+          <option value="PlayStation">PlayStation</option>
+          <option value="Xbox">Xbox</option>
+          <option value="Switch">Switch</option>
+        </select>
+      </div>
+
+      <!-- Translation size filter -->
+      <div>
+        <label class="block text-xs font-semibold text-surface-400 mb-1.5">Розмір перекладу</label>
+        <select
+          id="size-filter"
+          class="w-full px-3 py-2 text-xs rounded-lg border
+                 bg-white/[0.04] border-white/[0.08] text-surface-300
+                 hover:bg-white/[0.08] hover:border-white/[0.15]
+                 focus:outline-none focus:border-accent/40
+                 transition-all duration-200"
+        >
+          <option value="">Будь-який розмір</option>
+          <option value="small">Малий</option>
+          <option value="medium">Середній</option>
+          <option value="large">Великий</option>
+        </select>
+      </div>
+
+      <!-- Year filter -->
+      <div>
+        <label class="block text-xs font-semibold text-surface-400 mb-1.5">Рік випуску гри</label>
+        <select
+          id="year-filter"
+          class="w-full px-3 py-2 text-xs rounded-lg border
+                 bg-white/[0.04] border-white/[0.08] text-surface-300
+                 hover:bg-white/[0.08] hover:border-white/[0.15]
+                 focus:outline-none focus:border-accent/40
+                 transition-all duration-200"
+        >
+          <option value="">Будь-який рік</option>
+          <option value="2020s">2020-ті</option>
+          <option value="2010s">2010-ті</option>
+          <option value="2000s">2000-ті</option>
+          <option value="1990s">1990-ті</option>
+        </select>
+      </div>
+    </div>
   </div>
 
-  <!-- Active tag indicator (hidden by default) -->
+  <!-- Active tag indicator -->
   <div id="active-tag-filter" class="hidden items-center gap-2">
-    <div class="w-px h-6 bg-white/10 hidden sm:block" />
     <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
                  bg-accent/15 border border-accent/30 text-accent-light">
+      <span>Тег:</span>
       <span id="active-tag-label"></span>
       <button id="clear-tag-filter" class="hover:text-white transition-colors ml-0.5" aria-label="Скинути">
         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
@@ -83,73 +201,243 @@ const statusList = getStatusList();
 </style>
 
 <script>
-  const filterBar = document.getElementById("filter-bar")!;
-  const buttons = filterBar.querySelectorAll<HTMLButtonElement>(".filter-btn");
+  import Fuse from "fuse.js";
+
+  // ── DOM Elements ──
   const searchInput = document.getElementById("search-input") as HTMLInputElement;
-  const cards = document.querySelectorAll<HTMLElement>("[data-game-id]");
+  const sortSelect = document.getElementById("sort-select") as HTMLSelectElement;
+  const platformFilter = document.getElementById("platform-filter") as HTMLSelectElement;
+  const sizeFilter = document.getElementById("size-filter") as HTMLSelectElement;
+  const yearFilter = document.getElementById("year-filter") as HTMLSelectElement;
+  const filterBar = document.getElementById("filter-bar")!;
+  const statusButtons = filterBar.querySelectorAll<HTMLButtonElement>(".filter-btn");
+  const resultsCounter = document.getElementById("results-counter")!;
+  const resetAllBtn = document.getElementById("reset-all")!;
+  const toggleAdvancedBtn = document.getElementById("toggle-advanced")!;
+  const advancedFilters = document.getElementById("advanced-filters")!;
+  const chevronIcon = document.getElementById("chevron-icon")!;
   const activeTagEl = document.getElementById("active-tag-filter")!;
   const activeTagLabel = document.getElementById("active-tag-label")!;
   const clearTagBtn = document.getElementById("clear-tag-filter")!;
+
+  const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-game-id]"));
 
   // ── State ──
   let currentStatus = "all";
   let currentSearch = "";
   let currentTag = "";
+  let currentPlatform = "";
+  let currentSize = "";
+  let currentYear = "";
+  let currentSort = "progress-desc";
 
-  // ── Apply all filters ──
+  // ── Fuzzy Search Setup ──
+  const gamesList = cards.map(card => ({
+    element: card,
+    title: card.dataset.title || "",
+    series: card.dataset.series || "",
+    tags: card.dataset.tags || "",
+    status: card.dataset.status || "",
+    progress: parseInt(card.dataset.progress || "0", 10),
+    platform: card.dataset.platform || "",
+    translationSize: card.dataset.translationSize || "",
+    gameYear: parseInt(card.dataset.gameYear || "0", 10),
+    lastUpdate: card.dataset.lastUpdate || ""
+  }));
+
+  const fuse = new Fuse(gamesList, {
+    keys: ["title", "series", "tags"],
+    threshold: 0.3,
+    includeScore: true
+  });
+
+  // ── Apply Filters & Sort ──
   function applyFilters() {
-    const query = currentSearch.toLowerCase().trim();
+    let filtered = gamesList;
 
-    cards.forEach((card) => {
-      const title = (card.dataset.title || "").toLowerCase();
-      const status = card.dataset.status || "";
-      const tags = (card.dataset.tags || "").toLowerCase();
+    // 1. Fuzzy search
+    if (currentSearch.trim()) {
+      const results = fuse.search(currentSearch);
+      filtered = results.map(r => r.item);
+    }
 
-      let show = true;
+    // 2. Status filter
+    if (currentStatus !== "all") {
+      filtered = filtered.filter(game => game.status === currentStatus);
+    }
 
-      // Status filter
-      if (currentStatus !== "all" && status !== currentStatus) show = false;
+    // 3. Tag filter
+    if (currentTag) {
+      filtered = filtered.filter(game =>
+        game.tags.toLowerCase().includes(currentTag.toLowerCase())
+      );
+    }
 
-      // Search filter
-      if (query && !title.includes(query)) show = false;
+    // 4. Platform filter
+    if (currentPlatform) {
+      filtered = filtered.filter(game =>
+        game.platform.toLowerCase().includes(currentPlatform.toLowerCase())
+      );
+    }
 
-      // Tag filter
-      if (currentTag && !tags.includes(currentTag.toLowerCase())) show = false;
+    // 5. Size filter
+    if (currentSize) {
+      filtered = filtered.filter(game => game.translationSize === currentSize);
+    }
 
+    // 6. Year filter
+    if (currentYear) {
+      filtered = filtered.filter(game => {
+        const year = game.gameYear;
+        if (currentYear === "2020s") return year >= 2020;
+        if (currentYear === "2010s") return year >= 2010 && year < 2020;
+        if (currentYear === "2000s") return year >= 2000 && year < 2010;
+        if (currentYear === "1990s") return year >= 1990 && year < 2000;
+        return true;
+      });
+    }
+
+    // 7. Sort
+    filtered.sort((a, b) => {
+      switch (currentSort) {
+        case "progress-desc":
+          return b.progress - a.progress;
+        case "progress-asc":
+          return a.progress - b.progress;
+        case "title-asc":
+          return a.title.localeCompare(b.title, "uk");
+        case "title-desc":
+          return b.title.localeCompare(a.title, "uk");
+        case "update-desc":
+          return b.lastUpdate.localeCompare(a.lastUpdate);
+        default:
+          return 0;
+      }
+    });
+
+    // Apply to DOM
+    const filteredIds = new Set(filtered.map(g => g.element.dataset.gameId));
+    cards.forEach(card => {
+      const show = filteredIds.has(card.dataset.gameId);
       if (show) {
         card.style.display = "";
-        card.style.opacity = "0";
-        card.style.transform = "translateY(12px)";
-        requestAnimationFrame(() => {
-          card.style.transition = "opacity 0.3s, transform 0.3s";
+        card.style.order = filtered.findIndex(g => g.element === card).toString();
+        setTimeout(() => {
           card.style.opacity = "1";
           card.style.transform = "translateY(0)";
-        });
+        }, 50);
       } else {
         card.style.opacity = "0";
         card.style.transform = "translateY(12px)";
         setTimeout(() => { card.style.display = "none"; }, 300);
       }
     });
+
+    // Update counter
+    resultsCounter.textContent = `Знайдено: ${filtered.length} з ${cards.length}`;
+
+    // Show/hide reset button
+    const hasActiveFilters =
+      currentSearch ||
+      currentStatus !== "all" ||
+      currentTag ||
+      currentPlatform ||
+      currentSize ||
+      currentYear;
+
+    if (hasActiveFilters) {
+      resetAllBtn.classList.remove("hidden");
+      resetAllBtn.classList.add("inline-flex");
+    } else {
+      resetAllBtn.classList.add("hidden");
+      resetAllBtn.classList.remove("inline-flex");
+    }
   }
 
-  // ── Status buttons ──
-  buttons.forEach((btn) => {
+  // ── Event Listeners ──
+
+  // Search (debounced)
+  let searchTimeout: ReturnType<typeof setTimeout>;
+  searchInput.addEventListener("input", () => {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      currentSearch = searchInput.value;
+      applyFilters();
+    }, 300);
+  });
+
+  // Status buttons
+  statusButtons.forEach(btn => {
     btn.addEventListener("click", () => {
-      buttons.forEach((b) => b.classList.remove("active"));
+      statusButtons.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      currentStatus = btn.dataset.filter === "all" ? "all" : (btn.dataset.value || "all");
+      currentStatus = btn.dataset.value || "all";
       applyFilters();
     });
   });
 
-  // ── Search input ──
-  searchInput.addEventListener("input", () => {
-    currentSearch = searchInput.value;
+  // Sort
+  sortSelect.addEventListener("change", () => {
+    currentSort = sortSelect.value;
     applyFilters();
   });
 
-  // ── Tag click (delegated from game cards) ──
+  // Advanced filters
+  platformFilter.addEventListener("change", () => {
+    currentPlatform = platformFilter.value;
+    applyFilters();
+  });
+
+  sizeFilter.addEventListener("change", () => {
+    currentSize = sizeFilter.value;
+    applyFilters();
+  });
+
+  yearFilter.addEventListener("change", () => {
+    currentYear = yearFilter.value;
+    applyFilters();
+  });
+
+  // Toggle advanced filters
+  toggleAdvancedBtn.addEventListener("click", () => {
+    const isHidden = advancedFilters.classList.contains("hidden");
+    if (isHidden) {
+      advancedFilters.classList.remove("hidden");
+      chevronIcon.style.transform = "rotate(180deg)";
+    } else {
+      advancedFilters.classList.add("hidden");
+      chevronIcon.style.transform = "rotate(0deg)";
+    }
+  });
+
+  // Reset all
+  resetAllBtn.addEventListener("click", () => {
+    // Reset state
+    currentSearch = "";
+    currentStatus = "all";
+    currentTag = "";
+    currentPlatform = "";
+    currentSize = "";
+    currentYear = "";
+    currentSort = "progress-desc";
+
+    // Reset UI
+    searchInput.value = "";
+    sortSelect.value = "progress-desc";
+    platformFilter.value = "";
+    sizeFilter.value = "";
+    yearFilter.value = "";
+    statusButtons.forEach(b => b.classList.remove("active"));
+    statusButtons[0].classList.add("active");
+
+    // Clear tag
+    activeTagEl.classList.add("hidden");
+    activeTagEl.classList.remove("inline-flex");
+
+    applyFilters();
+  });
+
+  // Tag filter (from game cards)
   document.addEventListener("click", (e) => {
     const tagEl = (e.target as HTMLElement).closest("[data-tag-filter]") as HTMLElement | null;
     if (!tagEl) return;
@@ -162,11 +450,14 @@ const statusList = getStatusList();
     applyFilters();
   });
 
-  // ── Clear tag filter ──
+  // Clear tag
   clearTagBtn.addEventListener("click", () => {
     currentTag = "";
     activeTagEl.classList.add("hidden");
     activeTagEl.classList.remove("inline-flex");
     applyFilters();
   });
+
+  // Initial render
+  applyFilters();
 </script>
