@@ -223,6 +223,27 @@ export const games: Game[] = [
     tags: ["Action", "Пригоди", "Шутер"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-16",
+
+    // Extended data
+    detailedDescription: "Початок легендарної серії про мисливця за скарбами Натана Дрейка. Захоплюючі пригоди в джунглях Амазонки, загадка Ель Дорадо та незабутні персонажі.",
+    gameYear: 2007,
+    genre: ["Action", "Пригоди", "Шутер"],
+    platform: ["PlayStation"],
+    translationSize: "small",
+    team: [
+      { name: "Little Bit Team", role: "Переклад та редакція" }
+    ],
+    progressHistory: [
+      { date: "2025-12-01", progress: 60, milestone: "Основний сюжет" },
+      { date: "2026-01-15", progress: 80, milestone: "Завершення перекладу" },
+      { date: "2026-02-16", progress: 90, milestone: "Редактура" }
+    ],
+    stats: {
+      totalLines: 3332,
+      translatedLines: 2920, // 87.64%
+      totalWords: 14999, // 13013 укр + 1986 англ
+      totalCharacters: 82494 // Приблизно
+    }
   },
   {
     id: "judgment",
@@ -243,6 +264,43 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/judgment/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-06",
+
+    // Extended data
+    detailedDescription: "Перший спін-оф серії Yakuza. Колишній адвокат Такаюкі Яґамі стає приватним детективом і розслідує серію загадкових вбивств у Камуро-чьо. Детективна робота, бійки та глибокий сюжет.",
+    gameYear: 2018,
+    genre: ["Action", "RPG", "Детектив", "Відкритий світ"],
+    platform: ["PC", "PlayStation", "Xbox"],
+    translationSize: "large",
+    team: [
+      { name: "Little Bit Team", role: "Переклад та редакція" }
+    ],
+    installInstructions: `## Встановлення локалізації Judgment
+
+### Через LBK Launcher (рекомендовано)
+1. Завантажте [LBK Launcher](https://lbklauncher.com/)
+2. Знайдіть Judgment у списку
+3. Натисніть "Встановити"
+4. Запускайте гру через Steam
+
+### Ручне встановлення
+1. [Завантажте патч](https://lbklauncher.com/games/judgment/little-bit)
+2. Розпакуйте в папку гри
+3. Запустіть гру
+
+**Увага:** Ранній доступ — переклад активно оновлюється.`,
+    progressHistory: [
+      { date: "2025-07-01", progress: 35, milestone: "Початок перекладу основної історії" },
+      { date: "2025-09-01", progress: 55, milestone: "Переклад половини сюжету" },
+      { date: "2025-11-15", progress: 75, milestone: "Основна історія перекладена" },
+      { date: "2026-01-10", progress: 85, milestone: "Побічні місії" },
+      { date: "2026-02-06", progress: 90, milestone: "Редактура та поліпшення" }
+    ],
+    stats: {
+      totalLines: 69340,
+      translatedLines: 62917, // 90.74%
+      totalWords: 505041, // 427028 укр + 78013 англ
+      totalCharacters: 2777726 // Приблизно
+    }
   },
   {
     id: "yakuza-kiwami2",
@@ -315,11 +373,11 @@ export const games: Game[] = [
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "/images/yakuza-lad.jpg",
-    progress: 33,
+    progress: 35,
     status: "fundraising",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 33 },
+      { label: "Переклад", percent: 35 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
@@ -328,6 +386,27 @@ export const games: Game[] = [
     fundraisingRaised: 33900,
     fundraisingGoal: 35000,
     lastUpdate: "2026-02-16",
+
+    // Extended data
+    detailedDescription: "Революційна зміна для серії Yakuza — тепер з покроковими боями в стилі JRPG! Ічібан Касуґа починає нове життя після 18 років в'язниці. Захоплюючий сюжет та система класів персонажів.",
+    gameYear: 2020,
+    genre: ["RPG", "JRPG", "Покрокова бойова система", "Відкритий світ"],
+    platform: ["PC", "PlayStation", "Xbox"],
+    translationSize: "large",
+    team: [
+      { name: "Little Bit Team", role: "Переклад" }
+    ],
+    progressHistory: [
+      { date: "2025-09-01", progress: 15, milestone: "Початок основного сюжету" },
+      { date: "2025-11-15", progress: 25, milestone: "Перша половина історії" },
+      { date: "2026-02-16", progress: 35, milestone: "Активний переклад" }
+    ],
+    stats: {
+      totalLines: 72448,
+      translatedLines: 25663, // 35.42%
+      totalWords: 613562, // 179615 укр + 433947 англ
+      totalCharacters: 3374591 // Приблизно
+    }
   },
   {
     id: "nmh3",
@@ -603,16 +682,34 @@ export const games: Game[] = [
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
     cover: "/images/jojo-asbr.jpg",
-    progress: 8,
+    progress: 9,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 8 },
+      { label: "Переклад", percent: 9 },
     ],
     tags: ["Файтинг", "Аніме", "Action"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-16",
+
+    // Extended data
+    detailedDescription: "Епічний файтинг з усіма улюбленими персонажами JoJo! Від Джонатана до Джоліна — понад 50 бійців з унікальними стендами та прийомами. Відчуйте всю потужність Bizarre Adventure!",
+    gameYear: 2022,
+    genre: ["Файтинг", "Аніме", "Мультиплеєр"],
+    platform: ["PC", "PlayStation", "Xbox", "Switch"],
+    translationSize: "medium",
+    team: [
+      { name: "Little Bit Team", role: "Переклад" }
+    ],
+    progressHistory: [
+      { date: "2026-01-20", progress: 5, milestone: "Початок проєкту" },
+      { date: "2026-02-16", progress: 9, milestone: "Перші персонажі" }
+    ],
+    stats: {
+      totalWords: 133285, // 11849 укр + 121436 англ
+      translatedLines: 11849 // Приблизна оцінка на основі слів
+    }
   },
   {
     id: "lost-judgment",
@@ -621,17 +718,37 @@ export const games: Game[] = [
     description:
       "Продовження детективного екшену. Яґамі розслідує справу, що пов'язує буллінг у школі та вбивство.",
     cover: "/images/lost-judgment.jpg",
-    progress: 6,
+    progress: 7,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 6 },
+      { label: "Переклад", percent: 7 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Action", "RPG", "Детектив", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-16",
+
+    // Extended data
+    detailedDescription: "Сіквел Judgment. Такаюкі Яґамі повертається, щоб розслідувати нову справу про буллінг та вбивство. Ще більший світ, нові механіки та напружений сюжет про справедливість.",
+    gameYear: 2021,
+    genre: ["Action", "RPG", "Детектив", "Відкритий світ"],
+    platform: ["PC", "PlayStation", "Xbox"],
+    translationSize: "large",
+    team: [
+      { name: "Little Bit Team", role: "Переклад" }
+    ],
+    progressHistory: [
+      { date: "2026-01-15", progress: 3, milestone: "Початок проєкту" },
+      { date: "2026-02-16", progress: 7, milestone: "Перші глави" }
+    ],
+    stats: {
+      totalLines: 99996,
+      translatedLines: 7451, // 7.45%
+      totalWords: 934553, // 46728 укр + 887825 англ
+      totalCharacters: 5140044 // Приблизно
+    }
   },
 ];
 
