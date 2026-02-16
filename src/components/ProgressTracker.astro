@@ -47,7 +47,7 @@ function getColorForGame(id: string) {
   </div>
 
   <div class="relative">
-    <canvas id="progress-tracker-chart" class="w-full" style="max-height: 400px;"></canvas>
+    <canvas id="progress-tracker-chart" class="w-full" style="max-height: 400px;" data-chart={JSON.stringify(chartData)}></canvas>
   </div>
 
   <!-- Legend -->
@@ -65,7 +65,7 @@ function getColorForGame(id: string) {
   </div>
 </div>
 
-<script define:vars={{ chartData }}>
+<script>
   import {
     Chart,
     LineController,
@@ -93,7 +93,18 @@ function getColorForGame(id: string) {
   );
 
   const ctx = document.getElementById("progress-tracker-chart") as HTMLCanvasElement;
-  if (!ctx) throw new Error("Canvas not found");
+  if (!ctx) {
+    console.error("Canvas not found");
+    throw new Error("Canvas not found");
+  }
+
+  const chartDataStr = ctx.getAttribute("data-chart");
+  if (!chartDataStr) {
+    console.error("No chart data found");
+    throw new Error("No chart data found");
+  }
+
+  const chartData = JSON.parse(chartDataStr);
 
   new Chart(ctx, {
     type: "line",
