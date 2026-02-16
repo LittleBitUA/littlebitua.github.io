@@ -302,10 +302,10 @@ export const games: Game[] = [
       { date: "2026-02-16", progress: 95, milestone: "Фінальна редактура та текстури" }
     ],
     stats: {
-      totalLines: 15420,
-      translatedLines: 14649,
-      totalWords: 185000,
-      totalCharacters: 920000
+      totalLines: 43903,
+      translatedLines: 41708, // 95% від 43903
+      totalWords: 169221,
+      totalCharacters: 930716 // Приблизно totalWords * 5.5
     }
   },
   {
