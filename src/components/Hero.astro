@@ -206,7 +206,7 @@ const ringOffset = RING_C * (1 - overall / 100);
         </span>
         <div class="flex gap-2.5 mt-1">
           {fundraisingGames.map((game) => (
-            <a href={game.steamUrl} target="_blank" rel="noopener noreferrer"
+            <a href={game.steamUrl || game.donateUrl} target="_blank" rel="noopener noreferrer"
                class="relative flex-1 aspect-[3/4] max-w-[80px] rounded-xl overflow-hidden
                       border border-white/10 group/thumb transition-transform duration-200 hover:scale-105"
                title={game.title}>

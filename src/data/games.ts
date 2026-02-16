@@ -27,7 +27,7 @@ export interface Game {
   stage?: LocalizationStage;
   stageDetails?: StageDetail[];
   tags: string[];
-  steamUrl: string;
+  steamUrl?: string;
   downloadUrl?: string;
   donateUrl: string;
   lastUpdate?: string;
@@ -104,6 +104,24 @@ export const games: Game[] = [
     lastUpdate: "2026-02-08",
   },
   {
+    id: "uncharted1",
+    title: "Uncharted: Drake's Fortune",
+    series: "Uncharted",
+    description:
+      "Натан Дрейк вирушає на пошуки скарбів Ель Дорадо. Перша частина культової пригодницької серії — тепер українською.",
+    cover: "/images/uncharted1.png",
+    progress: 90,
+    status: "early-access",
+    stage: "Редактура",
+    stageDetails: [
+      { label: "Переклад", percent: 90 },
+      { label: "Редактура", percent: 50 },
+    ],
+    tags: ["Action", "Пригоди", "Шутер"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-02-16",
+  },
+  {
     id: "judgment",
     title: "Judgment",
     series: "Judgment",
@@ -128,7 +146,7 @@ export const games: Game[] = [
     title: "Yakuza Kiwami 2",
     series: "Yakuza",
     description:
-      "Кадзума Кірю повертається у відновлену версію Yakuza 2 на рушії Dragon Engine. Епічна історія, бійки та Камуро-чьо.",
+      "Yakuza Kiwami 2 — ремейк культової кримінальної драми від Ryu Ga Gotoku Studio. Кірю повертається до справ у Камуро-чьо, а війна між кланом Тоджьо та альянсом Омі переносить події до яскравого Сотенборі — з бійками, інтригами та історією про честь, борги й старі рахунки.",
     cover: "/images/yakuza-kiwami2.jpg",
     progress: 95,
     status: "in-progress",
@@ -148,7 +166,7 @@ export const games: Game[] = [
     title: "Yakuza: Like a Dragon",
     series: "Yakuza",
     description:
-      "Нова ера серії Yakuza з покроковими боями в стилі JRPG. Ічібан Касуга починає свій шлях українською.",
+      "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "/images/yakuza-lad.jpg",
     progress: 33,
     status: "fundraising",
@@ -225,7 +243,7 @@ export const games: Game[] = [
     id: "mgs2",
     title: "METAL GEAR SOLID 2: Sons of Liberty - Master Collection Version",
     description:
-      "Легендарний стелс-екшен Хідео Коджими у складі Master Collection. Рейден та Снейк проти нової загрози.",
+      "METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version — культовий стелс-екшен, де місія на танкері переростає у змову планетарного масштабу. На вас чекають проникнення без зайвого шуму, гаджети, напружені босфайти та історія про інформацію, контроль і правду — актуальна й сьогодні.",
     cover: "/images/mgs2.jpg",
     progress: 60,
     status: "fundraising",
@@ -388,6 +406,24 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/as_dusk_falls/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-01-20",
+  },
+  {
+    id: "uncharted2",
+    title: "Uncharted 2: Among Thieves",
+    series: "Uncharted",
+    description:
+      "Натан Дрейк шукає легендарне місто Шамбала. Друга частина серії з ще масштабнішими пригодами.",
+    cover: "/images/uncharted2.png",
+    progress: 10,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 10 },
+      { label: "Редактура", percent: 0 },
+    ],
+    tags: ["Action", "Пригоди", "Шутер"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-02-16",
   },
   {
     id: "shenmue",
