@@ -151,7 +151,7 @@ export const games: Game[] = [
       "Нова ера серії Yakuza з покроковими боями в стилі JRPG. Ічібан Касуга починає свій шлях українською.",
     cover: "/images/yakuza-lad.jpg",
     progress: 33,
-    status: "in-progress",
+    status: "fundraising",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 33 },
@@ -228,7 +228,7 @@ export const games: Game[] = [
       "Легендарний стелс-екшен Хідео Коджими у складі Master Collection. Рейден та Снейк проти нової загрози.",
     cover: "/images/mgs2.jpg",
     progress: 60,
-    status: "in-progress",
+    status: "fundraising",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 60 },
@@ -303,7 +303,7 @@ export const games: Game[] = [
       "Оновлена версія культової ARPG від Йоко Таро. Історія батька, що шукає ліки для хворої доньки.",
     cover: "/images/nier-replicant.jpg",
     progress: 20,
-    status: "in-progress",
+    status: "fundraising",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 20 },

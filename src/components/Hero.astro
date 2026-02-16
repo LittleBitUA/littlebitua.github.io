@@ -10,10 +10,8 @@ const doneGames = games.filter((g) => g.status === "done").length;
 const activeGames = games.filter(
   (g) => g.progress > 0 && g.progress < 100
 ).length;
-const featured = games
-  .filter((g) => g.progress > 0 && g.progress < 100)
-  .sort((a, b) => b.progress - a.progress)[0];
-const completedGames = games.filter((g) => g.status === "done");
+const featured = games.find((g) => g.id === "yakuza-kiwami2")!;
+const fundraisingGames = games.filter((g) => g.status === "fundraising");
 
 const RING_R = 34;
 const RING_C = 2 * Math.PI * RING_R; // ~213.63
@@ -204,20 +202,21 @@ const ringOffset = RING_C * (1 - overall / 100);
                   p-5 min-h-[160px]
                   bento-item bento-delay-5">
         <span class="text-[11px] text-surface-300 font-medium uppercase tracking-wider mb-3 block">
-          Завершені
+          Збір коштів
         </span>
         <div class="flex gap-2.5 mt-1">
-          {completedGames.map((game) => (
+          {fundraisingGames.map((game) => (
             <a href={game.steamUrl} target="_blank" rel="noopener noreferrer"
                class="relative flex-1 aspect-[3/4] max-w-[80px] rounded-xl overflow-hidden
                       border border-white/10 group/thumb transition-transform duration-200 hover:scale-105"
                title={game.title}>
               <img src={game.cover} alt={game.title}
                    class="w-full h-full object-cover" loading="lazy" />
-              <div class="absolute inset-0 bg-gradient-to-t from-steam-green/30 to-transparent" />
+              <div class="absolute inset-0 bg-gradient-to-t from-amber-400/30 to-transparent" />
               <div class="absolute bottom-1 right-1">
-                <svg class="w-3.5 h-3.5 text-steam-green drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                <svg class="w-3.5 h-3.5 text-amber-400 drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
               </div>
             </a>
@@ -246,7 +245,7 @@ const ringOffset = RING_C * (1 - overall / 100);
         <span class="text-sm font-bold text-accent-light group-hover:text-white transition-colors">
           Підтримати проєкт
         </span>
-        <span class="text-[10px] text-surface-300 mt-1">MonoBank / Donatello</span>
+        <span class="text-[10px] text-surface-300 mt-1">Donatello</span>
       </a>
 
     </div>

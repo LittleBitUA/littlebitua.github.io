@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx astro build:*)",
+      "Bash(npx astro dev:*)",
+      "WebFetch(domain:lbklauncher.com)",
+      "Bash(curl:*)",
+      "Bash(for fmt in \"header.jpg\" \"capsule_231x87.jpg\" \"library_hero.jpg\" \"logo.png\")",
+      "Bash(do echo \"Trying $fmt...\")",
+      "Bash(done)",
+      "Bash(npm run build:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo view:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(gh api:*)",
+      "Bash(gh run list:*)"
+    ]
+  }
+}
