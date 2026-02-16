@@ -159,9 +159,9 @@ export const games: Game[] = [
       { date: "2026-02-10", progress: 100, milestone: "Реліз!" }
     ],
     stats: {
-      totalLines: 8250,
-      translatedLines: 8250,
-      totalWords: 95000,
+      totalLines: 14091,
+      translatedLines: 14091,
+      totalWords: undefined,
       totalCharacters: 450000
     }
   },
