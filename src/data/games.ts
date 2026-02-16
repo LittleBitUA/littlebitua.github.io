@@ -172,7 +172,7 @@ export const games: Game[] = [
     title: "Dispatch",
     description:
       "Інтерактивний наратив у стилі коміксу. Розслідуй злочини та приймай рішення, що змінюють сюжет.",
-    cover: "/images/dispatch.jpg",
+    cover: "https://cdn2.steamgriddb.com/grid/bfa1e9bc09534cad8103ba543b5e0e24.png",
     progress: 90,
     status: "early-access",
     stage: "Редактура",
