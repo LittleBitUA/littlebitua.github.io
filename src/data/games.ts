@@ -300,18 +300,18 @@ export const games: Game[] = [
     description:
       "Повний текстовий переклад гри українською та українізовані текстури. Усе — від сюжету й побічних активностей до інтерфейсу, підказок.",
     cover: "/images/yakuza-kiwami2-library.jpg",
-    progress: 95,
+    progress: 96,
     status: "in-progress",
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 95 },
-      { label: "Редактура", percent: 10 },
+      { label: "Редактура", percent: 16 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["Action", "RPG", "Пригоди", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/927380/Yakuza_Kiwami_2/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-02-17",
 
     // Extended data
     detailedDescription: "Продовження історії Кадзуми Кірю — події розгортаються через рік після Yakuza Kiwami. Війна між кланом Тоджьо та альянсом Омі от-от спалахне знову. Гру повністю перенесено на Dragon Engine: поліпшена графіка й помітно підтягнутий геймплей.",
@@ -342,7 +342,12 @@ export const games: Game[] = [
       { date: "2025-11-01", progress: 75, milestone: "Перекладено побічні активності" },
       { date: "2025-12-20", progress: 85, milestone: "Почато редактуру" },
       { date: "2026-01-15", progress: 90, milestone: "Завершено редагування основного сюжету" },
-      { date: "2026-02-16", progress: 95, milestone: "Фінальна редактура та текстури" }
+      { date: "2026-01-31", progress: 91, milestone: "Відредаговано 4000 рядків" },
+      { date: "2026-02-02", progress: 92, milestone: "Відредаговано 4800 рядків" },
+      { date: "2026-02-05", progress: 93, milestone: "Відредаговано 5350 рядків" },
+      { date: "2026-02-12", progress: 94, milestone: "Відредаговано 6000 рядків" },
+      { date: "2026-02-16", progress: 95, milestone: "Фінальна редактура та текстури" },
+      { date: "2026-02-17", progress: 96, milestone: "Відредаговано 7118 рядків" }
     ],
     stats: {
       totalLines: 43903,
