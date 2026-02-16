@@ -149,12 +149,12 @@ const ringOffset = RING_C * (1 - overall / 100);
           </div>
         ))}
 
-        <!-- Navigation arrows -->
+        <!-- Navigation arrows (desktop only) -->
         <button
           id="carousel-prev"
-          class="absolute left-4 top-1/2 -translate-y-1/2 z-20
+          class="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20
                  w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/20
-                 flex items-center justify-center
+                 items-center justify-center
                  text-white hover:bg-black/80 hover:border-white/30
                  transition-all duration-200 opacity-0 group-hover:opacity-100
                  focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent/50"
@@ -165,9 +165,9 @@ const ringOffset = RING_C * (1 - overall / 100);
         </button>
         <button
           id="carousel-next"
-          class="absolute right-4 top-1/2 -translate-y-1/2 z-20
+          class="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20
                  w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/20
-                 flex items-center justify-center
+                 items-center justify-center
                  text-white hover:bg-black/80 hover:border-white/30
                  transition-all duration-200 opacity-0 group-hover:opacity-100
                  focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent/50"
@@ -176,6 +176,11 @@ const ringOffset = RING_C * (1 - overall / 100);
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
+
+        <!-- Progress bar (mobile only) -->
+        <div class="md:hidden absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-20">
+          <div id="carousel-progress" class="h-full bg-white/60 transition-none" style="width: 0%"></div>
+        </div>
 
         <!-- Indicators -->
         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
@@ -527,7 +532,9 @@ const ringOffset = RING_C * (1 - overall / 100);
   const dots = document.querySelectorAll<HTMLButtonElement>(".carousel-dot");
   const prevBtn = document.getElementById("carousel-prev");
   const nextBtn = document.getElementById("carousel-next");
+  const progressBar = document.getElementById("carousel-progress");
   let currentSlide = 0;
+  let progressAnimation: Animation | null = null;
 
   const goToSlide = (index: number) => {
     slides.forEach((slide, i) => {
@@ -535,11 +542,11 @@ const ringOffset = RING_C * (1 - overall / 100);
         slide.classList.add("opacity-100", "z-10");
         slide.classList.remove("opacity-0", "z-0");
         // Animate progress bar if it's a game slide
-        const progressBar = slide.querySelector<HTMLDivElement>(".featured-progress");
-        if (progressBar) {
-          const progress = progressBar.dataset.progress || "0";
+        const gameProgressBar = slide.querySelector<HTMLDivElement>(".featured-progress");
+        if (gameProgressBar) {
+          const progress = gameProgressBar.dataset.progress || "0";
           setTimeout(() => {
-            progressBar.style.width = `${progress}%`;
+            gameProgressBar.style.width = `${progress}%`;
           }, 100);
         }
       } else {
@@ -559,6 +566,21 @@ const ringOffset = RING_C * (1 - overall / 100);
     });
 
     currentSlide = index;
+
+    // Restart progress bar animation on mobile
+    if (progressBar && isMobile) {
+      // Cancel previous animation
+      if (progressAnimation) {
+        progressAnimation.cancel();
+      }
+      // Reset progress
+      progressBar.style.width = "0%";
+      // Start new animation
+      progressAnimation = progressBar.animate(
+        [{ width: "0%" }, { width: "100%" }],
+        { duration: rotateInterval, easing: "linear", fill: "forwards" }
+      );
+    }
   };
 
   prevBtn?.addEventListener("click", () => {
@@ -575,9 +597,9 @@ const ringOffset = RING_C * (1 - overall / 100);
     dot.addEventListener("click", () => goToSlide(index));
   });
 
-  // Auto-rotate - slower on mobile for performance
+  // Auto-rotate - 3s on mobile with progress bar
   const isMobile = window.innerWidth < 768;
-  const rotateInterval = isMobile ? 7000 : 5000; // 7s on mobile, 5s on desktop
+  const rotateInterval = isMobile ? 3000 : 5000; // 3s on mobile, 5s on desktop
 
   let autoRotate = setInterval(() => {
     const newIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
@@ -599,10 +621,18 @@ const ringOffset = RING_C * (1 - overall / 100);
   // Initialize first slide progress bar
   setTimeout(() => {
     const firstSlide = slides[0];
-    const progressBar = firstSlide?.querySelector<HTMLDivElement>(".featured-progress");
-    if (progressBar) {
-      const progress = progressBar.dataset.progress || "0";
-      progressBar.style.width = `${progress}%`;
+    const gameProgressBar = firstSlide?.querySelector<HTMLDivElement>(".featured-progress");
+    if (gameProgressBar) {
+      const progress = gameProgressBar.dataset.progress || "0";
+      gameProgressBar.style.width = `${progress}%`;
+    }
+
+    // Start carousel progress bar animation on mobile
+    if (progressBar && isMobile) {
+      progressAnimation = progressBar.animate(
+        [{ width: "0%" }, { width: "100%" }],
+        { duration: rotateInterval, easing: "linear", fill: "forwards" }
+      );
     }
   }, 600);
 </script>
