@@ -140,16 +140,11 @@ export const games: Game[] = [
     ],
     installInstructions: `## Встановлення локалізації No More Heroes
 
-### Через LBK Launcher (найпростіше)
+### Через LBK Launcher
 1. Встановіть [LBK Launcher](https://lbklauncher.com/)
 2. Знайдіть No More Heroes у списку
 3. Натисніть "Встановити"
-4. Запускайте гру!
-
-### Ручне встановлення
-1. [Завантажте патч](https://lbklauncher.com/games/no_more_heroes/little-bit)
-2. Розпакуйте в папку гри
-3. Запустіть гру через Steam`,
+4. Запускайте гру!`,
     progressHistory: [
       { date: "2025-06-01", progress: 0, milestone: "Початок проєкту" },
       { date: "2025-07-15", progress: 30, milestone: "Переклад основних діалогів" },
@@ -277,16 +272,11 @@ export const games: Game[] = [
     ],
     installInstructions: `## Встановлення локалізації Judgment
 
-### Через LBK Launcher (рекомендовано)
+### Через LBK Launcher
 1. Завантажте [LBK Launcher](https://lbklauncher.com/)
 2. Знайдіть Judgment у списку
 3. Натисніть "Встановити"
 4. Запускайте гру через Steam
-
-### Ручне встановлення
-1. [Завантажте патч](https://lbklauncher.com/games/judgment/little-bit)
-2. Розпакуйте в папку гри
-3. Запустіть гру
 
 **Увага:** Ранній доступ — переклад активно оновлюється.`,
     progressHistory: [
@@ -339,17 +329,11 @@ export const games: Game[] = [
     ],
     installInstructions: `## Встановлення патчу Yakuza Kiwami 2
 
-### Через LBK Launcher (рекомендовано)
+### Через LBK Launcher
 1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
 2. Запустіть лаунчер та знайдіть Yakuza Kiwami 2 у списку
 3. Натисніть "Встановити локалізацію"
 4. Запускайте гру через Steam як зазвичай
-
-### Ручне встановлення
-1. Завантажте останню версію патчу
-2. Розпакуйте архів у папку з грою
-3. Підтвердіть заміну файлів
-4. Готово! Запускайте гру
 
 **Важливо:** Патч працює з версією гри Steam.`,
     progressHistory: [
@@ -442,16 +426,11 @@ export const games: Game[] = [
     ],
     installInstructions: `## Встановлення локалізації No More Heroes 3
 
-### Через LBK Launcher (рекомендовано)
+### Через LBK Launcher
 1. Завантажте [LBK Launcher](https://lbklauncher.com/)
 2. Знайдіть No More Heroes 3 у списку
 3. Натисніть "Встановити"
-4. Готово!
-
-### Ручне встановлення
-1. [Завантажте патч](https://lbklauncher.com/games/no_more_heroes_3/little-bit)
-2. Розпакуйте в папку гри
-3. Запустіть гру`,
+4. Готово!`,
     progressHistory: [
       { date: "2025-07-01", progress: 40, milestone: "Початок перекладу" },
       { date: "2025-09-15", progress: 70, milestone: "Основний сюжет" },
