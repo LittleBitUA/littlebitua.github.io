@@ -206,9 +206,8 @@ const ringOffset = RING_C * (1 - overall / 100);
         </span>
         <div class="flex gap-2.5 mt-1">
           {fundraisingGames.map((game) => (
-            <a href={game.steamUrl || game.donateUrl} target="_blank" rel="noopener noreferrer"
-               class="relative flex-1 aspect-[3/4] max-w-[80px] rounded-xl overflow-hidden
-                      border border-white/10 group/thumb transition-transform duration-200 hover:scale-105"
+            <div class="relative flex-1 aspect-[3/4] max-w-[80px] rounded-xl overflow-hidden
+                      border border-white/10"
                title={game.title}>
               <img src={game.cover} alt={game.title}
                    class="w-full h-full object-cover" loading="lazy" />
@@ -219,7 +218,7 @@ const ringOffset = RING_C * (1 - overall / 100);
                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </div>
@@ -243,7 +242,7 @@ const ringOffset = RING_C * (1 - overall / 100);
           </svg>
         </div>
         <span class="text-sm font-bold text-accent-light group-hover:text-white transition-colors">
-          Підтримати проєкт
+          Підтримати збір
         </span>
         <span class="text-[10px] text-surface-300 mt-1">Donatello</span>
       </a>
