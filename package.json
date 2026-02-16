@@ -1,0 +1,18 @@
+{
+  "name": "lb-localization-landing",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Landing page for Ukrainian video game localization projects",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^5.3.0",
+    "@astrojs/tailwind": "^6.0.2",
+    "tailwindcss": "^3.4.17",
+    "sharp": "^0.33.2"
+  }
+}

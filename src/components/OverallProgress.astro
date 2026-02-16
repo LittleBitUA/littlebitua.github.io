@@ -1,0 +1,95 @@
+---
+// ─── Overall Progress Section ──────────────────────────────────
+// Shows aggregate progress across all localization projects.
+
+import ProgressBar from "./ProgressBar.astro";
+import { games, getOverallProgress, STATUS_LABELS, STATUS_COLORS } from "../data/games";
+
+const overall = getOverallProgress();
+
+// Per-game mini stats
+const sorted = [...games].sort((a, b) => b.progress - a.progress);
+---
+
+<section id="progress" class="py-20">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="text-center mb-12" data-animate>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+        Загальний прогрес
+      </h2>
+      <p class="text-surface-300 max-w-lg mx-auto">
+        Середній прогрес перекладу по всіх проєктах
+      </p>
+    </div>
+
+    <!-- Big progress ring + per-game breakdown -->
+    <div class="glass p-8 sm:p-10" data-animate>
+      <div class="grid lg:grid-cols-[280px_1fr] gap-10 items-center">
+        <!-- Circular progress display -->
+        <div class="flex flex-col items-center">
+          <div class="relative w-48 h-48 mb-4">
+            <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+              <!-- Background circle -->
+              <circle
+                cx="60" cy="60" r="52"
+                fill="none"
+                stroke="currentColor"
+                class="text-surface-600/60"
+                stroke-width="8"
+              />
+              <!-- Progress arc -->
+              <circle
+                cx="60" cy="60" r="52"
+                fill="none"
+                stroke="url(#progressGradient)"
+                stroke-width="8"
+                stroke-linecap="round"
+                stroke-dasharray={`${(overall / 100) * 2 * Math.PI * 52} ${2 * Math.PI * 52}`}
+                class="transition-all duration-1000"
+              />
+              <defs>
+                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#6d5dfc" />
+                  <stop offset="100%" stop-color="#1b9aaa" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <!-- Centered number -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="text-4xl font-extrabold text-white tabular-nums">{overall}%</span>
+            </div>
+          </div>
+          <p class="text-sm text-surface-300">Середній прогрес усіх проєктів</p>
+        </div>
+
+        <!-- Per-game breakdown -->
+        <div class="space-y-4" data-animate-stagger>
+          {sorted.map((game) => (
+            <div class="flex items-center gap-4">
+              <span class="w-48 text-sm text-surface-200 truncate shrink-0">
+                {game.title}
+              </span>
+              <div class="flex-1">
+                <ProgressBar percent={game.progress} showLabel={false} size="sm" />
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-sm font-bold text-white tabular-nums w-10 text-right">
+                  {game.progress}%
+                </span>
+                <span
+                  class:list={[
+                    "text-[10px] font-bold px-2 py-0.5 rounded border",
+                    STATUS_COLORS[game.status],
+                  ]}
+                >
+                  {STATUS_LABELS[game.status]}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

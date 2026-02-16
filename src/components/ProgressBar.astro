@@ -1,0 +1,59 @@
+---
+// ─── ProgressBar Component ─────────────────────────────────────
+// Animated progress bar with percentage label.
+// Uses CSS custom property for the animation target width.
+
+export interface Props {
+  /** Progress percentage (0–100) */
+  percent: number;
+  /** Show percentage text */
+  showLabel?: boolean;
+  /** Height variant */
+  size?: "sm" | "md" | "lg";
+}
+
+const { percent, showLabel = true, size = "md" } = Astro.props;
+
+const clampedPercent = Math.max(0, Math.min(100, percent));
+
+const heightMap = { sm: "h-1.5", md: "h-2.5", lg: "h-4" };
+
+// Color shifts by progress range
+function getBarColor(p: number): string {
+  if (p >= 100) return "from-steam-green to-emerald-400";
+  if (p >= 70) return "from-steam-blue to-cyan-400";
+  if (p >= 40) return "from-accent to-accent-light";
+  return "from-steam-gold to-amber-400";
+}
+---
+
+<div class="w-full">
+  {showLabel && (
+    <div class="flex justify-between items-center mb-1.5">
+      <span class="text-xs text-surface-200 font-medium">Прогрес</span>
+      <span class="text-xs font-bold tabular-nums text-white">
+        {clampedPercent}%
+      </span>
+    </div>
+  )}
+
+  <div
+    class:list={[
+      "w-full rounded-full overflow-hidden bg-surface-600/60",
+      heightMap[size],
+    ]}
+  >
+    <div
+      class:list={[
+        "h-full rounded-full bg-gradient-to-r transition-all duration-300",
+        getBarColor(clampedPercent),
+        "animate-progress-fill",
+      ]}
+      style={`--progress-width: ${clampedPercent}%`}
+      role="progressbar"
+      aria-valuenow={clampedPercent}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    />
+  </div>
+</div>

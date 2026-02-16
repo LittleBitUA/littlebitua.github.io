@@ -1,0 +1,63 @@
+---
+// ─── Home Page ─────────────────────────────────────────────────
+// Main landing page assembling all components.
+// Game data is imported and rendered dynamically.
+
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import GameCard from "../components/GameCard.astro";
+import FilterBar from "../components/FilterBar.astro";
+import OverallProgress from "../components/OverallProgress.astro";
+import RecentUpdates from "../components/RecentUpdates.astro";
+import Footer from "../components/Footer.astro";
+import { games } from "../data/games";
+---
+
+<Layout>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Hero -->
+    <Hero />
+
+    <!-- Game Projects Section -->
+    <section id="projects" class="py-20 relative">
+      <!-- Subtle background decoration -->
+      <div class="absolute inset-0 -z-10">
+        <div
+          class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04]
+                 bg-[radial-gradient(ellipse,_theme(colors.steam.blue)_0%,_transparent_70%)]"
+        />
+      </div>
+
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <!-- Section header -->
+        <div class="text-center mb-10" data-animate>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+            Наші проєкти
+          </h2>
+          <p class="text-surface-300 max-w-lg mx-auto">
+            Ігри, над локалізацією яких ми працюємо
+          </p>
+        </div>
+
+        <!-- Filter -->
+        <FilterBar />
+
+        <!-- Game cards grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="games-grid">
+          {games.map((game) => <GameCard game={game} />)}
+        </div>
+      </div>
+    </section>
+
+    <!-- Overall Progress -->
+    <OverallProgress />
+
+    <!-- Recent Updates -->
+    <RecentUpdates />
+  </main>
+
+  <Footer />
+</Layout>

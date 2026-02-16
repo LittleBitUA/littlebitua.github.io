@@ -1,0 +1,172 @@
+---
+// ─── FilterBar Component ───────────────────────────────────────
+// Search input + status filter buttons.
+// Tags on game cards are also clickable and trigger tag filtering.
+
+import { getStatusList, STATUS_LABELS } from "../data/games";
+
+const statusList = getStatusList();
+---
+
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-8" data-animate>
+  <!-- Search input -->
+  <div class="relative w-full sm:w-64">
+    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"
+         fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+    </svg>
+    <input
+      type="text"
+      id="search-input"
+      placeholder="Пошук за назвою..."
+      class="w-full pl-10 pr-4 py-2 text-sm text-white placeholder-surface-400
+             bg-white/[0.04] border border-white/[0.08] rounded-lg
+             focus:outline-none focus:border-accent/40 focus:bg-white/[0.06]
+             transition-all duration-200"
+    />
+  </div>
+
+  <!-- Divider -->
+  <div class="w-px h-6 bg-white/10 hidden sm:block" />
+
+  <!-- Status filter buttons -->
+  <div class="flex flex-wrap gap-2" id="filter-bar">
+    <button
+      class="filter-btn active px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
+      data-filter="all"
+    >
+      Усі
+    </button>
+
+    {statusList.map((status) => (
+      <button
+        class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
+        data-filter="status"
+        data-value={status}
+      >
+        {STATUS_LABELS[status]}
+      </button>
+    ))}
+  </div>
+
+  <!-- Active tag indicator (hidden by default) -->
+  <div id="active-tag-filter" class="hidden items-center gap-2">
+    <div class="w-px h-6 bg-white/10 hidden sm:block" />
+    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
+                 bg-accent/15 border border-accent/30 text-accent-light">
+      <span id="active-tag-label"></span>
+      <button id="clear-tag-filter" class="hover:text-white transition-colors ml-0.5" aria-label="Скинути">
+        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </span>
+  </div>
+</div>
+
+<style>
+  .filter-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: theme("colors.surface.300");
+  }
+  .filter-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: white;
+  }
+  .filter-btn.active {
+    background: theme("colors.accent.DEFAULT / 15%");
+    border-color: theme("colors.accent.DEFAULT / 40%");
+    color: theme("colors.accent.light");
+  }
+</style>
+
+<script>
+  const filterBar = document.getElementById("filter-bar")!;
+  const buttons = filterBar.querySelectorAll<HTMLButtonElement>(".filter-btn");
+  const searchInput = document.getElementById("search-input") as HTMLInputElement;
+  const cards = document.querySelectorAll<HTMLElement>("[data-game-id]");
+  const activeTagEl = document.getElementById("active-tag-filter")!;
+  const activeTagLabel = document.getElementById("active-tag-label")!;
+  const clearTagBtn = document.getElementById("clear-tag-filter")!;
+
+  // ── State ──
+  let currentStatus = "all";
+  let currentSearch = "";
+  let currentTag = "";
+
+  // ── Apply all filters ──
+  function applyFilters() {
+    const query = currentSearch.toLowerCase().trim();
+
+    cards.forEach((card) => {
+      const title = (card.dataset.title || "").toLowerCase();
+      const status = card.dataset.status || "";
+      const tags = (card.dataset.tags || "").toLowerCase();
+
+      let show = true;
+
+      // Status filter
+      if (currentStatus !== "all" && status !== currentStatus) show = false;
+
+      // Search filter
+      if (query && !title.includes(query)) show = false;
+
+      // Tag filter
+      if (currentTag && !tags.includes(currentTag.toLowerCase())) show = false;
+
+      if (show) {
+        card.style.display = "";
+        card.style.opacity = "0";
+        card.style.transform = "translateY(12px)";
+        requestAnimationFrame(() => {
+          card.style.transition = "opacity 0.3s, transform 0.3s";
+          card.style.opacity = "1";
+          card.style.transform = "translateY(0)";
+        });
+      } else {
+        card.style.opacity = "0";
+        card.style.transform = "translateY(12px)";
+        setTimeout(() => { card.style.display = "none"; }, 300);
+      }
+    });
+  }
+
+  // ── Status buttons ──
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      buttons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentStatus = btn.dataset.filter === "all" ? "all" : (btn.dataset.value || "all");
+      applyFilters();
+    });
+  });
+
+  // ── Search input ──
+  searchInput.addEventListener("input", () => {
+    currentSearch = searchInput.value;
+    applyFilters();
+  });
+
+  // ── Tag click (delegated from game cards) ──
+  document.addEventListener("click", (e) => {
+    const tagEl = (e.target as HTMLElement).closest("[data-tag-filter]") as HTMLElement | null;
+    if (!tagEl) return;
+
+    const tag = tagEl.dataset.tagFilter || "";
+    currentTag = tag;
+    activeTagLabel.textContent = tag;
+    activeTagEl.classList.remove("hidden");
+    activeTagEl.classList.add("inline-flex");
+    applyFilters();
+  });
+
+  // ── Clear tag filter ──
+  clearTagBtn.addEventListener("click", () => {
+    currentTag = "";
+    activeTagEl.classList.add("hidden");
+    activeTagEl.classList.remove("inline-flex");
+    applyFilters();
+  });
+</script>

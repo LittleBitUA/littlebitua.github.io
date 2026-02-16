@@ -1,0 +1,23 @@
+---
+// ─── Tag Component ─────────────────────────────────────────────
+// Clickable label chip — clicking filters game cards by this tag.
+
+export interface Props {
+  label: string;
+  color?: string;
+}
+
+const { label, color } = Astro.props;
+---
+
+<button
+  type="button"
+  data-tag-filter={label}
+  class="inline-block px-3 py-1 text-xs font-medium rounded-lg
+         bg-white/[0.06] text-surface-200 border border-white/[0.08]
+         hover:bg-accent/10 hover:text-accent-light hover:border-accent/20
+         transition-colors duration-200 cursor-pointer select-none"
+  style={color ? `border-color: ${color}33; color: ${color}` : undefined}
+>
+  {label}
+</button>
