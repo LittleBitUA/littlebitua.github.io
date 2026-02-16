@@ -20,27 +20,24 @@ const doneGames = games
 const customEvents = [
   {
     type: 'event' as const,
-    date: "2026-12-24",
-    title: "Dispatch",
-    series: "No More Heroes",
-    description: "Вийшов останній епізод Dispatch. Завершено локалізацію фінальної частини гри.",
-    id: "nmh-dispatch-final",
-    badge: "Останній епізод"
-  },
-  {
-    type: 'event' as const,
     date: "2026-02-17",
     title: "Yakuza: Like a Dragon",
-    series: "Yakuza",
     description: "Успішно завершено збір коштів на локалізацію гри. Дякуємо всім, хто підтримав проєкт!",
     id: "yakuza-lad-fundraising-complete",
     badge: "Збір завершено"
   },
   {
     type: 'event' as const,
+    date: "2025-12-24",
+    title: "Dispatch",
+    description: "Вийшов останній епізод Dispatch. Завершено локалізацію фінальної частини гри.",
+    id: "nmh-dispatch-final",
+    badge: "Останній епізод"
+  },
+  {
+    type: 'event' as const,
     date: "2025-11-26",
     title: "Judgment",
-    series: "Judgment",
     description: "Запуск раннього доступу до української локалізації. Гра доступна для завантаження через LBK Launcher.",
     id: "judgment-early-access",
     badge: "Ранній доступ"
@@ -116,9 +113,6 @@ function formatDate(dateStr: string) {
                     {formatDate(item.date)}
                   </span>
                 </div>
-                {item.series && item.series !== item.title && (
-                  <p class="text-xs text-accent-light font-medium mb-1">{item.series}</p>
-                )}
                 <p class="text-xs text-surface-300 line-clamp-2">
                   {item.description}
                 </p>
