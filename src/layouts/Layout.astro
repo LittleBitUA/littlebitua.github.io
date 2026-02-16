@@ -11,8 +11,11 @@ export interface Props {
 
 const {
   title = "LB — Українські локалізації відеоігор",
-  description = "Проєкт українських текстових локалізацій відеоігор. Слідкуйте за прогресом перекладу та завантажуйте готові локалізації.",
+  description = "Проєкт «Little Bit» — повний український переклад відеоігор. Yakuza, Judgment, No More Heroes, Metal Gear Solid та інші. Слідкуйте за прогресом і завантажуйте готові локалізації.",
 } = Astro.props;
+
+const siteUrl = "https://littlebitua.github.io";
+const ogImage = `${siteUrl}/images/og.png`;
 ---
 
 <!doctype html>
@@ -22,20 +25,33 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#0d1117" />
+    <meta name="keywords" content="українська локалізація, переклад ігор, Little Bit, Yakuza, Judgment, No More Heroes, Metal Gear Solid, NieR, Uncharted, українською, локалізація відеоігор" />
+    <meta name="author" content="Little Bit" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={siteUrl} />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="uk_UA" />
+    <meta property="og:url" content={siteUrl} />
+    <meta property="og:site_name" content="Little Bit — Локалізації" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="LB — Перекладаємо те, у що самі граємо" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content="LB — Перекладаємо те, у що самі граємо" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
 
     <!-- Fonts: Inter via Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,6 +62,19 @@ const {
     />
 
     <title>{title}</title>
+
+    <!-- Structured Data -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Little Bit",
+      "url": siteUrl,
+      "logo": `${siteUrl}/favicon.svg`,
+      "description": description,
+      "sameAs": [
+        "https://github.com/LittleBitUA"
+      ]
+    })} />
   </head>
 
   <body class="min-h-screen flex flex-col overflow-x-hidden">

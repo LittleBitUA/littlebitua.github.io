@@ -17,7 +17,9 @@
       "Bash(git branch:*)",
       "Bash(git push:*)",
       "Bash(gh api:*)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)"
     ]
   }
 }

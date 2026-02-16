@@ -6,6 +6,9 @@ import ProgressBar from "./ProgressBar.astro";
 import { games, getOverallProgress, STATUS_LABELS, STATUS_COLORS } from "../data/games";
 
 const overall = getOverallProgress();
+const R = 52;
+const C = 2 * Math.PI * R;
+const progressOffset = C * (1 - overall / 100);
 
 // Per-game mini stats
 const sorted = [...games].sort((a, b) => b.progress - a.progress);
@@ -30,9 +33,22 @@ const sorted = [...games].sort((a, b) => b.progress - a.progress);
         <div class="flex flex-col items-center">
           <div class="relative w-48 h-48 mb-4">
             <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
+              <defs>
+                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#6d5dfc" />
+                  <stop offset="100%" stop-color="#1b9aaa" />
+                </linearGradient>
+                <filter id="progressGlow">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
               <!-- Background circle -->
               <circle
-                cx="60" cy="60" r="52"
+                cx="60" cy="60" r={R}
                 fill="none"
                 stroke="currentColor"
                 class="text-surface-600/60"
@@ -40,24 +56,21 @@ const sorted = [...games].sort((a, b) => b.progress - a.progress);
               />
               <!-- Progress arc -->
               <circle
-                cx="60" cy="60" r="52"
+                cx="60" cy="60" r={R}
                 fill="none"
                 stroke="url(#progressGradient)"
-                stroke-width="8"
+                stroke-width="8.5"
                 stroke-linecap="round"
-                stroke-dasharray={`${(overall / 100) * 2 * Math.PI * 52} ${2 * Math.PI * 52}`}
-                class="transition-all duration-1000"
+                stroke-dasharray={C}
+                stroke-dashoffset={C}
+                filter="url(#progressGlow)"
+                class="overall-ring"
+                style={`--ring-target: ${progressOffset}`}
               />
-              <defs>
-                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#6d5dfc" />
-                  <stop offset="100%" stop-color="#1b9aaa" />
-                </linearGradient>
-              </defs>
             </svg>
             <!-- Centered number -->
             <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-4xl font-extrabold text-white tabular-nums">{overall}%</span>
+              <span class="text-4xl font-extrabold text-white tabular-nums overall-counter" data-target={overall}>0%</span>
             </div>
           </div>
           <p class="text-sm text-surface-300">Середній прогрес усіх проєктів</p>
@@ -93,3 +106,47 @@ const sorted = [...games].sort((a, b) => b.progress - a.progress);
     </div>
   </div>
 </section>
+
+<style>
+  .overall-ring {
+    transition: stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .overall-ring.animate {
+    stroke-dashoffset: var(--ring-target) !important;
+  }
+</style>
+
+<script>
+  const section = document.getElementById("progress");
+  if (section) {
+    const ring = section.querySelector(".overall-ring");
+    const counter = section.querySelector(".overall-counter") as HTMLSpanElement | null;
+    let animated = false;
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !animated) {
+            animated = true;
+            if (ring) ring.classList.add("animate");
+            if (counter) {
+              const target = parseInt(counter.dataset.target || "0", 10);
+              const duration = 1800;
+              const start = performance.now();
+              const tick = (now: number) => {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                counter.textContent = `${Math.round(eased * target)}%`;
+                if (progress < 1) requestAnimationFrame(tick);
+              };
+              requestAnimationFrame(tick);
+            }
+          }
+        });
+      },
+      { threshold: 0.3 }
+    );
+    obs.observe(section);
+  }
+</script>

@@ -9,7 +9,7 @@ export type LocalizationStage =
   | "Переклад"
   | "Редактура"
   | "Текстури"
-  | "Завершено";
+  | "Готово";
 
 export interface StageDetail {
   label: string;
@@ -30,6 +30,8 @@ export interface Game {
   steamUrl?: string;
   downloadUrl?: string;
   donateUrl: string;
+  fundraisingRaised?: number;
+  fundraisingGoal?: number;
   lastUpdate?: string;
 }
 
@@ -38,7 +40,7 @@ export const STAGE_COLORS: Record<LocalizationStage, string> = {
   "Переклад": "text-steam-blue",
   "Редактура": "text-yellow-400",
   "Текстури": "text-orange-400",
-  "Завершено": "text-steam-green",
+  "Готово": "text-steam-green",
 };
 
 /** Human-readable status labels in Ukrainian */
@@ -71,7 +73,7 @@ export const games: Game[] = [
     cover: "/images/nmh1.jpg",
     progress: 100,
     status: "done",
-    stage: "Завершено",
+    stage: "Готово",
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 100 },
@@ -178,6 +180,8 @@ export const games: Game[] = [
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    fundraisingRaised: 33900,
+    fundraisingGoal: 35000,
     lastUpdate: "2026-02-16",
   },
   {
@@ -216,6 +220,7 @@ export const games: Game[] = [
     ],
     tags: ["Інді", "Симулятор", "Казуальна"],
     steamUrl: "https://store.steampowered.com/app/3244220/A_Game_About_Digging_A_Hole/",
+    downloadUrl: "https://lbklauncher.com/games/a_game_about_digging_a_hole/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-12",
   },
@@ -255,13 +260,15 @@ export const games: Game[] = [
     tags: ["Action", "Стелс", "Тактика"],
     steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    fundraisingRaised: 16650,
+    fundraisingGoal: 25000,
     lastUpdate: "2026-02-16",
   },
   {
     id: "hotel-barcelona",
     title: "HOTEL BARCELONA",
     description:
-      "Новий екшен від Суди51 та SWERY. Два культових геймдизайнери об'єдналися для створення унікального досвіду.",
+      "Джастін, молода американська детективка, вирушає на, здавалося б, чергову рутинну справу — аж поки дивна аварія не закидає її на край цивілізації… у HOTEL BARCELONA. Тут у стінах готелю застрягли душі, а коридорами блукають сім серійних убивць. Та найстрашніше — в її голові прокидається інша особистість: доктор Карнавал, прадавнє згубне чудовисько.",
     cover: "/images/hotel-barcelona.jpg",
     progress: 50,
     status: "in-progress",
@@ -329,6 +336,8 @@ export const games: Game[] = [
     tags: ["Action", "RPG", "JRPG"],
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    fundraisingRaised: 4213,
+    fundraisingGoal: 50000,
     lastUpdate: "2026-02-16",
   },
   {
