@@ -107,7 +107,7 @@ function formatDate(dateStr: string) {
                     {formatDate(item.date)}
                   </span>
                 </div>
-                {item.series && (
+                {item.series && item.series !== item.title && (
                   <p class="text-xs text-accent-light font-medium mb-1">{item.series}</p>
                 )}
                 <p class="text-xs text-surface-300 line-clamp-2">
