@@ -284,13 +284,13 @@ const ringOffset = RING_C * (1 - overall / 100);
           ))}
         </div>
         <!-- Fundraising info popup -->
-        <div id="fr-popup" class="hidden mt-2 p-3 rounded-xl bg-black/70 backdrop-blur-md border border-amber-400/20">
-          <p id="fr-title" class="text-white font-semibold mb-1.5 leading-snug text-[11px] sm:text-xs"></p>
-          <div class="flex items-center gap-2">
-            <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div id="fr-popup" class="hidden mt-2 p-3 sm:p-3 rounded-xl bg-black/70 backdrop-blur-md border border-amber-400/20">
+          <p id="fr-title" class="text-white font-semibold mb-2 leading-snug text-xs"></p>
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2">
+            <div class="flex-1 h-2 sm:h-1.5 rounded-full bg-white/10 overflow-hidden">
               <div id="fr-bar" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-300 transition-all duration-500" style="width: 0%" />
             </div>
-            <span id="fr-amount" class="text-[10px] sm:text-xs text-amber-400 font-bold tabular-nums shrink-0"></span>
+            <span id="fr-amount" class="text-xs text-amber-400 font-bold tabular-nums shrink-0"></span>
           </div>
         </div>
       </div>
