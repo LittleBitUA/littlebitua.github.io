@@ -223,7 +223,7 @@ const ringOffset = RING_C * (1 - overall / 100);
         </div>
         <!-- Fundraising info popup -->
         <div id="fr-popup" class="hidden mt-2 p-3 rounded-xl bg-black/70 backdrop-blur-md border border-amber-400/20 text-xs">
-          <p id="fr-title" class="text-white font-semibold mb-1.5"></p>
+          <p id="fr-title" class="text-white font-semibold mb-1.5 leading-snug"></p>
           <div class="flex items-center gap-2">
             <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
               <div id="fr-bar" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-300 transition-all duration-500" style="width: 0%" />
@@ -368,7 +368,7 @@ const ringOffset = RING_C * (1 - overall / 100);
       const goal = parseInt(btn.dataset.frGoal || "0", 10);
       const pct = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
 
-      frTitle.textContent = title;
+      frTitle.innerHTML = title.replace("Збір на локалізацію ", "Збір на локалізацію<br>");
       frAmount.textContent = `${fmt(raised)}₴ із ${fmt(goal)}₴`;
       frBar.style.width = `${pct}%`;
       popup.classList.remove("hidden");
