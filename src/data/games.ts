@@ -364,7 +364,7 @@ export const games: Game[] = [
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "/images/yakuza-lad.jpg",
     progress: 35,
-    status: "fundraising",
+    status: "in-progress",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 35 },
@@ -373,9 +373,7 @@ export const games: Game[] = [
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 33900,
-    fundraisingGoal: 35000,
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-02-17",
 
     // Extended data
     detailedDescription: "Революційна зміна для серії Yakuza — тепер з покроковими боями в стилі JRPG! Ічібан Касуґа починає нове життя після 18 років в'язниці. Захоплюючий сюжет та система класів персонажів.",
