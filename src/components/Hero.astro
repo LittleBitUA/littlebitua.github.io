@@ -342,14 +342,18 @@ const ringOffset = RING_C * (1 - overall / 100);
   .orb {
     opacity: 0.08;
   }
-  .orb-1 {
-    animation: drift1 18s ease-in-out infinite alternate;
-  }
-  .orb-2 {
-    animation: drift2 22s ease-in-out infinite alternate;
-  }
-  .orb-3 {
-    animation: drift3 20s ease-in-out infinite alternate;
+
+  /* Disable orb animations on mobile for performance */
+  @media (min-width: 768px) {
+    .orb-1 {
+      animation: drift1 18s ease-in-out infinite alternate;
+    }
+    .orb-2 {
+      animation: drift2 22s ease-in-out infinite alternate;
+    }
+    .orb-3 {
+      animation: drift3 20s ease-in-out infinite alternate;
+    }
   }
 
   @keyframes drift1 {
@@ -407,7 +411,13 @@ const ringOffset = RING_C * (1 - overall / 100);
   .featured-progress {
     transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    animation: progressGlow 2s ease-in-out infinite;
+  }
+
+  /* Enable glow animation only on desktop for performance */
+  @media (min-width: 768px) {
+    .featured-progress {
+      animation: progressGlow 2s ease-in-out infinite;
+    }
   }
 
   @keyframes progressGlow {
@@ -439,9 +449,13 @@ const ringOffset = RING_C * (1 - overall / 100);
   .bento-item {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
-  .bento-item:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+  /* Disable hover effects on mobile/touch devices for performance */
+  @media (hover: hover) and (pointer: fine) {
+    .bento-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
   }
 
   /* line clamp fallback */
@@ -555,21 +569,26 @@ const ringOffset = RING_C * (1 - overall / 100);
     dot.addEventListener("click", () => goToSlide(index));
   });
 
-  // Auto-rotate every 5 seconds
+  // Auto-rotate - slower on mobile for performance
+  const isMobile = window.innerWidth < 768;
+  const rotateInterval = isMobile ? 7000 : 5000; // 7s on mobile, 5s on desktop
+
   let autoRotate = setInterval(() => {
     const newIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
     goToSlide(newIndex);
-  }, 5000);
+  }, rotateInterval);
 
-  // Pause auto-rotate on hover
+  // Pause auto-rotate on hover (desktop only)
   const carousel = document.getElementById("featured-carousel");
-  carousel?.addEventListener("mouseenter", () => clearInterval(autoRotate));
-  carousel?.addEventListener("mouseleave", () => {
-    autoRotate = setInterval(() => {
-      const newIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
-      goToSlide(newIndex);
-    }, 5000);
-  });
+  if (!isMobile) {
+    carousel?.addEventListener("mouseenter", () => clearInterval(autoRotate), { passive: true });
+    carousel?.addEventListener("mouseleave", () => {
+      autoRotate = setInterval(() => {
+        const newIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
+        goToSlide(newIndex);
+      }, rotateInterval);
+    }, { passive: true });
+  }
 
   // Initialize first slide progress bar
   setTimeout(() => {
