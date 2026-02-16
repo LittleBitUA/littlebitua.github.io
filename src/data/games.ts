@@ -708,10 +708,10 @@ export const games: Game[] = [
   },
   {
     id: "shenmue",
-    title: "Shenmue I & II",
+    title: "Shenmue I",
     description:
-      "Класика від Ю Судзукі. Рьо Хадзукі шукає вбивцю свого батька, досліджуючи Японію та Гонконг.",
-    cover: "/images/shenmue.jpg",
+      "Класика від Ю Судзукі. Рьо Хадзукі шукає вбивцю свого батька, досліджуючи Японію.",
+    cover: "https://cdn2.steamgriddb.com/grid/963d79c80b622f504a6970dde6ffab0e.png",
     progress: 9,
     status: "in-progress",
     stage: "Переклад",
