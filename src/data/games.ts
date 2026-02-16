@@ -606,10 +606,10 @@ export const games: Game[] = [
     fundraisingGoal: 50000,
     lastUpdate: "2026-02-16",
     stats: {
-      totalLines: undefined,
-      translatedLines: undefined,
-      totalWords: 133991,
-      totalCharacters: undefined,
+      totalLines: 24458,
+      translatedLines: 4892, // 20% progress
+      totalWords: 131813, // 27203 UA + 109012 ENG
+      totalCharacters: 682805,
     },
   },
   {
