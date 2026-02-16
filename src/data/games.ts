@@ -308,7 +308,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Повний текстовий переклад гри українською та українізовані текстури. Усе — від сюжету й побічних активностей до інтерфейсу, підказок.",
-    cover: "/images/yakuza-kiwami2-new.jpg",
+    cover: "/images/yakuza-kiwami2-library.jpg",
     progress: 95,
     status: "in-progress",
     stage: "Редактура",
