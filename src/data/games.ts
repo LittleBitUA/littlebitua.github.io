@@ -109,7 +109,7 @@ export const games: Game[] = [
     series: "No More Heroes",
     description:
       "Тревіс Тачдаун — найкрутіший кілер у Санта-Дестрой. Безумний екшен із катаною, рейтингами вбивць і неповторним стилем Суди51.",
-    cover: "/images/nmh1.jpg",
+    cover: "https://cdn2.steamgriddb.com/grid/34b4bdc640e8367a103af9181039d99f.jpg",
     progress: 100,
     status: "done",
     stage: "Готово",
