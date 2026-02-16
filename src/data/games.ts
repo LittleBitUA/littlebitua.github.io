@@ -794,8 +794,8 @@ export const games: Game[] = [
     stats: {
       totalLines: 99996,
       translatedLines: 7451, // 7.45%
-      totalWords: 934553, // 46728 укр + 887825 англ
-      totalCharacters: 5140044 // Приблизно
+      totalWords: undefined, // Не показуємо слова, тільки рядки
+      totalCharacters: undefined
     }
   },
 ];
