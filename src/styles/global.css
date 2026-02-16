@@ -12,7 +12,42 @@
   }
 
   body {
-    @apply bg-surface-900 text-surface-100 font-sans;
+    @apply bg-surface-900 text-surface-100 font-sans relative;
+    background: linear-gradient(180deg, #080b10 0%, #0d1117 50%, #131a27 100%);
+  }
+
+  /* Liquid Glass animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(circle at 20% 50%, rgba(109, 93, 252, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(27, 154, 170, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 40% 20%, rgba(92, 184, 92, 0.04) 0%, transparent 50%);
+    animation: liquid-float 20s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(circle at 60% 70%, rgba(109, 93, 252, 0.05) 0%, transparent 60%),
+      radial-gradient(circle at 30% 30%, rgba(27, 154, 170, 0.04) 0%, transparent 60%);
+    animation: liquid-pulse 15s ease-in-out infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  body > * {
+    position: relative;
+    z-index: 1;
   }
 
   /* Custom scrollbar (Webkit) */
@@ -37,30 +72,77 @@
 
 /* ─── Utility Components ─────────────────────────────────────── */
 @layer components {
-  /* Glass panel effect */
+  /* Enhanced Liquid Glass panel effect */
   .glass {
-    @apply bg-surface-700/40 backdrop-blur-md border border-white/[0.06] rounded-2xl;
+    @apply backdrop-blur-xl border rounded-2xl relative overflow-hidden;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05) 0%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+      0 8px 32px 0 rgba(0, 0, 0, 0.37),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+  }
+
+  .glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.03),
+      transparent
+    );
+    transition: left 0.5s;
+  }
+
+  .glass:hover::before {
+    left: 100%;
   }
 
   .glass-light {
-    @apply bg-surface-600/30 backdrop-blur-sm border border-white/[0.08] rounded-xl;
+    @apply backdrop-blur-lg border rounded-xl;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
   }
 
-  /* Glow effect on hover */
+  /* Enhanced glow effect with liquid animation */
   .glow-accent {
-    box-shadow: 0 0 20px theme("colors.accent.DEFAULT / 15%"),
-                0 0 60px theme("colors.accent.DEFAULT / 5%");
+    box-shadow:
+      0 0 20px rgba(109, 93, 252, 0.3),
+      0 0 40px rgba(109, 93, 252, 0.15),
+      0 0 60px rgba(109, 93, 252, 0.08);
+    animation: glow-pulse 3s ease-in-out infinite;
   }
 
-  /* Animated gradient text */
+  /* Animated gradient text with flowing effect */
   .gradient-text {
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(
       135deg,
       theme("colors.accent.light"),
       theme("colors.steam.blue"),
-      theme("colors.accent.DEFAULT")
+      theme("colors.accent.DEFAULT"),
+      theme("colors.steam.green")
     );
+    background-size: 200% 200%;
+    animation: gradient-flow 4s ease infinite;
+  }
+
+  /* Liquid orb decoration */
+  .liquid-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.15;
+    animation: liquid-float 20s ease-in-out infinite;
   }
 }
 
@@ -93,4 +175,62 @@
 [data-animate-stagger].visible > * {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ─── Liquid Glass Animations ────────────────────────────────── */
+@keyframes liquid-float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
+  }
+}
+
+@keyframes liquid-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes shimmer-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
