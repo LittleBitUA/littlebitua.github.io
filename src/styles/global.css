@@ -136,6 +136,11 @@
   transform: translateY(0);
 }
 
+/* Game card hover lift */
+.game-card[data-animate].visible:hover {
+  transform: translateY(-6px);
+}
+
 /* Stagger children */
 [data-animate-stagger] > * {
   opacity: 0;
