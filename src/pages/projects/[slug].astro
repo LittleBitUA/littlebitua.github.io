@@ -190,6 +190,56 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
               </div>
             )}
 
+            <!-- Fundraising block -->
+            {game.fundraisingGoal && (
+              <div class="rounded-xl border border-orange-400/25 bg-orange-400/[0.05] p-5">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg class="w-4 h-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                  </svg>
+                  <span class="text-sm font-bold text-orange-400">Збір коштів</span>
+                </div>
+                <p class="text-sm text-surface-300 mb-4">
+                  Ми збираємо кошти на текстову локалізацію цієї гри. Підтримайте проєкт, щоб переклад вийшов якнайшвидше!
+                </p>
+                {(() => {
+                  const raised = game.fundraisingRaised ?? 0;
+                  const goal = game.fundraisingGoal ?? 0;
+                  const pct = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
+                  return (
+                    <div class="mb-4">
+                      <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs text-surface-400">Зібрано</span>
+                        <span class="text-xs font-bold text-orange-400 tabular-nums">
+                          {raised.toLocaleString("uk-UA")}₴ з {goal.toLocaleString("uk-UA")}₴ · {pct}%
+                        </span>
+                      </div>
+                      <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div
+                          class="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-300"
+                          style={`width: ${pct}%`}
+                        />
+                      </div>
+                    </div>
+                  );
+                })()}
+                <a
+                  href={game.donateUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl
+                         bg-orange-400/15 text-orange-400 border border-orange-400/30
+                         hover:bg-orange-400/25 hover:border-orange-400/40
+                         transition-all duration-200"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                  </svg>
+                  Задонатити
+                </a>
+              </div>
+            )}
+
             <!-- Action buttons -->
             <div class="flex flex-wrap gap-3 pt-2">
               {game.downloadUrl && (
