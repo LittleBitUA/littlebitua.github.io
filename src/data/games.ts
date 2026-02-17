@@ -311,7 +311,7 @@ export const games: Game[] = [
       { label: "Текстури", percent: 30 },
     ],
     tags: ["Action", "RPG", "Пригоди", "Відкритий світ"],
-    steamUrl: "https://store.steampowered.com/app/927380/Yakuza_Kiwami_2/",
+    steamUrl: "https://store.steampowered.com/app/3717340/Yakuza_Kiwami_2/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-17",
 
