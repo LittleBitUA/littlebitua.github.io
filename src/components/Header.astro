@@ -9,7 +9,6 @@ const overall = getOverallProgress();
 <header id="site-header" class="fixed top-0 left-0 right-0 z-50 pt-2 sm:pt-4 px-2 sm:px-4 transition-all duration-500">
   <nav class="mx-auto max-w-6xl lg:max-w-4xl">
     <div class="header-pill flex items-center justify-between h-10 sm:h-12 px-1.5 sm:px-2 rounded-xl sm:rounded-2xl
-                w-fit mx-auto md:w-auto
                 bg-surface-800/60 backdrop-blur-xl border border-white/[0.06]
                 shadow-lg shadow-black/20 transition-all duration-500">
 
@@ -30,28 +29,28 @@ const overall = getOverallProgress();
         </span>
       </a>
 
-      <!-- Center nav links -->
-      <div class="hidden md:flex items-center gap-1">
-        <a href="#projects" class="nav-link px-3 py-1.5 text-xs font-medium text-surface-300 hover:text-white
+      <!-- Nav links - always visible -->
+      <div class="flex items-center gap-0.5 sm:gap-1">
+        <a href="#projects" class="nav-link px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-surface-300 hover:text-white
                                    rounded-lg hover:bg-white/[0.06] transition-all duration-200">
           Проєкти
         </a>
-        <a href="#launcher" class="nav-link px-3 py-1.5 text-xs font-medium text-surface-300 hover:text-white
+        <a href="#launcher" class="nav-link px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-surface-300 hover:text-white
                                    rounded-lg hover:bg-white/[0.06] transition-all duration-200">
           Лаунчер
         </a>
-        <a href="#support" class="nav-link px-3 py-1.5 text-xs font-medium text-surface-300 hover:text-white
+        <a href="#support" class="nav-link px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-surface-300 hover:text-white
                                   rounded-lg hover:bg-white/[0.06] transition-all duration-200">
           Підтримати
         </a>
-        <a href="#faq" class="nav-link px-3 py-1.5 text-xs font-medium text-surface-300 hover:text-white
+        <a href="#faq" class="nav-link px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-surface-300 hover:text-white
                               rounded-lg hover:bg-white/[0.06] transition-all duration-200">
           FAQ
         </a>
       </div>
 
       <!-- Right side -->
-      <div class="flex items-center gap-1 sm:gap-2">
+      <div class="flex items-center shrink-0">
         <!-- Donate button -->
         <a
           href="/#support"
@@ -65,46 +64,6 @@ const overall = getOverallProgress();
               d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
           <span class="hidden sm:inline text-xs leading-none">Підтримати</span>
-        </a>
-
-        <!-- Mobile toggle -->
-        <button
-          id="mobile-toggle"
-          class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg
-                 text-surface-300 hover:text-white hover:bg-white/[0.06] transition-all duration-200"
-          aria-label="Меню"
-        >
-          <svg id="burger-icon" class="w-4 h-4 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <svg id="close-icon" class="w-4 h-4 hidden transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-    </div>
-
-    <!-- Mobile dropdown -->
-    <div id="mobile-menu"
-         class="md:hidden overflow-hidden transition-all duration-300"
-         style="max-height: 0; opacity: 0;">
-      <div class="mt-2 p-3 rounded-2xl bg-surface-800/80 backdrop-blur-xl border border-white/[0.06]
-                  shadow-lg shadow-black/20 space-y-1">
-        <a href="#projects" class="mobile-link block px-4 py-2.5 text-sm text-surface-300 hover:text-white
-                                   rounded-xl hover:bg-white/[0.06] transition-all duration-200">
-          Проєкти
-        </a>
-        <a href="#launcher" class="mobile-link block px-4 py-2.5 text-sm text-surface-300 hover:text-white
-                                   rounded-xl hover:bg-white/[0.06] transition-all duration-200">
-          Лаунчер
-        </a>
-        <a href="#support" class="mobile-link block px-4 py-2.5 text-sm text-surface-300 hover:text-white
-                                  rounded-xl hover:bg-white/[0.06] transition-all duration-200">
-          Підтримати
-        </a>
-        <a href="#faq" class="mobile-link block px-4 py-2.5 text-sm text-surface-300 hover:text-white
-                              rounded-xl hover:bg-white/[0.06] transition-all duration-200">
-          FAQ
         </a>
       </div>
     </div>
@@ -127,11 +86,6 @@ const overall = getOverallProgress();
 
 <script>
   const header = document.getElementById("site-header")!;
-  const menu = document.getElementById("mobile-menu")!;
-  const toggle = document.getElementById("mobile-toggle")!;
-  const burgerIcon = document.getElementById("burger-icon")!;
-  const closeIcon = document.getElementById("close-icon")!;
-  let isOpen = false;
 
   // ── Scroll: add background ──
   const onScroll = () => {
@@ -155,30 +109,4 @@ const overall = getOverallProgress();
     });
   };
   window.addEventListener("scroll", highlightNav, { passive: true });
-
-  // ── Mobile menu ──
-  toggle.addEventListener("click", () => {
-    isOpen = !isOpen;
-    if (isOpen) {
-      menu.style.maxHeight = menu.scrollHeight + "px";
-      menu.style.opacity = "1";
-      burgerIcon.classList.add("hidden");
-      closeIcon.classList.remove("hidden");
-    } else {
-      menu.style.maxHeight = "0";
-      menu.style.opacity = "0";
-      burgerIcon.classList.remove("hidden");
-      closeIcon.classList.add("hidden");
-    }
-  });
-
-  menu.querySelectorAll(".mobile-link").forEach((link) => {
-    link.addEventListener("click", () => {
-      isOpen = false;
-      menu.style.maxHeight = "0";
-      menu.style.opacity = "0";
-      burgerIcon.classList.remove("hidden");
-      closeIcon.classList.add("hidden");
-    });
-  });
 </script>
