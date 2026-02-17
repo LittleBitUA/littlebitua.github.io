@@ -74,7 +74,7 @@
 @layer components {
   /* Enhanced Liquid Glass panel effect - MORE DRAMATIC */
   .glass {
-    @apply backdrop-blur-xl border rounded-2xl relative overflow-hidden;
+    @apply border rounded-2xl relative overflow-hidden;
     background: linear-gradient(
       135deg,
       rgba(255, 255, 255, 0.1) 0%,
