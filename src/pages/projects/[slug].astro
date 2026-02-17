@@ -181,15 +181,6 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
               </div>
             )}
 
-            <!-- Tags -->
-            {game.tags.length > 0 && (
-              <div class="flex flex-wrap gap-2">
-                {game.tags.map((tag) => (
-                  <Tag text={tag} size="md" />
-                ))}
-              </div>
-            )}
-
             <!-- Screenshots Gallery (inline) -->
             {game.screenshots && game.screenshots.length > 0 && (
               <div>
