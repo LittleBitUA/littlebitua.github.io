@@ -54,6 +54,7 @@ export interface Game {
   donateUrl: string;
   fundraisingRaised?: number;
   fundraisingGoal?: number;
+  fundraisingCompleted?: boolean;
   lastUpdate?: string;
 
   // ── Detail Pages Data ──
@@ -373,6 +374,7 @@ export const games: Game[] = [
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    fundraisingCompleted: true,
     lastUpdate: "2026-02-17",
 
     // Extended data
