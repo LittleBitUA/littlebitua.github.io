@@ -251,27 +251,32 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
                       </div>
                       <div class="h-2 rounded-full bg-white/10 overflow-hidden">
                         <div
+                          id="fundraising-bar"
                           class="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-300"
-                          style={`width: ${pct}%`}
+                          style="width: 0%"
+                          data-target={`${pct}`}
                         />
                       </div>
                     </div>
                   );
                 })()}
-                <a
-                  href={game.donateUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl
-                         bg-orange-400/15 text-orange-400 border border-orange-400/30
-                         hover:bg-orange-400/25 hover:border-orange-400/40
-                         transition-all duration-200"
-                >
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                  </svg>
-                  Задонатити
-                </a>
+                <div class="relative inline-block">
+                  <a
+                    href={game.donateUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl
+                           bg-orange-400/15 text-orange-400 border border-orange-400/30
+                           hover:bg-orange-400/25 hover:border-orange-400/40
+                           transition-all duration-200 relative z-10"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                    Задонатити
+                  </a>
+                  <canvas id="confetti-canvas" class="absolute -top-8 -left-8 -right-8 -bottom-8 pointer-events-none z-20" style="width: calc(100% + 64px); height: calc(100% + 64px);"></canvas>
+                </div>
               </div>
             )}
 
@@ -465,6 +470,85 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
         if (e.key === "ArrowLeft") showImage(currentIndex - 1);
         if (e.key === "ArrowRight") showImage(currentIndex + 1);
       });
+    </script>
+  )}
+
+  <!-- Fundraising bar animation + confetti -->
+  {game.fundraisingGoal && (
+    <script>
+      const bar = document.getElementById("fundraising-bar");
+      if (bar) {
+        const target = parseInt(bar.dataset.target, 10);
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              bar.style.transition = "width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+              bar.style.width = target + "%";
+
+              if (target >= 100) {
+                setTimeout(() => spawnConfetti(), 1200);
+              }
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.5 });
+        observer.observe(bar);
+      }
+
+      function spawnConfetti() {
+        const canvas = document.getElementById("confetti-canvas");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        canvas.width = canvas.offsetWidth * 2;
+        canvas.height = canvas.offsetHeight * 2;
+        ctx.scale(2, 2);
+        const W = canvas.offsetWidth;
+        const H = canvas.offsetHeight;
+        const colors = ["#fb923c", "#fbbf24", "#34d399", "#60a5fa", "#a78bfa", "#f472b6"];
+        const pieces = [];
+
+        for (let i = 0; i < 40; i++) {
+          pieces.push({
+            x: W / 2 + (Math.random() - 0.5) * 60,
+            y: H / 2,
+            vx: (Math.random() - 0.5) * 6,
+            vy: -(Math.random() * 4 + 2),
+            size: Math.random() * 5 + 3,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            rotation: Math.random() * 360,
+            rotSpeed: (Math.random() - 0.5) * 12,
+            gravity: 0.12,
+            opacity: 1,
+          });
+        }
+
+        let frame = 0;
+        function draw() {
+          ctx.clearRect(0, 0, W, H);
+          let alive = false;
+          pieces.forEach((p) => {
+            if (p.opacity <= 0) return;
+            alive = true;
+            p.x += p.vx;
+            p.vy += p.gravity;
+            p.y += p.vy;
+            p.rotation += p.rotSpeed;
+            if (frame > 30) p.opacity -= 0.02;
+
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.globalAlpha = Math.max(0, p.opacity);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+            ctx.restore();
+          });
+          frame++;
+          if (alive) requestAnimationFrame(draw);
+          else ctx.clearRect(0, 0, W, H);
+        }
+        requestAnimationFrame(draw);
+      }
     </script>
   )}
 
