@@ -55,6 +55,7 @@ export interface Game {
   fundraisingRaised?: number;
   fundraisingGoal?: number;
   fundraisingCompleted?: boolean;
+  fundraisingDescription?: string;
   lastUpdate?: string;
 
   // ── Detail Pages Data ──
@@ -595,6 +596,7 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     fundraisingRaised: 4213,
     fundraisingGoal: 50000,
+    fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
     lastUpdate: "2026-02-16",
     stats: {
       totalLines: 24458,

@@ -235,7 +235,7 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
                   <span class="text-sm font-bold text-orange-400">Збір коштів</span>
                 </div>
                 <p class="text-sm text-surface-300 mb-4">
-                  Ми збираємо кошти на текстову локалізацію цієї гри. Підтримайте проєкт, щоб переклад вийшов якнайшвидше!
+                  {game.fundraisingDescription || "Ми збираємо кошти на текстову локалізацію цієї гри. Підтримайте проєкт, щоб переклад вийшов якнайшвидше!"}
                 </p>
                 {(() => {
                   const raised = game.fundraisingRaised ?? 0;
