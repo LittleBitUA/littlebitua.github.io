@@ -133,10 +133,6 @@ export const games: Game[] = [
     genre: ["Action", "Hack and Slash", "Аркада"],
     platform: ["PC", "Switch"],
     translationSize: "medium",
-    screenshots: [
-      "/images/screenshots/nmh-battle.jpg",
-      "/images/screenshots/nmh-dialog.jpg"
-    ],
     team: [
       { name: "Little Bit Team", role: "Переклад", link: "https://t.me/LittleBitUA" }
     ],
@@ -321,11 +317,6 @@ export const games: Game[] = [
     genre: ["Action", "RPG", "Beat 'em up", "Відкритий світ"],
     platform: ["PC", "PlayStation", "Xbox"],
     translationSize: "large",
-    screenshots: [
-      "/images/screenshots/yk2-dialog.jpg",
-      "/images/screenshots/yk2-menu.jpg",
-      "/images/screenshots/yk2-combat.jpg"
-    ],
     team: [
       { name: "Little Bit Team", role: "Переклад та редакція" }
     ],
