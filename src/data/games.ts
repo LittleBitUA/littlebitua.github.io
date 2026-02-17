@@ -197,7 +197,16 @@ export const games: Game[] = [
       translatedLines: 3150,
       totalWords: 42000,
       totalCharacters: 210000
-    }
+    },
+    installInstructions: `## Встановлення локалізації Dispatch
+
+### Через LBK Launcher
+1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Запустіть лаунчер та знайдіть Dispatch у списку
+3. Натисніть "Встановити локалізацію"
+4. Запускайте гру через Steam як зазвичай
+
+**Важливо:** Патч працює з версією гри Steam.`
   },
   {
     id: "uncharted1",
@@ -236,7 +245,16 @@ export const games: Game[] = [
       translatedLines: 2920, // 87.64%
       totalWords: 14999, // 13013 укр + 1986 англ
       totalCharacters: 82494 // Приблизно
-    }
+    },
+    installInstructions: `## Встановлення локалізації Uncharted: Drake's Fortune
+
+### Через LBK Launcher
+1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Запустіть лаунчер та знайдіть Uncharted: Drake's Fortune у списку
+3. Натисніть "Встановити локалізацію"
+4. Запускайте гру як зазвичай
+
+**Важливо:** Патч працює з версією гри для PlayStation.`
   },
   {
     id: "judgment",
@@ -453,6 +471,15 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/a_game_about_digging_a_hole/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-12",
+    installInstructions: `## Встановлення локалізації A Game About Digging A Hole
+
+### Через LBK Launcher
+1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Запустіть лаунчер та знайдіть A Game About Digging A Hole у списку
+3. Натисніть "Встановити локалізацію"
+4. Запускайте гру через Steam як зазвичай
+
+**Важливо:** Патч працює з версією гри Steam.`
   },
   {
     id: "nmh2",
@@ -671,6 +698,15 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/as_dusk_falls/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-01-20",
+    installInstructions: `## Встановлення локалізації As Dusk Falls
+
+### Через LBK Launcher
+1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Запустіть лаунчер та знайдіть As Dusk Falls у списку
+3. Натисніть "Встановити локалізацію"
+4. Запускайте гру через Steam як зазвичай
+
+**Важливо:** Патч працює з версією гри Steam.`
   },
   {
     id: "uncharted2",
