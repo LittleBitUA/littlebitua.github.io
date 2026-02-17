@@ -1,0 +1,116 @@
+---
+// ─── Support Section ───────────────────────────────────────────
+// How to support the localization team
+
+const methods = [
+  {
+    id: "donatello",
+    name: "Donatello",
+    description: "Підтримайте команду разовим або регулярним донатом. Кожна гривня йде безпосередньо на локалізацію ігор.",
+    url: "https://donatello.to/LittleBitUA",
+    color: "accent",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />`
+  },
+  {
+    id: "monobank",
+    name: "Monobank",
+    description: "Підтримайте через банку Monobank — зручно та швидко для українських платників.",
+    url: "https://send.monobank.ua/jar/3h4akVJRXK",
+    color: "steam-blue",
+    icon: `<path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />`
+  }
+];
+
+const reasons = [
+  "Оплата серверів і хостингу",
+  "Закупівля ігор для роботи над перекладом",
+  "Розвиток LBK Launcher",
+  "Мотивація команди продовжувати роботу"
+];
+---
+
+<section id="support" class="py-20 relative">
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+
+    <!-- Section header -->
+    <div class="text-center mb-12" data-animate>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+        Як підтримати
+      </h2>
+      <p class="text-surface-300 max-w-lg mx-auto">
+        Ваша підтримка дозволяє нам розвивати проєкти та випускати нові переклади
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+      <!-- Left: Why support -->
+      <div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-6" data-animate>
+        <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-accent-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Навіщо потрібна підтримка?
+        </h3>
+        <ul class="space-y-3">
+          {reasons.map((reason) => (
+            <li class="flex items-start gap-2.5 text-sm text-surface-300">
+              <svg class="w-4 h-4 text-accent-light shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              {reason}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Right: Donation methods (2 cards) -->
+      <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-5" data-animate-stagger>
+        {methods.map((method) => (
+          <div class={`relative overflow-hidden rounded-2xl p-6 flex flex-col justify-between gap-6
+                       border transition-all duration-300
+                       ${method.id === 'donatello'
+                         ? 'bg-accent/[0.06] border-accent/20 hover:bg-accent/[0.10] hover:border-accent/30'
+                         : 'bg-steam-blue/[0.06] border-steam-blue/20 hover:bg-steam-blue/[0.10] hover:border-steam-blue/30'
+                       }`}>
+            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent
+                       ${method.id === 'donatello' ? 'via-accent/30' : 'via-steam-blue/30'}
+                       to-transparent" />
+
+            <div>
+              <div class={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 border
+                           ${method.id === 'donatello'
+                             ? 'bg-accent/15 border-accent/25'
+                             : 'bg-steam-blue/15 border-steam-blue/25'
+                           }`}>
+                <svg class={`w-5 h-5 ${method.id === 'donatello' ? 'text-accent-light' : 'text-steam-blue'}`}
+                     fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                     set:html={method.icon} />
+              </div>
+              <h3 class="text-lg font-bold text-white mb-2">{method.name}</h3>
+              <p class="text-sm text-surface-300 leading-relaxed">{method.description}</p>
+            </div>
+
+            <a
+              href={method.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class={`inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl
+                     border transition-all duration-200
+                     ${method.id === 'donatello'
+                       ? 'bg-accent/15 text-accent-light border-accent/30 hover:bg-accent/25 hover:border-accent/40'
+                       : 'bg-steam-blue/15 text-steam-blue border-steam-blue/30 hover:bg-steam-blue/25 hover:border-steam-blue/40'
+                     }`}
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              Підтримати
+            </a>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </div>
+</section>
