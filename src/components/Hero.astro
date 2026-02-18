@@ -91,8 +91,8 @@ const ringOffset = RING_C * (1 - overall / 100);
                 {totalGames} проєктів у роботі
               </span>
             </div>
-            <h1 class="hero-title text-3xl sm:text-4xl lg:text-[2.75rem] font-black tracking-tight leading-[1.1] mb-3">
-              Перекладаємо те, у&nbsp;що самі граємо&nbsp;🎮
+            <h1 class="text-3xl sm:text-4xl lg:text-[2.75rem] font-black tracking-tight leading-[1.1] mb-3 text-white">
+              <span class="hero-title">Перекладаємо те, у&nbsp;що самі граємо</span>&nbsp;🎮
             </h1>
             <p class="hero-subtitle text-surface-200 text-sm sm:text-base leading-relaxed max-w-sm">
               <span class="hero-word">Сюжет,</span>
@@ -367,25 +367,25 @@ const ringOffset = RING_C * (1 - overall / 100);
 <style>
   /* ── Hero title shimmer ── */
   .hero-title {
-    color: white;
+    display: inline;
     background: linear-gradient(
       90deg,
       white 0%,
-      white 40%,
-      theme("colors.accent.light") 50%,
-      white 60%,
+      white 45%,
+      rgba(167, 139, 250, 0.7) 50%,
+      white 55%,
       white 100%
     );
-    background-size: 200% 100%;
+    background-size: 300% 100%;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 4s ease-in-out 1s infinite;
+    animation: shimmer 5s ease-in-out 1.5s infinite;
   }
 
   @keyframes shimmer {
     0%, 100% { background-position: 100% 0; }
-    50% { background-position: -100% 0; }
+    40%, 60% { background-position: -100% 0; }
   }
 
   /* ── Subtitle word reveal ── */
