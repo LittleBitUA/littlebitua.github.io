@@ -40,7 +40,7 @@ const keywords = generateKeywords(game);
 const gameStructuredData = generateGameStructuredData(game);
 const breadcrumbsData = generateBreadcrumbs([
   { name: "Головна", url: SITE_URL },
-  { name: "Проєкти", url: `${SITE_URL}/#projects` },
+  { name: "Проєкти", url: `${SITE_URL}/projects` },
   { name: game.title, url: canonicalUrl },
 ]);
 
@@ -77,7 +77,7 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
         <li><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
         </svg></li>
-        <li><a href="/#projects" class="hover:text-white transition-colors">Проєкти</a></li>
+        <li><a href="/projects" class="hover:text-white transition-colors">Проєкти</a></li>
         <li><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
         </svg></li>

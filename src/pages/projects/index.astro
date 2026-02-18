@@ -1,0 +1,66 @@
+---
+// ─── Projects Page ──────────────────────────────────────────
+// Dedicated page listing all localization projects with filtering.
+
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import GameCard from "../../components/GameCard.astro";
+import FilterBar from "../../components/FilterBar.astro";
+import { games } from "../../data/games";
+---
+
+<Layout
+  title="Проєкти — «Little Bit» Українська локалізація відеоігор"
+  description="Усі проєкти локалізації команди «Little Bit». Слідкуйте за прогресом перекладу ігор українською."
+>
+  <Header />
+
+  <main class="flex-1">
+    <!-- Breadcrumbs -->
+    <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 pb-6">
+      <ol class="flex items-center gap-2 text-xs text-surface-400">
+        <li><a href="/" class="hover:text-white transition-colors">Головна</a></li>
+        <li>
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </li>
+        <li class="text-white font-semibold">Проєкти</li>
+      </ol>
+    </nav>
+
+    <!-- Projects Section -->
+    <section class="pb-20 relative">
+      <!-- Subtle background decoration -->
+      <div class="absolute inset-0 -z-10">
+        <div
+          class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04]
+                 bg-[radial-gradient(ellipse,_theme(colors.steam.blue)_0%,_transparent_70%)]"
+        />
+      </div>
+
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <!-- Section header -->
+        <div class="text-center mb-10" data-animate>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+            Наші проєкти
+          </h1>
+          <p class="text-surface-300 max-w-lg mx-auto">
+            Ігри, над локалізацією яких ми працюємо
+          </p>
+        </div>
+
+        <!-- Filter -->
+        <FilterBar />
+
+        <!-- Game cards grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="games-grid">
+          {games.map((game) => <GameCard game={game} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
