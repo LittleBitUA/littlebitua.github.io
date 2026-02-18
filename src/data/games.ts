@@ -602,7 +602,7 @@ export const games: Game[] = [
     stageDetails: [
       { label: "Переклад", percent: 20 },
     ],
-    tags: ["Action", "RPG", "JRPG"],
+    tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
     screenshots: [
       "/images/NieR_1.webp",
       "/images/NieR_2.webp",
