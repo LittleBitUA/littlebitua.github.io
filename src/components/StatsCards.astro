@@ -17,7 +17,7 @@ const totalStats = games.reduce(
   { lines: 0, words: 0, characters: 0 }
 );
 
-const doneCount = games.filter((g) => g.status === "done").length;
+const doneCount = games.filter((g) => g.status === "early-access").length;
 const inProgressCount = games.filter((g) => g.status === "in-progress" || g.status === "early-access").length;
 const totalProjects = games.length;
 
@@ -45,7 +45,7 @@ function formatNumber(num: number): string {
     </div>
     <p class="text-4xl font-black text-white mb-1 tabular-nums">{totalProjects}</p>
     <p class="text-xs text-surface-300">
-      <span class="text-steam-green font-semibold">{doneCount} готово</span>,{" "}
+      <span class="text-steam-green font-semibold">{doneCount} у ранньому доступі</span>,{" "}
       <span class="text-steam-blue font-semibold">{inProgressCount} у роботі</span>
     </p>
   </div>

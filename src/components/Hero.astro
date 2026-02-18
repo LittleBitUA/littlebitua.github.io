@@ -6,7 +6,7 @@ import { getOverallProgress, games, STATUS_LABELS } from "../data/games";
 
 const overall = getOverallProgress();
 const totalGames = games.length;
-const doneGames = games.filter((g) => g.status === "done").length;
+const doneGames = games.filter((g) => g.status === "early-access").length;
 const activeGames = games.filter(
   (g) => g.progress > 0 && g.progress < 100
 ).length;
@@ -264,7 +264,7 @@ const ringOffset = RING_C * (1 - overall / 100);
               {doneGames}
             </span>
             <span class="text-[11px] text-surface-300 font-medium uppercase tracking-wider">
-              Готово
+              У ранньому доступі
             </span>
           </div>
         </div>
