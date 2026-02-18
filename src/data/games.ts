@@ -517,7 +517,7 @@ export const games: Game[] = [
     tags: ["Action", "Стелс", "Тактика"],
     steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 18100,
+    fundraisingRaised: 18750,
     fundraisingGoal: 25000,
     lastUpdate: "2026-02-16",
   },
