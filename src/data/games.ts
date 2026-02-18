@@ -78,8 +78,8 @@ export interface Game {
 
 /** Stage badge color mapping */
 export const STAGE_COLORS: Record<LocalizationStage, string> = {
-  "Переклад": "text-steam-blue",
-  "Редактура": "text-yellow-400",
+  "Переклад": "text-red-400",
+  "Редактура": "text-violet-400",
   "Текстури": "text-orange-400",
   "Готово": "text-steam-green",
 };
