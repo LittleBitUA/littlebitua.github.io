@@ -91,11 +91,15 @@ const ringOffset = RING_C * (1 - overall / 100);
                 {totalGames} проєктів у роботі
               </span>
             </div>
-            <h1 class="text-3xl sm:text-4xl lg:text-[2.75rem] font-black tracking-tight text-white leading-[1.1] mb-3">
+            <h1 class="hero-title text-3xl sm:text-4xl lg:text-[2.75rem] font-black tracking-tight leading-[1.1] mb-3">
               Перекладаємо те, у&nbsp;що самі граємо&nbsp;🎮
             </h1>
-            <p class="text-surface-200 text-sm sm:text-base leading-relaxed max-w-sm">
-              Сюжет, інтерфейс і дрібниці — українською.
+            <p class="hero-subtitle text-surface-200 text-sm sm:text-base leading-relaxed max-w-sm">
+              <span class="hero-word">Сюжет,</span>
+              <span class="hero-word">інтерфейс</span>
+              <span class="hero-word">і дрібниці</span>
+              <span class="hero-word">—</span>
+              <span class="hero-word">українською.</span>
             </p>
           </div>
         </div>
@@ -361,6 +365,55 @@ const ringOffset = RING_C * (1 - overall / 100);
 </section>
 
 <style>
+  /* ── Hero title shimmer ── */
+  .hero-title {
+    color: white;
+    background: linear-gradient(
+      90deg,
+      white 0%,
+      white 40%,
+      theme("colors.accent.light") 50%,
+      white 60%,
+      white 100%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s ease-in-out 1s infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { background-position: 100% 0; }
+    50% { background-position: -100% 0; }
+  }
+
+  /* ── Subtitle word reveal ── */
+  .hero-word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(8px);
+    animation: wordReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .hero-word:nth-child(1) { animation-delay: 0.4s; }
+  .hero-word:nth-child(2) { animation-delay: 0.55s; }
+  .hero-word:nth-child(3) { animation-delay: 0.7s; }
+  .hero-word:nth-child(4) { animation-delay: 0.85s; }
+  .hero-word:nth-child(5) { animation-delay: 1.0s; }
+
+  @keyframes wordReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title { animation: none; background: none; -webkit-text-fill-color: white; }
+    .hero-word { animation: none; opacity: 1; transform: none; }
+  }
+
   /* ── Background orb drift ── */
   .orb {
     opacity: 0.08;
