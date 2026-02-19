@@ -374,18 +374,18 @@ export const games: Game[] = [
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "/images/yakuza-lad.jpg",
-    progress: 35,
+    progress: 38,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 35 },
+      { label: "Переклад", percent: 38 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     fundraisingCompleted: true,
-    lastUpdate: "2026-02-17",
+    lastUpdate: "2026-02-19",
 
     // Extended data
     detailedDescription: "Революційна зміна для серії Yakuza — тепер з покроковими боями в стилі JRPG! Ічібан Касуґа починає нове життя після 18 років в'язниці. Захоплюючий сюжет та система класів персонажів.",
@@ -399,11 +399,12 @@ export const games: Game[] = [
     progressHistory: [
       { date: "2025-09-01", progress: 15, milestone: "Початок основного сюжету" },
       { date: "2025-11-15", progress: 25, milestone: "Перша половина історії" },
-      { date: "2026-02-16", progress: 35, milestone: "Активний переклад" }
+      { date: "2026-02-16", progress: 35, milestone: "Активний переклад" },
+      { date: "2026-02-19", progress: 38, milestone: "38% перекладено" }
     ],
     stats: {
       totalLines: 72448,
-      translatedLines: 25663, // 35.42%
+      translatedLines: 27636, // 38.14%
       totalWords: 613562, // 179615 укр + 433947 англ
       totalCharacters: 3374591 // Приблизно
     }
