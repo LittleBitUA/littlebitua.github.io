@@ -416,7 +416,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
-    cover: "/images/yakuza-kiwami3.jpg",
+    cover: "https://cdn2.steamgriddb.com/grid/d7fbe5fb946867aacf79463f8f36981c.png",
     progress: 23,
     status: "in-progress",
     stage: "Переклад",
