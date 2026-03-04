@@ -374,11 +374,11 @@ export const games: Game[] = [
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "/images/yakuza-lad.jpg",
-    progress: 38,
+    progress: 41,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 38 },
+      { label: "Переклад", percent: 41 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
@@ -400,14 +400,37 @@ export const games: Game[] = [
       { date: "2025-09-01", progress: 15, milestone: "Початок основного сюжету" },
       { date: "2025-11-15", progress: 25, milestone: "Перша половина історії" },
       { date: "2026-02-16", progress: 35, milestone: "Активний переклад" },
-      { date: "2026-02-19", progress: 38, milestone: "38% перекладено" }
+      { date: "2026-02-19", progress: 38, milestone: "38% перекладено" },
+      { date: "2026-03-04", progress: 41, milestone: "40.95% перекладено" }
     ],
     stats: {
       totalLines: 72448,
-      translatedLines: 27636, // 38.14%
+      translatedLines: 29666, // 40.95%
       totalWords: 613562, // 179615 укр + 433947 англ
       totalCharacters: 3374591 // Приблизно
     }
+  },
+  {
+    id: "yakuza-kiwami3",
+    title: "Yakuza Kiwami 3 & Dark Ties",
+    series: "Yakuza",
+    description:
+      "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
+    cover: "/images/yakuza-kiwami3.jpg",
+    progress: 23,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 23 },
+      { label: "Редактура", percent: 0 },
+    ],
+    tags: ["Бойовик", "RPG", "Відкритий світ", "Кримінал"],
+    steamUrl: "https://store.steampowered.com/app/3937550/Yakuza_Kiwami_3__Dark_Ties/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-03-04",
+    progressHistory: [
+      { date: "2026-03-04", progress: 23, milestone: "Початок перекладу" }
+    ],
   },
   {
     id: "nmh3",
