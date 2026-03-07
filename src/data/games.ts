@@ -386,7 +386,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     fundraisingCompleted: true,
-    lastUpdate: "2026-02-19",
+    lastUpdate: "2026-03-07",
 
     // Extended data
     detailedDescription: "Революційна зміна для серії Yakuza — тепер з покроковими боями в стилі JRPG! Ічібан Касуґа починає нове життя після 18 років в'язниці. Захоплюючий сюжет та система класів персонажів.",
