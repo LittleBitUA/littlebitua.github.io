@@ -543,9 +543,9 @@ export const games: Game[] = [
     tags: ["Бойовик", "Стелс", "Глибокий сюжет", "Пригоди"],
     steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 18750,
+    fundraisingRaised: 19050,
     fundraisingGoal: 25000,
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-03-07",
   },
   {
     id: "hotel-barcelona",
@@ -638,10 +638,10 @@ export const games: Game[] = [
     ],
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 4633,
+    fundraisingRaised: 5593,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-03-07",
     stats: {
       totalLines: 24458,
       translatedLines: 4892, // 20% progress
