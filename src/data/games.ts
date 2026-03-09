@@ -622,11 +622,11 @@ export const games: Game[] = [
     description:
       "Оновлена версія культової екшен-RPG, де юнак Нір вирушає на відчайдушний пошук порятунку для своєї сестри Йони. Разом із балакучим «Ґримоаром Вайсом» та незабутніми супутниками ви досліджуватимете химерний світ, битиметеся з Тінями й розплутуватимете історію, у якій кожна відповідь має свою ціну — і веде до кількох фіналів.",
     cover: "/images/nier-replicant.jpg",
-    progress: 20,
+    progress: 25,
     status: "fundraising",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 20 },
+      { label: "Переклад", percent: 25 },
     ],
     tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
     screenshots: [
@@ -638,13 +638,13 @@ export const games: Game[] = [
     ],
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 5593,
+    fundraisingRaised: 10943,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-03-07",
+    lastUpdate: "2026-03-09",
     stats: {
       totalLines: 24458,
-      translatedLines: 4892, // 20% progress
+      translatedLines: 6115, // 25% progress
       totalWords: 131813, // 27203 UA + 109012 ENG
       totalCharacters: 682805,
     },
