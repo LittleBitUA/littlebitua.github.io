@@ -418,20 +418,21 @@ export const games: Game[] = [
     description:
       "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
     cover: "https://cdn2.steamgriddb.com/grid/d7fbe5fb946867aacf79463f8f36981c.png",
-    progress: 25,
+    progress: 26,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 25 },
+      { label: "Переклад", percent: 26 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Бойовик", "RPG", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/3937550/Yakuza_Kiwami_3__Dark_Ties/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-03-07",
+    lastUpdate: "2026-03-09",
     progressHistory: [
       { date: "2026-03-04", progress: 23, milestone: "Початок перекладу" },
-      { date: "2026-03-07", progress: 25, milestone: "25% перекладу" }
+      { date: "2026-03-07", progress: 25, milestone: "25% перекладу" },
+      { date: "2026-03-09", progress: 26, milestone: "26% перекладу" }
     ],
   },
   {
