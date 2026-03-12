@@ -104,6 +104,24 @@ export const STATUS_COLORS: Record<GameStatus, string> = {
 
 /** All game localization projects */
 export const games: Game[] = [
+  {
+    id: "mgs-snake-eater",
+    title: "METAL GEAR SOLID Δ: SNAKE EATER",
+    description:
+      "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
+    cover: "https://cdn2.steamgriddb.com/hero/f12613bbc3192e2f471d7c39c178f30d.png",
+    progress: 26,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 26 },
+      { label: "Редактура", percent: 0 },
+    ],
+    tags: ["Стелс", "Бойовик", "Глибокий сюжет", "Пригоди"],
+    downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-03-12",
+  },
   // ── Done (100%) ───────────────────────────────────────────
   {
     id: "nmh1",
