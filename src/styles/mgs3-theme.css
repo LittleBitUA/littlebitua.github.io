@@ -1,0 +1,197 @@
+/* ══════════════════════════════════════════════════════════════════
+   MGS3 SEASONAL THEME — Operation Snake Eater
+   ──────────────────────────────────────────────────────────────────
+   Щоб прибрати: видали рядок @import у src/layouts/Layout.astro
+   ══════════════════════════════════════════════════════════════════ */
+
+:root {
+  --mgs3-green:    #4a7c42;
+  --mgs3-glow:     rgba(74, 124, 66, 0.35);
+  --mgs3-phosphor: #6ee84a;
+  --mgs3-jungle:   rgba(30, 51, 24, 1);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   GLOBAL AMBIENT — jungle palette замість пурпуру
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+body::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 50%, rgba(74, 124, 66, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 85% 70%, rgba(42, 74, 32, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 50% 10%, rgba(110, 232, 74, 0.03) 0%, transparent 70%) !important;
+}
+body::after {
+  background:
+    radial-gradient(ellipse 70% 50% at 70% 30%, rgba(74, 124, 66, 0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 70% at 20% 80%, rgba(42, 74, 32, 0.05) 0%, transparent 70%) !important;
+}
+
+/* Scrollbar: зелений замість пурпурного */
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--mgs3-green) !important;
+}
+::selection {
+  background-color: rgba(74, 124, 66, 0.35) !important;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   HERO — атмосфера джунглів
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Фонові кулі: пурпуровий/фіолетовий → оливковий/зелений */
+.orb-1 { filter: hue-rotate(130deg) saturate(0.65) brightness(0.85); }
+.orb-2 { filter: hue-rotate(95deg)  saturate(0.70) brightness(0.80); }
+.orb-3 { filter: hue-rotate(125deg) saturate(0.55) brightness(0.75); }
+
+/* Туман джунглів поверх hero-секції */
+main > section:first-of-type::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 75%, rgba(30, 51, 24, 0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 60% at 82% 18%, rgba(74, 124, 66, 0.10) 0%, transparent 55%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Тактична сітка (дуже ненав'язлива) */
+main > section:first-of-type::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg,  transparent, transparent 63px, rgba(74, 124, 66, 0.028) 64px),
+    repeating-linear-gradient(90deg, transparent, transparent 63px, rgba(74, 124, 66, 0.028) 64px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Акцентна лінія на brand-картці: пурпурна → зелена */
+.bento-delay-1 .h-px {
+  background-image: linear-gradient(to right, transparent, rgba(74, 124, 66, 0.65), transparent) !important;
+}
+
+/* Пульсуючий бейдж активності: пурпурний → зелений */
+.bento-delay-1 .mb-6.rounded-full {
+  background-color: rgba(74, 124, 66, 0.12) !important;
+  border-color: rgba(74, 124, 66, 0.28) !important;
+}
+.bento-delay-1 .mb-6.rounded-full .animate-ping {
+  background-color: var(--mgs3-green) !important;
+}
+.bento-delay-1 .mb-6.rounded-full .h-1\.5.w-1\.5 {
+  background-color: var(--mgs3-green) !important;
+}
+.bento-delay-1 .mb-6.rounded-full span:last-child {
+  color: #9dd688 !important;
+}
+
+/* Карусель: ефект CRT-рядків (дуже тонкий) */
+#featured-carousel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.055) 3px,
+    rgba(0, 0, 0, 0.055) 4px
+  );
+  pointer-events: none;
+  z-index: 30;
+  border-radius: inherit;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   СЕКЦІЯ ПРОЄКТІВ — тактичний заголовок
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+#projects h2 {
+  text-shadow:
+    0 0 40px rgba(74, 124, 66, 0.40),
+    0 0 90px rgba(74, 124, 66, 0.14);
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   MGS3 GAME CARD — особлива обробка
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Рамка у стилі камуфляжу + внутрішнє світіння */
+[data-game-id="mgs-snake-eater"] {
+  border-color: rgba(74, 124, 66, 0.50) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(74, 124, 66, 0.15) inset,
+    0 0 24px rgba(74, 124, 66, 0.10) !important;
+}
+
+/* Hover: зелений glow замість пурпурного */
+[data-game-id="mgs-snake-eater"]:hover {
+  box-shadow:
+    0 0 22px rgba(74, 124, 66, 0.60),
+    0 0 50px rgba(74, 124, 66, 0.30),
+    0 8px 32px rgba(0, 0, 0, 0.45) !important;
+  border-color: rgba(74, 124, 66, 0.72) !important;
+}
+
+/* "Дихання" — плавне зелене світіння (після появи картки) */
+[data-game-id="mgs-snake-eater"].visible {
+  animation: mgs3-breathe 3.5s ease-in-out infinite;
+}
+@keyframes mgs3-breathe {
+  0%,  100% { filter: drop-shadow(0 0  6px rgba(74, 124, 66, 0.18)); }
+  50%        { filter: drop-shadow(0 0 20px rgba(74, 124, 66, 0.52)); }
+}
+
+/* Прогрес-бар: оливково-зелений градієнт */
+[data-game-id="mgs-snake-eater"] [role="progressbar"] {
+  background-image: linear-gradient(to right, #2c5824, #4a7c42, #7cbd5a) !important;
+}
+
+/* Детальні смуги (при розгортанні) */
+[data-game-id="mgs-snake-eater"] .bg-steam-blue {
+  background-color: var(--mgs3-green) !important;
+}
+
+/* Кнопка "Детальна інформація": пурпурна → зелена */
+[data-game-id="mgs-snake-eater"] a[href="/projects/mgs-snake-eater"] {
+  background-color: rgba(74, 124, 66, 0.12) !important;
+  border-color: rgba(74, 124, 66, 0.32) !important;
+  color: #9dd688 !important;
+}
+[data-game-id="mgs-snake-eater"] a[href="/projects/mgs-snake-eater"]:hover {
+  background-color: rgba(74, 124, 66, 0.24) !important;
+  border-color: rgba(74, 124, 66, 0.58) !important;
+  box-shadow: 0 4px 20px rgba(74, 124, 66, 0.26) !important;
+}
+
+/* Ховер на заголовку картки */
+[data-game-id="mgs-snake-eater"] h3 a:hover {
+  color: #9dd688 !important;
+}
+
+/* Тактична стрічка на обкладинці: "OPERATION SNAKE EATER // FOX UNIT" */
+[data-game-id="mgs-snake-eater"] > div:first-child::after {
+  content: '▲  OPERATION SNAKE EATER  ▲  FOX UNIT  ▲';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 8px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-align: center;
+  color: rgba(110, 232, 74, 0.82);
+  background: linear-gradient(
+    to right,
+    rgba(16, 32, 12, 0.92),
+    rgba(26, 50, 18, 0.96),
+    rgba(16, 32, 12, 0.92)
+  );
+  border-top: 1px solid rgba(74, 124, 66, 0.45);
+  z-index: 5;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
