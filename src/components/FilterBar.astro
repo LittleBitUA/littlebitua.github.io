@@ -83,6 +83,7 @@ const statusList = getStatusList();
                focus:outline-none focus:border-accent/40
                transition-all duration-200 cursor-pointer"
       >
+        <option value="default" class="bg-surface-800 text-white">За замовчуванням</option>
         <option value="progress-desc" class="bg-surface-800 text-white">Прогрес ↓</option>
         <option value="progress-asc" class="bg-surface-800 text-white">Прогрес ↑</option>
         <option value="title-asc" class="bg-surface-800 text-white">Назва (А-Я)</option>
@@ -149,7 +150,7 @@ const statusList = getStatusList();
   let currentStatus = "all";
   let currentSearch = "";
   let currentTag = "";
-  let currentSort = "progress-desc";
+  let currentSort = "default";
 
   // ── Fuzzy Search Setup ──
   const gamesList = cards.map(card => ({
@@ -281,11 +282,11 @@ const statusList = getStatusList();
     currentSearch = "";
     currentStatus = "all";
     currentTag = "";
-    currentSort = "progress-desc";
+    currentSort = "default";
 
     // Reset UI
     searchInput.value = "";
-    sortSelect.value = "progress-desc";
+    sortSelect.value = "default";
     statusButtons.forEach(b => b.classList.remove("active"));
     statusButtons[0].classList.add("active");
 
