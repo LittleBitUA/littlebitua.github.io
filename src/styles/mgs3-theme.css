@@ -256,6 +256,58 @@ main > section:first-of-type::after {
   -webkit-backdrop-filter: blur(4px);
 }
 
+/* Стрічка для Uncharted 1 — ранній доступ за донат (золота) */
+[data-game-id="uncharted1"] > div:first-child::after {
+  content: 'РАННІЙ ДОСТУП ЗА ДОНАТ';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 5px 8px;
+  font-size: 8px; font-weight: 800; letter-spacing: 0.15em; text-align: center;
+  color: rgba(255, 210, 100, 0.92);
+  background: linear-gradient(to right, rgba(40, 28, 5, 0.92), rgba(65, 45, 8, 0.96), rgba(40, 28, 5, 0.92));
+  border-top: 1px solid rgba(200, 155, 30, 0.45);
+  z-index: 5; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+
+/* Стрічка для Yakuza Kiwami 3 & Dark Ties — ранній доступ в березні (фіолетова) */
+[data-game-id="yakuza-kiwami3"] > div:first-child::after {
+  content: 'РАННІЙ ДОСТУП В БЕРЕЗНІ!';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 5px 8px;
+  font-size: 8px; font-weight: 800; letter-spacing: 0.15em; text-align: center;
+  color: rgba(200, 160, 255, 0.92);
+  background: linear-gradient(to right, rgba(25, 10, 40, 0.92), rgba(42, 18, 65, 0.96), rgba(25, 10, 40, 0.92));
+  border-top: 1px solid rgba(140, 80, 220, 0.45);
+  z-index: 5; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+
+/* Стрічка для No More Heroes 3 — ранній доступ без текстур та редагування (синя) */
+[data-game-id="nmh3"] > div:first-child::after {
+  content: 'РАННІЙ ДОСТУП БЕЗ ТЕКСТУР ТА РЕДАГУВАННЯ';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 5px 8px;
+  font-size: 8px; font-weight: 800; letter-spacing: 0.10em; text-align: center;
+  color: rgba(110, 210, 230, 0.90);
+  background: linear-gradient(to right, rgba(10, 30, 40, 0.92), rgba(15, 50, 65, 0.96), rgba(10, 30, 40, 0.92));
+  border-top: 1px solid rgba(27, 154, 170, 0.45);
+  z-index: 5; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+
+/* Стрічка для A Game About Digging A Hole — не перекладені досягнення (помаранчева) */
+[data-game-id="digging-a-hole"] > div:first-child::after {
+  content: 'НЕ ПЕРЕКЛАДЕНІ ДОСЯГНЕННЯ';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 5px 8px;
+  font-size: 8px; font-weight: 800; letter-spacing: 0.15em; text-align: center;
+  color: rgba(255, 175, 100, 0.92);
+  background: linear-gradient(to right, rgba(40, 18, 5, 0.92), rgba(65, 30, 8, 0.96), rgba(40, 18, 5, 0.92));
+  border-top: 1px solid rgba(210, 110, 30, 0.45);
+  z-index: 5; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+}
+
 /* Тактична стрічка на обкладинці MGS3 */
 [data-game-id="mgs-snake-eater"] > div:first-child::after {
   content: '▲  РАННІЙ ДОСТУП!  ▲  ВЕРСІЯ 1.0.4!  ▲';
