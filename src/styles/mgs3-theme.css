@@ -181,9 +181,9 @@ main > section:first-of-type::after {
   color: #9dd688 !important;
 }
 
-/* Стрічка для No More Heroes — ранній доступ без текстур */
+/* Стрічка для No More Heroes — ранній доступ без текстур (синя) */
 [data-game-id="nmh1"] > div:first-child::after {
-  content: '▲  РАННІЙ ДОСТУП БЕЗ ТЕКСТУР  ▲';
+  content: 'РАННІЙ ДОСТУП БЕЗ ТЕКСТУР';
   position: absolute;
   bottom: 0;
   left: 0;
@@ -201,6 +201,56 @@ main > section:first-of-type::after {
     rgba(10, 30, 40, 0.92)
   );
   border-top: 1px solid rgba(27, 154, 170, 0.45);
+  z-index: 5;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Стрічка для Dispatch — усі епізоди (червона) */
+[data-game-id="dispatch"] > div:first-child::after {
+  content: 'УСІ ЕПІЗОДИ УКРАЇНСЬКОЮ!';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 8px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-align: center;
+  color: rgba(255, 160, 160, 0.92);
+  background: linear-gradient(
+    to right,
+    rgba(45, 10, 10, 0.92),
+    rgba(70, 15, 15, 0.96),
+    rgba(45, 10, 10, 0.92)
+  );
+  border-top: 1px solid rgba(200, 50, 50, 0.45);
+  z-index: 5;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Стрічка для Judgment — ранній доступ без редагування (сіра) */
+[data-game-id="judgment"] > div:first-child::after {
+  content: '▲  РАННІЙ ДОСТУП БЕЗ РЕДАГУВАННЯ  ▲';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px 8px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-align: center;
+  color: rgba(180, 180, 190, 0.90);
+  background: linear-gradient(
+    to right,
+    rgba(20, 20, 25, 0.92),
+    rgba(35, 35, 42, 0.96),
+    rgba(20, 20, 25, 0.92)
+  );
+  border-top: 1px solid rgba(130, 130, 145, 0.40);
   z-index: 5;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
