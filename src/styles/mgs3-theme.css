@@ -183,7 +183,7 @@ main > section:first-of-type::after {
 
 /* Тактична стрічка на обкладинці: "OPERATION SNAKE EATER // FOX UNIT" */
 [data-game-id="mgs-snake-eater"] > div:first-child::after {
-  content: '▲  OPERATION SNAKE EATER  ▲  FOX UNIT  ▲';
+  content: '▲  РАННІЙ ДОСТУП!  ▲  ВЕРСІЯ 1.0.4!  ▲';
   position: absolute;
   bottom: 0;
   left: 0;
