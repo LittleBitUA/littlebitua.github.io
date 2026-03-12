@@ -44,7 +44,7 @@ const hasDetails = game.stageDetails && game.stageDetails.length > 0;
     />
 
     <!-- Status / Stage badge -->
-    <div class="absolute top-2.5 left-2.5">
+    <div class="absolute top-2.5 left-2.5 z-10">
       <span
         class:list={[
           "inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold rounded-md border backdrop-blur-md bg-black/60",
@@ -74,7 +74,7 @@ const hasDetails = game.stageDetails && game.stageDetails.length > 0;
     </div>
 
     <!-- Progress % overlay -->
-    <div class="absolute top-2.5 right-2.5">
+    <div class="absolute top-2.5 right-2.5 z-10">
       <span class="px-2 py-0.5 text-sm font-extrabold tabular-nums text-white bg-black/60 backdrop-blur-md rounded-md">
         {game.progress}<span class="text-[10px] font-medium opacity-60">%</span>
       </span>
