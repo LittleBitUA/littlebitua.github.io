@@ -109,7 +109,7 @@ export const games: Game[] = [
     title: "METAL GEAR SOLID Δ: SNAKE EATER",
     description:
       "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
-    cover: "https://cdn2.steamgriddb.com/hero/f12613bbc3192e2f471d7c39c178f30d.png",
+    cover: "https://cdn2.steamgriddb.com/grid/67dffe36336093c94187f6dd9412ba89.png",
     progress: 26,
     status: "in-progress",
     stage: "Переклад",
