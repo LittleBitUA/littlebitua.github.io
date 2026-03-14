@@ -61,6 +61,7 @@ export interface Game {
   // ── Detail Pages Data ──
   screenshots?: string[]; // Paths to translation screenshots
   installInstructions?: string; // Markdown instructions
+  faq?: { question: string; answer: string }[]; // FAQ items
   team?: TeamMember[]; // Translation team
   detailedDescription?: string; // Extended description for detail page
   releaseDate?: string; // Release date (YYYY-MM-DD)
@@ -111,8 +112,10 @@ export const games: Game[] = [
       "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
     cover: "https://cdn2.steamgriddb.com/grid/67dffe36336093c94187f6dd9412ba89.png",
     progress: 26,
-    status: "in-progress",
+    status: "fundraising",
     stage: "Переклад",
+    fundraisingRaised: 0,
+    fundraisingGoal: 50000,
     stageDetails: [
       { label: "Переклад", percent: 26 },
       { label: "Редактура", percent: 0 },
@@ -121,6 +124,40 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-03-12",
+    faq: [
+      {
+        question: "Чому така сума збору?",
+        answer: "Тому що гра дуже велика, а для завершення локалізації цього року потрібна активна, якісна й стабільна робота всієї команди.",
+      },
+      {
+        question: "Буде переклад на стару версію гри?",
+        answer: "Наразі ми цього не плануємо.",
+      },
+      {
+        question: "Скільки у грі тексту?",
+        answer: "У грі понад 50\u00a0000 рядків тексту.",
+      },
+      {
+        question: "«Солов'їна команда» працюватиме над перекладом?",
+        answer: "Ні. Водночас ми виплатимо їм кошти за попередньо виконану роботу. Якщо хтось із них захоче повернутися, ми будемо тільки раді.",
+      },
+      {
+        question: "Хто працює над перекладом?",
+        answer: "Над локалізацією працюють Little Bit, Kostyanchek8 та інші учасники команди.",
+      },
+      {
+        question: "Буде переклад інших частин?",
+        answer: "Так, якщо збір матиме підтримку, а українська локалізація буде справді затребуваною серед гравців.",
+      },
+      {
+        question: "Ви плануєте оновлювати переклад одразу чи вже після завершення збору?",
+        answer: "Оновлення виходитимуть у процесі роботи. Тобто навіть якщо ми зберемо, умовно, лише 30% від загальної суми, ви все одно зможете проходити нові версії гри й прозоро підтримувати нашу роботу.",
+      },
+      {
+        question: "Що буде, якщо збір не закриється?",
+        answer: "Нічого критичного — ми все одно завершимо проєкт. Але після цього з більшим скептицизмом ставитимемося до подальшої локалізації ігор цієї серії.",
+      },
+    ],
   },
   // ── Done (100%) ───────────────────────────────────────────
   {

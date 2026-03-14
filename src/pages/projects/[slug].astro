@@ -359,8 +359,76 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
 
     <!-- Content sections -->
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 space-y-16">
-      <!-- Install Instructions or "in progress" notice -->
-      {game.installInstructions ? (
+      <!-- FAQ + Install tabs (or plain install section) -->
+      {game.faq && game.faq.length > 0 ? (
+        <section>
+          <!-- Tab nav -->
+          <div class="flex gap-1 mb-6 border-b border-white/[0.08]">
+            <button
+              id="tab-faq"
+              data-tab="faq"
+              class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors
+                     text-white border-b-2 border-white -mb-px"
+            >FAQ</button>
+            <button
+              id="tab-install"
+              data-tab="install"
+              class="tab-btn px-5 py-2.5 text-sm font-semibold rounded-t-lg transition-colors
+                     text-surface-400 border-b-2 border-transparent -mb-px hover:text-white"
+            >Встановлення</button>
+          </div>
+
+          <!-- FAQ panel -->
+          <div id="panel-faq" class="tab-panel space-y-3">
+            {game.faq.map((item) => (
+              <div class="bg-white/[0.03] border border-white/[0.06] rounded-xl p-5 sm:p-6">
+                <p class="font-bold text-white mb-2">{item.question}</p>
+                <p class="text-sm text-surface-300 leading-relaxed">{item.answer}</p>
+              </div>
+            ))}
+          </div>
+
+          <!-- Install panel (hidden by default) -->
+          <div id="panel-install" class="tab-panel hidden">
+            {game.installInstructions ? (
+              <div
+                class="prose prose-invert prose-sm sm:prose-base max-w-none
+                       bg-white/[0.03] border border-white/[0.06] rounded-xl p-6 sm:p-8"
+                set:html={marked(game.installInstructions)}
+              />
+            ) : (
+              <div class="bg-white/[0.03] border border-white/[0.06] rounded-xl p-6 sm:p-8 flex items-center gap-3">
+                <svg class="w-5 h-5 text-surface-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-sm text-surface-300">
+                  Локалізація наразі у роботі. Інструкції зі встановлення з'являться, коли переклад буде доступний для завантаження.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <script>
+            const tabBtns = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+            const tabPanels = document.querySelectorAll<HTMLElement>('.tab-panel');
+            tabBtns.forEach((btn) => {
+              btn.addEventListener('click', () => {
+                const target = btn.dataset.tab;
+                tabBtns.forEach((b) => {
+                  const active = b.dataset.tab === target;
+                  b.classList.toggle('text-white', active);
+                  b.classList.toggle('border-white', active);
+                  b.classList.toggle('text-surface-400', !active);
+                  b.classList.toggle('border-transparent', !active);
+                });
+                tabPanels.forEach((panel) => {
+                  panel.classList.toggle('hidden', panel.id !== `panel-${target}`);
+                });
+              });
+            });
+          </script>
+        </section>
+      ) : game.installInstructions ? (
         <section>
           <h2 class="text-2xl font-black text-white mb-6">Встановлення</h2>
           <div
