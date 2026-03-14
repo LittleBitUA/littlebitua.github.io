@@ -61,6 +61,7 @@ export interface Game {
   // ── Detail Pages Data ──
   screenshots?: string[]; // Paths to translation screenshots
   installInstructions?: string; // Markdown instructions
+  version?: string; // Current localization version (e.g. "1.0.5")
   faq?: { question: string; answer: string }[]; // FAQ items
   team?: TeamMember[]; // Translation team
   detailedDescription?: string; // Extended description for detail page
@@ -112,7 +113,7 @@ export const games: Game[] = [
       "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
     cover: "https://cdn2.steamgriddb.com/grid/67dffe36336093c94187f6dd9412ba89.png",
     progress: 26,
-    status: "fundraising",
+    status: "early-access",
     stage: "Переклад",
     fundraisingRaised: 0,
     fundraisingGoal: 50000,
@@ -123,7 +124,8 @@ export const games: Game[] = [
     tags: ["Стелс", "Бойовик", "Глибокий сюжет", "Пригоди"],
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-03-12",
+    lastUpdate: "2026-03-14",
+    version: "1.0.5",
     installInstructions: `## Встановлення локалізації METAL GEAR SOLID Δ: SNAKE EATER
 
 ### Через LBK Launcher

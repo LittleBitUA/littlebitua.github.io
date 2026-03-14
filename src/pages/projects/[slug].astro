@@ -109,7 +109,7 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
                 class="absolute inset-0 w-full h-full object-cover"
               />
               <!-- Status badge -->
-              <div class="absolute top-3 left-3">
+              <div class="absolute top-3 left-3 flex flex-col gap-1.5">
                 <span
                   class:list={[
                     "inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-lg border backdrop-blur-md bg-black/70",
@@ -120,6 +120,11 @@ const nextGame = currentIndex < games.length - 1 ? games[currentIndex + 1] : nul
                 >
                   {statusLabel}
                 </span>
+                {game.version && (
+                  <span class="inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg border border-white/20 backdrop-blur-md bg-black/70 text-surface-300">
+                    v{game.version}
+                  </span>
+                )}
               </div>
             </div>
           </div>
