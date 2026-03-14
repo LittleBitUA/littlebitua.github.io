@@ -115,7 +115,7 @@ export const games: Game[] = [
     progress: 26,
     status: "early-access",
     stage: "Переклад",
-    fundraisingRaised: 0,
+    fundraisingRaised: 2170,
     fundraisingGoal: 50000,
     stageDetails: [
       { label: "Переклад", percent: 26 },
