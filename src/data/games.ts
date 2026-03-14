@@ -124,6 +124,13 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-03-12",
+    installInstructions: `## Встановлення локалізації METAL GEAR SOLID Δ: SNAKE EATER
+
+### Через LBK Launcher
+1. Встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Знайдіть METAL GEAR SOLID Δ: SNAKE EATER у списку
+3. Натисніть "Встановити"
+4. Запускайте гру!`,
     faq: [
       {
         question: "Чому така сума збору?",
