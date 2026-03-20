@@ -19,7 +19,12 @@
       "Bash(gh api:*)",
       "Bash(gh run list:*)",
       "Bash(node:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "WebFetch(domain:upload.wikimedia.org)",
+      "Bash(git diff:*)",
+      "Bash(npm run dev:*)",
+      "Bash(ls:*)",
+      "Bash(grep:*)"
     ]
   }
 }
