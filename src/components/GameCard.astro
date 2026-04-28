@@ -100,9 +100,13 @@ const topPillColor =
     <!-- Content -->
     <div class="p-4 sm:p-5 flex flex-col flex-1">
       <h3 class="text-base font-bold leading-snug mb-2 line-clamp-2 text-slate-900 lb-card-title">
-        <a href={`/projects/${game.id}`} class="hover:text-indigo-600 transition-colors">
+        <button
+          type="button"
+          data-game-detail={game.id}
+          class="text-left hover:text-indigo-600 transition-colors w-full"
+        >
           {game.title}
-        </a>
+        </button>
       </h3>
 
       <p class="card-desc text-[13px] leading-relaxed mb-3 line-clamp-2 text-slate-600 transition-all lb-card-desc">
@@ -161,15 +165,16 @@ const topPillColor =
       </div>
 
       <!-- Details button -->
-      <a
-        href={`/projects/${game.id}`}
+      <button
+        type="button"
+        data-game-detail={game.id}
         class="lb-btn lb-btn--ghost !py-2 !text-xs w-full"
       >
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         Детальніше
-      </a>
+      </button>
 
       <!-- Action row -->
       <div class="flex items-center gap-1.5 mt-2">

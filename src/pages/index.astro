@@ -16,6 +16,7 @@ import FAQ from "../components/FAQ.astro";
 import LBKLauncher from "../components/LBKLauncher.astro";
 import Support from "../components/Support.astro";
 import Footer from "../components/Footer.astro";
+import GameModal from "../components/GameModal.astro";
 import { games } from "../data/games";
 
 // Sort games for default order: visible / done first, in-progress, fundraising
@@ -81,4 +82,5 @@ const sortedGames = [...games].sort((a, b) => b.progress - a.progress);
   </main>
 
   <Footer />
+  <GameModal />
 </Layout>
