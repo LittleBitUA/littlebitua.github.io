@@ -707,11 +707,11 @@ export const games: Game[] = [
     description:
       "Оновлена версія культової екшен-RPG, де юнак Нір вирушає на відчайдушний пошук порятунку для своєї сестри Йони. Разом із балакучим «Ґримоаром Вайсом» та незабутніми супутниками ви досліджуватимете химерний світ, битиметеся з Тінями й розплутуватимете історію, у якій кожна відповідь має свою ціну — і веде до кількох фіналів.",
     cover: "/images/nier-replicant.jpg",
-    progress: 25,
+    progress: 28,
     status: "fundraising",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 25 },
+      { label: "Переклад", percent: 28 },
     ],
     tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
     screenshots: [
@@ -729,7 +729,7 @@ export const games: Game[] = [
     lastUpdate: "2026-04-28",
     stats: {
       totalLines: 24458,
-      translatedLines: 6115, // 25% progress
+      translatedLines: 6921, // 28.3%
       totalWords: 131813, // 27203 UA + 109012 ENG
       totalCharacters: 682805,
     },

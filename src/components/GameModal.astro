@@ -61,9 +61,10 @@ function fmtDate(d?: string) {
               aria-hidden="true"
             >
               <!-- Hero section -->
-              <div class="relative">
-                <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 p-5 sm:p-7">
-                  <div class="mx-auto lg:mx-0 w-full max-w-[240px]">
+              <div class="p-5 sm:p-7">
+                <!-- Top: cover + main info side by side -->
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-5 mb-5">
+                  <div class="mx-auto lg:mx-0 w-full max-w-[220px]">
                     <div class="relative aspect-[2/3] rounded-2xl overflow-hidden border border-white/80 shadow-[0_24px_50px_-22px_rgba(15,23,42,0.45)]">
                       <img src={game.cover} alt={game.title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                       <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
@@ -84,7 +85,7 @@ function fmtDate(d?: string) {
                     </div>
                   </div>
 
-                  <div class="space-y-5 min-w-0">
+                  <div class="space-y-4 min-w-0">
                     <div>
                       <h2 class="text-2xl sm:text-3xl font-black text-slate-900 leading-tight mb-2 break-words">
                         {game.title}
@@ -123,114 +124,117 @@ function fmtDate(d?: string) {
                       </div>
                     )}
 
-                    {game.stats && (
-                      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                        {game.stats.totalLines && (
-                          <div class="lb-glass-soft p-3">
-                            <p class="text-xl font-black text-slate-900 tabular-nums">{game.stats.totalLines.toLocaleString("uk-UA")}</p>
-                            <p class="text-xs text-slate-500 mt-0.5">Рядків тексту</p>
-                          </div>
-                        )}
-                        {game.stats.totalWords && (
-                          <div class="lb-glass-soft p-3">
-                            <p class="text-xl font-black text-slate-900 tabular-nums">{game.stats.totalWords.toLocaleString("uk-UA")}</p>
-                            <p class="text-xs text-slate-500 mt-0.5">Слів</p>
-                          </div>
-                        )}
-                        {game.gameYear && (
-                          <div class="lb-glass-soft p-3">
-                            <p class="text-xl font-black text-slate-900 tabular-nums">{game.gameYear}</p>
-                            <p class="text-xs text-slate-500 mt-0.5">Рік випуску</p>
-                          </div>
-                        )}
-                        {game.releaseDate && (
-                          <div class="lb-glass-soft p-3">
-                            <p class="text-xl font-black text-emerald-600 tabular-nums">
-                              {new Date(game.releaseDate).toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}
-                            </p>
-                            <p class="text-xs text-slate-500 mt-0.5">Дата релізу</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
                     {game.tags && game.tags.length > 0 && (
                       <div class="flex flex-wrap gap-1.5">
                         {game.tags.map((tag) => <Tag label={tag} />)}
                       </div>
                     )}
+                  </div>
+                </div>
 
-                    {game.fundraisingCompleted && (
-                      <div class="rounded-2xl border border-emerald-200 bg-emerald-50/85 p-4">
-                        <div class="flex items-center gap-2 mb-1.5">
-                          <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                          </svg>
-                          <span class="text-sm font-bold text-emerald-700">Збір коштів завершено!</span>
+                <!-- Bottom: full-width blocks -->
+                <div class="space-y-4">
+                  {game.stats && (
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {game.stats.totalLines && (
+                        <div class="lb-glass-soft p-3">
+                          <p class="text-xl font-black text-slate-900 tabular-nums">{game.stats.totalLines.toLocaleString("uk-UA")}</p>
+                          <p class="text-xs text-slate-500 mt-0.5">Рядків тексту</p>
                         </div>
-                        <p class="text-xs text-emerald-900/80">Спільнота зібрала суму. Дякуємо!</p>
-                      </div>
-                    )}
-
-                    {game.fundraisingGoal && (
-                      <div class="rounded-2xl border border-amber-200 bg-amber-50/85 p-4">
-                        <div class="flex items-center gap-2 mb-2">
-                          <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                          </svg>
-                          <span class="text-sm font-bold text-amber-700">Збір коштів</span>
-                        </div>
-                        {game.fundraisingDescription && (
-                          <p class="text-xs text-amber-900/85 mb-3">{game.fundraisingDescription}</p>
-                        )}
-                        <div class="flex items-center justify-between mb-1">
-                          <span class="text-[11px] text-amber-700/85">Зібрано</span>
-                          <span class="text-[11px] font-bold text-amber-700 tabular-nums">
-                            {(game.fundraisingRaised ?? 0).toLocaleString("uk-UA")} ₴ із {game.fundraisingGoal.toLocaleString("uk-UA")} ₴ · {fundraisingPct}%
-                          </span>
-                        </div>
-                        <div class="h-2 rounded-full bg-amber-100 overflow-hidden mb-3">
-                          <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400" style={`width: ${fundraisingPct}%`}></div>
-                        </div>
-                        <a
-                          href={game.donateUrl}
-                          target="_blank" rel="noopener noreferrer"
-                          class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl"
-                          style="color:#b45309; background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.4);"
-                        >
-                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                          </svg>
-                          Задонатити
-                        </a>
-                      </div>
-                    )}
-
-                    <div class="flex flex-wrap gap-2.5 pt-1">
-                      {game.downloadUrl && (
-                        <a
-                          href={game.downloadUrl}
-                          target="_blank" rel="noopener noreferrer"
-                          class="lb-btn lb-btn--primary !text-sm"
-                        >
-                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                          </svg>
-                          Завантажити локалізацію
-                        </a>
                       )}
-                      {game.steamUrl && (
-                        <a href={game.steamUrl} target="_blank" rel="noopener noreferrer" class="lb-btn lb-btn--ghost !text-sm">
-                          <i class="fa-brands fa-steam"></i> Steam
-                        </a>
+                      {game.stats.totalWords && (
+                        <div class="lb-glass-soft p-3">
+                          <p class="text-xl font-black text-slate-900 tabular-nums">{game.stats.totalWords.toLocaleString("uk-UA")}</p>
+                          <p class="text-xs text-slate-500 mt-0.5">Слів</p>
+                        </div>
                       )}
-                      <a href={game.donateUrl} target="_blank" rel="noopener noreferrer" class="lb-btn lb-btn--soft !text-sm">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      {game.gameYear && (
+                        <div class="lb-glass-soft p-3">
+                          <p class="text-xl font-black text-slate-900 tabular-nums">{game.gameYear}</p>
+                          <p class="text-xs text-slate-500 mt-0.5">Рік випуску</p>
+                        </div>
+                      )}
+                      {game.releaseDate && (
+                        <div class="lb-glass-soft p-3">
+                          <p class="text-xl font-black text-emerald-600 tabular-nums">
+                            {new Date(game.releaseDate).toLocaleDateString("uk-UA", { day: "numeric", month: "short" })}
+                          </p>
+                          <p class="text-xs text-slate-500 mt-0.5">Дата релізу</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {game.fundraisingCompleted && (
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50/85 p-5">
+                      <div class="flex items-center gap-2 mb-1.5">
+                        <svg class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
-                        Підтримати
+                        <span class="text-sm font-bold text-emerald-700">Збір коштів завершено!</span>
+                      </div>
+                      <p class="text-xs text-emerald-900/80">Спільнота зібрала суму. Дякуємо!</p>
+                    </div>
+                  )}
+
+                  {game.fundraisingGoal && (
+                    <div class="rounded-2xl border border-amber-200 bg-amber-50/85 p-5">
+                      <div class="flex items-center gap-2 mb-2">
+                        <svg class="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span class="text-sm font-bold text-amber-700">Збір коштів</span>
+                      </div>
+                      {game.fundraisingDescription && (
+                        <p class="text-xs text-amber-900/85 mb-3">{game.fundraisingDescription}</p>
+                      )}
+                      <div class="flex items-center justify-between mb-1">
+                        <span class="text-[11px] text-amber-700/85">Зібрано</span>
+                        <span class="text-[11px] font-bold text-amber-700 tabular-nums">
+                          {(game.fundraisingRaised ?? 0).toLocaleString("uk-UA")} ₴ із {game.fundraisingGoal.toLocaleString("uk-UA")} ₴ · {fundraisingPct}%
+                        </span>
+                      </div>
+                      <div class="h-2 rounded-full bg-amber-100 overflow-hidden mb-3">
+                        <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400" style={`width: ${fundraisingPct}%`}></div>
+                      </div>
+                      <a
+                        href={game.donateUrl}
+                        target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl"
+                        style="color:#b45309; background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.4);"
+                      >
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        Задонатити
                       </a>
                     </div>
+                  )}
+
+                  <div class="flex flex-wrap gap-2.5">
+                    {game.downloadUrl && (
+                      <a
+                        href={game.downloadUrl}
+                        target="_blank" rel="noopener noreferrer"
+                        class="lb-btn lb-btn--primary !text-sm"
+                      >
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Завантажити локалізацію
+                      </a>
+                    )}
+                    {game.steamUrl && (
+                      <a href={game.steamUrl} target="_blank" rel="noopener noreferrer" class="lb-btn lb-btn--ghost !text-sm">
+                        <i class="fa-brands fa-steam"></i> Steam
+                      </a>
+                    )}
+                    <a href={game.donateUrl} target="_blank" rel="noopener noreferrer" class="lb-btn lb-btn--soft !text-sm">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
+                      Підтримати
+                    </a>
                   </div>
                 </div>
               </div>
