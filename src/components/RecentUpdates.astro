@@ -1,104 +1,91 @@
 ---
 // ─── Recent Updates Section ────────────────────────────────────
-// Shows the latest activity across all localization projects.
+// Light glass news timeline.
+
+const updates = [
+  {
+    date: "2026-03-14",
+    title: "METAL GEAR SOLID Δ: SNAKE EATER — оновлення v1.0.7",
+    description:
+      "Свіже оновлення українізатора SNAKE EATER. Завантажуйте через LBK Launcher — патч сам оновиться.",
+    tone: "indigo" as const,
+  },
+  {
+    date: "2026-03-09",
+    title: "Yakuza Kiwami 3 & Dark Ties — 30% перекладу",
+    description: "Переклад продовжується активно — 30% завершено.",
+    tone: "violet" as const,
+  },
+  {
+    date: "2026-03-09",
+    title: "Потужний донат на NieR Replicant 🐱",
+    description:
+      "Невідомий котик задонатив 5 000 ₴ на NieR Replicant. Загальна сума збору вже 10 943 ₴ із 50 000 ₴.",
+    tone: "amber" as const,
+  },
+  {
+    date: "2026-02-17",
+    title: "Завершено збір на Yakuza: Like a Dragon",
+    description:
+      "Дякуємо за підтримку! Продовжуємо роботу над текстовою локалізацією.",
+    tone: "emerald" as const,
+  },
+  {
+    date: "2026-02-16",
+    title: "Запуск нового сайту LB",
+    description: "Оновлений сайт з інформацією про всі наші проєкти локалізації.",
+    tone: "sky" as const,
+  },
+];
+
+const TONE: Record<string, { dot: string; chip: string }> = {
+  indigo: { dot: "bg-indigo-500", chip: "from-indigo-500/20 to-indigo-500/0" },
+  violet: { dot: "bg-violet-500", chip: "from-violet-500/20 to-violet-500/0" },
+  amber: { dot: "bg-amber-500", chip: "from-amber-500/20 to-amber-500/0" },
+  emerald: { dot: "bg-emerald-500", chip: "from-emerald-500/20 to-emerald-500/0" },
+  sky: { dot: "bg-sky-500", chip: "from-sky-500/20 to-sky-500/0" },
+};
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("uk-UA", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
 ---
 
-<section id="updates" class="py-20">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <!-- Section header -->
+<section id="updates" class="py-20 sm:py-24 relative">
+  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12" data-animate>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+      <span class="lb-section-eyebrow mb-4">Новини</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-3">
         Останні оновлення
       </h2>
-      <p class="text-surface-300 max-w-lg mx-auto">
+      <p class="text-slate-500 max-w-lg mx-auto">
         Хронологія найсвіжіших змін у наших проєктах
       </p>
     </div>
 
-    <!-- Timeline -->
     <div class="relative max-w-3xl mx-auto" data-animate-stagger>
-      <!-- Vertical line -->
-      <div class="absolute left-6 top-0 bottom-0 w-px bg-white/10" />
+      <div class="absolute left-[19px] top-0 bottom-0 w-px bg-gradient-to-b from-indigo-300 via-sky-300 to-transparent"></div>
 
-      <div class="relative flex gap-6 pb-8">
-        <!-- Timeline dot -->
-        <div class="relative z-10 shrink-0 w-12 flex items-start justify-center pt-1">
-          <div class="w-3 h-3 rounded-full ring-4 ring-surface-900 bg-accent" />
-        </div>
-
-        <!-- Card -->
-        <div class="glass-light p-5 flex-1 hover:border-white/15 transition-colors duration-300">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-            <h3 class="text-base font-bold text-white">Yakuza Kiwami 3 & Dark Ties — 26% перекладу</h3>
-            <time class="text-xs text-surface-400 shrink-0" datetime="2026-03-09">
-              9 березня 2026 р.
-            </time>
+      {updates.map((u) => (
+        <div class="relative flex gap-5 pb-7">
+          <div class="relative z-10 shrink-0 w-10 flex items-start justify-center pt-1.5">
+            <span class={`w-3 h-3 rounded-full ${TONE[u.tone].dot} ring-4 ring-white shadow-[0_6px_16px_-6px_rgba(15,23,42,0.3)]`}></span>
           </div>
-          <p class="text-sm text-surface-300">
-            Переклад Yakuza Kiwami 3 & Dark Ties досяг 26%. Робота триває!
-          </p>
-        </div>
-      </div>
-
-      <div class="relative flex gap-6 pb-8">
-        <!-- Timeline dot -->
-        <div class="relative z-10 shrink-0 w-12 flex items-start justify-center pt-1">
-          <div class="w-3 h-3 rounded-full ring-4 ring-surface-900 bg-accent" />
-        </div>
-
-        <!-- Card -->
-        <div class="glass-light p-5 flex-1 hover:border-white/15 transition-colors duration-300">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-            <h3 class="text-base font-bold text-white">Потужний донат на NieR Replicant від невідомого котика 🐱</h3>
-            <time class="text-xs text-surface-400 shrink-0" datetime="2026-03-09">
-              9 березня 2026 р.
-            </time>
+          <div class="lb-glass flex-1 p-5 lb-lift">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+              <h3 class="text-base font-bold text-slate-900">{u.title}</h3>
+              <time class="text-xs font-semibold text-slate-500 shrink-0" datetime={u.date}>
+                {formatDate(u.date)}
+              </time>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed">{u.description}</p>
           </div>
-          <p class="text-sm text-surface-300">
-            Невідомий котик задонатив 5&nbsp;000&nbsp;₴ на локалізацію NieR Replicant. Загальна сума збору вже 10&nbsp;943&nbsp;₴ з 50&nbsp;000&nbsp;₴. Величезна подяка за підтримку!
-          </p>
         </div>
-      </div>
-
-      <div class="relative flex gap-6 pb-8">
-        <!-- Timeline dot -->
-        <div class="relative z-10 shrink-0 w-12 flex items-start justify-center pt-1">
-          <div class="w-3 h-3 rounded-full ring-4 ring-surface-900 bg-accent" />
-        </div>
-
-        <!-- Card -->
-        <div class="glass-light p-5 flex-1 hover:border-white/15 transition-colors duration-300">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-            <h3 class="text-base font-bold text-white">Завершено збір коштів на Yakuza: Like a Dragon</h3>
-            <time class="text-xs text-surface-400 shrink-0" datetime="2026-02-17">
-              17 лютого 2026 р.
-            </time>
-          </div>
-          <p class="text-sm text-surface-300">
-            Успішно завершено збір коштів на текстову локалізацію Yakuza: Like a Dragon. Дякуємо всім за підтримку! Продовжуємо роботу над перекладом.
-          </p>
-        </div>
-      </div>
-
-      <div class="relative flex gap-6 pb-0">
-        <!-- Timeline dot -->
-        <div class="relative z-10 shrink-0 w-12 flex items-start justify-center pt-1">
-          <div class="w-3 h-3 rounded-full ring-4 ring-surface-900 bg-accent" />
-        </div>
-
-        <!-- Card -->
-        <div class="glass-light p-5 flex-1 hover:border-white/15 transition-colors duration-300">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-            <h3 class="text-base font-bold text-white">Запуск нового сайту LB!</h3>
-            <time class="text-xs text-surface-400 shrink-0" datetime="2026-02-16">
-              16 лютого 2026 р.
-            </time>
-          </div>
-          <p class="text-sm text-surface-300">
-            Ми запустили оновлений сайт з інформацією про всі наші проєкти локалізації.
-          </p>
-        </div>
-      </div>
+      ))}
     </div>
   </div>
 </section>

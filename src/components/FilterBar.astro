@@ -1,139 +1,126 @@
 ---
-// ─── FilterBar Component ───────────────────────────────────────
-// Advanced search + filtering + sorting for game projects
-// Features: Fuzzy search (Fuse.js), status/genre/platform/size filters, sorting
+// ─── FilterBar ─────────────────────────────────────────────────
+// Search, status filter, sort. Light glass styling.
 
 import { getStatusList, STATUS_LABELS } from "../data/games";
-
 const statusList = getStatusList();
 ---
 
-<div class="space-y-4 mb-8" data-animate>
-  <!-- Search Bar + Results Counter -->
-  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-    <!-- Search input -->
-    <div class="relative w-full sm:flex-1 sm:max-w-md">
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400 pointer-events-none"
-           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
-      <input
-        type="text"
-        id="search-input"
-        placeholder="Пошук за назвою, серією, тегами..."
-        class="w-full pl-10 pr-4 py-2.5 text-sm text-white placeholder-surface-400
-               bg-white/[0.04] border border-white/[0.08] rounded-lg
-               focus:outline-none focus:border-accent/40 focus:bg-white/[0.06]
-               transition-all duration-200"
-      />
-    </div>
+<div class="lb-glass p-4 sm:p-5 mb-8" data-animate>
+  <div class="flex flex-col gap-4">
 
-    <!-- Results counter -->
-    <div class="text-xs text-surface-300 font-medium">
-      <span id="results-counter">Завантаження...</span>
-    </div>
+    <!-- Search + counter -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+      <div class="relative w-full sm:flex-1 sm:max-w-md">
+        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Пошук за назвою, серією, тегами..."
+          class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border
+                 bg-white/65 border-white/80 text-slate-900 placeholder-slate-400
+                 focus:outline-none focus:border-indigo-300 focus:bg-white/90 focus:ring-4 focus:ring-indigo-100
+                 transition-all"
+        />
+      </div>
 
-    <!-- Reset all button -->
-    <button
-      id="reset-all"
-      class="hidden items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg
-             bg-red-500/10 border border-red-500/30 text-red-400
-             hover:bg-red-500/20 hover:border-red-500/40
-             transition-all duration-200"
-    >
-      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-      Скинути все
-    </button>
-  </div>
+      <span id="results-counter" class="text-xs font-semibold text-slate-500">
+        Завантаження...
+      </span>
 
-  <!-- Filters Row -->
-  <div class="flex flex-col lg:flex-row gap-3">
-    <!-- Status filter -->
-    <div class="flex flex-wrap gap-2" id="filter-bar">
       <button
-        class="filter-btn active px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
-        data-filter="status"
-        data-value="all"
+        id="reset-all"
+        class="hidden items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl
+               bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100"
       >
-        Усі статуси
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+        Скинути все
       </button>
 
-      {statusList.map((status) => (
-        <button
-          class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg border transition-all duration-200"
-          data-filter="status"
-          data-value={status}
+      <!-- Sort -->
+      <div class="relative ml-auto">
+        <select
+          id="sort-select"
+          class="appearance-none pl-3.5 pr-9 py-2.5 text-xs font-bold rounded-xl border
+                 bg-white/65 border-white/80 text-slate-700
+                 hover:bg-white/90 focus:outline-none focus:border-indigo-300
+                 cursor-pointer"
         >
+          <option value="default">За замовчуванням</option>
+          <option value="progress-desc">Прогрес ↓</option>
+          <option value="progress-asc">Прогрес ↑</option>
+          <option value="title-asc">Назва (А→Я)</option>
+          <option value="title-desc">Назва (Я→А)</option>
+          <option value="update-desc">Останні оновлення</option>
+        </select>
+        <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-500 pointer-events-none"
+             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Status pills -->
+    <div class="flex flex-wrap gap-2" id="filter-bar">
+      <button class="filter-btn active" data-filter="status" data-value="all">Усі статуси</button>
+      {statusList.map((status) => (
+        <button class="filter-btn" data-filter="status" data-value={status}>
           {STATUS_LABELS[status]}
         </button>
       ))}
     </div>
 
-    <div class="w-px bg-white/10 hidden lg:block" />
-
-    <!-- Sort dropdown -->
-    <div class="relative">
-      <select
-        id="sort-select"
-        class="appearance-none px-4 py-1.5 pr-8 text-xs font-semibold rounded-lg border
-               bg-surface-700/80 border-white/[0.08] text-white
-               hover:bg-surface-600/80 hover:border-white/[0.15]
-               focus:outline-none focus:border-accent/40
-               transition-all duration-200 cursor-pointer"
-      >
-        <option value="default" class="bg-surface-800 text-white">За замовчуванням</option>
-        <option value="progress-desc" class="bg-surface-800 text-white">Прогрес ↓</option>
-        <option value="progress-asc" class="bg-surface-800 text-white">Прогрес ↑</option>
-        <option value="title-asc" class="bg-surface-800 text-white">Назва (А-Я)</option>
-        <option value="title-desc" class="bg-surface-800 text-white">Назва (Я-А)</option>
-        <option value="update-desc" class="bg-surface-800 text-white">Останні оновлення</option>
-      </select>
-      <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-white/60 pointer-events-none"
-           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
+    <!-- Active tag indicator -->
+    <div id="active-tag-filter" class="hidden">
+      <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700">
+        <span>Тег:</span>
+        <span id="active-tag-label"></span>
+        <button id="clear-tag-filter" class="hover:text-indigo-900" aria-label="Скинути">
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </span>
     </div>
-  </div>
-
-  <!-- Active tag indicator -->
-  <div id="active-tag-filter" class="hidden items-center gap-2">
-    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg
-                 bg-accent/15 border border-accent/30 text-accent-light">
-      <span>Тег:</span>
-      <span id="active-tag-label"></span>
-      <button id="clear-tag-filter" class="hover:text-white transition-colors ml-0.5" aria-label="Скинути">
-        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </span>
   </div>
 </div>
 
 <style>
   .filter-btn {
-    background: rgba(255, 255, 255, 0.04);
-    border-color: rgba(255, 255, 255, 0.08);
-    color: theme("colors.surface.300");
+    padding: 0.45rem 0.95rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.55);
+    color: #475569;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    white-space: nowrap;
   }
   .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.15);
-    color: white;
+    background: rgba(255, 255, 255, 0.85);
+    color: #0f172a;
+    transform: translateY(-1px);
   }
   .filter-btn.active {
-    background: theme("colors.accent.DEFAULT / 15%");
-    border-color: theme("colors.accent.DEFAULT / 40%");
-    color: theme("colors.accent.light");
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    color: #fff;
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 8px 18px -10px rgba(99, 102, 241, 0.65);
   }
+  #reset-all.inline-flex { display: inline-flex; }
+  #active-tag-filter.inline-flex { display: inline-flex; }
 </style>
 
 <script>
   import Fuse from "fuse.js";
 
-  // ── DOM Elements ──
   const searchInput = document.getElementById("search-input") as HTMLInputElement;
   const sortSelect = document.getElementById("sort-select") as HTMLSelectElement;
   const filterBar = document.getElementById("filter-bar")!;
@@ -142,104 +129,69 @@ const statusList = getStatusList();
   const resetAllBtn = document.getElementById("reset-all")!;
   const activeTagEl = document.getElementById("active-tag-filter")!;
   const activeTagLabel = document.getElementById("active-tag-label")!;
-  const clearTagBtn = document.getElementById("clear-tag-filter")!
+  const clearTagBtn = document.getElementById("clear-tag-filter")!;
 
   const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-game-id]"));
 
-  // ── State ──
   let currentStatus = "all";
   let currentSearch = "";
   let currentTag = "";
   let currentSort = "default";
 
-  // ── Fuzzy Search Setup ──
-  const gamesList = cards.map(card => ({
+  const gamesList = cards.map((card) => ({
     element: card,
     title: card.dataset.title || "",
     series: card.dataset.series || "",
     tags: card.dataset.tags || "",
     status: card.dataset.status || "",
     progress: parseInt(card.dataset.progress || "0", 10),
-    platform: card.dataset.platform || "",
-    translationSize: card.dataset.translationSize || "",
-    gameYear: parseInt(card.dataset.gameYear || "0", 10),
-    lastUpdate: card.dataset.lastUpdate || ""
+    lastUpdate: card.dataset.lastUpdate || "",
   }));
 
   const fuse = new Fuse(gamesList, {
     keys: ["title", "series", "tags"],
     threshold: 0.3,
-    includeScore: true
+    includeScore: true,
   });
 
-  // ── Apply Filters & Sort ──
   function applyFilters() {
     let filtered = gamesList;
+    if (currentSearch.trim()) filtered = fuse.search(currentSearch).map((r) => r.item);
+    if (currentStatus !== "all") filtered = filtered.filter((g) => g.status === currentStatus);
+    if (currentTag) filtered = filtered.filter((g) => g.tags.toLowerCase().includes(currentTag.toLowerCase()));
 
-    // 1. Fuzzy search
-    if (currentSearch.trim()) {
-      const results = fuse.search(currentSearch);
-      filtered = results.map(r => r.item);
-    }
-
-    // 2. Status filter
-    if (currentStatus !== "all") {
-      filtered = filtered.filter(game => game.status === currentStatus);
-    }
-
-    // 3. Tag filter
-    if (currentTag) {
-      filtered = filtered.filter(game =>
-        game.tags.toLowerCase().includes(currentTag.toLowerCase())
-      );
-    }
-
-    // 4. Sort
     filtered.sort((a, b) => {
       switch (currentSort) {
-        case "progress-desc":
-          return b.progress - a.progress;
-        case "progress-asc":
-          return a.progress - b.progress;
-        case "title-asc":
-          return a.title.localeCompare(b.title, "uk");
-        case "title-desc":
-          return b.title.localeCompare(a.title, "uk");
-        case "update-desc":
-          return b.lastUpdate.localeCompare(a.lastUpdate);
-        default:
-          return 0;
+        case "progress-desc": return b.progress - a.progress;
+        case "progress-asc":  return a.progress - b.progress;
+        case "title-asc":     return a.title.localeCompare(b.title, "uk");
+        case "title-desc":    return b.title.localeCompare(a.title, "uk");
+        case "update-desc":   return b.lastUpdate.localeCompare(a.lastUpdate);
+        default: return 0;
       }
     });
 
-    // Apply to DOM
-    const filteredIds = new Set(filtered.map(g => g.element.dataset.gameId));
-    cards.forEach(card => {
+    const filteredIds = new Set(filtered.map((g) => g.element.dataset.gameId));
+    cards.forEach((card) => {
       const show = filteredIds.has(card.dataset.gameId);
       if (show) {
         card.style.display = "";
-        card.style.order = filtered.findIndex(g => g.element === card).toString();
+        card.style.order = filtered.findIndex((g) => g.element === card).toString();
         setTimeout(() => {
           card.style.opacity = "1";
           card.style.transform = "translateY(0)";
-        }, 50);
+        }, 30);
       } else {
         card.style.opacity = "0";
         card.style.transform = "translateY(12px)";
-        setTimeout(() => { card.style.display = "none"; }, 300);
+        setTimeout(() => { card.style.display = "none"; }, 250);
       }
     });
 
-    // Update counter
     resultsCounter.textContent = `Знайдено: ${filtered.length} з ${cards.length}`;
 
-    // Show/hide reset button
-    const hasActiveFilters =
-      currentSearch ||
-      currentStatus !== "all" ||
-      currentTag;
-
-    if (hasActiveFilters) {
+    const hasActive = currentSearch || currentStatus !== "all" || currentTag;
+    if (hasActive) {
       resetAllBtn.classList.remove("hidden");
       resetAllBtn.classList.add("inline-flex");
     } else {
@@ -248,60 +200,46 @@ const statusList = getStatusList();
     }
   }
 
-  // ── Event Listeners ──
-
-  // Search (debounced)
   let searchTimeout: ReturnType<typeof setTimeout>;
   searchInput.addEventListener("input", () => {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
       currentSearch = searchInput.value;
       applyFilters();
-    }, 300);
+    }, 250);
   });
 
-  // Status buttons
-  statusButtons.forEach(btn => {
+  statusButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
-      statusButtons.forEach(b => b.classList.remove("active"));
+      statusButtons.forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
       currentStatus = btn.dataset.value || "all";
       applyFilters();
     });
   });
 
-  // Sort
   sortSelect.addEventListener("change", () => {
     currentSort = sortSelect.value;
     applyFilters();
   });
 
-  // Reset all
   resetAllBtn.addEventListener("click", () => {
-    // Reset state
     currentSearch = "";
     currentStatus = "all";
     currentTag = "";
     currentSort = "default";
-
-    // Reset UI
     searchInput.value = "";
     sortSelect.value = "default";
-    statusButtons.forEach(b => b.classList.remove("active"));
+    statusButtons.forEach((b) => b.classList.remove("active"));
     statusButtons[0].classList.add("active");
-
-    // Clear tag
     activeTagEl.classList.add("hidden");
     activeTagEl.classList.remove("inline-flex");
-
     applyFilters();
   });
 
-  // Tag filter (from game cards)
   document.addEventListener("click", (e) => {
     const tagEl = (e.target as HTMLElement).closest("[data-tag-filter]") as HTMLElement | null;
     if (!tagEl) return;
-
     const tag = tagEl.dataset.tagFilter || "";
     currentTag = tag;
     activeTagLabel.textContent = tag;
@@ -310,7 +248,6 @@ const statusList = getStatusList();
     applyFilters();
   });
 
-  // Clear tag
   clearTagBtn.addEventListener("click", () => {
     currentTag = "";
     activeTagEl.classList.add("hidden");
@@ -318,6 +255,5 @@ const statusList = getStatusList();
     applyFilters();
   });
 
-  // Initial render
   applyFilters();
 </script>

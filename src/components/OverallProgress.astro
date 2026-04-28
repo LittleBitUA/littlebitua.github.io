@@ -1,101 +1,75 @@
 ---
-// ─── Overall Progress Section ──────────────────────────────────
-// Shows aggregate progress across all localization projects.
+// ─── OverallProgress Section ───────────────────────────────────
+// Light glass aggregate progress display.
 
 import ProgressBar from "./ProgressBar.astro";
-import { games, getOverallProgress, STATUS_LABELS, STATUS_COLORS } from "../data/games";
+import { games, getOverallProgress, STATUS_LABELS } from "../data/games";
 
 const overall = getOverallProgress();
 const R = 52;
 const C = 2 * Math.PI * R;
 const progressOffset = C * (1 - overall / 100);
-
-// Per-game mini stats
 const sorted = [...games].sort((a, b) => b.progress - a.progress);
+
+const STATUS_PILL: Record<string, string> = {
+  done: "text-emerald-700 bg-emerald-50 border-emerald-200",
+  "early-access": "text-sky-700 bg-sky-50 border-sky-200",
+  "in-progress": "text-violet-700 bg-violet-50 border-violet-200",
+  fundraising: "text-amber-700 bg-amber-50 border-amber-200",
+  planned: "text-slate-700 bg-slate-50 border-slate-200",
+};
 ---
 
-<section id="progress" class="py-20">
+<section id="progress" class="py-20 sm:py-24">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <!-- Section header -->
     <div class="text-center mb-12" data-animate>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+      <span class="lb-section-eyebrow mb-4">Аналітика</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-3">
         Загальний прогрес
       </h2>
-      <p class="text-surface-300 max-w-lg mx-auto">
+      <p class="text-slate-500 max-w-lg mx-auto">
         Середній прогрес перекладу по всіх проєктах
       </p>
     </div>
 
-    <!-- Big progress ring + per-game breakdown -->
-    <div class="glass p-8 sm:p-10" data-animate>
-      <div class="grid lg:grid-cols-[280px_1fr] gap-10 items-center">
-        <!-- Circular progress display -->
+    <div class="lb-glass-strong p-6 sm:p-10" data-animate>
+      <div class="grid lg:grid-cols-[280px_1fr] gap-10 items-start">
+        <!-- Ring -->
         <div class="flex flex-col items-center">
-          <div class="relative w-48 h-48 mb-4">
+          <div class="relative w-48 h-48 mb-3">
             <svg class="w-full h-full -rotate-90" viewBox="0 0 120 120">
               <defs>
-                <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#6d5dfc" />
-                  <stop offset="100%" stop-color="#1b9aaa" />
+                <linearGradient id="overallGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#6366f1" />
+                  <stop offset="60%" stop-color="#0ea5e9" />
+                  <stop offset="100%" stop-color="#a78bfa" />
                 </linearGradient>
-                <filter id="progressGlow">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
               </defs>
-              <!-- Background circle -->
-              <circle
-                cx="60" cy="60" r={R}
-                fill="none"
-                stroke="currentColor"
-                class="text-surface-600/60"
-                stroke-width="8"
-              />
-              <!-- Progress arc -->
-              <circle
-                cx="60" cy="60" r={R}
-                fill="none"
-                stroke="url(#progressGradient)"
-                stroke-width="8.5"
-                stroke-linecap="round"
-                stroke-dasharray={C}
-                stroke-dashoffset={C}
-                filter="url(#progressGlow)"
-                class="overall-ring"
-                style={`--ring-target: ${progressOffset}`}
-              />
+              <circle cx="60" cy="60" r={R} fill="none" stroke="rgba(15,23,42,0.06)" stroke-width="9" />
+              <circle cx="60" cy="60" r={R} fill="none" stroke="url(#overallGradient)" stroke-width="9"
+                      stroke-linecap="round" stroke-dasharray={C} stroke-dashoffset={C}
+                      class="overall-ring" style={`--ring-target: ${progressOffset}`} />
             </svg>
-            <!-- Centered number -->
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="text-4xl font-extrabold text-white tabular-nums overall-counter" data-target={overall}>0%</span>
+            <div class="absolute inset-0 flex items-center justify-center flex-col">
+              <span class="text-4xl font-black text-slate-900 tabular-nums overall-counter" data-target={overall}>0%</span>
+              <span class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 mt-1">з {games.length} проєктів</span>
             </div>
           </div>
-          <p class="text-sm text-surface-300">Середній прогрес усіх проєктів</p>
+          <p class="text-sm text-slate-500 text-center">Середній прогрес усіх проєктів</p>
         </div>
 
-        <!-- Per-game breakdown -->
-        <div class="space-y-4" data-animate-stagger>
+        <div class="space-y-3 max-h-[450px] overflow-y-auto pr-2 lb-scroll" data-animate-stagger>
           {sorted.map((game) => (
-            <div class="flex items-center gap-4">
-              <span class="w-48 text-sm text-surface-200 truncate shrink-0">
+            <div class="flex items-center gap-4 px-2 py-1.5 rounded-xl hover:bg-white/55 transition-colors">
+              <a href={`/projects/${game.id}`} class="w-44 text-sm font-medium text-slate-700 truncate shrink-0 hover:text-indigo-600 transition-colors">
                 {game.title}
-              </span>
-              <div class="flex-1">
+              </a>
+              <div class="flex-1 min-w-0">
                 <ProgressBar percent={game.progress} showLabel={false} size="sm" />
               </div>
               <div class="flex items-center gap-2 shrink-0">
-                <span class="text-sm font-bold text-white tabular-nums w-10 text-right">
-                  {game.progress}%
-                </span>
-                <span
-                  class:list={[
-                    "text-[10px] font-bold px-2 py-0.5 rounded border",
-                    STATUS_COLORS[game.status],
-                  ]}
-                >
+                <span class="text-sm font-bold text-slate-900 tabular-nums w-10 text-right">{game.progress}%</span>
+                <span class={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${STATUS_PILL[game.status]}`}>
                   {STATUS_LABELS[game.status]}
                 </span>
               </div>
@@ -108,12 +82,10 @@ const sorted = [...games].sort((a, b) => b.progress - a.progress);
 </section>
 
 <style>
-  .overall-ring {
-    transition: stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .overall-ring.animate {
-    stroke-dashoffset: var(--ring-target) !important;
-  }
+  .overall-ring { transition: stroke-dashoffset 1.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .overall-ring.animate { stroke-dashoffset: var(--ring-target) !important; }
+  .lb-scroll::-webkit-scrollbar { width: 6px; }
+  .lb-scroll::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 999px; }
 </style>
 
 <script>
@@ -122,7 +94,6 @@ const sorted = [...games].sort((a, b) => b.progress - a.progress);
     const ring = section.querySelector(".overall-ring");
     const counter = section.querySelector(".overall-counter") as HTMLSpanElement | null;
     let animated = false;
-
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

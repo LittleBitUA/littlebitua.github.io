@@ -115,8 +115,9 @@ export const games: Game[] = [
     progress: 26,
     status: "early-access",
     stage: "Переклад",
-    fundraisingRaised: 2170,
+    fundraisingRaised: 9800,
     fundraisingGoal: 50000,
+    fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [
       { label: "Переклад", percent: 26 },
       { label: "Редактура", percent: 0 },
@@ -124,7 +125,7 @@ export const games: Game[] = [
     tags: ["Стелс", "Бойовик", "Глибокий сюжет", "Пригоди"],
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-03-14",
+    lastUpdate: "2026-04-28",
     version: "1.0.7",
     installInstructions: `## Встановлення локалізації METAL GEAR SOLID Δ: SNAKE EATER
 
@@ -288,8 +289,9 @@ export const games: Game[] = [
       { label: "Редактура", percent: 50 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
+    downloadUrl: "https://lbklauncher.com/games/uncharted_drakes_fortune/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-04-28",
 
     // Extended data
     detailedDescription: "Початок легендарної серії про мисливця за скарбами Натана Дрейка. Захоплюючі пригоди в джунглях Амазонки, загадка Ель Дорадо та незабутні персонажі.",
@@ -482,23 +484,30 @@ export const games: Game[] = [
     description:
       "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
     cover: "https://cdn2.steamgriddb.com/grid/d7fbe5fb946867aacf79463f8f36981c.png",
-    progress: 30,
-    status: "in-progress",
+    progress: 38,
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 30 },
+      { label: "Переклад", percent: 38 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Бойовик", "RPG", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/3937550/Yakuza_Kiwami_3__Dark_Ties/",
+    downloadUrl: "https://lbklauncher.com/games/yakuza_kiwami_3_dark_ties/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-03-12",
+    lastUpdate: "2026-04-28",
     progressHistory: [
       { date: "2026-03-04", progress: 23, milestone: "Початок перекладу" },
       { date: "2026-03-07", progress: 25, milestone: "25% перекладу" },
       { date: "2026-03-09", progress: 26, milestone: "26% перекладу" },
-      { date: "2026-03-12", progress: 30, milestone: "30.40% перекладу" }
+      { date: "2026-03-12", progress: 30, milestone: "30.40% перекладу" },
+      { date: "2026-04-28", progress: 38, milestone: "Ранній доступ — 37.56% перекладено" }
     ],
+    stats: {
+      totalLines: 57398,
+      translatedLines: 21557, // 37.56%
+      totalWords: 468281, // 134011 укр + 334270 англ
+    },
   },
   {
     id: "nmh3",
@@ -599,19 +608,24 @@ export const games: Game[] = [
     description:
       "METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version — культовий стелс-екшен, де місія на танкері переростає у змову планетарного масштабу. На вас чекають проникнення без зайвого шуму, гаджети, напружені босфайти та історія про інформацію, контроль і правду — актуальна й сьогодні.",
     cover: "/images/mgs2.jpg",
-    progress: 60,
-    status: "fundraising",
-    stage: "Переклад",
+    progress: 90,
+    status: "early-access",
+    stage: "Редактура",
     stageDetails: [
-      { label: "Переклад", percent: 60 },
-      { label: "Редактура", percent: 0 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 70 },
     ],
     tags: ["Бойовик", "Стелс", "Глибокий сюжет", "Пригоди"],
     steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
+    downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_2_sons_of_liberty_master_collection_version/little-bit-perekladach-patriotiv-kostyanchek8",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 19050,
-    fundraisingGoal: 25000,
-    lastUpdate: "2026-03-07",
+    fundraisingCompleted: true,
+    lastUpdate: "2026-04-28",
+    team: [
+      { name: "Little Bit", role: "Переклад" },
+      { name: "Перекладач патріотів", role: "Переклад" },
+      { name: "Kostyanchek8", role: "Переклад" }
+    ],
   },
   {
     id: "hotel-barcelona",
@@ -704,10 +718,10 @@ export const games: Game[] = [
     ],
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 10943,
+    fundraisingRaised: 14193,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-03-09",
+    lastUpdate: "2026-04-28",
     stats: {
       totalLines: 24458,
       translatedLines: 6115, // 25% progress
@@ -883,17 +897,17 @@ export const games: Game[] = [
     description:
       "Продовження детективного екшену. Яґамі розслідує справу, що пов'язує буллінг у школі та вбивство.",
     cover: "/images/lost-judgment.jpg",
-    progress: 7,
+    progress: 14,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 7 },
+      { label: "Переклад", percent: 14 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Бойовик", "Пригоди", "Детектив", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-04-28",
 
     // Extended data
     detailedDescription: "Сіквел Judgment. Такаюкі Яґамі повертається, щоб розслідувати нову справу про буллінг та вбивство. Ще більший світ, нові механіки та напружений сюжет про справедливість.",
@@ -906,12 +920,13 @@ export const games: Game[] = [
     ],
     progressHistory: [
       { date: "2026-01-15", progress: 3, milestone: "Початок проєкту" },
-      { date: "2026-02-16", progress: 7, milestone: "Перші глави" }
+      { date: "2026-02-16", progress: 7, milestone: "Перші глави" },
+      { date: "2026-04-28", progress: 14, milestone: "13.75% перекладено" }
     ],
     stats: {
-      totalLines: 99996,
-      translatedLines: 7451, // 7.45%
-      totalWords: undefined, // Не показуємо слова, тільки рядки
+      totalLines: 94310,
+      translatedLines: 12966, // 13.75%
+      totalWords: 877352, // 66489 укр + 810863 англ
       totalCharacters: undefined
     }
   },

@@ -1,554 +1,350 @@
 ---
-// ─── Hero: Bento Grid ─────────────────────────────────────────
-// Data-rich dashboard-style hero with glassmorphism cards.
+// ─── Hero — White Liquid Glass Bento ─────────────────────────
+// Світлий dashboard-style блок з прозорими картками й featured-каруселлю.
 
 import { getOverallProgress, games, STATUS_LABELS } from "../data/games";
 
 const overall = getOverallProgress();
 const totalGames = games.length;
-const doneGames = games.filter((g) => g.status === "early-access").length;
-const activeGames = games.filter(
-  (g) => g.progress > 0 && g.progress < 100
-).length;
+const earlyAccessCount = games.filter((g) => g.status === "early-access").length;
+const doneCount = games.filter((g) => g.status === "done").length;
+const inProgressCount = games.filter((g) => g.status === "in-progress" || g.status === "early-access" || g.status === "fundraising").length;
 
-// Featured carousel items (games + news)
 const featuredItems = [
   {
-    type: 'news' as const,
-    title: 'Вийшла українська локалізація METAL GEAR SOLID Δ: SNAKE EATER!',
-    description: 'Вийшла первинна версія українізатора для METAL GEAR SOLID Δ: SNAKE EATER. Завантажити можна через LBK Launcher!',
-    image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2417610/ss_98ada80d8590577bb93becae3ab1dcca0ecd0256.1920x1080.jpg?t=1762249119',
-    badge: 'НОВИНА',
-    label: 'Українізатор доступний!',
-    date: '12 березня 2026'
+    type: "news" as const,
+    title: "METAL GEAR SOLID Δ: SNAKE EATER — українською!",
+    description: "Вийшла первинна версія українізатора. Завантажуйте через LBK Launcher.",
+    image: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2417610/ss_98ada80d8590577bb93becae3ab1dcca0ecd0256.1920x1080.jpg?t=1762249119",
+    badge: "НОВИНА",
+    label: "Локалізація доступна",
+    date: "12 березня 2026",
   },
   {
-    type: 'news' as const,
-    title: 'Потужний донат 5 000₴ на NieR Replicant 🐱',
-    description: 'Невідомий котик задонатив 5 000₴ на локалізацію NieR Replicant. Загальна сума збору вже 10 943₴ з 50 000₴. Величезна подяка за підтримку!',
-    image: '/images/nier-replicant.jpg',
-    badge: 'НОВИНА',
-    label: 'Дякуємо котику!',
-    date: '9 березня 2026'
+    type: "news" as const,
+    title: "Потужний донат 5 000 ₴ на NieR Replicant",
+    description: "Невідомий котик задонатив 5 000 ₴. Загальна сума збору — 10 943 ₴ із 50 000 ₴.",
+    image: "/images/nier-replicant.jpg",
+    badge: "НОВИНА",
+    label: "Дякуємо котику",
+    date: "9 березня 2026",
   },
   {
-    type: 'news' as const,
-    title: 'Демоверсія Yakuza Kiwami 3 & Dark Ties',
-    description: 'Демоверсія Yakuza Kiwami 3 & Dark Ties вийде у березні 2026 року. Підготуйтесь до ремейку третьої частини серії!',
-    image: 'https://cdn2.steamgriddb.com/hero/dc823bed5df671ab204b95fe29f77ef5.jpg',
-    badge: 'НОВИНА',
-    label: 'Демо вже скоро!',
-    date: 'березень 2026'
+    type: "news" as const,
+    title: "Демо Yakuza Kiwami 3 & Dark Ties",
+    description: "Демоверсія вийде у березні 2026 року. Готуйтеся до повернення Кірю.",
+    image: "https://cdn2.steamgriddb.com/hero/dc823bed5df671ab204b95fe29f77ef5.jpg",
+    badge: "АНОНС",
+    label: "Демо вже скоро",
+    date: "березень 2026",
   },
   {
-    type: 'news' as const,
-    title: 'Вийшли усі 8 епізодів Dispatch',
-    description: 'Повний переклад усіх 8 епізодів Dispatch вже доступний для завантаження. Насолоджуйтесь повною історією українською!',
-    image: '/images/dispatch-hero.png',
-    badge: 'НОВИНА',
-    label: 'Усі епізоди вже доступні!',
-    date: '4 березня 2026'
+    type: "news" as const,
+    title: "Усі 8 епізодів Dispatch перекладено",
+    description: "Повна локалізація доступна для завантаження. Насолоджуйтеся історією українською.",
+    image: "/images/dispatch-hero.png",
+    badge: "ОНОВЛЕННЯ",
+    label: "Усі епізоди",
+    date: "4 березня 2026",
   },
   {
-    type: 'news' as const,
-    title: 'Завершено збір коштів на Yakuza: Like a Dragon',
-    description: 'Успішно завершено збір коштів на текстову локалізацію Yakuza: Like a Dragon. Дякуємо всім за підтримку! Продовжуємо роботу над перекладом.',
-    image: 'https://cdn2.steamgriddb.com/hero/7377f47f95a1202ea8d330061b674dea.png',
-    badge: 'НОВИНА',
-    label: 'Збір завершено!',
-    date: '17 лютого 2026'
+    type: "news" as const,
+    title: "Завершено збір на Yakuza: Like a Dragon",
+    description: "Дякуємо за підтримку! Працюємо над текстовою локалізацією.",
+    image: "https://cdn2.steamgriddb.com/hero/7377f47f95a1202ea8d330061b674dea.png",
+    badge: "ЗБІР",
+    label: "Збір завершено",
+    date: "17 лютого 2026",
   },
-  {
-    type: 'news' as const,
-    title: 'Yakuza Kiwami 2',
-    description: 'Повний текстовий переклад гри українською та українізовані текстури. Усе — від сюжету й побічних активностей до інтерфейсу, підказок.',
-    image: 'https://cdn2.steamgriddb.com/hero/8a9ab2a87298a2fed1c31aebff294cf9.png',
-    badge: 'НАЙБЛИЖЧИЙ РЕЛІЗ',
-    label: 'У процесі редагування. Слідкуйте за оновленнями!',
-    date: '96% готовності'
-  }
 ];
 
 const fundraisingGames = games.filter((g) => g.status === "fundraising");
 
 const RING_R = 34;
-const RING_C = 2 * Math.PI * RING_R; // ~213.63
+const RING_C = 2 * Math.PI * RING_R;
 const ringOffset = RING_C * (1 - overall / 100);
 ---
 
-<section class="relative min-h-[100vh] flex items-center overflow-hidden">
+<section class="relative overflow-hidden pt-28 pb-12 sm:pt-32 sm:pb-16">
 
-  <!-- ═══ Background ═══ -->
-  <div class="absolute inset-0 -z-10">
-    <div class="absolute inset-0 bg-surface-900" />
-    <!-- Gradient orbs (animated) -->
-    <div class="orb orb-1 absolute top-[10%] left-[15%] w-[800px] h-[600px] rounded-full
-                bg-[radial-gradient(ellipse,#6d5dfc_0%,transparent_70%)] will-change-transform" />
-    <div class="orb orb-2 absolute bottom-[5%] right-[10%] w-[600px] h-[500px] rounded-full
-                bg-[radial-gradient(ellipse,#1b9aaa_0%,transparent_70%)] will-change-transform" />
-    <div class="orb orb-3 absolute top-[45%] left-[50%] w-[500px] h-[400px] rounded-full
-                bg-[radial-gradient(ellipse,#9d4edd_0%,transparent_70%)] will-change-transform" />
-    <!-- Grid pattern -->
-    <div class="absolute inset-0 opacity-[0.025]"
-         style="background-image: linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px); background-size: 64px 64px;" />
-    <!-- Noise -->
-    <div class="absolute inset-0 opacity-[0.03]"
-         style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22 opacity=%221%22/%3E%3C/svg%3E')" />
-  </div>
+  <!-- Static decorative gradient layer (no animation, no per-frame blur work) -->
+  <div class="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true"
+       style="background:
+         radial-gradient(420px 360px at 12% 18%, rgba(99,102,241,0.28), transparent 65%),
+         radial-gradient(380px 340px at 92% 22%, rgba(56,189,248,0.26), transparent 65%),
+         radial-gradient(420px 360px at 50% 95%, rgba(167,139,250,0.26), transparent 65%);"></div>
 
-  <!-- ═══ Bento Grid ═══ -->
-  <div class="relative z-10 mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-8 py-28 sm:py-32">
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+  <div class="relative z-10 mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-8">
 
-      <!-- ──── 1. Brand Card (large) ──── -->
-      <div class="col-span-2 relative overflow-hidden rounded-2xl
-                  bg-white/[0.03] border border-white/[0.06]
-                  bento-item bento-delay-1">
-        <!-- Top accent line -->
-        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
-        <div class="flex flex-col justify-between h-full p-7 sm:p-8 lg:p-10 min-h-[280px] lg:min-h-[320px]">
-          <div>
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 mb-6 rounded-full
-                        bg-accent/10 border border-accent/20">
-              <span class="relative flex h-1.5 w-1.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent"></span>
-              </span>
-              <span class="text-[11px] font-semibold text-accent-light tracking-wide uppercase">
-                {totalGames} проєктів у роботі
-              </span>
-            </div>
-            <h1 class="text-3xl sm:text-4xl lg:text-[2.75rem] font-black tracking-tight text-white leading-[1.1] mb-3">
-              Перекладаємо те, у&nbsp;що самі граємо&nbsp;🎮
-            </h1>
-            <p class="hero-subtitle text-surface-200 text-sm sm:text-base leading-relaxed max-w-sm">
-              <span class="hero-word">Сюжет,</span>
-              <span class="hero-word">інтерфейс</span>
-              <span class="hero-word">і дрібниці</span>
-              <span class="hero-word">—</span>
-              <span class="hero-word">українською.</span>
-            </p>
+    <!-- ═══ Top: Title + supporting cards ═══ -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
+
+      <!-- Brand block -->
+      <div class="lb-glass-strong lg:col-span-7 p-7 sm:p-9 lg:p-10 flex flex-col justify-between min-h-[300px] hero-card hero-delay-1">
+        <div>
+          <div class="lb-section-eyebrow mb-6">
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-500 opacity-70"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-indigo-500"></span>
+            </span>
+            {totalGames} проєктів • локалізації українською
           </div>
+          <h1 class="text-[2rem] sm:text-5xl lg:text-[3.5rem] font-black tracking-tight leading-[1.05] mb-5 text-slate-900">
+            Перекладаємо те, у&nbsp;що
+            <span class="lb-gradient-text whitespace-nowrap">самі граємо</span>
+          </h1>
+          <p class="hero-subtitle text-base sm:text-lg leading-relaxed max-w-xl text-slate-600">
+            <span class="hero-word">Сюжет,</span>
+            <span class="hero-word">інтерфейс</span>
+            <span class="hero-word">і дрібниці</span>
+            <span class="hero-word">—</span>
+            <span class="hero-word">українською.</span>
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 mt-8">
+          <a href="#projects" class="lb-btn lb-btn--primary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+            Переглянути локалізації
+          </a>
+          <a href="#launcher" class="lb-btn lb-btn--ghost">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            LBK Launcher
+          </a>
+          <a href="#support" class="lb-btn lb-btn--soft">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+            Підтримати
+          </a>
         </div>
       </div>
 
-      <!-- ──── 2. Featured Carousel Card ──── -->
-      <div class="col-span-2 relative overflow-hidden rounded-2xl
-                  border border-white/[0.06] group
-                  min-h-[240px] lg:min-h-[320px]
-                  bento-item bento-delay-2" id="featured-carousel">
-
+      <!-- Featured carousel -->
+      <div
+        id="featured-carousel"
+        class="lb-glass lg:col-span-5 relative min-h-[300px] overflow-hidden hero-card hero-delay-2 group"
+      >
         {featuredItems.map((item, index) => (
           <div
-            class={`featured-slide absolute inset-0 transition-all duration-500 ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-            data-slide={index}>
+            class={`featured-slide absolute inset-0 transition-opacity duration-700 ${index === 0 ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+            data-slide={index}
+          >
             <img
-              src={item.type === 'game' ? item.game.cover : item.image}
-              alt={item.type === 'game' ? item.game.title : item.title}
-              class="absolute inset-0 w-full h-full object-cover
-                     transition-transform duration-700 group-hover:scale-102"
-              loading={index === 0 ? 'eager' : 'lazy'} />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
-            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              src={item.image}
+              alt={item.title}
+              class="absolute inset-0 w-full h-full object-cover"
+              loading={index === 0 ? "eager" : "lazy"}
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/85 via-slate-900/55 to-slate-900/10"></div>
 
-            <div class="relative h-full flex flex-col justify-between p-6 min-h-[240px] lg:min-h-[320px]">
+            <div class="relative h-full flex flex-col justify-between p-6 sm:p-7">
               <div class="flex items-start justify-between gap-3">
-                <span class="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider
-                             rounded-lg bg-black/50 backdrop-blur-md
-                             {item.type === 'game' ? 'text-steam-blue border border-steam-blue/30' : 'text-yellow-400 border border-yellow-400/30'}">
-                  {item.type === 'game' ? STATUS_LABELS[item.game.status] : item.badge}
+                <span class="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-white/95 text-indigo-600 border border-white/60 shadow-sm">
+                  {item.badge}
                 </span>
-                <span class="text-[10px] text-white/70 font-medium uppercase tracking-wider backdrop-blur-md
-                             px-2 py-1 rounded-lg bg-black/50">
-                  {item.type === 'game' ? item.badge : item.date}
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-white/95 px-2.5 py-1 rounded-lg bg-slate-900/35 border border-white/25 shadow-sm">
+                  {item.date}
                 </span>
               </div>
-
               <div>
-                <span class="text-[10px] text-yellow-400/80 font-semibold uppercase tracking-wider mb-1 block">
+                <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300 mb-1.5 block">
                   {item.label}
                 </span>
-                <h3 class="text-white font-bold text-xl sm:text-2xl leading-tight mb-1.5">
-                  {item.type === 'game' ? item.game.title : item.title}
+                <h3 class="text-white font-bold text-xl sm:text-2xl leading-tight mb-2 drop-shadow-sm">
+                  {item.title}
                 </h3>
-                <p class="text-white/60 text-sm leading-relaxed mb-4 max-w-md line-clamp-2">
-                  {item.type === 'game' ? item.game.description : item.description}
+                <p class="text-white/80 text-sm leading-relaxed max-w-md line-clamp-2">
+                  {item.description}
                 </p>
-
-                {item.type === 'game' && (
-                  <div class="flex items-center gap-3 max-w-sm">
-                    <div class="flex-1 h-2 rounded-full bg-white/15 overflow-hidden">
-                      <div class="h-full rounded-full bg-gradient-to-r from-accent to-steam-blue featured-progress"
-                           data-progress={item.game.progress}
-                           style={`width: 0%`} />
-                    </div>
-                    <span class="text-sm font-bold text-white tabular-nums min-w-[3ch] text-right">
-                      {item.game.progress}%
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
           </div>
         ))}
 
-        <!-- Navigation arrows (desktop only) -->
+        <!-- Carousel controls -->
         <button
           id="carousel-prev"
-          class="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20
-                 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/20
-                 items-center justify-center
-                 text-white hover:bg-black/80 hover:border-white/30
-                 transition-all duration-200 opacity-0 group-hover:opacity-100
-                 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent/50"
+          class="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/95 border border-white/70 text-slate-700 hover:bg-white shadow-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
           aria-label="Попередній">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         <button
           id="carousel-next"
-          class="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20
-                 w-10 h-10 rounded-full bg-black/60 backdrop-blur-md border border-white/20
-                 items-center justify-center
-                 text-white hover:bg-black/80 hover:border-white/30
-                 transition-all duration-200 opacity-0 group-hover:opacity-100
-                 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-accent/50"
+          class="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/95 border border-white/70 text-slate-700 hover:bg-white shadow-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
           aria-label="Наступний">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
           </svg>
         </button>
 
-        <!-- Progress bar (mobile only) -->
-        <div class="md:hidden absolute bottom-0 left-0 right-0 h-1 bg-white/10 z-20">
-          <div id="carousel-progress" class="h-full bg-white/60 transition-none" style="width: 0%"></div>
-        </div>
-
-        <!-- Indicators -->
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
+        <div class="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
           {featuredItems.map((_, index) => (
             <button
-              class={`carousel-dot w-2 h-2 rounded-full transition-all duration-300 ${index === 0 ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'}`}
+              class={`carousel-dot h-1.5 rounded-full transition-all duration-300 ${index === 0 ? "bg-white w-6" : "bg-white/55 w-1.5 hover:bg-white/80"}`}
               data-dot={index}
-              aria-label={`Слайд ${index + 1}`} />
+              aria-label={`Слайд ${index + 1}`}
+            ></button>
           ))}
         </div>
       </div>
+    </div>
 
-      <!-- ──── 3. Overall Progress Card ──── -->
-      <div class="relative overflow-hidden rounded-2xl
-                  bg-white/[0.03] border border-white/[0.06]
-                  flex flex-col items-center justify-center p-6 min-h-[160px]
-                  bento-item bento-delay-3">
+    <!-- ═══ Bottom: Metric cards ═══ -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-5">
+
+      <!-- Overall progress ring -->
+      <div class="lb-glass p-5 flex flex-col items-center justify-center text-center min-h-[150px] hero-card hero-delay-3">
         <div class="relative w-[88px] h-[88px] mb-2">
           <svg class="w-full h-full -rotate-90" viewBox="0 0 80 80">
             <defs>
-              <linearGradient id="heroRingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#6d5dfc" />
-                <stop offset="100%" stop-color="#1b9aaa" />
+              <linearGradient id="heroRingG" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#0ea5e9" />
               </linearGradient>
-              <filter id="ringGlow">
-                <feGaussianBlur stdDeviation="2.5" result="blur" />
-                <feMerge>
-                  <feMergeNode in="blur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
             </defs>
-            <circle cx="40" cy="40" r={RING_R} fill="none"
-                    stroke="rgba(255,255,255,0.05)" stroke-width="5" />
-            <circle cx="40" cy="40" r={RING_R} fill="none"
-                    stroke="url(#heroRingGrad)" stroke-width="5.5"
-                    stroke-linecap="round"
-                    stroke-dasharray={RING_C}
-                    stroke-dashoffset={RING_C}
-                    filter="url(#ringGlow)"
-                    class="ring-progress"
-                    style={`--ring-target: ${ringOffset}`} />
+            <circle cx="40" cy="40" r={RING_R} fill="none" stroke="rgba(15,23,42,0.08)" stroke-width="6" />
+            <circle cx="40" cy="40" r={RING_R} fill="none" stroke="url(#heroRingG)" stroke-width="6"
+                    stroke-linecap="round" stroke-dasharray={RING_C} stroke-dashoffset={RING_C}
+                    class="ring-progress" style={`--ring-target: ${ringOffset}`} />
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-2xl font-black text-white tabular-nums ring-counter" data-target={overall}>0%</span>
+            <span class="text-xl font-black text-slate-900 tabular-nums ring-counter" data-target={overall}>0%</span>
           </div>
         </div>
-        <span class="text-[11px] text-surface-300 font-medium uppercase tracking-wider">
-          Загальний прогрес
-        </span>
+        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-500">Загальний прогрес</span>
       </div>
 
-      <!-- ──── 4. Stats Card ──── -->
-      <div class="relative overflow-hidden rounded-2xl
-                  bg-white/[0.03] border border-white/[0.06]
-                  flex items-center justify-center p-6 min-h-[160px]
-                  bento-item bento-delay-4">
-        <div class="grid grid-cols-2 gap-4 text-center w-full">
-          <div>
-            <span class="block text-3xl sm:text-4xl font-black text-white tabular-nums">
-              {totalGames}
-            </span>
-            <span class="text-[11px] text-surface-300 font-medium uppercase tracking-wider">
-              Проєктів
-            </span>
+      <!-- Project counts -->
+      <div class="lb-glass p-5 flex flex-col items-center justify-center text-center min-h-[150px] hero-card hero-delay-4">
+        <span class="block text-3xl font-black tabular-nums lb-gradient-text">{totalGames}</span>
+        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-500 mt-1">Усього проєктів</span>
+        <div class="grid grid-cols-2 gap-2 mt-3 w-full text-[11px]">
+          <div class="text-center">
+            <span class="block font-bold text-emerald-600 tabular-nums">{doneCount + earlyAccessCount}</span>
+            <span class="text-slate-500">доступно</span>
           </div>
-          <div class="border-l border-white/[0.06] pl-4">
-            <span class="block text-3xl sm:text-4xl font-black text-steam-green tabular-nums">
-              {doneGames}
-            </span>
-            <span class="text-[11px] text-surface-300 font-medium uppercase tracking-wider">
-              У ранньому доступі
-            </span>
+          <div class="text-center">
+            <span class="block font-bold text-indigo-600 tabular-nums">{inProgressCount}</span>
+            <span class="text-slate-500">у роботі</span>
           </div>
         </div>
       </div>
 
-      <!-- ──── 5. Completed Games Gallery ──── -->
-      <div class="relative overflow-hidden rounded-2xl
-                  bg-white/[0.03] border border-white/[0.06]
-                  p-5 min-h-[160px]
-                  bento-item bento-delay-5">
-        <span class="text-[11px] text-surface-300 font-medium uppercase tracking-wider mb-3 block">
-          Збір коштів
-        </span>
-        <div class="flex gap-2.5 mt-1" id="fundraising-thumbs">
+      <!-- Fundraising -->
+      <div class="lb-glass p-5 flex flex-col min-h-[150px] hero-card hero-delay-5">
+        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-amber-700 mb-2">Збір коштів</span>
+        <div class="flex flex-wrap gap-2 mt-1" id="fundraising-thumbs">
           {fundraisingGames.map((game) => (
             <button
-              class="relative flex-1 aspect-[3/4] max-w-[80px] rounded-xl overflow-hidden
-                     border border-white/10 cursor-pointer transition-transform duration-200 hover:scale-105
-                     focus:outline-none focus:ring-2 focus:ring-orange-400/50"
+              class="relative w-12 h-16 rounded-xl overflow-hidden border border-white/80 shadow-[0_6px_18px_-10px_rgba(15,23,42,0.4)] hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-amber-400/60"
               data-fr-title={`Збір на локалізацію ${game.title}`}
               data-fr-raised={game.fundraisingRaised ?? 0}
               data-fr-goal={game.fundraisingGoal ?? 0}
-              title={game.title}>
-              <img src={game.cover} alt={game.title}
-                   class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-              <div class="absolute inset-0 bg-gradient-to-t from-orange-400/30 to-transparent" />
-              <div class="absolute bottom-1 right-1">
-                <svg class="w-3.5 h-3.5 text-orange-400 drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-              </div>
+              title={game.title}
+            >
+              <img src={game.cover} alt={game.title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+              <div class="absolute inset-0 bg-gradient-to-t from-amber-500/40 via-transparent to-transparent"></div>
             </button>
           ))}
         </div>
-        <!-- Fundraising info popup -->
-        <div id="fr-popup" class="hidden mt-2 p-3 sm:p-3 rounded-xl bg-black/70 backdrop-blur-md border border-orange-400/20">
-          <p id="fr-title" class="text-white font-semibold mb-2 leading-snug text-xs"></p>
-          <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2">
-            <div class="flex-1 h-2 sm:h-1.5 rounded-full bg-white/10 overflow-hidden">
-              <div id="fr-bar" class="h-full rounded-full bg-gradient-to-r from-orange-400 to-orange-300 transition-all duration-500" style="width: 0%" />
-            </div>
-            <span id="fr-amount" class="text-xs text-orange-400 font-bold tabular-nums shrink-0"></span>
+        <div id="fr-popup" class="hidden mt-3 p-3 rounded-xl bg-white/95 border border-amber-300/50 shadow-sm">
+          <p id="fr-title" class="text-[11px] font-semibold text-slate-800 mb-2 leading-snug"></p>
+          <div class="h-2 rounded-full bg-amber-100 overflow-hidden">
+            <div id="fr-bar" class="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400 transition-all duration-500" style="width:0%"></div>
           </div>
+          <p id="fr-amount" class="text-[10px] text-amber-700 font-bold mt-1.5 tabular-nums"></p>
         </div>
       </div>
 
-      <!-- ──── 6. CTA Donate Card ──── -->
-      <a href="https://donatello.to/LittleBitUA"
-         target="_blank" rel="noopener noreferrer"
-         class="relative overflow-hidden rounded-2xl
-                bg-accent/[0.06] border border-accent/20
-                flex flex-col items-center justify-center p-6 min-h-[160px]
-                group transition-all duration-300 hover:bg-accent/[0.12] hover:border-accent/30
-                hover:shadow-lg hover:shadow-accent/10
-                bento-item bento-delay-6">
-        <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
-        <div class="w-11 h-11 rounded-xl bg-accent/15 border border-accent/25
-                    flex items-center justify-center mb-3
-                    group-hover:scale-110 transition-transform duration-300">
-          <svg class="w-5 h-5 text-accent-light" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <!-- Donate CTA -->
+      <a
+        href="https://donatello.to/LittleBitUA"
+        target="_blank" rel="noopener noreferrer"
+        class="lb-glass p-5 flex flex-col items-center justify-center text-center min-h-[150px] hero-card hero-delay-6 group transition-all hover:-translate-y-1 hover:shadow-[var(--lb-shadow-pop)]"
+      >
+        <div class="w-11 h-11 rounded-2xl mb-2 flex items-center justify-center
+                    bg-gradient-to-br from-indigo-500 to-sky-400 text-white
+                    shadow-[0_10px_22px_-10px_rgba(99,102,241,0.5)] group-hover:scale-110 transition-transform">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
         </div>
-        <span class="text-sm font-bold text-accent-light group-hover:text-white transition-colors text-center">
-          Підтримати<br class="sm:hidden" /> збір
-        </span>
-        <span class="text-[10px] text-surface-300 mt-1 text-center">Donatello</span>
+        <span class="text-sm font-bold text-slate-900">Підтримати команду</span>
+        <span class="text-[11px] text-slate-500 mt-0.5">Donatello / Monobank</span>
       </a>
-
     </div>
-  </div>
 
-  <!-- Bottom fade -->
-  <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-surface-900 to-transparent z-20 pointer-events-none" />
-
-  <!-- Projects CTA -->
-  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-30">
-    <a href="#projects"
-       class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full
-              bg-white/[0.04] backdrop-blur-md border border-white/10
-              hover:bg-white/[0.08] hover:border-white/20
-              transition-all duration-300 group">
-      <span class="text-xs font-bold uppercase tracking-wider text-white/90 group-hover:text-white">
-        Проєкти
-      </span>
-      <svg class="w-4 h-4 text-white/70 group-hover:text-white transition-all duration-300 group-hover:translate-y-0.5"
-           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-      </svg>
-    </a>
+    <!-- Down arrow -->
+    <div class="flex justify-center mt-8">
+      <a href="#projects" class="lb-pill inline-flex items-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-700 hover:text-indigo-600 group">
+        Прокрутити вниз
+        <svg class="w-3.5 h-3.5 transition-transform group-hover:translate-y-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </a>
+    </div>
   </div>
 </section>
 
 <style>
+  .hero-card {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+    animation: heroCardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .hero-delay-1 { animation-delay: 0.05s; }
+  .hero-delay-2 { animation-delay: 0.15s; }
+  .hero-delay-3 { animation-delay: 0.25s; }
+  .hero-delay-4 { animation-delay: 0.30s; }
+  .hero-delay-5 { animation-delay: 0.35s; }
+  .hero-delay-6 { animation-delay: 0.40s; }
 
-  /* ── Subtitle word reveal ── */
+  @keyframes heroCardIn {
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
   .hero-word {
     display: inline-block;
     opacity: 0;
     transform: translateY(8px);
-    animation: wordReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: heroWord 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-
   .hero-word:nth-child(1) { animation-delay: 0.4s; }
   .hero-word:nth-child(2) { animation-delay: 0.55s; }
   .hero-word:nth-child(3) { animation-delay: 0.7s; }
   .hero-word:nth-child(4) { animation-delay: 0.85s; }
   .hero-word:nth-child(5) { animation-delay: 1.0s; }
+  @keyframes heroWord { to { opacity: 1; transform: translateY(0); } }
 
-  @keyframes wordReveal {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-word { animation: none; opacity: 1; transform: none; }
-  }
-
-  /* ── Background orb drift ── */
-  .orb {
-    opacity: 0.08;
-  }
-
-  /* Disable orb animations on mobile for performance */
-  @media (min-width: 768px) {
-    .orb-1 {
-      animation: drift1 18s ease-in-out infinite alternate;
-    }
-    .orb-2 {
-      animation: drift2 22s ease-in-out infinite alternate;
-    }
-    .orb-3 {
-      animation: drift3 20s ease-in-out infinite alternate;
-    }
-  }
-
-  @keyframes drift1 {
-    0%   { transform: translate(0, 0) scale(1); opacity: 0.06; }
-    50%  { transform: translate(80px, -60px) scale(1.15); opacity: 0.12; }
-    100% { transform: translate(-60px, 40px) scale(0.9); opacity: 0.07; }
-  }
-  @keyframes drift2 {
-    0%   { transform: translate(0, 0) scale(1); opacity: 0.05; }
-    50%  { transform: translate(-70px, 50px) scale(1.2); opacity: 0.11; }
-    100% { transform: translate(50px, -30px) scale(0.85); opacity: 0.06; }
-  }
-  @keyframes drift3 {
-    0%   { transform: translate(0, 0) scale(1); opacity: 0.04; }
-    50%  { transform: translate(60px, 40px) scale(1.18); opacity: 0.10; }
-    100% { transform: translate(-40px, -50px) scale(0.92); opacity: 0.05; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .orb { animation: none; }
-  }
-
-  /* ── Card entrance animation ── */
-  .bento-item {
-    opacity: 0;
-    transform: translateY(18px) scale(0.97);
-    animation: bentoIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  }
-  .bento-delay-1 { animation-delay: 0.05s; }
-  .bento-delay-2 { animation-delay: 0.15s; }
-  .bento-delay-3 { animation-delay: 0.25s; }
-  .bento-delay-4 { animation-delay: 0.3s; }
-  .bento-delay-5 { animation-delay: 0.35s; }
-  .bento-delay-6 { animation-delay: 0.4s; }
-
-  @keyframes bentoIn {
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-  }
-
-  /* ── Progress ring draw animation ── */
   .ring-progress {
-    animation: ringDraw 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+    transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: ringDraw 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
   }
+  @keyframes ringDraw { to { stroke-dashoffset: var(--ring-target); } }
 
-  @keyframes ringDraw {
-    to {
-      stroke-dashoffset: var(--ring-target);
-    }
-  }
-
-  /* ── Featured game progress bar transition + glow animation ── */
-  .featured-progress {
-    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-    position: relative;
-  }
-
-  /* Enable glow animation only on desktop for performance */
-  @media (min-width: 768px) {
-    .featured-progress {
-      animation: progressGlow 2s ease-in-out infinite;
-    }
-  }
-
-  @keyframes progressGlow {
-    0%, 100% {
-      filter: brightness(1) drop-shadow(0 0 0px rgba(109, 93, 252, 0));
-    }
-    50% {
-      filter: brightness(1.15) drop-shadow(0 0 8px rgba(109, 93, 252, 0.6));
-    }
-  }
-
-  /* ── Fade in animation ── */
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fadeIn {
-    animation: fadeIn 0.6s ease-out;
-  }
-
-  /* ── Subtle card hover glow ── */
-  .bento-item {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  /* Disable hover effects on mobile/touch devices for performance */
-  @media (hover: hover) and (pointer: fine) {
-    .bento-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    }
-  }
-
-  /* line clamp fallback */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-card, .hero-word, .ring-progress { animation: none; opacity: 1; transform: none; }
+  }
 </style>
 
 <script>
-  // Hero ring counter animation
+  // Hero ring counter
   const heroCounter = document.querySelector(".ring-counter") as HTMLSpanElement | null;
   if (heroCounter) {
     const target = parseInt(heroCounter.dataset.target || "0", 10);
@@ -561,18 +357,16 @@ const ringOffset = RING_C * (1 - overall / 100);
       heroCounter.textContent = `${Math.round(eased * target)}%`;
       if (progress < 1) requestAnimationFrame(tick);
     };
-    // Delay to sync with ring draw animation (0.5s delay)
-    setTimeout(() => requestAnimationFrame(tick), 500);
+    setTimeout(() => requestAnimationFrame(tick), 300);
   }
 
-  // Fundraising thumbnail popups
+  // Fundraising thumbs
   const popup = document.getElementById("fr-popup");
   const frTitle = document.getElementById("fr-title");
   const frBar = document.getElementById("fr-bar");
   const frAmount = document.getElementById("fr-amount");
   const thumbs = document.querySelectorAll<HTMLButtonElement>("#fundraising-thumbs button");
   let activeThumb: HTMLButtonElement | null = null;
-
   const fmt = (n: number) => n.toLocaleString("uk-UA");
 
   thumbs.forEach((btn) => {
@@ -588,120 +382,50 @@ const ringOffset = RING_C * (1 - overall / 100);
       const raised = parseInt(btn.dataset.frRaised || "0", 10);
       const goal = parseInt(btn.dataset.frGoal || "0", 10);
       const pct = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
-
-      frTitle.innerHTML = title.replace("Збір на локалізацію ", "Збір на локалізацію<br>");
-      frAmount.textContent = `${fmt(raised)}₴ із ${fmt(goal)}₴`;
+      frTitle.textContent = title;
+      frAmount.textContent = `${fmt(raised)} ₴ із ${fmt(goal)} ₴ • ${pct}%`;
       frBar.style.width = `${pct}%`;
       popup.classList.remove("hidden");
     });
   });
 
-  // Featured carousel
+  // Carousel
   const slides = document.querySelectorAll<HTMLDivElement>(".featured-slide");
   const dots = document.querySelectorAll<HTMLButtonElement>(".carousel-dot");
   const prevBtn = document.getElementById("carousel-prev");
   const nextBtn = document.getElementById("carousel-next");
-  const progressBar = document.getElementById("carousel-progress");
   let currentSlide = 0;
-  let progressAnimation: Animation | null = null;
 
   const goToSlide = (index: number) => {
     slides.forEach((slide, i) => {
-      if (i === index) {
-        slide.classList.add("opacity-100", "z-10");
-        slide.classList.remove("opacity-0", "z-0");
-        // Animate progress bar if it's a game slide
-        const gameProgressBar = slide.querySelector<HTMLDivElement>(".featured-progress");
-        if (gameProgressBar) {
-          const progress = gameProgressBar.dataset.progress || "0";
-          setTimeout(() => {
-            gameProgressBar.style.width = `${progress}%`;
-          }, 100);
-        }
-      } else {
-        slide.classList.remove("opacity-100", "z-10");
-        slide.classList.add("opacity-0", "z-0");
-      }
+      slide.classList.toggle("opacity-100", i === index);
+      slide.classList.toggle("z-10", i === index);
+      slide.classList.toggle("opacity-0", i !== index);
+      slide.classList.toggle("z-0", i !== index);
     });
-
     dots.forEach((dot, i) => {
-      if (i === index) {
-        dot.classList.add("bg-white", "w-6");
-        dot.classList.remove("bg-white/40");
-      } else {
-        dot.classList.remove("bg-white", "w-6");
-        dot.classList.add("bg-white/40");
-      }
+      const active = i === index;
+      dot.classList.toggle("bg-white", active);
+      dot.classList.toggle("w-6", active);
+      dot.classList.toggle("bg-white/55", !active);
+      dot.classList.toggle("w-1.5", !active);
     });
-
     currentSlide = index;
-
-    // Restart progress bar animation on mobile
-    if (progressBar && isMobile) {
-      // Cancel previous animation
-      if (progressAnimation) {
-        progressAnimation.cancel();
-      }
-      // Reset progress
-      progressBar.style.width = "0%";
-      // Start new animation
-      progressAnimation = progressBar.animate(
-        [{ width: "0%" }, { width: "100%" }],
-        { duration: rotateInterval, easing: "linear", fill: "forwards" }
-      );
-    }
   };
 
-  prevBtn?.addEventListener("click", () => {
-    const newIndex = currentSlide === 0 ? slides.length - 1 : currentSlide - 1;
-    goToSlide(newIndex);
-  });
+  prevBtn?.addEventListener("click", () => goToSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1));
+  nextBtn?.addEventListener("click", () => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1));
+  dots.forEach((dot, index) => dot.addEventListener("click", () => goToSlide(index)));
 
-  nextBtn?.addEventListener("click", () => {
-    const newIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
-    goToSlide(newIndex);
-  });
-
-  dots.forEach((dot, index) => {
-    dot.addEventListener("click", () => goToSlide(index));
-  });
-
-  // Auto-rotate - 3s on mobile with progress bar
   const isMobile = window.innerWidth < 768;
-  const rotateInterval = isMobile ? 3000 : 5000; // 3s on mobile, 5s on desktop
+  const interval = isMobile ? 4000 : 6000;
+  let auto = setInterval(() => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1), interval);
 
-  let autoRotate = setInterval(() => {
-    const newIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
-    goToSlide(newIndex);
-  }, rotateInterval);
-
-  // Pause auto-rotate on hover (desktop only)
   const carousel = document.getElementById("featured-carousel");
-  if (!isMobile) {
-    carousel?.addEventListener("mouseenter", () => clearInterval(autoRotate), { passive: true });
-    carousel?.addEventListener("mouseleave", () => {
-      autoRotate = setInterval(() => {
-        const newIndex = currentSlide === slides.length - 1 ? 0 : currentSlide + 1;
-        goToSlide(newIndex);
-      }, rotateInterval);
-    }, { passive: true });
+  if (!isMobile && carousel) {
+    carousel.addEventListener("mouseenter", () => clearInterval(auto));
+    carousel.addEventListener("mouseleave", () => {
+      auto = setInterval(() => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1), interval);
+    });
   }
-
-  // Initialize first slide progress bar
-  setTimeout(() => {
-    const firstSlide = slides[0];
-    const gameProgressBar = firstSlide?.querySelector<HTMLDivElement>(".featured-progress");
-    if (gameProgressBar) {
-      const progress = gameProgressBar.dataset.progress || "0";
-      gameProgressBar.style.width = `${progress}%`;
-    }
-
-    // Start carousel progress bar animation on mobile
-    if (progressBar && isMobile) {
-      progressAnimation = progressBar.animate(
-        [{ width: "0%" }, { width: "100%" }],
-        { duration: rotateInterval, easing: "linear", fill: "forwards" }
-      );
-    }
-  }, 600);
 </script>

@@ -1,108 +1,192 @@
 ---
-// ─── Header ────────────────────────────────────────────────────
-// Floating pill-style navbar, centered, minimal and premium.
-
-import { getOverallProgress } from "../data/games";
-const overall = getOverallProgress();
+// ─── Header ───────────────────────────────────────────────────
+// Floating glass pill — світлий, прозорий, з акуратною мобільною версією.
 ---
 
-<header id="site-header" class="fixed top-0 left-0 right-0 z-50 pt-2 sm:pt-4 px-2 sm:px-4 transition-all duration-500">
-  <nav class="mx-auto max-w-6xl lg:max-w-4xl">
-    <div class="header-pill flex items-center justify-between h-10 sm:h-12 px-1.5 sm:px-2 rounded-xl sm:rounded-2xl
-                bg-surface-800/60 backdrop-blur-xl border border-white/[0.06]
-                shadow-lg shadow-black/20 transition-all duration-500">
-
-      <!-- Logo -->
-      <a href="/" class="flex items-center gap-2 px-2 group shrink-0">
-        <div class="w-7 h-7 rounded-lg bg-[#1a1a1a] border border-white/10
-                    flex items-center justify-center
-                    group-hover:shadow-md group-hover:shadow-white/10 transition-all duration-300 overflow-hidden">
+<header
+  id="site-header"
+  class="fixed top-0 left-0 right-0 z-50 pt-3 sm:pt-5 px-3 sm:px-4 transition-all duration-500"
+>
+  <nav class="mx-auto max-w-6xl">
+    <div class="lb-pill header-pill flex items-center justify-between h-12 sm:h-14 pl-2 pr-2 sm:pl-3 sm:pr-2">
+      <!-- Brand -->
+      <a href="/" class="flex items-center gap-2.5 px-2 group shrink-0" aria-label="Little Bit — на головну">
+        <span
+          class="w-9 h-9 rounded-xl flex items-center justify-center
+                 bg-gradient-to-br from-white to-slate-100
+                 border border-white/80 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_8px_18px_-10px_rgba(99,102,241,0.45)]
+                 group-hover:shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_10px_22px_-8px_rgba(99,102,241,0.6)]
+                 transition-all duration-300 overflow-hidden"
+        >
           <svg viewBox="0 0 40 40" class="w-full h-full">
-            <rect width="40" height="40" rx="8" fill="#1a1a1a"/>
-            <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-                  font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="20" fill="white"
-                  letter-spacing="-1">LB</text>
+            <defs>
+              <linearGradient id="lbLogoG" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#6366f1" />
+                <stop offset="100%" stop-color="#0ea5e9" />
+              </linearGradient>
+            </defs>
+            <rect width="40" height="40" rx="10" fill="url(#lbLogoG)" />
+            <text
+              x="50%" y="55%"
+              dominant-baseline="middle" text-anchor="middle"
+              font-family="Inter, system-ui, sans-serif"
+              font-weight="900" font-size="18" fill="#ffffff"
+              letter-spacing="-1"
+            >LB</text>
           </svg>
-        </div>
-        <span class="text-white font-bold text-sm hidden sm:block">
-          «Little Bit»
+        </span>
+        <span class="hidden sm:flex flex-col leading-tight">
+          <span class="text-slate-900 font-bold text-sm">«Little Bit»</span>
+          <span class="text-[10px] font-medium text-slate-500 tracking-wide">Українські локалізації</span>
         </span>
       </a>
 
-      <!-- Nav links - always visible -->
-      <div class="flex items-center gap-0.5 sm:gap-1">
-        <a href="/projects" class="nav-link px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-surface-300 hover:text-white
-                                   rounded-lg hover:bg-white/[0.06] transition-all duration-200">
-          Проєкти
+      <!-- Navigation -->
+      <div class="hidden md:flex items-center gap-1">
+        <a href="/#projects" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-600 hover:text-slate-900 transition-colors">
+          Локалізації
         </a>
-        <a href="/#launcher" class="nav-link px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-surface-300 hover:text-white
-                                   rounded-lg hover:bg-white/[0.06] transition-all duration-200">
-          Лаунчер
+        <a href="/projects" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-600 hover:text-slate-900 transition-colors">
+          Усі проєкти
         </a>
-        <a href="/#faq" class="nav-link px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium text-surface-300 hover:text-white
-                              rounded-lg hover:bg-white/[0.06] transition-all duration-200">
+        <a href="/#updates" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-600 hover:text-slate-900 transition-colors">
+          Оновлення
+        </a>
+        <a href="/#launcher" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-600 hover:text-slate-900 transition-colors">
+          Launcher
+        </a>
+        <a href="/#faq" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-600 hover:text-slate-900 transition-colors">
           FAQ
         </a>
       </div>
 
-      <!-- Right side -->
-      <div class="flex items-center shrink-0">
-        <!-- Donate button -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <!-- Mobile menu trigger -->
+        <button
+          id="mobile-menu-toggle"
+          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full
+                 text-slate-700 hover:text-slate-900 hover:bg-white/60
+                 transition-colors"
+          aria-label="Меню"
+          aria-expanded="false"
+        >
+          <svg id="menu-open" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+          <svg id="menu-close" class="hidden w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- Donate -->
         <a
           href="/#support"
-          class="inline-flex items-center justify-center gap-1 w-8 h-8 sm:w-auto sm:px-3.5 sm:py-1.5 text-xs font-semibold
-                 bg-accent/15 text-accent-light border border-accent/25 rounded-lg sm:rounded-xl
-                 hover:bg-accent/25 hover:border-accent/40 transition-all duration-200"
-          aria-label="Підтримати проєкт"
+          class="lb-btn lb-btn--primary !py-2 !px-3.5 sm:!px-4 !text-xs"
+          aria-label="Підтримати команду"
         >
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
           </svg>
-          <span class="hidden sm:inline text-xs leading-none">Підтримати</span>
+          <span>Підтримати</span>
         </a>
       </div>
+    </div>
+
+    <!-- Mobile menu panel -->
+    <div
+      id="mobile-menu"
+      class="md:hidden mt-2 lb-glass-strong p-4 rounded-3xl flex flex-col gap-1
+             opacity-0 -translate-y-2 pointer-events-none transition-all duration-300"
+    >
+      <a href="/#projects" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-white/70 hover:text-slate-900">
+        Локалізації
+      </a>
+      <a href="/projects" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-white/70 hover:text-slate-900">
+        Усі проєкти
+      </a>
+      <a href="/#updates" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-white/70 hover:text-slate-900">
+        Оновлення
+      </a>
+      <a href="/#launcher" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-white/70 hover:text-slate-900">
+        LBK Launcher
+      </a>
+      <a href="/#support" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-white/70 hover:text-slate-900">
+        Підтримати
+      </a>
+      <a href="/#faq" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-white/70 hover:text-slate-900">
+        FAQ
+      </a>
     </div>
   </nav>
 </header>
 
 <style>
-  /* Active nav link highlight based on scroll position */
   .nav-link.active {
-    color: white;
-    background: rgba(255, 255, 255, 0.06);
+    color: #4338ca;
+    background: rgba(99, 102, 241, 0.10);
   }
 
-  /* Shrink pill on scroll */
   .header-scrolled .header-pill {
-    background: rgba(13, 17, 23, 0.85);
-    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95) inset,
+      0 18px 38px -22px rgba(15, 23, 42, 0.30);
+  }
+
+  #mobile-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 </style>
 
 <script>
   const header = document.getElementById("site-header")!;
 
-  // ── Scroll: add background ──
   const onScroll = () => {
-    header.classList.toggle("header-scrolled", window.scrollY > 32);
+    header.classList.toggle("header-scrolled", window.scrollY > 24);
   };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  // ── Active section highlight ──
+  // Active section highlight
   const sections = document.querySelectorAll("section[id]");
   const navLinks = document.querySelectorAll<HTMLAnchorElement>(".nav-link");
-
   const highlightNav = () => {
     let current = "";
     sections.forEach((section) => {
       const top = section.getBoundingClientRect().top;
-      if (top <= 120) current = section.id;
+      if (top <= 140) current = section.id;
     });
     navLinks.forEach((link) => {
-      link.classList.toggle("active", link.getAttribute("href") === `#${current}`);
+      const href = link.getAttribute("href") || "";
+      link.classList.toggle("active", href.endsWith(`#${current}`));
     });
   };
   window.addEventListener("scroll", highlightNav, { passive: true });
+
+  // Mobile menu
+  const toggle = document.getElementById("mobile-menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  const iconOpen = document.getElementById("menu-open");
+  const iconClose = document.getElementById("menu-close");
+
+  toggle?.addEventListener("click", () => {
+    const open = !menu?.classList.contains("open");
+    menu?.classList.toggle("open", open);
+    toggle.setAttribute("aria-expanded", String(open));
+    iconOpen?.classList.toggle("hidden", open);
+    iconClose?.classList.toggle("hidden", !open);
+  });
+
+  // Close menu when navigating
+  document.querySelectorAll<HTMLAnchorElement>(".mob-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      menu?.classList.remove("open");
+      toggle?.setAttribute("aria-expanded", "false");
+      iconOpen?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+    });
+  });
 </script>

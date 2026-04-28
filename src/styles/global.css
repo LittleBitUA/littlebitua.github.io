@@ -3,132 +3,268 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────────────────────────
+   White Liquid Glass — Little Bit Design System
+   Світлий, скляний інтерфейс з делікатними blur-ефектами,
+   напівпрозорими картками і м'якими відблисками.
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+  --lb-bg-1: #f4f7fc;
+  --lb-bg-2: #eef2fb;
+  --lb-bg-3: #f7f4ff;
+
+  --lb-glass-bg:        rgba(255, 255, 255, 0.62);
+  --lb-glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --lb-glass-bg-soft:   rgba(255, 255, 255, 0.45);
+  --lb-glass-border:    rgba(255, 255, 255, 0.7);
+  --lb-glass-edge:      rgba(15, 23, 42, 0.06);
+
+  --lb-shadow-soft:  0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 12px 30px -16px rgba(15, 23, 42, 0.18);
+  --lb-shadow-glass: 0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 24px 60px -28px rgba(15, 23, 42, 0.28), 0 8px 24px -16px rgba(99, 102, 241, 0.18);
+  --lb-shadow-pop:   0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 28px 70px -20px rgba(15, 23, 42, 0.30), 0 14px 30px -18px rgba(99, 102, 241, 0.30);
+
+  --lb-accent:        #6366f1;
+  --lb-accent-light:  #818cf8;
+  --lb-accent-ice:    #0ea5e9;
+  --lb-accent-violet: #a78bfa;
+  --lb-accent-soft:   rgba(99, 102, 241, 0.12);
+
+  --lb-text-strong: #0f172a;
+  --lb-text:        #1e293b;
+  --lb-text-muted:  #475569;
+  --lb-text-subtle: #64748b;
+  --lb-text-faint:  #94a3b8;
+}
+
 /* ─── Base Resets & Typography ───────────────────────────────── */
 @layer base {
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color-scheme: light;
   }
 
   body {
-    @apply bg-surface-900 text-surface-100 font-sans relative;
-    background: linear-gradient(180deg, #080b10 0%, #0d1117 50%, #131a27 100%);
+    color: var(--lb-text);
+    font-family: "Inter", system-ui, sans-serif;
+    /* Single static background — wraps all soft colour zones into one paint pass.
+       Avoids per-card backdrop-filter cost by baking the "blurred ambient" into the page bg. */
+    background:
+      radial-gradient(900px 700px at 12% 10%, rgba(129, 140, 248, 0.22), transparent 65%),
+      radial-gradient(820px 640px at 88% 18%, rgba(56, 189, 248, 0.18), transparent 65%),
+      radial-gradient(900px 720px at 80% 95%, rgba(167, 139, 250, 0.18), transparent 65%),
+      radial-gradient(720px 540px at 18% 92%, rgba(99, 102, 241, 0.14), transparent 65%),
+      linear-gradient(180deg, var(--lb-bg-1) 0%, var(--lb-bg-2) 55%, var(--lb-bg-3) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    position: relative;
   }
 
-  /* Subtle ambient background glow */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 15% 50%, rgba(109, 93, 252, 0.08) 0%, transparent 70%),
-      radial-gradient(ellipse 60% 80% at 85% 70%, rgba(27, 154, 170, 0.06) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 50% at 50% 10%, rgba(74, 222, 128, 0.04) 0%, transparent 70%);
-    animation: ambient-drift 40s ease-in-out infinite alternate;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 70% 50% at 70% 30%, rgba(109, 93, 252, 0.05) 0%, transparent 70%),
-      radial-gradient(ellipse 50% 70% at 20% 80%, rgba(27, 154, 170, 0.04) 0%, transparent 70%);
-    animation: ambient-drift 50s ease-in-out infinite alternate-reverse;
-    z-index: 0;
-    pointer-events: none;
-  }
+  /* No animated body pseudo-elements anymore — they were forcing constant repaints. */
 
   body > * {
     position: relative;
     z-index: 1;
   }
 
-  /* Custom scrollbar (Webkit) */
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
+    height: 10px;
   }
   ::-webkit-scrollbar-track {
-    @apply bg-surface-800;
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-surface-400 rounded-full;
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-accent;
+    background: rgba(99, 102, 241, 0.55);
+    background-clip: padding-box;
   }
 
-  /* Selection */
   ::selection {
-    @apply bg-accent/30 text-white;
+    background: rgba(99, 102, 241, 0.25);
+    color: #1e1b4b;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(99, 102, 241, 0.55);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Headings get crisp dark colour */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--lb-text-strong);
+    letter-spacing: -0.02em;
+  }
+
+  a {
+    color: inherit;
   }
 }
 
-/* ─── Utility Components ─────────────────────────────────────── */
+/* ─── Liquid Glass Components ────────────────────────────────── */
+/*
+   Performance strategy:
+   - The page background already bakes in soft colour zones, so cards can be
+     opaque-translucent white without their own backdrop-filter.
+   - Heavy backdrop-filter is reserved for a SMALL set of high-impact elements
+     (header pill, hero featured card, mobile menu, scroll-to-top) — never on
+     repeating items like game cards.
+   - No ::before pseudo on common glass — saves a paint layer per element.
+*/
 @layer components {
-  /* Enhanced Liquid Glass panel effect - MORE DRAMATIC */
-  .glass {
-    @apply border rounded-2xl relative overflow-hidden;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.1) 0%,
-      rgba(255, 255, 255, 0.03) 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.15);
+  /* Standard glass surface — flat translucent, no backdrop-filter (used on 20+ cards) */
+  .lb-glass {
+    position: relative;
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 22px;
+    box-shadow: var(--lb-shadow-glass);
+    overflow: hidden;
+  }
+
+  /* Strong showcase variant — used sparingly (hero brand, footer, big cards).
+     Single light backdrop-filter is OK here. */
+  .lb-glass-strong {
+    position: relative;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 26px;
+    box-shadow: var(--lb-shadow-pop);
+  }
+
+  /* Subtle / minimal — flat, used inside other glass blocks */
+  .lb-glass-soft {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 18px;
+    box-shadow: var(--lb-shadow-soft);
+  }
+
+  /* Pill (header, scroll-top) — single glass element on screen at a time */
+  .lb-pill {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    border-radius: 999px;
     box-shadow:
-      0 8px 32px 0 rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.1) inset,
-      0 4px 12px 0 rgba(109, 93, 252, 0.1);
+      0 1px 0 rgba(255, 255, 255, 0.9) inset,
+      0 10px 24px -12px rgba(15, 23, 42, 0.18);
   }
 
-  .glass-light {
-    @apply backdrop-blur-lg border rounded-xl;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
-  }
-
-  /* Enhanced glow effect with liquid animation - MUCH MORE VISIBLE */
-  .glow-accent {
-    box-shadow:
-      0 0 20px rgba(109, 93, 252, 0.4),
-      0 0 40px rgba(109, 93, 252, 0.2),
-      0 8px 32px rgba(0, 0, 0, 0.4);
-    border-color: rgba(109, 93, 252, 0.4) !important;
-  }
-
-  /* Animated gradient text with flowing effect */
-  .gradient-text {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(
-      135deg,
-      theme("colors.accent.light"),
-      theme("colors.steam.blue"),
-      theme("colors.accent.DEFAULT"),
-      theme("colors.steam.green")
-    );
+  /* Animated gradient text for accents */
+  .lb-gradient-text {
+    background: linear-gradient(120deg, #4f46e5 0%, #6366f1 30%, #0ea5e9 65%, #a78bfa 100%);
     background-size: 200% 200%;
-    animation: gradient-flow 4s ease infinite;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: lbGradient 8s ease-in-out infinite;
   }
 
-  /* Liquid orb decoration */
-  .liquid-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.1;
-    animation: ambient-drift 30s ease-in-out infinite alternate;
+  /* Buttons */
+  .lb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    border-radius: 14px;
+    padding: 0.7rem 1.1rem;
+    font-size: 0.9rem;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background 0.25s ease;
+    cursor: pointer;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    text-decoration: none;
+    line-height: 1.1;
+  }
+
+  .lb-btn--primary {
+    color: #ffffff;
+    background: linear-gradient(135deg, #6366f1, #818cf8 60%, #38bdf8);
+    border-color: transparent;
+    background-clip: padding-box;
+    box-shadow:
+      0 0 0 1px rgba(99, 102, 241, 0.5),
+      0 1px 0 rgba(255, 255, 255, 0.55) inset,
+      0 14px 28px -12px rgba(99, 102, 241, 0.55);
+  }
+
+  .lb-btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.7) inset,
+      0 18px 36px -12px rgba(99, 102, 241, 0.65);
+  }
+
+  .lb-btn--ghost {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.85);
+    color: var(--lb-text);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 8px 18px -10px rgba(15, 23, 42, 0.18);
+  }
+
+  .lb-btn--ghost:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--lb-text-strong);
+  }
+
+  .lb-btn--soft {
+    background: rgba(99, 102, 241, 0.10);
+    color: #4338ca;
+    border-color: rgba(99, 102, 241, 0.28);
+  }
+
+  .lb-btn--soft:hover {
+    background: rgba(99, 102, 241, 0.18);
+    transform: translateY(-1px);
+  }
+
+  /* Section header */
+  .lb-section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(99, 102, 241, 0.10);
+    color: #4338ca;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid rgba(99, 102, 241, 0.18);
+  }
+
+  /* Card hover lift — transform-only, no box-shadow transition (cheaper repaint) */
+  .lb-lift {
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (hover: hover) {
+    .lb-lift:hover {
+      transform: translateY(-3px);
+    }
   }
 }
 
 /* ─── Intersection Observer Animations ───────────────────────── */
 [data-animate] {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-animate].visible {
@@ -136,20 +272,10 @@
   transform: translateY(0);
 }
 
-/* Game card: override transition to support hover effects */
-.game-card[data-animate] {
-  transition: opacity 0.6s ease-out, transform 0.3s ease-out, box-shadow 0.3s ease, border-color 0.3s ease;
-}
-
-.game-card[data-animate].visible:hover {
-  transform: translateY(-6px);
-}
-
-/* Stagger children */
 [data-animate-stagger] > * {
   opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transform: translateY(18px);
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-animate-stagger].visible > *:nth-child(1) { transition-delay: 0ms; }
@@ -158,45 +284,58 @@
 [data-animate-stagger].visible > *:nth-child(4) { transition-delay: 240ms; }
 [data-animate-stagger].visible > *:nth-child(5) { transition-delay: 320ms; }
 [data-animate-stagger].visible > *:nth-child(6) { transition-delay: 400ms; }
+[data-animate-stagger].visible > *:nth-child(7) { transition-delay: 480ms; }
+[data-animate-stagger].visible > *:nth-child(8) { transition-delay: 540ms; }
 
 [data-animate-stagger].visible > * {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* ─── Ambient Background Animations ─────────────────────────── */
-@keyframes ambient-drift {
-  0% {
-    transform: translate(0, 0);
-    opacity: 1;
-  }
-  50% {
-    transform: translate(15px, -10px);
-    opacity: 0.85;
-  }
-  100% {
-    transform: translate(-10px, 8px);
-    opacity: 0.95;
-  }
+@keyframes lbAmbient {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(15px, -20px, 0) scale(1.04); }
+  100% { transform: translate3d(-12px, 18px, 0) scale(0.98); }
 }
 
-@keyframes gradient-flow {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+@keyframes lbGradient {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes shimmer-slide {
-  0% {
-    transform: translateX(-100%);
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-  100% {
-    transform: translateX(100%);
-  }
+  body::before { animation: none; }
+}
+
+/* ─── Tailwind prose tweaks for white-on-light surfaces ───── */
+.prose.lb-prose {
+  color: var(--lb-text);
+}
+.prose.lb-prose strong { color: var(--lb-text-strong); }
+.prose.lb-prose a { color: var(--lb-accent); text-decoration-color: rgba(99, 102, 241, 0.4); }
+.prose.lb-prose a:hover { color: var(--lb-accent-dark, #4f46e5); }
+.prose.lb-prose code {
+  background: rgba(99, 102, 241, 0.1);
+  color: #4338ca;
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+.prose.lb-prose h1, .prose.lb-prose h2, .prose.lb-prose h3, .prose.lb-prose h4 {
+  color: var(--lb-text-strong);
+}
+.prose.lb-prose ul > li::marker {
+  color: var(--lb-accent);
 }

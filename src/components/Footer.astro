@@ -1,93 +1,103 @@
 ---
 // ─── Footer ────────────────────────────────────────────────────
+// Light glass footer.
+const year = new Date().getFullYear();
 ---
 
-<footer id="donate" class="border-t border-white/5 bg-surface-900">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-    <div class="grid md:grid-cols-3 gap-12">
-      <!-- Brand -->
-      <div>
-        <div class="flex items-center gap-2.5 mb-4">
-          <div class="w-9 h-9 rounded-lg bg-[#1a1a1a] border border-white/10
-                     flex items-center justify-center overflow-hidden">
-            <svg viewBox="0 0 40 40" class="w-full h-full">
-              <rect width="40" height="40" rx="8" fill="#1a1a1a"/>
-              <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle"
-                    font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="20" fill="white"
-                    letter-spacing="-1">LB</text>
-            </svg>
+<footer class="relative pt-16 pb-10 mt-12">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="lb-glass-strong p-8 sm:p-10">
+      <div class="grid md:grid-cols-3 gap-10">
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-3 mb-4">
+            <span
+              class="w-10 h-10 rounded-xl flex items-center justify-center
+                     bg-gradient-to-br from-indigo-500 to-sky-500 text-white
+                     shadow-[0_10px_22px_-10px_rgba(99,102,241,0.55)]"
+            >
+              <svg viewBox="0 0 40 40" class="w-full h-full">
+                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle"
+                      font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="18" fill="#fff"
+                      letter-spacing="-1">LB</text>
+              </svg>
+            </span>
+            <span class="text-slate-900 font-bold text-lg">«Little Bit»</span>
           </div>
-          <span class="text-white font-bold text-lg">
-            «Little Bit»
-          </span>
+          <p class="text-sm text-slate-600 leading-relaxed max-w-xs">
+            Працюємо, щоб українським гравцям було комфортно грати рідною мовою.
+            Кожен переклад — крок уперед.
+          </p>
         </div>
-        <p class="text-sm text-surface-300 leading-relaxed max-w-xs">
-          Працюємо, щоб українським гравцям було комфортно грати рідною мовою.
-          Кожен переклад — крок уперед.
-        </p>
+
+        <!-- Navigation -->
+        <div>
+          <h3 class="text-slate-900 font-bold mb-4 text-sm uppercase tracking-wider">Навігація</h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="/#projects" class="text-slate-600 hover:text-indigo-600 transition-colors">Локалізації</a></li>
+            <li><a href="/projects" class="text-slate-600 hover:text-indigo-600 transition-colors">Усі проєкти</a></li>
+            <li><a href="/#progress" class="text-slate-600 hover:text-indigo-600 transition-colors">Загальний прогрес</a></li>
+            <li><a href="/#updates" class="text-slate-600 hover:text-indigo-600 transition-colors">Оновлення</a></li>
+            <li><a href="/#launcher" class="text-slate-600 hover:text-indigo-600 transition-colors">LBK Launcher</a></li>
+            <li><a href="/#faq" class="text-slate-600 hover:text-indigo-600 transition-colors">FAQ</a></li>
+          </ul>
+        </div>
+
+        <!-- Support -->
+        <div>
+          <h3 class="text-slate-900 font-bold mb-4 text-sm uppercase tracking-wider">Підтримати</h3>
+          <p class="text-sm text-slate-600 mb-4">
+            Ваша підтримка допомагає перекладати більше ігор.
+          </p>
+          <div class="flex flex-col gap-2.5">
+            <a
+              href="https://send.monobank.ua/jar/3h4akVJRXK"
+              target="_blank" rel="noopener noreferrer"
+              class="lb-btn lb-btn--ghost !justify-start"
+            >
+              <span class="text-lg font-extrabold leading-none shrink-0 text-slate-700">₴</span>
+              Монобанка
+            </a>
+            <a
+              href="https://donatello.to/LittleBitUA"
+              target="_blank" rel="noopener noreferrer"
+              class="lb-btn lb-btn--primary !justify-start"
+            >
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              Donatello
+            </a>
+          </div>
+        </div>
       </div>
 
-      <!-- Navigation -->
-      <div>
-        <h3 class="text-white font-semibold mb-4">Навігація</h3>
-        <ul class="space-y-2.5">
-          <li><a href="#projects" class="text-sm text-surface-300 hover:text-accent transition-colors">Проєкти</a></li>
-          <li><a href="#progress" class="text-sm text-surface-300 hover:text-accent transition-colors">Загальний прогрес</a></li>
-          <li><a href="#updates" class="text-sm text-surface-300 hover:text-accent transition-colors">Оновлення</a></li>
-        </ul>
-      </div>
-
-      <!-- Support -->
-      <div>
-        <h3 class="text-white font-semibold mb-4">Підтримати</h3>
-        <p class="text-sm text-surface-300 mb-4">
-          Ваша підтримка допомагає нам перекладати більше ігор.
+      <div class="mt-10 pt-6 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-xs text-slate-500">
+          © {year} «Little Bit». Усі права належать відповідним власникам.
         </p>
-        <div class="flex flex-col gap-2.5">
+        <div class="flex items-center gap-3">
           <a
-            href="https://send.monobank.ua/jar/3h4akVJRXK"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2.5 px-5 py-2.5 text-sm font-semibold
-                   bg-[#1d1d1b] hover:bg-[#2a2a28] text-white rounded-xl border border-white/10
-                   transition-all duration-200 hover:shadow-lg hover:shadow-black/30"
+            href="https://t.me/LittleBitUA"
+            target="_blank" rel="noopener noreferrer"
+            class="lb-pill px-3.5 py-1.5 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-indigo-600 transition-colors"
+            aria-label="Telegram"
           >
-            <span class="text-lg font-bold leading-none shrink-0">₴</span>
-            Монобанка
-          </a>
-          <a
-            href="https://donatello.to/LittleBitUA"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-2.5 px-5 py-2.5 text-sm font-semibold
-                   bg-accent hover:bg-accent-light text-white rounded-xl
-                   transition-all duration-200 hover:shadow-lg hover:shadow-accent/20"
-          >
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
             </svg>
-            Donatello
+            Telegram
+          </a>
+          <a
+            href="https://lbklauncher.com/"
+            target="_blank" rel="noopener noreferrer"
+            class="lb-pill px-3.5 py-1.5 inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-indigo-600 transition-colors"
+          >
+            <span class="text-base">🇺🇦</span>
+            LBK Launcher
           </a>
         </div>
-      </div>
-    </div>
-
-    <!-- Bottom bar -->
-    <div class="mt-12 pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p class="text-xs text-surface-400">
-        &copy; {new Date().getFullYear()} «Little Bit». Усі права належать відповідним власникам.
-      </p>
-      <div class="flex items-center gap-4">
-        <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer" class="text-surface-400 hover:text-white transition-colors" aria-label="Telegram">
-          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
-          </svg>
-        </a>
-        <a href="https://lbklauncher.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-surface-400 hover:text-white transition-colors" aria-label="LBK Launcher">
-          <span class="text-base">🇺🇦</span>
-          <span class="text-sm font-medium">LBK Launcher</span>
-        </a>
       </div>
     </div>
   </div>

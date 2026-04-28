@@ -1,7 +1,6 @@
 ---
 // ─── Home Page ─────────────────────────────────────────────────
-// Main landing page assembling all components.
-// Game data is imported and rendered dynamically.
+// White liquid glass landing page assembling all sections.
 
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
@@ -18,93 +17,66 @@ import LBKLauncher from "../components/LBKLauncher.astro";
 import Support from "../components/Support.astro";
 import Footer from "../components/Footer.astro";
 import { games } from "../data/games";
+
+// Sort games for default order: visible / done first, in-progress, fundraising
+const sortedGames = [...games].sort((a, b) => b.progress - a.progress);
 ---
 
 <Layout>
   <Header />
 
   <main class="flex-1">
-    <!-- Hero -->
     <Hero />
 
-    <!-- Game Projects Section -->
-    <section id="projects" class="pt-20 pb-20 relative">
-      <!-- Subtle background decoration -->
-      <div class="absolute inset-0 -z-10">
-        <div
-          class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04]
-                 bg-[radial-gradient(ellipse,_theme(colors.steam.blue)_0%,_transparent_70%)]"
-        />
-      </div>
-
+    <!-- Projects Section -->
+    <section id="projects" class="pt-12 pb-24 sm:pt-16 sm:pb-28 relative">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <!-- Section header -->
         <div class="text-center mb-10" data-animate>
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
+          <span class="lb-section-eyebrow mb-4">Локалізації</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-3">
             Наші проєкти
           </h2>
-          <p class="text-surface-300 max-w-lg mx-auto">
+          <p class="text-slate-500 max-w-lg mx-auto">
             Ігри, над локалізацією яких ми працюємо
           </p>
         </div>
 
-        <!-- Filter -->
         <FilterBar />
 
-        <!-- Game cards grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="games-grid">
-          {games.map((game) => <GameCard game={game} />)}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 sm:gap-6" id="games-grid">
+          {sortedGames.map((game) => <GameCard game={game} />)}
         </div>
       </div>
     </section>
 
-    <!-- Progress Analytics Section -->
-    <section class="py-20 relative">
-      <!-- Background decoration -->
-      <div class="absolute inset-0 -z-10">
-        <div
-          class="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full opacity-[0.04]
-                 bg-[radial-gradient(ellipse,_theme(colors.accent.DEFAULT)_0%,_transparent_70%)]"
-        />
-      </div>
-
+    <!-- Analytics -->
+    <section class="py-20 sm:py-24">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <!-- Section header -->
         <div class="text-center mb-12" data-animate>
-          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">
-            Аналітика команди
+          <span class="lb-section-eyebrow mb-4">Цифри команди</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-3">
+            Аналітика
           </h2>
-          <p class="text-surface-300 max-w-lg mx-auto">
-            Статистика прогресу та досягнень локалізації
+          <p class="text-slate-500 max-w-lg mx-auto">
+            Статистика прогресу та досягнень локалізацій
           </p>
         </div>
 
-        <!-- Stats Cards -->
         <div class="mb-12">
           <StatsCards />
         </div>
 
-        <!-- Progress Tracker & Timeline Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <ProgressTracker />
           <Timeline />
         </div>
       </div>
     </section>
 
-    <!-- Overall Progress -->
     <OverallProgress />
-
-    <!-- Recent Updates -->
     <RecentUpdates />
-
-    <!-- LBK Launcher -->
     <LBKLauncher />
-
-    <!-- Support -->
     <Support />
-
-    <!-- FAQ -->
     <FAQ />
   </main>
 
