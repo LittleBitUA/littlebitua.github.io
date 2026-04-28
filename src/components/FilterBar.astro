@@ -138,8 +138,9 @@ const statusList = getStatusList();
   let currentTag = "";
   let currentSort = "default";
 
-  const gamesList = cards.map((card) => ({
+  const gamesList = cards.map((card, idx) => ({
     element: card,
+    originalIndex: idx,
     title: card.dataset.title || "",
     series: card.dataset.series || "",
     tags: card.dataset.tags || "",
@@ -167,7 +168,7 @@ const statusList = getStatusList();
         case "title-asc":     return a.title.localeCompare(b.title, "uk");
         case "title-desc":    return b.title.localeCompare(a.title, "uk");
         case "update-desc":   return b.lastUpdate.localeCompare(a.lastUpdate);
-        default: return 0;
+        default:              return a.originalIndex - b.originalIndex;
       }
     });
 
