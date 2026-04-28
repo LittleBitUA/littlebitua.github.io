@@ -99,18 +99,18 @@ const topPillColor =
 
     <!-- Content -->
     <div class="p-4 sm:p-5 flex flex-col flex-1">
-      <h3 class="text-base font-bold leading-snug mb-2 line-clamp-2 text-slate-900">
+      <h3 class="text-base font-bold leading-snug mb-2 line-clamp-2 text-slate-900 lb-card-title">
         <a href={`/projects/${game.id}`} class="hover:text-indigo-600 transition-colors">
           {game.title}
         </a>
       </h3>
 
-      <p class="card-desc text-[13px] leading-relaxed mb-3 line-clamp-2 flex-1 text-slate-600 transition-all">
+      <p class="card-desc text-[13px] leading-relaxed mb-3 line-clamp-2 text-slate-600 transition-all lb-card-desc">
         {game.description}
       </p>
 
       <!-- Progress -->
-      <div class="mb-3">
+      <div class="mb-3 lb-card-progress">
         {hasDetails ? (
           <div class="game-progress-toggle cursor-pointer" data-expanded="false">
             <div class="flex items-center gap-2">
@@ -155,9 +155,9 @@ const topPillColor =
         )}
       </div>
 
-      <!-- Tags -->
-      <div class="flex flex-wrap gap-1.5 mb-4">
-        {game.tags.slice(0, 4).map((tag) => <Tag label={tag} />)}
+      <!-- Tags (single row, fixed height) -->
+      <div class="flex flex-nowrap gap-1.5 mb-4 lb-card-tags">
+        {game.tags.slice(0, 3).map((tag) => <Tag label={tag} />)}
       </div>
 
       <!-- Details button -->
@@ -262,4 +262,25 @@ const topPillColor =
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  /* Fixed sizes — every card has the same vertical rhythm.
+     Title 2 lines, description 2 lines, tags single row.
+     Buttons stack at the same Y across all cards regardless of text length. */
+  .lb-card-title {
+    height: calc(1.4em * 2);
+    min-height: calc(1.4em * 2);
+    line-height: 1.4em;
+  }
+  .lb-card-desc {
+    height: calc(1.55em * 2);
+    min-height: calc(1.55em * 2);
+    line-height: 1.55em;
+    overflow: hidden;
+  }
+  .lb-card-tags {
+    height: 1.85rem;
+    min-height: 1.85rem;
+    overflow: hidden;
+  }
+  .lb-card-progress { min-height: 0.875rem; }
 </style>

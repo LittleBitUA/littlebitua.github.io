@@ -135,6 +135,31 @@ const baseClasses = [
     background: var(--lb-accent, currentColor);
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.18), 0 0 8px var(--lb-accent, currentColor);
     flex-shrink: 0;
+    position: relative;
+  }
+
+  /* Pulse only on desktop / pointer-fine devices, never on touch / mobile */
+  @media (hover: hover) and (pointer: fine) {
+    .lb-status-badge__dot::after {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      border-radius: 999px;
+      background: var(--lb-accent, currentColor);
+      opacity: 0;
+      animation: lbDotPulse 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      pointer-events: none;
+    }
+  }
+
+  @keyframes lbDotPulse {
+    0%   { transform: scale(1);   opacity: 0.55; }
+    70%  { transform: scale(2.3); opacity: 0; }
+    100% { transform: scale(2.3); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lb-status-badge__dot::after { animation: none; opacity: 0; }
   }
 
   .lb-status-badge__icon {

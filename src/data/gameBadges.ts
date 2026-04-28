@@ -127,7 +127,7 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     ...BADGE_PRESETS.earlyAccess,
   },
   "uncharted1": {
-    text: "Ранній доступ — доступно",
+    text: "Ранній доступ",
     ...BADGE_PRESETS.earlyAccess,
   },
   "digging-a-hole": {
