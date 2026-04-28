@@ -290,20 +290,6 @@ function fmtDate(d?: string) {
                   </div>
                 )}
 
-                {game.team && game.team.length > 0 && (
-                  <div>
-                    <h3 class="text-lg font-black text-slate-900 mb-3">Команда</h3>
-                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {game.team.map((m) => (
-                        <li class="lb-glass-soft px-4 py-2.5">
-                          <p class="text-sm font-semibold text-slate-900">{m.name}</p>
-                          <p class="text-xs text-slate-500">{m.role}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
                 {game.lastUpdate && (
                   <p class="text-xs text-slate-500 text-center pt-2">
                     Останнє оновлення: {fmtDate(game.lastUpdate)}

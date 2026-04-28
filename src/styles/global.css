@@ -192,11 +192,10 @@
 
   .lb-btn--primary {
     color: #ffffff;
-    background: linear-gradient(135deg, #6366f1, #818cf8 60%, #38bdf8);
+    background: linear-gradient(135deg, #6366f1 0%, #818cf8 55%, #38bdf8 100%);
     border-color: transparent;
     background-clip: padding-box;
     box-shadow:
-      0 0 0 1px rgba(99, 102, 241, 0.5),
       0 1px 0 rgba(255, 255, 255, 0.55) inset,
       0 14px 28px -12px rgba(99, 102, 241, 0.55);
   }
