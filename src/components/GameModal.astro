@@ -61,14 +61,9 @@ function fmtDate(d?: string) {
               aria-hidden="true"
             >
               <!-- Hero section -->
-              <div class="relative overflow-hidden">
-                <div class="absolute inset-0 -z-10" aria-hidden="true">
-                  <img src={game.cover} alt="" class="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-30" />
-                  <div class="absolute inset-0 bg-gradient-to-b from-white/65 via-white/80 to-white/95"></div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6 p-6 sm:p-8">
-                  <div class="mx-auto lg:mx-0 w-full max-w-[260px]">
+              <div class="relative">
+                <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6 p-5 sm:p-7">
+                  <div class="mx-auto lg:mx-0 w-full max-w-[240px]">
                     <div class="relative aspect-[2/3] rounded-2xl overflow-hidden border border-white/80 shadow-[0_24px_50px_-22px_rgba(15,23,42,0.45)]">
                       <img src={game.cover} alt={game.title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async" />
                       <div class="absolute top-2.5 left-2.5 flex flex-col gap-1.5">
@@ -292,26 +287,6 @@ function fmtDate(d?: string) {
                       class="prose lb-prose prose-sm max-w-none lb-glass-soft p-5"
                       set:html={marked(game.installInstructions)}
                     />
-                  </div>
-                )}
-
-                {/* Progress history (text list, no chart) */}
-                {game.progressHistory && game.progressHistory.length > 0 && (
-                  <div>
-                    <h3 class="text-lg font-black text-slate-900 mb-3">Історія прогресу</h3>
-                    <ul class="space-y-2">
-                      {[...game.progressHistory].reverse().map((entry) => (
-                        <li class="flex items-start gap-3 lb-glass-soft px-4 py-2.5">
-                          <span class="text-xs font-bold tabular-nums text-indigo-600 w-12 shrink-0 mt-0.5">
-                            {entry.progress}%
-                          </span>
-                          <div class="flex-1 min-w-0">
-                            <p class="text-sm font-semibold text-slate-900">{entry.milestone || "—"}</p>
-                            <p class="text-xs text-slate-500">{fmtDate(entry.date)}</p>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
                   </div>
                 )}
 
