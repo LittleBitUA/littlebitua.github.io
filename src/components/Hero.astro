@@ -23,7 +23,11 @@ const featuredItems = [
   },
 ];
 
-const fundraisingGames = games.filter((g) => g.status === "fundraising");
+// Усі активні збори: і повністю-fundraising проєкти, і ті, де гра вже доступна,
+// але ведеться збір на подальші роботи (наприклад, MGS Δ).
+const fundraisingGames = games.filter(
+  (g) => !!g.fundraisingGoal && !g.fundraisingCompleted
+);
 
 const RING_R = 34;
 const RING_C = 2 * Math.PI * RING_R;
