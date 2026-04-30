@@ -51,27 +51,24 @@ const ringOffset = RING_C * (1 - overall / 100);
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
 
       <!-- Brand block -->
-      <div class="lb-glass-strong lg:col-span-7 p-7 sm:p-9 lg:p-10 flex flex-col justify-between min-h-[300px] hero-card hero-delay-1">
-        <div>
-          <h1 class="text-[2rem] sm:text-5xl lg:text-[3.5rem] font-black tracking-tight leading-[1.05] mb-5 text-slate-900">
-            Перекладаємо те, у&nbsp;що
-            <span class="lb-gradient-text whitespace-nowrap">самі граємо</span>
-          </h1>
-          <p class="hero-subtitle text-base sm:text-lg leading-relaxed max-w-xl text-slate-600">
-            <span class="hero-word">Сюжет,</span>
-            <span class="hero-word">інтерфейс</span>
-            <span class="hero-word">і дрібниці</span>
-            <span class="hero-word">—</span>
-            <span class="hero-word">українською.</span>
-          </p>
-        </div>
-
+      <div class="lb-glass-strong lg:col-span-7 p-6 sm:p-8 flex flex-col justify-center hero-card hero-delay-1">
+        <h1 class="text-[2rem] sm:text-5xl lg:text-[3.25rem] font-black tracking-tight leading-[1.05] mb-4 text-slate-900">
+          Перекладаємо те, у&nbsp;що
+          <span class="lb-gradient-text whitespace-nowrap">самі граємо</span>
+        </h1>
+        <p class="hero-subtitle text-base sm:text-lg leading-relaxed max-w-xl text-slate-600">
+          <span class="hero-word">Сюжет,</span>
+          <span class="hero-word">інтерфейс</span>
+          <span class="hero-word">і дрібниці</span>
+          <span class="hero-word">—</span>
+          <span class="hero-word">українською.</span>
+        </p>
       </div>
 
       <!-- Featured carousel -->
       <div
         id="featured-carousel"
-        class="lb-glass lg:col-span-5 relative min-h-[300px] overflow-hidden hero-card hero-delay-2 group"
+        class="lb-glass lg:col-span-5 relative min-h-[240px] overflow-hidden hero-card hero-delay-2 group"
       >
         {featuredItems.map((item, index) => (
           <div
