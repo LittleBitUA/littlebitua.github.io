@@ -19,8 +19,8 @@ import Footer from "../components/Footer.astro";
 import GameModal from "../components/GameModal.astro";
 import { games } from "../data/games";
 
-// Sort games for default order: visible / done first, in-progress, fundraising
-const sortedGames = [...games].sort((a, b) => b.progress - a.progress);
+// Use the order from src/data/games.ts directly — that file is the source of truth.
+const sortedGames = games;
 ---
 
 <Layout>

@@ -1,6 +1,9 @@
 ---
 // ─── ProgressBar Component ─────────────────────────────────────
-// Glass-style animated progress bar.
+// Liquid Glass — тонка скляна шкала з делікатним glow.
+//   • Доріжка: ледь індигове прозоре скло.
+//   • Заповнення: linear-gradient indigo → violet (без різких переходів).
+//   • М'яке зовнішнє світіння; для 100% — emerald → teal акцент.
 
 export interface Props {
   percent: number;
@@ -13,14 +16,20 @@ export interface Props {
 const { percent, showLabel = true, size = "md", color } = Astro.props;
 const clampedPercent = Math.max(0, Math.min(100, percent));
 
-const heightMap = { sm: "h-1.5", md: "h-2.5", lg: "h-3.5" };
+// Висоти: тонка елегантна шкала.
+const heightMap = { sm: "h-1", md: "h-1.5", lg: "h-2" };
 
-function getGradient(p: number, colorOverride?: string): string {
-  if (colorOverride) return `linear-gradient(90deg, ${colorOverride}, ${colorOverride})`;
-  // Завершено — зелений. Усе інше — єдиний accent-градієнт сайту.
-  if (p >= 100) return "linear-gradient(90deg, #16a34a, #22d3ee)";
-  return "linear-gradient(90deg, #6366f1, #818cf8 60%, #38bdf8)";
+const isDone = clampedPercent >= 100;
+
+function getFillBackground(p: number, colorOverride?: string): string {
+  if (colorOverride) return colorOverride;
+  if (p >= 100) return "linear-gradient(90deg, #10b981, #14b8a6)"; // emerald → teal
+  return "linear-gradient(90deg, #6366f1, #8b5cf6)";               // indigo → violet
 }
+
+const glow = isDone
+  ? "0 0 14px -2px rgba(16,185,129,0.55), 0 0 4px rgba(16,185,129,0.45)"
+  : "0 0 14px -2px rgba(99,102,241,0.55), 0 0 4px rgba(139,92,246,0.40)";
 ---
 
 <div class="w-full">
@@ -33,10 +42,13 @@ function getGradient(p: number, colorOverride?: string): string {
     </div>
   )}
 
-  <div class={`relative w-full rounded-full overflow-hidden ${heightMap[size]}`} style="background: rgba(15,23,42,0.07); box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset;">
+  <div
+    class={`relative w-full rounded-full overflow-visible ${heightMap[size]}`}
+    style="background: rgba(99, 102, 241, 0.10); box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 1px 2px rgba(15,23,42,0.04) inset;"
+  >
     <div
       class="lb-bar h-full rounded-full"
-      style={`--progress-width: ${clampedPercent}%; background: ${getGradient(clampedPercent, color)};`}
+      style={`--progress-width: ${clampedPercent}%; background: ${getFillBackground(clampedPercent, color)}; box-shadow: ${glow};`}
       role="progressbar"
       aria-valuenow={clampedPercent}
       aria-valuemin={0}
@@ -49,8 +61,9 @@ function getGradient(p: number, colorOverride?: string): string {
   .lb-bar {
     width: var(--progress-width);
     position: relative;
+    transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
   @media (prefers-reduced-motion: reduce) {
-    .lb-bar { width: var(--progress-width); }
+    .lb-bar { transition: none; }
   }
 </style>

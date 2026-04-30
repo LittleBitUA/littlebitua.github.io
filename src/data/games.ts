@@ -60,6 +60,7 @@ export interface Game {
 
   // ── Detail Pages Data ──
   screenshots?: string[]; // Paths to translation screenshots
+  videoUrl?: string; // YouTube URL (any form) for trailer / showcase video
   installInstructions?: string; // Markdown instructions
   version?: string; // Current localization version (e.g. "1.0.5")
   faq?: { question: string; answer: string }[]; // FAQ items
@@ -106,6 +107,147 @@ export const STATUS_COLORS: Record<GameStatus, string> = {
 
 /** All game localization projects */
 export const games: Game[] = [
+  {
+    id: "yakuza-kiwami3",
+    title: "Yakuza Kiwami 3 & Dark Ties",
+    series: "Yakuza",
+    description:
+      "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
+    cover: "https://cdn2.steamgriddb.com/grid/d7fbe5fb946867aacf79463f8f36981c.png",
+    progress: 38,
+    status: "early-access",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 38 },
+      { label: "Редактура", percent: 0 },
+      { label: "Текстури", percent: 40 },
+    ],
+    tags: ["Бойовик", "RPG", "Відкритий світ", "Кримінал"],
+    steamUrl: "https://store.steampowered.com/app/3937550/Yakuza_Kiwami_3__Dark_Ties/",
+    downloadUrl: "https://lbklauncher.com/games/yakuza_kiwami_3_dark_ties/little-bit",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-04-28",
+    progressHistory: [
+      { date: "2026-03-04", progress: 23, milestone: "Початок перекладу" },
+      { date: "2026-03-07", progress: 25, milestone: "25% перекладу" },
+      { date: "2026-03-09", progress: 26, milestone: "26% перекладу" },
+      { date: "2026-03-12", progress: 30, milestone: "30.40% перекладу" },
+      { date: "2026-04-28", progress: 38, milestone: "Ранній доступ — 37.56% перекладено" }
+    ],
+    stats: {
+      totalLines: 57398,
+      translatedLines: 21557, // 37.56%
+      totalWords: 468281, // 134011 укр + 334270 англ
+    },
+  },
+  {
+    id: "nier-replicant",
+    title: "NieR Replicant™ ver.1.22474487139...",
+    description:
+      "Оновлена версія культової екшен-RPG, де юнак Нір вирушає на відчайдушний пошук порятунку для своєї сестри Йони. Разом із балакучим «Ґримоаром Вайсом» та незабутніми супутниками ви досліджуватимете химерний світ, битиметеся з Тінями й розплутуватимете історію, у якій кожна відповідь має свою ціну — і веде до кількох фіналів.",
+    cover: "/images/nier-replicant.jpg",
+    progress: 28,
+    status: "fundraising",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 28 },
+    ],
+    tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
+    screenshots: [
+      "/images/NieR_1.webp",
+      "/images/NieR_2.webp",
+      "/images/NieR_3.webp",
+      "/images/NieR_4.webp",
+      "/images/NieR_5.webp",
+    ],
+    videoUrl: "https://www.youtube.com/watch?v=7NiZAmBlMk0",
+    steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    fundraisingRaised: 14193,
+    fundraisingGoal: 50000,
+    fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
+    lastUpdate: "2026-04-28",
+    stats: {
+      totalLines: 24458,
+      translatedLines: 6921, // 28.3%
+      totalWords: 131813, // 27203 UA + 109012 ENG
+      totalCharacters: 682805,
+    },
+  },
+  {
+    id: "mgs2",
+    title: "METAL GEAR SOLID 2: Sons of Liberty - Master Collection Version",
+    description:
+      "METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version — культовий стелс-екшен, де місія на танкері переростає у змову планетарного масштабу. На вас чекають проникнення без зайвого шуму, гаджети, напружені босфайти та історія про інформацію, контроль і правду — актуальна й сьогодні.",
+    cover: "/images/mgs2.jpg",
+    progress: 60,
+    status: "early-access",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 60 },
+      { label: "Редактура", percent: 0 },
+    ],
+    tags: ["Бойовик", "Стелс", "Глибокий сюжет", "Пригоди"],
+    steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
+    downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_2_sons_of_liberty_master_collection_version/little-bit-perekladach-patriotiv-kostyanchek8",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    fundraisingCompleted: true,
+    lastUpdate: "2026-04-28",
+    team: [
+      { name: "Little Bit", role: "Переклад" },
+      { name: "Перекладач патріотів", role: "Переклад" },
+      { name: "Kostyanchek8", role: "Переклад" }
+    ],
+  },
+  {
+    id: "uncharted1",
+    title: "Uncharted: Drake's Fortune",
+    series: "Uncharted",
+    description:
+      "Натан Дрейк вирушає на пошуки скарбів Ель Дорадо. Перша частина культової пригодницької серії — тепер українською.",
+    cover: "/images/uncharted1.png",
+    progress: 90,
+    status: "early-access",
+    stage: "Редактура",
+    stageDetails: [
+      { label: "Переклад", percent: 90 },
+      { label: "Редактура", percent: 50 },
+    ],
+    tags: ["Бойовик", "Пригоди", "Шутер"],
+    downloadUrl: "https://lbklauncher.com/games/uncharted_drakes_fortune/little-bit",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-04-28",
+
+    // Extended data
+    detailedDescription: "Початок легендарної серії про мисливця за скарбами Натана Дрейка. Захоплюючі пригоди в джунглях Амазонки, загадка Ель Дорадо та незабутні персонажі.",
+    gameYear: 2007,
+    genre: ["Action", "Пригоди", "Шутер"],
+    platform: ["PlayStation"],
+    translationSize: "small",
+    team: [
+      { name: "Little Bit Team", role: "Переклад та редакція" }
+    ],
+    progressHistory: [
+      { date: "2025-12-01", progress: 60, milestone: "Основний сюжет" },
+      { date: "2026-01-15", progress: 80, milestone: "Завершення перекладу" },
+      { date: "2026-02-16", progress: 90, milestone: "Редактура" }
+    ],
+    stats: {
+      totalLines: 3332,
+      translatedLines: 2920, // 87.64%
+      totalWords: 14999, // 13013 укр + 1986 англ
+      totalCharacters: 82494 // Приблизно
+    },
+    installInstructions: `## Встановлення локалізації Uncharted: Drake's Fortune
+
+### Через LBK Launcher
+1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
+2. Запустіть лаунчер та знайдіть Uncharted: Drake's Fortune у списку
+3. Натисніть "Встановити локалізацію"
+4. Запускайте гру як зазвичай
+
+**Важливо:** Патч працює з версією гри для PlayStation.`
+  },
   {
     id: "mgs-snake-eater",
     title: "METAL GEAR SOLID Δ: SNAKE EATER",
@@ -174,7 +316,6 @@ export const games: Game[] = [
       },
     ],
   },
-  // ── Done (100%) ───────────────────────────────────────────
   {
     id: "nmh1",
     title: "No More Heroes",
@@ -228,8 +369,6 @@ export const games: Game[] = [
       totalCharacters: 450000
     }
   },
-
-  // ── Early Access / In Progress ───────────────────────────
   {
     id: "dispatch",
     title: "Dispatch",
@@ -280,55 +419,6 @@ export const games: Game[] = [
 **Важливо:** Патч працює з версією гри Steam.`
   },
   {
-    id: "uncharted1",
-    title: "Uncharted: Drake's Fortune",
-    series: "Uncharted",
-    description:
-      "Натан Дрейк вирушає на пошуки скарбів Ель Дорадо. Перша частина культової пригодницької серії — тепер українською.",
-    cover: "/images/uncharted1.png",
-    progress: 90,
-    status: "early-access",
-    stage: "Редактура",
-    stageDetails: [
-      { label: "Переклад", percent: 90 },
-      { label: "Редактура", percent: 50 },
-    ],
-    tags: ["Бойовик", "Пригоди", "Шутер"],
-    downloadUrl: "https://lbklauncher.com/games/uncharted_drakes_fortune/little-bit",
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-04-28",
-
-    // Extended data
-    detailedDescription: "Початок легендарної серії про мисливця за скарбами Натана Дрейка. Захоплюючі пригоди в джунглях Амазонки, загадка Ель Дорадо та незабутні персонажі.",
-    gameYear: 2007,
-    genre: ["Action", "Пригоди", "Шутер"],
-    platform: ["PlayStation"],
-    translationSize: "small",
-    team: [
-      { name: "Little Bit Team", role: "Переклад та редакція" }
-    ],
-    progressHistory: [
-      { date: "2025-12-01", progress: 60, milestone: "Основний сюжет" },
-      { date: "2026-01-15", progress: 80, milestone: "Завершення перекладу" },
-      { date: "2026-02-16", progress: 90, milestone: "Редактура" }
-    ],
-    stats: {
-      totalLines: 3332,
-      translatedLines: 2920, // 87.64%
-      totalWords: 14999, // 13013 укр + 1986 англ
-      totalCharacters: 82494 // Приблизно
-    },
-    installInstructions: `## Встановлення локалізації Uncharted: Drake's Fortune
-
-### Через LBK Launcher
-1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
-2. Запустіть лаунчер та знайдіть Uncharted: Drake's Fortune у списку
-3. Натисніть "Встановити локалізацію"
-4. Запускайте гру як зазвичай
-
-**Важливо:** Патч працює з версією гри для PlayStation.`
-  },
-  {
     id: "judgment",
     title: "Judgment",
     series: "Judgment",
@@ -340,7 +430,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 90 },
-      { label: "Редактура", percent: 60 },
+      { label: "Редактура", percent: 0 },
     ],
     tags: ["Бойовик", "Детектив", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2058180/Judgment/",
@@ -483,51 +573,19 @@ export const games: Game[] = [
     }
   },
   {
-    id: "yakuza-kiwami3",
-    title: "Yakuza Kiwami 3 & Dark Ties",
-    series: "Yakuza",
-    description:
-      "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
-    cover: "https://cdn2.steamgriddb.com/grid/d7fbe5fb946867aacf79463f8f36981c.png",
-    progress: 38,
-    status: "early-access",
-    stage: "Переклад",
-    stageDetails: [
-      { label: "Переклад", percent: 38 },
-      { label: "Редактура", percent: 0 },
-    ],
-    tags: ["Бойовик", "RPG", "Відкритий світ", "Кримінал"],
-    steamUrl: "https://store.steampowered.com/app/3937550/Yakuza_Kiwami_3__Dark_Ties/",
-    downloadUrl: "https://lbklauncher.com/games/yakuza_kiwami_3_dark_ties/little-bit",
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-04-28",
-    progressHistory: [
-      { date: "2026-03-04", progress: 23, milestone: "Початок перекладу" },
-      { date: "2026-03-07", progress: 25, milestone: "25% перекладу" },
-      { date: "2026-03-09", progress: 26, milestone: "26% перекладу" },
-      { date: "2026-03-12", progress: 30, milestone: "30.40% перекладу" },
-      { date: "2026-04-28", progress: 38, milestone: "Ранній доступ — 37.56% перекладено" }
-    ],
-    stats: {
-      totalLines: 57398,
-      translatedLines: 21557, // 37.56%
-      totalWords: 468281, // 134011 укр + 334270 англ
-    },
-  },
-  {
     id: "nmh3",
     title: "No More Heroes 3",
     series: "No More Heroes",
     description:
       "Повернення Тревіса Тачдауна після довгої паузи, коли над Санта-Дестроєм нависає справді космічна загроза. Прибульці та їхній лідер Фу перетворюють порятунок світу на змагання в «галактичному рейтингу супергероїв», тож Тревіс знову береться за променеву катану й прорізає собі шлях крізь абсурд, стиль і шалену сатиру — у наймасштабнішій та найхимернішій частині серії.",
     cover: "/images/nmh3.jpg",
-    progress: 100,
-    status: "done",
-    stage: "Готово",
+    progress: 50,
+    status: "early-access",
+    stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 100 },
-      { label: "Текстури", percent: 100 },
+      { label: "Переклад", percent: 90 },
+      { label: "Редактура", percent: 10 },
+      { label: "Текстури", percent: 50 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Комедія"],
     steamUrl: "https://store.steampowered.com/app/1744330/No_More_Heroes_3/",
@@ -608,31 +666,6 @@ export const games: Game[] = [
     lastUpdate: "2026-02-16",
   },
   {
-    id: "mgs2",
-    title: "METAL GEAR SOLID 2: Sons of Liberty - Master Collection Version",
-    description:
-      "METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version — культовий стелс-екшен, де місія на танкері переростає у змову планетарного масштабу. На вас чекають проникнення без зайвого шуму, гаджети, напружені босфайти та історія про інформацію, контроль і правду — актуальна й сьогодні.",
-    cover: "/images/mgs2.jpg",
-    progress: 90,
-    status: "early-access",
-    stage: "Редактура",
-    stageDetails: [
-      { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 70 },
-    ],
-    tags: ["Бойовик", "Стелс", "Глибокий сюжет", "Пригоди"],
-    steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
-    downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_2_sons_of_liberty_master_collection_version/little-bit-perekladach-patriotiv-kostyanchek8",
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingCompleted: true,
-    lastUpdate: "2026-04-28",
-    team: [
-      { name: "Little Bit", role: "Переклад" },
-      { name: "Перекладач патріотів", role: "Переклад" },
-      { name: "Kostyanchek8", role: "Переклад" }
-    ],
-  },
-  {
     id: "hotel-barcelona",
     title: "HOTEL BARCELONA",
     description:
@@ -700,39 +733,6 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/961490/Travis_Strikes_Again_No_More_Heroes_Complete_Edition/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-02-16",
-  },
-  {
-    id: "nier-replicant",
-    title: "NieR Replicant™ ver.1.22474487139...",
-    description:
-      "Оновлена версія культової екшен-RPG, де юнак Нір вирушає на відчайдушний пошук порятунку для своєї сестри Йони. Разом із балакучим «Ґримоаром Вайсом» та незабутніми супутниками ви досліджуватимете химерний світ, битиметеся з Тінями й розплутуватимете історію, у якій кожна відповідь має свою ціну — і веде до кількох фіналів.",
-    cover: "/images/nier-replicant.jpg",
-    progress: 28,
-    status: "fundraising",
-    stage: "Переклад",
-    stageDetails: [
-      { label: "Переклад", percent: 28 },
-    ],
-    tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
-    screenshots: [
-      "/images/NieR_1.webp",
-      "/images/NieR_2.webp",
-      "/images/NieR_3.webp",
-      "/images/NieR_4.webp",
-      "/images/NieR_5.webp",
-    ],
-    steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 14193,
-    fundraisingGoal: 50000,
-    fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-04-28",
-    stats: {
-      totalLines: 24458,
-      translatedLines: 6921, // 28.3%
-      totalWords: 131813, // 27203 UA + 109012 ENG
-      totalCharacters: 682805,
-    },
   },
   {
     id: "deadly-premonition-2",

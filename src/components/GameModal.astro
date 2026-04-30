@@ -25,6 +25,19 @@ function fmtDate(d?: string) {
     day: "numeric", month: "long", year: "numeric",
   });
 }
+
+/** Extract a YouTube video ID from any common URL form */
+function getYoutubeId(url?: string): string | null {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/|youtube\.com\/embed\/|youtube-nocookie\.com\/embed\/|youtube\.com\/shorts\/)([\w-]{11})/,
+  ];
+  for (const re of patterns) {
+    const m = url.match(re);
+    if (m) return m[1];
+  }
+  return null;
+}
 ---
 
 <!-- Modal shell -->
@@ -241,6 +254,27 @@ function fmtDate(d?: string) {
 
               <!-- Detail content -->
               <div class="px-6 pb-8 sm:px-8 sm:pb-10 space-y-8">
+
+                {/* Video */}
+                {(() => {
+                  const ytId = getYoutubeId(game.videoUrl);
+                  if (!ytId) return null;
+                  return (
+                    <div>
+                      <h3 class="text-lg font-black text-slate-900 mb-3">Відео</h3>
+                      <div class="relative w-full aspect-video rounded-2xl overflow-hidden border border-white/80 shadow-md bg-slate-900">
+                        <iframe
+                          src={`https://www.youtube-nocookie.com/embed/${ytId}?rel=0`}
+                          title={`${game.title} — відео`}
+                          loading="lazy"
+                          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowfullscreen
+                          class="absolute inset-0 w-full h-full"
+                        ></iframe>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Screenshots */}
                 {game.screenshots && game.screenshots.length > 0 && (
