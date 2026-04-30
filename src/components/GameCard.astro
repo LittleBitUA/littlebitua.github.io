@@ -32,6 +32,9 @@ const topPillColor =
   game.status === "in-progress" ? "text-violet-700 bg-violet-100/85 border-violet-200" :
   game.status === "fundraising" ? "text-amber-700 bg-amber-100/90 border-amber-200" :
   "text-slate-700 bg-white/85 border-white/70";
+
+// Чи має гра активний збір коштів (навіть якщо вона вже у ранньому доступі)
+const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
 ---
 
 <article

@@ -107,8 +107,9 @@ export const BADGE_PRESETS = {
  */
 export const GAME_BADGES: Record<string, GameBadge> = {
   "mgs-snake-eater": {
-    text: "Ранній доступ (1.0.7)",
+    text: "Ранній доступ (1.1.3) • Збір коштів",
     ...BADGE_PRESETS.earlyAccess,
+    glow: "rgba(234, 88, 12, 0.35)",
   },
   "nmh1": {
     text: "Доступно",
