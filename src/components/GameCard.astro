@@ -19,6 +19,10 @@ const { game } = Astro.props;
 const hasDetails = game.stageDetails && game.stageDetails.length > 0;
 const badge = getBadge(game.id);
 
+// Прогрес перекладу — показуємо над полоскою, щоб бар сам розʼяснював що там за відсоток.
+const translationStage = game.stageDetails?.find((d) => d.label === "Переклад");
+const translationPercent = translationStage?.percent ?? game.progress;
+
 // Top-of-cover status pill (from game data, kept dynamic)
 const topPillLabel = game.status === "fundraising"
   ? STATUS_LABELS.fundraising
@@ -120,9 +124,13 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
       <div class="mb-3 lb-card-progress">
         {hasDetails ? (
           <div class="game-progress-toggle cursor-pointer" data-expanded="false">
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-600 mb-1">
+              <span class="uppercase tracking-wide text-slate-500">Переклад</span>
+              <span class="tabular-nums text-slate-700">{translationPercent}%</span>
+            </div>
             <div class="flex items-center gap-2">
               <div class="flex-1">
-                <ProgressBar percent={game.progress} size="sm" showLabel={false} />
+                <ProgressBar percent={translationPercent} size="sm" showLabel={false} />
               </div>
               <button
                 type="button"
@@ -158,7 +166,13 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
             </div>
           </div>
         ) : (
-          <ProgressBar percent={game.progress} size="sm" showLabel={false} />
+          <>
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-600 mb-1">
+              <span class="uppercase tracking-wide text-slate-500">Переклад</span>
+              <span class="tabular-nums text-slate-700">{translationPercent}%</span>
+            </div>
+            <ProgressBar percent={translationPercent} size="sm" showLabel={false} />
+          </>
         )}
       </div>
 
