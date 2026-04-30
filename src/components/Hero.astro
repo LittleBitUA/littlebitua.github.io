@@ -197,17 +197,11 @@ const ringOffset = RING_C * (1 - overall / 100);
       <!-- Fundraising — компактний список з прогрес-барами та сумами -->
       <div class="lb-glass p-4 sm:p-5 flex flex-col min-h-[150px] hero-card hero-delay-5 col-span-2">
         {(() => {
-          const totalRaised = fundraisingGames.reduce((s, g) => s + (g.fundraisingRaised ?? 0), 0);
-          const totalGoal = fundraisingGames.reduce((s, g) => s + (g.fundraisingGoal ?? 0), 0);
-          const totalPct = totalGoal > 0 ? Math.round((totalRaised / totalGoal) * 100) : 0;
           const fmt = (n: number) => n.toLocaleString("uk-UA");
           return (
             <>
-              <div class="flex items-center justify-between mb-3 gap-2">
+              <div class="mb-3">
                 <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-amber-700">Збір коштів</span>
-                <span class="text-[10px] font-bold text-amber-700 tabular-nums">
-                  {fmt(totalRaised)} / {fmt(totalGoal)} ₴ · {totalPct}%
-                </span>
               </div>
               <div class="space-y-3">
                 {fundraisingGames.map((game) => {
