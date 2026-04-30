@@ -14,9 +14,11 @@ export interface Props {
   size?: "sm" | "md" | "lg";
   /** Optional accent color (hex/rgb). If omitted — auto color by percent. */
   color?: string;
+  /** Optional left-aligned inline label rendered inside the bar (md/lg only). */
+  label?: string;
 }
 
-const { percent, showLabel = true, size = "md", color } = Astro.props;
+const { percent, showLabel = true, size = "md", color, label } = Astro.props;
 const clampedPercent = Math.max(0, Math.min(100, percent));
 
 // Висоти: sm — тонка декоративна, md/lg — достатньо для тексту всередині.
@@ -66,16 +68,18 @@ const showInline = showLabel && size !== "sm";
       <>
         <!-- Підпис на доріжці (видно там, де ще нема заповнення) -->
         <span
-          class={`lb-label-track absolute inset-0 flex items-center justify-end pr-2.5 font-bold tabular-nums text-slate-700 ${textSizeMap[size]}`}
+          class={`lb-label-track absolute inset-0 flex items-center ${label ? "justify-between px-2.5" : "justify-end pr-2.5"} text-slate-700 ${textSizeMap[size]}`}
         >
-          {clampedPercent}%
+          {label && <span class="font-semibold uppercase tracking-wider">{label}</span>}
+          <span class="font-bold tabular-nums">{clampedPercent}%</span>
         </span>
         <!-- Підпис над заповненням (видно лише в межах залитої частини) -->
         <span
-          class={`lb-label-fill absolute inset-0 flex items-center justify-end pr-2.5 font-bold tabular-nums text-white ${textSizeMap[size]}`}
+          class={`lb-label-fill absolute inset-0 flex items-center ${label ? "justify-between px-2.5" : "justify-end pr-2.5"} text-white ${textSizeMap[size]}`}
           style={`clip-path: inset(0 ${100 - clampedPercent}% 0 0);`}
         >
-          {clampedPercent}%
+          {label && <span class="font-semibold uppercase tracking-wider">{label}</span>}
+          <span class="font-bold tabular-nums">{clampedPercent}%</span>
         </span>
       </>
     )}
