@@ -203,6 +203,18 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     text: "Переклад",
     ...BADGE_PRESETS.inProgress,
   },
+  "dave-the-diver": {
+    text: "Доступно",
+    ...BADGE_PRESETS.available,
+  },
+  "persona-5-royal": {
+    text: "Ранній доступ",
+    ...BADGE_PRESETS.earlyAccess,
+  },
+  "kingdom-hearts-3": {
+    text: "Переклад",
+    ...BADGE_PRESETS.inProgress,
+  },
 };
 
 /**

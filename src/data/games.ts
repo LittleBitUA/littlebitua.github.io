@@ -274,6 +274,7 @@ export const games: Game[] = [
     tags: ["Стелс", "Бойовик", "Глибокий сюжет", "Пригоди"],
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    videoUrl: "https://www.youtube.com/watch?v=ZFcVAqzto8Y",
     lastUpdate: "2026-04-28",
     version: "1.1.3",
     installInstructions: `## Встановлення локалізації METAL GEAR SOLID Δ: SNAKE EATER
@@ -937,6 +938,68 @@ export const games: Game[] = [
       totalWords: 877352, // 66489 укр + 810863 англ
       totalCharacters: undefined
     }
+  },
+  {
+    id: "dave-the-diver",
+    title: "Dave The Diver",
+    description:
+      "Затишний пригодницький симулятор, де вдень ти пірнаєш по рибу, а ввечері керуєш суші-баром. Несподівано глибокий геймплей із купою активностей, секретів та харизматичних персонажів.",
+    cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1868140/library_600x900_2x.jpg",
+    progress: 100,
+    status: "early-access",
+    stage: "Готово",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
+      { label: "Шрифти", percent: 100 },
+      { label: "Текстури", percent: 0 },
+    ],
+    tags: ["Пригоди", "Симулятор", "Інді", "Казуальна"],
+    steamUrl: "https://store.steampowered.com/app/1868140/DAVE_THE_DIVER/",
+    downloadUrl: "https://lbklauncher.com/games/dave_the_diver/solovina-komanda",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-04-30",
+  },
+  {
+    id: "persona-5-royal",
+    title: "Persona 5 Royal",
+    description:
+      "Розширене видання культової JRPG про команду «Фантомних злодіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
+    cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1687950/library_600x900_2x.jpg",
+    progress: 61,
+    status: "early-access",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 61 },
+      { label: "Редактура", percent: 0 },
+      { label: "Шрифти", percent: 100 },
+      { label: "Текстури", percent: 15 },
+    ],
+    tags: ["JRPG", "Покрокова", "Глибокий сюжет", "Аніме"],
+    steamUrl: "https://store.steampowered.com/app/1687950/Persona_5_Royal/",
+    downloadUrl: "https://lbklauncher.com/games/persona_5_royal/solovina-komanda",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-04-30",
+  },
+  {
+    id: "kingdom-hearts-3",
+    title: "KINGDOM HEARTS III + Re Mind (DLC)",
+    description:
+      "Епічний фінал саги Disney × Square Enix: Сора з друзями вирушає протистояти Магістру Ксеанорту. Світи Toy Story, Frozen, Tangled, Pirates of the Caribbean і більше — з фірмовим бойовим рушієм та емоційною кульмінацією.",
+    cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2378900/library_600x900_2x.jpg",
+    progress: 20,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 20 },
+      { label: "Редактура", percent: 0 },
+      { label: "Шрифти", percent: 100 },
+      { label: "Текстури", percent: 0 },
+    ],
+    tags: ["Action RPG", "Disney", "Глибокий сюжет", "Пригоди"],
+    steamUrl: "https://store.steampowered.com/app/2378900/KINGDOM_HEARTS_III__ReMind_DLC/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-04-30",
   },
 ];
 
