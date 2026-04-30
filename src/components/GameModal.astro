@@ -354,28 +354,11 @@ function fmtDate(d?: string) {
   </div>
 
   <div id="lb-shot-counter" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-3 py-1.5 rounded-full bg-white/90 text-xs font-bold text-slate-700 tabular-nums shadow-md"></div>
-
-  <!-- Thumbnail strip -->
-  <div id="lb-shot-strip" class="absolute bottom-14 left-0 right-0 z-30 flex justify-center gap-2 px-4 overflow-x-auto"></div>
 </div>
 
 <style>
   #game-modal.is-open { display: flex; animation: lbModalFade 0.2s ease-out; }
   #lb-shot.is-open { display: flex; animation: lbModalFade 0.18s ease-out; }
-  .lb-shot-thumb {
-    flex: 0 0 auto;
-    width: 64px;
-    height: 36px;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 2px solid transparent;
-    opacity: 0.55;
-    transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
-    cursor: pointer;
-  }
-  .lb-shot-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .lb-shot-thumb:hover { opacity: 0.9; transform: translateY(-2px); }
-  .lb-shot-thumb.active { opacity: 1; border-color: #6366f1; }
   @keyframes lbModalFade { from { opacity: 0; } to { opacity: 1; } }
 
   .game-detail-panel.active { display: block; }
@@ -461,28 +444,9 @@ function fmtDate(d?: string) {
   const lbShotNext = document.getElementById("lb-shot-next")!;
   const lbShotImg = document.getElementById("lb-shot-img") as HTMLImageElement;
   const lbShotCounter = document.getElementById("lb-shot-counter")!;
-  const lbShotStrip = document.getElementById("lb-shot-strip")!;
 
   let shotList: string[] = [];
   let shotIndex = 0;
-
-  function renderStrip() {
-    lbShotStrip.innerHTML = "";
-    shotList.forEach((src, i) => {
-      const t = document.createElement("button");
-      t.type = "button";
-      t.className = "lb-shot-thumb" + (i === shotIndex ? " active" : "");
-      t.setAttribute("aria-label", `Скріншот ${i + 1}`);
-      t.dataset.idx = String(i);
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = "";
-      img.loading = "lazy";
-      t.appendChild(img);
-      t.addEventListener("click", () => showShot(i));
-      lbShotStrip.appendChild(t);
-    });
-  }
 
   function showShot(i: number) {
     if (!shotList.length) return;
@@ -490,9 +454,6 @@ function fmtDate(d?: string) {
     lbShotImg.src = shotList[shotIndex];
     lbShotImg.alt = `Скріншот ${shotIndex + 1}`;
     lbShotCounter.textContent = `${shotIndex + 1} / ${shotList.length}`;
-    lbShotStrip.querySelectorAll<HTMLButtonElement>(".lb-shot-thumb").forEach((el, idx) => {
-      el.classList.toggle("active", idx === shotIndex);
-    });
     if (shotList.length <= 1) {
       lbShotPrev.classList.add("hidden");
       lbShotNext.classList.add("hidden");
@@ -504,7 +465,6 @@ function fmtDate(d?: string) {
 
   function openLightbox(list: string[], i: number) {
     shotList = list;
-    renderStrip();
     showShot(i);
     lbShot.classList.add("is-open");
     lbShot.classList.remove("hidden");
