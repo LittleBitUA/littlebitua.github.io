@@ -181,9 +181,10 @@ const baseClasses = [
   }
 
   .lb-status-badge__text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: normal;
+    text-align: center;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   @media (max-width: 640px) {
