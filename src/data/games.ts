@@ -986,7 +986,7 @@ export const games: Game[] = [
     title: "KINGDOM HEARTS III + Re Mind (DLC)",
     description:
       "Епічний фінал саги Disney × Square Enix: Сора з друзями вирушає протистояти Магістру Ксеанорту. Світи Toy Story, Frozen, Tangled, Pirates of the Caribbean і більше — з фірмовим бойовим рушієм та емоційною кульмінацією.",
-    cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2378900/library_600x900_2x.jpg",
+    cover: "https://cdn2.steamgriddb.com/grid/1318ae15a52c171bf63b0db992ba1451.png",
     progress: 20,
     status: "in-progress",
     stage: "Переклад",
