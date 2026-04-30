@@ -126,6 +126,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/3937550/Yakuza_Kiwami_3__Dark_Ties/",
     downloadUrl: "https://lbklauncher.com/games/yakuza_kiwami_3_dark_ties/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    videoUrl: "https://www.youtube.com/watch?v=-CMhSswHhn4",
     lastUpdate: "2026-04-28",
     progressHistory: [
       { date: "2026-03-04", progress: 23, milestone: "Початок перекладу" },
@@ -191,6 +192,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_2_sons_of_liberty_master_collection_version/little-bit-perekladach-patriotiv-kostyanchek8",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    videoUrl: "https://www.youtube.com/watch?v=21t5AVKLa04",
     fundraisingCompleted: true,
     lastUpdate: "2026-04-28",
     team: [
@@ -489,6 +491,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "Відкритий світ", "Beat 'em up", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/3717340/Yakuza_Kiwami_2/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    videoUrl: "https://www.youtube.com/watch?v=hGMcrhk7tn4",
     lastUpdate: "2026-02-17",
 
     // Extended data
