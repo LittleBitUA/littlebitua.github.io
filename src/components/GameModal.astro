@@ -248,14 +248,15 @@ function fmtDate(d?: string) {
                     <h3 class="text-lg font-black text-slate-900 mb-3">Скріншоти</h3>
                     <div class="grid grid-cols-3 sm:grid-cols-5 gap-2">
                       {game.screenshots.map((src, i) => (
-                        <a
-                          href={src}
-                          target="_blank" rel="noopener noreferrer"
-                          class="relative rounded-xl overflow-hidden border border-white/80 hover:border-indigo-300 transition-colors shadow-sm block"
+                        <button
+                          type="button"
+                          data-screenshot-index={i}
+                          data-screenshot-list={JSON.stringify(game.screenshots)}
+                          class="relative rounded-xl overflow-hidden border border-white/80 hover:border-indigo-300 transition-colors shadow-sm block cursor-zoom-in"
                           aria-label={`Скріншот ${i + 1}`}
                         >
                           <img src={src} alt={`Скріншот ${i + 1}`} class="w-full h-auto block" loading="lazy" decoding="async" />
-                        </a>
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -308,8 +309,73 @@ function fmtDate(d?: string) {
   </div>
 </div>
 
+<!-- Screenshot lightbox -->
+<div
+  id="lb-shot"
+  class="fixed inset-0 z-[110] hidden items-center justify-center"
+  aria-hidden="true"
+  role="dialog"
+  aria-modal="true"
+>
+  <div id="lb-shot-backdrop" class="absolute inset-0 bg-slate-950/85"></div>
+
+  <button
+    id="lb-shot-close"
+    class="absolute top-4 right-4 z-30 w-11 h-11 rounded-full bg-white/95 text-slate-700 hover:bg-white shadow-lg flex items-center justify-center transition-colors"
+    aria-label="Закрити"
+  >
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+
+  <button
+    id="lb-shot-prev"
+    class="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/90 text-slate-700 hover:bg-white shadow-lg flex items-center justify-center transition-colors"
+    aria-label="Попередній"
+  >
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </button>
+
+  <button
+    id="lb-shot-next"
+    class="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white/90 text-slate-700 hover:bg-white shadow-lg flex items-center justify-center transition-colors"
+    aria-label="Наступний"
+  >
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
+  </button>
+
+  <div class="relative z-20 w-full h-full flex items-center justify-center p-12 sm:p-16">
+    <img id="lb-shot-img" src="" alt="" class="max-w-full max-h-full object-contain rounded-xl shadow-2xl select-none" />
+  </div>
+
+  <div id="lb-shot-counter" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 px-3 py-1.5 rounded-full bg-white/90 text-xs font-bold text-slate-700 tabular-nums shadow-md"></div>
+
+  <!-- Thumbnail strip -->
+  <div id="lb-shot-strip" class="absolute bottom-14 left-0 right-0 z-30 flex justify-center gap-2 px-4 overflow-x-auto"></div>
+</div>
+
 <style>
   #game-modal.is-open { display: flex; animation: lbModalFade 0.2s ease-out; }
+  #lb-shot.is-open { display: flex; animation: lbModalFade 0.18s ease-out; }
+  .lb-shot-thumb {
+    flex: 0 0 auto;
+    width: 64px;
+    height: 36px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    opacity: 0.55;
+    transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    cursor: pointer;
+  }
+  .lb-shot-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lb-shot-thumb:hover { opacity: 0.9; transform: translateY(-2px); }
+  .lb-shot-thumb.active { opacity: 1; border-color: #6366f1; }
   @keyframes lbModalFade { from { opacity: 0; } to { opacity: 1; } }
 
   .game-detail-panel.active { display: block; }
@@ -386,4 +452,97 @@ function fmtDate(d?: string) {
     const id = decodeURIComponent(hash.slice(6));
     requestAnimationFrame(() => openModal(id));
   }
+
+  // ── Screenshot lightbox ─────────────────────────────────────
+  const lbShot = document.getElementById("lb-shot")!;
+  const lbShotBackdrop = document.getElementById("lb-shot-backdrop")!;
+  const lbShotClose = document.getElementById("lb-shot-close")!;
+  const lbShotPrev = document.getElementById("lb-shot-prev")!;
+  const lbShotNext = document.getElementById("lb-shot-next")!;
+  const lbShotImg = document.getElementById("lb-shot-img") as HTMLImageElement;
+  const lbShotCounter = document.getElementById("lb-shot-counter")!;
+  const lbShotStrip = document.getElementById("lb-shot-strip")!;
+
+  let shotList: string[] = [];
+  let shotIndex = 0;
+
+  function renderStrip() {
+    lbShotStrip.innerHTML = "";
+    shotList.forEach((src, i) => {
+      const t = document.createElement("button");
+      t.type = "button";
+      t.className = "lb-shot-thumb" + (i === shotIndex ? " active" : "");
+      t.setAttribute("aria-label", `Скріншот ${i + 1}`);
+      t.dataset.idx = String(i);
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "";
+      img.loading = "lazy";
+      t.appendChild(img);
+      t.addEventListener("click", () => showShot(i));
+      lbShotStrip.appendChild(t);
+    });
+  }
+
+  function showShot(i: number) {
+    if (!shotList.length) return;
+    shotIndex = (i + shotList.length) % shotList.length;
+    lbShotImg.src = shotList[shotIndex];
+    lbShotImg.alt = `Скріншот ${shotIndex + 1}`;
+    lbShotCounter.textContent = `${shotIndex + 1} / ${shotList.length}`;
+    lbShotStrip.querySelectorAll<HTMLButtonElement>(".lb-shot-thumb").forEach((el, idx) => {
+      el.classList.toggle("active", idx === shotIndex);
+    });
+    if (shotList.length <= 1) {
+      lbShotPrev.classList.add("hidden");
+      lbShotNext.classList.add("hidden");
+    } else {
+      lbShotPrev.classList.remove("hidden");
+      lbShotNext.classList.remove("hidden");
+    }
+  }
+
+  function openLightbox(list: string[], i: number) {
+    shotList = list;
+    renderStrip();
+    showShot(i);
+    lbShot.classList.add("is-open");
+    lbShot.classList.remove("hidden");
+    lbShot.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lb-modal-open");
+  }
+
+  function closeLightbox() {
+    lbShot.classList.remove("is-open");
+    lbShot.classList.add("hidden");
+    lbShot.setAttribute("aria-hidden", "true");
+    if (!modal.classList.contains("is-open")) {
+      document.body.classList.remove("lb-modal-open");
+    }
+  }
+
+  // Delegated open: clicking any [data-screenshot-index] thumbnail
+  document.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>("[data-screenshot-index]");
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      const list = JSON.parse(btn.dataset.screenshotList || "[]") as string[];
+      const idx = parseInt(btn.dataset.screenshotIndex || "0", 10);
+      if (Array.isArray(list) && list.length > 0) openLightbox(list, idx);
+    } catch {}
+  });
+
+  lbShotClose.addEventListener("click", closeLightbox);
+  lbShotBackdrop.addEventListener("click", closeLightbox);
+  lbShotPrev.addEventListener("click", () => showShot(shotIndex - 1));
+  lbShotNext.addEventListener("click", () => showShot(shotIndex + 1));
+
+  document.addEventListener("keydown", (e) => {
+    if (!lbShot.classList.contains("is-open")) return;
+    if (e.key === "Escape") { closeLightbox(); }
+    else if (e.key === "ArrowLeft") { showShot(shotIndex - 1); }
+    else if (e.key === "ArrowRight") { showShot(shotIndex + 1); }
+  });
 </script>
