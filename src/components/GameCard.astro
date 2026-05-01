@@ -163,18 +163,16 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
               <div class="pt-3 space-y-1.5">
                 {game.stageDetails!.map((detail) => (
                   <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-semibold text-slate-500 w-[68px] flex-shrink-0 truncate">
-                      {detail.label}
+                    <span class="inline-flex items-center justify-between gap-1.5 flex-shrink-0 w-[110px] px-2 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-700">
+                      <span class="text-[10px] font-semibold truncate">{detail.label}</span>
+                      <span class="text-[10px] font-bold tabular-nums">{detail.percent}%</span>
                     </span>
-                    <div class="flex-1 h-1 rounded-full bg-slate-200/70 overflow-hidden">
+                    <div class="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
                       <div
                         class="h-full rounded-full transition-all duration-500"
-                        style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "#0d9488" : detail.percent > 0 ? "#14b8a6" : "rgba(100,116,139,0.6)"};`}
+                        style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "linear-gradient(90deg, #14b8a6, #0d9488)" : detail.percent > 0 ? "linear-gradient(90deg, #5eead4, #14b8a6)" : "transparent"};`}
                       ></div>
                     </div>
-                    <span class="text-[10px] font-bold tabular-nums text-slate-700 w-[28px] text-right">
-                      {detail.percent}%
-                    </span>
                   </div>
                 ))}
               </div>
