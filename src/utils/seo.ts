@@ -45,7 +45,7 @@ export function generateGameStructuredData(game: Game): string {
     "@type": "SoftwareApplication",
     "name": game.title,
     "description": game.description,
-    "image": `${SITE_URL}${game.cover}`,
+    "image": game.cover.startsWith("http") ? game.cover : `${SITE_URL}${game.cover}`,
     "applicationCategory": "Game",
     "operatingSystem": "Windows, PlayStation, Xbox",
     "offers": {

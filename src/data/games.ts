@@ -113,7 +113,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
-    cover: "https://cdn2.steamgriddb.com/grid/d7fbe5fb946867aacf79463f8f36981c.png",
+    cover: "https://cdn2.steamgriddb.com/thumb/d7fbe5fb946867aacf79463f8f36981c.jpg",
     progress: 38,
     status: "early-access",
     stage: "Переклад",
@@ -146,7 +146,7 @@ export const games: Game[] = [
     title: "NieR Replicant™ ver.1.22474487139...",
     description:
       "Оновлена версія культової екшен-RPG, де юнак Нір вирушає на відчайдушний пошук порятунку для своєї сестри Йони. Разом із балакучим «Ґримоаром Вайсом» та незабутніми супутниками ви досліджуватимете химерний світ, битиметеся з Тінями й розплутуватимете історію, у якій кожна відповідь має свою ціну — і веде до кількох фіналів.",
-    cover: "/images/nier-replicant.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/9dcecafda1dec7a08c0630b896ff82cc.jpg",
     progress: 28,
     status: "fundraising",
     stage: "Переклад",
@@ -180,7 +180,7 @@ export const games: Game[] = [
     title: "METAL GEAR SOLID 2: Sons of Liberty - Master Collection Version",
     description:
       "METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version — культовий стелс-екшен, де місія на танкері переростає у змову планетарного масштабу. На вас чекають проникнення без зайвого шуму, гаджети, напружені босфайти та історія про інформацію, контроль і правду — актуальна й сьогодні.",
-    cover: "/images/mgs2.jpg",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2131640/library_600x900_2x.jpg?t=1710478205",
     progress: 60,
     status: "early-access",
     stage: "Переклад",
@@ -207,7 +207,7 @@ export const games: Game[] = [
     series: "Uncharted",
     description:
       "Натан Дрейк вирушає на пошуки скарбів Ель Дорадо. Перша частина культової пригодницької серії — тепер українською.",
-    cover: "/images/uncharted1.png",
+    cover: "https://cdn2.steamgriddb.com/thumb/9f4e3ec64878410b0467d41b63b1be21.jpg",
     progress: 90,
     status: "early-access",
     stage: "Редактура",
@@ -255,7 +255,7 @@ export const games: Game[] = [
     title: "METAL GEAR SOLID Δ: SNAKE EATER",
     description:
       "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
-    cover: "https://cdn2.steamgriddb.com/grid/67dffe36336093c94187f6dd9412ba89.png",
+    cover: "https://cdn2.steamgriddb.com/thumb/67dffe36336093c94187f6dd9412ba89.jpg",
     progress: 38,
     status: "early-access",
     stage: "Переклад",
@@ -377,7 +377,7 @@ export const games: Game[] = [
     title: "Dispatch",
     description:
       "Інтерактивний наратив у стилі коміксу. Розслідуй злочини та приймай рішення, що змінюють сюжет.",
-    cover: "https://cdn2.steamgriddb.com/grid/bfa1e9bc09534cad8103ba543b5e0e24.png",
+    cover: "https://cdn2.steamgriddb.com/thumb/bfa1e9bc09534cad8103ba543b5e0e24.jpg",
     progress: 90,
     status: "early-access",
     stage: "Редактура",
@@ -427,7 +427,7 @@ export const games: Game[] = [
     series: "Judgment",
     description:
       "Детективний екшен від творців Yakuza. Такаюкі Яґамі розслідує серію вбивств у Камуро-чьо.",
-    cover: "/images/judgment.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/e25c8f3b6421b1795ba83b623d1d82c0.jpg",
     progress: 90,
     status: "early-access",
     stage: "Переклад",
@@ -479,7 +479,7 @@ export const games: Game[] = [
     title: "Dave The Diver",
     description:
       "Затишний пригодницький симулятор, де вдень ти пірнаєш по рибу, а ввечері керуєш суші-баром. Несподівано глибокий геймплей із купою активностей, секретів та харизматичних персонажів.",
-    cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1868140/library_600x900_2x.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/1d50a96e0e3d7b721de8aafbb246067d.jpg",
     progress: 100,
     status: "early-access",
     stage: "Готово",
@@ -500,7 +500,7 @@ export const games: Game[] = [
     title: "Persona 5 Royal",
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
-    cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1687950/library_600x900_2x.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/78b22a52a1e53b0d2e27e6b40569793a.jpg",
     progress: 61,
     status: "early-access",
     stage: "Переклад",
@@ -521,7 +521,7 @@ export const games: Game[] = [
     title: "KINGDOM HEARTS III + Re Mind (DLC)",
     description:
       "Епічний фінал саги Disney × Square Enix: Сора з друзями вирушає протистояти Магістру Ксеанорту. Світи Toy Story, Frozen, Tangled, Pirates of the Caribbean і більше — з фірмовим бойовим рушієм та емоційною кульмінацією.",
-    cover: "https://cdn2.steamgriddb.com/grid/1318ae15a52c171bf63b0db992ba1451.png",
+    cover: "https://cdn2.steamgriddb.com/thumb/1318ae15a52c171bf63b0db992ba1451.jpg",
     progress: 20,
     status: "in-progress",
     stage: "Переклад",
@@ -542,7 +542,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Повний текстовий переклад гри українською та українізовані текстури. Усе — від сюжету й побічних активностей до інтерфейсу, підказок.",
-    cover: "/images/yakuza-kiwami2-library.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/30d35f85cc2976e1427452715a353eb9.jpg",
     progress: 96,
     status: "in-progress",
     stage: "Редактура",
@@ -601,7 +601,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
-    cover: "/images/yakuza-lad.jpg",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1235140/library_600x900_2x.jpg?t=1716350681",
     progress: 41,
     status: "in-progress",
     stage: "Переклад",
@@ -644,7 +644,7 @@ export const games: Game[] = [
     series: "No More Heroes",
     description:
       "Повернення Тревіса Тачдауна після довгої паузи, коли над Санта-Дестроєм нависає справді космічна загроза. Прибульці та їхній лідер Фу перетворюють порятунок світу на змагання в «галактичному рейтингу супергероїв», тож Тревіс знову береться за променеву катану й прорізає собі шлях крізь абсурд, стиль і шалену сатиру — у наймасштабнішій та найхимернішій частині серії.",
-    cover: "/images/nmh3.jpg",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1744330/library_600x900_2x.jpg?t=1665510381",
     progress: 50,
     status: "early-access",
     stage: "Переклад",
@@ -688,7 +688,7 @@ export const games: Game[] = [
     title: "A Game About Digging A Hole™",
     description:
       "Копай все глибше в цій незвичній грі про створення ям. Затишна інді-гра з неочікуваною глибиною — тепер українською.",
-    cover: "/images/digging-a-hole.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/4a8b6c75dd031ded0277ce76f50364df.png",
     progress: 90,
     status: "early-access",
     stage: "Редактура",
@@ -717,7 +717,7 @@ export const games: Game[] = [
     series: "No More Heroes",
     description:
       "Гра продовжує історію Тревіса Тачдауна — тепер він повертається в гру з новою люттю та конкретною метою. Щоб знову піднятися на вершину рейтингу найманих убивць, Тревіс проходить крізь ще божевільніші дуелі, жорсткіші сутички й дикий калейдоскоп стилю, сатири та чорного гумору.",
-    cover: "/images/nmh2.jpg",
+    cover: "https://cdn2.steamgriddb.com/grid/19f960c299756abbce4d8dbe2e096a1d.png",
     progress: 80,
     status: "in-progress",
     stage: "Редактура",
@@ -736,7 +736,7 @@ export const games: Game[] = [
     title: "HOTEL BARCELONA",
     description:
       "Джастін, молода американська детективка, вирушає на, здавалося б, чергову рутинну справу — аж поки дивна аварія не закидає її на край цивілізації… у HOTEL BARCELONA. Тут у стінах готелю застрягли душі, а коридорами блукають сім серійних убивць. Та найстрашніше — в її голові прокидається інша особистість: доктор Карнавал, прадавнє згубне чудовисько.",
-    cover: "/images/hotel-barcelona.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/a75ea8ff83616d5ce27efdd50da47ef3.jpg",
     progress: 60,
     status: "in-progress",
     stage: "Переклад",
@@ -762,7 +762,7 @@ export const games: Game[] = [
     series: "Deadly Premonition",
     description:
       "Культовий трилер-детектив від SWERY. Розслідуй загадкові вбивства у маленькому містечку Ґрінвейл.",
-    cover: "/images/deadly-premonition-dc.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/36cbb165fdbe3a26b21fa941d90737fe.png",
     progress: 43,
     status: "in-progress",
     stage: "Переклад",
@@ -787,7 +787,7 @@ export const games: Game[] = [
     series: "No More Heroes",
     description:
       "Тревіс Тачдаун потрапляє всередину ігрової консолі. Спін-оф серії з кооперативним геймплеєм.",
-    cover: "/images/travis-strikes-again.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/3fb9ea9011a179ca6ef04fcb1e828d24.jpg",
     progress: 23,
     status: "in-progress",
     stage: "Переклад",
@@ -806,7 +806,7 @@ export const games: Game[] = [
     series: "Deadly Premonition",
     description:
       "Продовження культового трилера від SWERY. Нова загадка, нове місто, та ще більше божевілля.",
-    cover: "/images/deadly-premonition-2.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/10dc0bb717c02b51d7f4e06704591f05.jpg",
     progress: 15,
     status: "in-progress",
     stage: "Переклад",
@@ -825,7 +825,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Самурайський спін-оф серії Yakuza. Рьома Сакамото шукає вбивцю свого батька в Японії епохи Бакумацу.",
-    cover: "/images/lad-ishin.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/302a3ba086a09127aff1b25258ffab24.jpg",
     progress: 15,
     status: "in-progress",
     stage: "Переклад",
@@ -844,7 +844,7 @@ export const games: Game[] = [
     series: "Yakuza",
     description:
       "Кірю намагається знайти спокій в Окінаві, але минуле не відпускає. Ремастер класики серії.",
-    cover: "/images/yakuza3.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/3fc1a4fffe3e6f03caf6aaf25ddc01d4.jpg",
     progress: 14,
     status: "in-progress",
     stage: "Переклад",
@@ -862,7 +862,7 @@ export const games: Game[] = [
     title: "As Dusk Falls",
     description:
       "Інтерактивна драма про дві сім'ї, чиї долі переплітаються через пограбування в Арізоні.",
-    cover: "/images/as-dusk-falls.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/7d3d82c29720a5cb8824d02529389ab5.jpg",
     progress: 10,
     status: "early-access",
     stage: "Переклад",
@@ -891,7 +891,7 @@ export const games: Game[] = [
     series: "Uncharted",
     description:
       "Натан Дрейк шукає легендарне місто Шамбала. Друга частина серії з ще масштабнішими пригодами.",
-    cover: "/images/uncharted2.png",
+    cover: "https://cdn2.steamgriddb.com/thumb/66dcd06dc5ad523aaeae95e64187e4ca.jpg",
     progress: 10,
     status: "in-progress",
     stage: "Переклад",
@@ -913,7 +913,7 @@ export const games: Game[] = [
     title: "Shenmue I",
     description:
       "Класика від Ю Судзукі. Рьо Хадзукі шукає вбивцю свого батька, досліджуючи Японію.",
-    cover: "https://cdn2.steamgriddb.com/grid/963d79c80b622f504a6970dde6ffab0e.png",
+    cover: "https://cdn2.steamgriddb.com/thumb/963d79c80b622f504a6970dde6ffab0e.jpg",
     progress: 9,
     status: "in-progress",
     stage: "Переклад",
@@ -931,7 +931,7 @@ export const games: Game[] = [
     title: "JoJo's Bizarre Adventure: All-Star Battle R",
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
-    cover: "/images/jojo-asbr.jpg",
+    cover: "https://cdn2.steamgriddb.com/thumb/0f5d8f2124b95d0ef0245533fa616693.png",
     progress: 9,
     status: "in-progress",
     stage: "Переклад",
@@ -967,7 +967,7 @@ export const games: Game[] = [
     series: "Judgment",
     description:
       "Продовження детективного екшену. Яґамі розслідує справу, що пов'язує буллінг у школі та вбивство.",
-    cover: "/images/lost-judgment.jpg",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2058190/library_600x900_2x.jpg?t=1663168032",
     progress: 14,
     status: "in-progress",
     stage: "Переклад",
