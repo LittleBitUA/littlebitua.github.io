@@ -212,8 +212,8 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     ...BADGE_PRESETS.earlyAccess,
   },
   "kingdom-hearts-3": {
-    text: "Переклад",
-    ...BADGE_PRESETS.inProgress,
+    text: "Ранній доступ",
+    ...BADGE_PRESETS.earlyAccess,
   },
 };
 
