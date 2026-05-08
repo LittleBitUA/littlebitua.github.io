@@ -122,6 +122,7 @@ export const games: Game[] = [
     tags: ["Інді", "Пригоди", "Музика", "Сюжетна"],
     steamUrl: "https://store.steampowered.com/app/2582320/Mixtape/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    videoUrl: "https://www.youtube.com/watch?v=BhukvsGyX2s",
     lastUpdate: "2026-05-08",
     stats: {
       totalLines: 2713,
