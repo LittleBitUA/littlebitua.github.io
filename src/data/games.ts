@@ -108,6 +108,27 @@ export const STATUS_COLORS: Record<GameStatus, string> = {
 /** All game localization projects */
 export const games: Game[] = [
   {
+    id: "mixtape",
+    title: "Mixtape",
+    description:
+      "Увечері напередодні розлуки троє друзів рушають в останню спільну пригоду. Зіграйте в добірку чудових спогадів під найкращі пісні цілого покоління.",
+    cover: "https://cdn2.steamgriddb.com/grid/de0c701f43e5097566f7c3d560bb2b23.png",
+    progress: 30,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 30 },
+    ],
+    tags: ["Інді", "Пригоди", "Музика", "Сюжетна"],
+    steamUrl: "https://store.steampowered.com/app/2582320/Mixtape/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-05-08",
+    stats: {
+      totalLines: 2713,
+      translatedLines: 808, // 29.78%
+    },
+  },
+  {
     id: "yakuza-kiwami3",
     title: "Yakuza Kiwami 3 & Dark Ties",
     series: "Yakuza",
@@ -147,11 +168,11 @@ export const games: Game[] = [
     description:
       "Оновлена версія культової екшен-RPG, де юнак Нір вирушає на відчайдушний пошук порятунку для своєї сестри Йони. Разом із балакучим «Ґримоаром Вайсом» та незабутніми супутниками ви досліджуватимете химерний світ, битиметеся з Тінями й розплутуватимете історію, у якій кожна відповідь має свою ціну — і веде до кількох фіналів.",
     cover: "https://cdn2.steamgriddb.com/thumb/9dcecafda1dec7a08c0630b896ff82cc.jpg",
-    progress: 28,
+    progress: 29,
     status: "fundraising",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 28 },
+      { label: "Переклад", percent: 29 },
     ],
     tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
     screenshots: [
@@ -167,7 +188,7 @@ export const games: Game[] = [
     fundraisingRaised: 14193,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-04-28",
+    lastUpdate: "2026-05-08",
     stats: {
       totalLines: 24458,
       translatedLines: 6921, // 28.3%
@@ -501,11 +522,11 @@ export const games: Game[] = [
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
     cover: "https://cdn2.steamgriddb.com/thumb/78b22a52a1e53b0d2e27e6b40569793a.jpg",
-    progress: 61,
+    progress: 62,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 61 },
+      { label: "Переклад", percent: 62 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 15 },
@@ -514,7 +535,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1687950/Persona_5_Royal/",
     downloadUrl: "https://lbklauncher.com/games/persona_5_royal/solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-04-30",
+    lastUpdate: "2026-05-08",
   },
   {
     id: "kingdom-hearts-3",
@@ -522,11 +543,11 @@ export const games: Game[] = [
     description:
       "Епічний фінал саги Disney × Square Enix: Сора з друзями вирушає протистояти Магістру Ксеанорту. Світи Toy Story, Frozen, Tangled, Pirates of the Caribbean і більше — з фірмовим бойовим рушієм та емоційною кульмінацією.",
     cover: "https://cdn2.steamgriddb.com/thumb/1318ae15a52c171bf63b0db992ba1451.jpg",
-    progress: 32,
+    progress: 39,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 32 },
+      { label: "Переклад", percent: 39 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 0 },
@@ -535,7 +556,11 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2378900/KINGDOM_HEARTS_III__ReMind_DLC/",
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_iii_re_mind_dlc/hraidan-nezalezhnosti-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-05",
+    lastUpdate: "2026-05-08",
+    stats: {
+      totalLines: 16570,
+      translatedLines: 6402, // 38.64%
+    },
   },
   {
     id: "yakuza-kiwami2",
@@ -603,18 +628,18 @@ export const games: Game[] = [
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1235140/library_600x900_2x.jpg?t=1716350681",
-    progress: 41,
+    progress: 46,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 41 },
+      { label: "Переклад", percent: 46 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     fundraisingCompleted: true,
-    lastUpdate: "2026-03-07",
+    lastUpdate: "2026-05-08",
 
     // Extended data
     detailedDescription: "Революційна зміна для серії Yakuza — тепер з покроковими боями в стилі JRPG! Ічібан Касуґа починає нове життя після 18 років в'язниці. Захоплюючий сюжет та система класів персонажів.",
@@ -630,12 +655,13 @@ export const games: Game[] = [
       { date: "2025-11-15", progress: 25, milestone: "Перша половина історії" },
       { date: "2026-02-16", progress: 35, milestone: "Активний переклад" },
       { date: "2026-02-19", progress: 38, milestone: "38% перекладено" },
-      { date: "2026-03-04", progress: 41, milestone: "40.95% перекладено" }
+      { date: "2026-03-04", progress: 41, milestone: "40.95% перекладено" },
+      { date: "2026-05-08", progress: 46, milestone: "46.09% перекладено" }
     ],
     stats: {
       totalLines: 72448,
-      translatedLines: 29666, // 40.95%
-      totalWords: 613562, // 179615 укр + 433947 англ
+      translatedLines: 33394, // 46.09%
+      totalWords: 599254, // 247506 укр + 351748 англ
       totalCharacters: 3374591 // Приблизно
     }
   },
@@ -893,20 +919,20 @@ export const games: Game[] = [
     description:
       "Натан Дрейк шукає легендарне місто Шамбала. Друга частина серії з ще масштабнішими пригодами.",
     cover: "https://cdn2.steamgriddb.com/thumb/66dcd06dc5ad523aaeae95e64187e4ca.jpg",
-    progress: 10,
+    progress: 5,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 10 },
+      { label: "Переклад", percent: 5 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-05-08",
     stats: {
-      totalLines: 7092,
-      translatedLines: 709,
-      totalWords: 36767,
+      totalLines: 7091,
+      translatedLines: 385, // 5.43%
+      totalWords: 36553, // 1362 укр + 35191 англ
     },
   },
   {
@@ -942,7 +968,7 @@ export const games: Game[] = [
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-05-08",
 
     // Extended data
     detailedDescription: "Епічний файтинг з усіма улюбленими персонажами JoJo! Від Джонатана до Джоліна — понад 50 бійців з унікальними стендами та прийомами. Відчуйте всю потужність Bizarre Adventure!",
@@ -979,7 +1005,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "Пригоди", "Детектив", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-04-28",
+    lastUpdate: "2026-05-08",
 
     // Extended data
     detailedDescription: "Сіквел Judgment. Такаюкі Яґамі повертається, щоб розслідувати нову справу про буллінг та вбивство. Ще більший світ, нові механіки та напружений сюжет про справедливість.",
@@ -993,12 +1019,13 @@ export const games: Game[] = [
     progressHistory: [
       { date: "2026-01-15", progress: 3, milestone: "Початок проєкту" },
       { date: "2026-02-16", progress: 7, milestone: "Перші глави" },
-      { date: "2026-04-28", progress: 14, milestone: "13.75% перекладено" }
+      { date: "2026-04-28", progress: 14, milestone: "13.75% перекладено" },
+      { date: "2026-05-08", progress: 14, milestone: "13.97% перекладено" }
     ],
     stats: {
-      totalLines: 94310,
-      translatedLines: 12966, // 13.75%
-      totalWords: 877352, // 66489 укр + 810863 англ
+      totalLines: 94200,
+      translatedLines: 13163, // 13.97%
+      totalWords: 876792, // 67655 укр + 809137 англ
       totalCharacters: undefined
     }
   },
