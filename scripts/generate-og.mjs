@@ -36,7 +36,7 @@ const dataUris = COVERS.map((file) => {
   return `data:image/${ext};base64,${buf.toString("base64")}`;
 });
 
-// SVG-розмітка картинки. Все статичне, окрім ряду обкладинок.
+// SVG-розмітка картинки. Без логотипа і темної рамки — лише текст і ряд обкладинок.
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -56,22 +56,8 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wid
       <stop offset="0%" stop-color="rgba(20, 184, 166, 0.40)"/>
       <stop offset="70%" stop-color="rgba(20, 184, 166, 0)"/>
     </radialGradient>
-    <linearGradient id="logoG" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#0ea5e9"/>
-    </linearGradient>
-    <linearGradient id="cardSheen" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
-      <stop offset="50%" stop-color="rgba(255,255,255,0)"/>
-    </linearGradient>
-    <filter id="cardShadow" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="22" stdDeviation="26" flood-color="rgba(15,23,42,0.30)"/>
-    </filter>
-    <filter id="logoShadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="rgba(99,102,241,0.55)"/>
-    </filter>
     <filter id="coverShadow" x="-15%" y="-15%" width="130%" height="130%">
-      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="rgba(15,23,42,0.35)"/>
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="rgba(15,23,42,0.32)"/>
     </filter>
     ${COVERS.map((_, i) => {
       const x = C_X0 + i * (C_W + C_GAP);
@@ -89,43 +75,21 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wid
   <g stroke="rgba(15, 23, 42, 0.04)" stroke-width="1">
     <line x1="0" y1="158" x2="${W}" y2="158"/>
     <line x1="0" y1="315" x2="${W}" y2="315"/>
-    <line x1="0" y1="472" x2="${W}" y2="472"/>
     <line x1="240" y1="0" x2="240" y2="${H}"/>
     <line x1="480" y1="0" x2="480" y2="${H}"/>
     <line x1="720" y1="0" x2="720" y2="${H}"/>
     <line x1="960" y1="0" x2="960" y2="${H}"/>
   </g>
 
-  <!-- Top: dark glass brand card -->
-  <g filter="url(#cardShadow)">
-    <rect x="100" y="58" width="1000" height="320" rx="36"
-          fill="rgba(15,23,42,0.86)"
-          stroke="rgba(255,255,255,0.10)" stroke-width="1.5"/>
-    <rect x="100" y="58" width="1000" height="120" rx="36" fill="url(#cardSheen)"/>
-  </g>
-
-  <!-- LB logo -->
-  <g transform="translate(600, 145)" filter="url(#logoShadow)">
-    <rect x="-44" y="-44" width="88" height="88" rx="22"
-          fill="url(#logoG)"
-          stroke="rgba(255,255,255,0.20)" stroke-width="1.5"/>
-    <text x="0" y="11" font-family="Inter, system-ui, sans-serif" font-weight="900" font-size="42"
-          fill="#ffffff" text-anchor="middle" letter-spacing="-2">LB</text>
-  </g>
-
-  <!-- Eyebrow pill -->
-  <g transform="translate(600, 215)">
-    <rect x="-128" y="0" width="256" height="28" rx="14"
-          fill="rgba(99,102,241,0.18)" stroke="rgba(99,102,241,0.42)" stroke-width="1.2"/>
-    <text x="0" y="19" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="11"
-          fill="#a5b4fc" text-anchor="middle" letter-spacing="2.6">«LITTLE BIT» — ЛОКАЛІЗАЦІЇ</text>
-  </g>
-
   <!-- Headline -->
-  <text x="600" y="295" font-family="Manrope, Inter, system-ui, sans-serif" font-weight="800" font-size="40"
-        fill="#ffffff" text-anchor="middle" letter-spacing="-1.4">Перекладаємо те,</text>
-  <text x="600" y="343" font-family="Manrope, Inter, system-ui, sans-serif" font-weight="800" font-size="40"
-        fill="#a5b4fc" text-anchor="middle" letter-spacing="-1.4">у що самі граємо</text>
+  <text x="600" y="190" font-family="Manrope, Inter, system-ui, sans-serif" font-weight="800" font-size="58"
+        fill="#0f172a" text-anchor="middle" letter-spacing="-2">Перекладаємо те,</text>
+  <text x="600" y="262" font-family="Manrope, Inter, system-ui, sans-serif" font-weight="800" font-size="58"
+        fill="#4338ca" text-anchor="middle" letter-spacing="-2">у що самі граємо</text>
+
+  <!-- Subtitle -->
+  <text x="600" y="312" font-family="Inter, system-ui, sans-serif" font-weight="500" font-size="20"
+        fill="#475569" text-anchor="middle">Сюжет, інтерфейс і дрібниці — українською.</text>
 
   <!-- Bottom row: actual game covers from /public/images/ -->
   <g filter="url(#coverShadow)">
@@ -137,22 +101,22 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" wid
     }).join("\n    ")}
     ${COVERS.map((_, i) => {
       const x = C_X0 + i * (C_W + C_GAP);
-      return `<rect x="${x}" y="${C_Y}" width="${C_W}" height="${C_H}" rx="14" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>`;
+      return `<rect x="${x}" y="${C_Y}" width="${C_W}" height="${C_H}" rx="14" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2"/>`;
     }).join("\n    ")}
   </g>
 
   <!-- Bottom URL stripe -->
-  <g transform="translate(600, ${C_Y + C_H + 18})">
+  <g transform="translate(600, ${C_Y + C_H + 22})">
     <text x="0" y="0" font-family="Inter, system-ui, sans-serif" font-weight="600" font-size="13"
-          fill="#475569" text-anchor="middle" letter-spacing="0.8">littlebitua.github.io</text>
+          fill="#64748b" text-anchor="middle" letter-spacing="0.8">littlebitua.github.io</text>
   </g>
 
   <!-- Decorative sparkles -->
   <g fill="#6366f1" opacity="0.55">
-    <circle cx="120" cy="40" r="3"/>
-    <circle cx="1080" cy="40" r="3"/>
-    <circle cx="80" cy="595" r="3"/>
-    <circle cx="1120" cy="595" r="3"/>
+    <circle cx="120" cy="60" r="3"/>
+    <circle cx="1080" cy="60" r="3"/>
+    <circle cx="80" cy="600" r="3"/>
+    <circle cx="1120" cy="600" r="3"/>
   </g>
 </svg>`;
 
