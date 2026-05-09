@@ -113,7 +113,7 @@ function getYoutubeId(url?: string): string | null {
                         <span class="text-slate-500 font-semibold uppercase tracking-wide text-xs">Прогрес локалізації</span>
                         <span class="text-slate-900 font-bold tabular-nums">{game.progress}%</span>
                       </div>
-                      <ProgressBar percent={game.progress} showLabel={false} />
+                      <ProgressBar percent={game.progress} showLabel={false} status={game.status} />
                     </div>
 
                     {game.stageDetails && game.stageDetails.length > 0 && (

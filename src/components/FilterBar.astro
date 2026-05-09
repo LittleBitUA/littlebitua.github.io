@@ -6,33 +6,62 @@ import { getStatusList, STATUS_LABELS } from "../data/games";
 const statusList = getStatusList();
 ---
 
-<div class="lb-glass p-4 sm:p-5 mb-8" data-animate>
+<!-- Sentinel-смужка перед панеллю — IntersectionObserver відстежує її,
+     щоб додавати клас is-stuck коли filter bar прилипає до верху. -->
+<div id="filter-bar-sentinel" aria-hidden="true" class="h-px -mt-px"></div>
+
+<div id="filter-bar-wrap" class="lb-filter-sticky lb-glass p-4 sm:p-5 mb-8 top-[68px] sm:top-[84px]" data-animate>
   <div class="flex flex-col gap-4">
 
     <!-- Search + counter -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-      <div class="relative w-full sm:flex-1 sm:max-w-md">
-        <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"
-             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        <input
-          type="text"
-          id="search-input"
-          placeholder="Пошук за назвою, серією, тегами..."
-          class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border
-                 bg-white/65 border-white/80 text-slate-900 placeholder-slate-400
-                 focus:outline-none focus:border-indigo-300 focus:bg-white/90 focus:ring-4 focus:ring-indigo-100
-                 transition-all"
-        />
+      <div class="w-full sm:flex-1 sm:max-w-md flex items-center gap-2">
+        <div class="relative flex-1">
+          <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            id="search-input"
+            placeholder=" "
+            class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border
+                   bg-white/65 border-white/80 text-slate-900 placeholder-slate-400
+                   focus:outline-none focus:border-indigo-300 focus:bg-white/90 focus:ring-4 focus:ring-indigo-100
+                   transition-all"
+          />
+          <!-- Фейковий placeholder поверх input — щоб можна було анімувати
+               довгий текст, якщо він не влазить у вузькому viewport. -->
+          <div
+            id="search-fake-placeholder"
+            class="lb-fake-placeholder absolute left-10 right-3 top-1/2 -translate-y-1/2 overflow-hidden pointer-events-none text-sm text-slate-400"
+          >
+            <span class="lb-fake-placeholder-text whitespace-nowrap inline-block">
+              Пошук за назвою, серією, тегами...
+            </span>
+          </div>
+        </div>
+
+        <!-- Filter toggle — видно лише на mobile у стиснутому стані. -->
+        <button
+          type="button"
+          id="filter-mobile-toggle"
+          class="lb-filter-mobile-toggle shrink-0 w-10 h-10 rounded-xl border bg-white/65 border-white/80 text-slate-700 hover:bg-white items-center justify-center transition-colors"
+          aria-label="Розгорнути фільтри"
+          aria-expanded="false"
+        >
+          <svg class="w-4 h-4 lb-filter-toggle-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+          </svg>
+        </button>
       </div>
 
-      <span id="results-counter" class="text-xs font-semibold text-slate-500">
+      <span id="results-counter" class="lb-filter-mobile-extra text-xs font-semibold text-slate-500">
         Завантаження...
       </span>
 
       <!-- Sort + Reset stacked on the right -->
-      <div class="ml-auto flex flex-col items-end gap-2">
+      <div class="lb-filter-mobile-extra ml-auto flex flex-col items-end gap-2">
         <div class="relative">
           <select
             id="sort-select"
@@ -58,7 +87,7 @@ const statusList = getStatusList();
     </div>
 
     <!-- Status pills -->
-    <div class="flex flex-wrap gap-2" id="filter-bar">
+    <div class="lb-filter-mobile-extra flex flex-wrap gap-2" id="filter-bar">
       <button class="filter-btn active" data-filter="status" data-value="all">Усі статуси</button>
       {statusList.map((status) => (
         <button class="filter-btn" data-filter="status" data-value={status}>
@@ -68,7 +97,7 @@ const statusList = getStatusList();
     </div>
 
     <!-- Active tag indicator -->
-    <div id="active-tag-filter" class="hidden">
+    <div id="active-tag-filter" class="lb-filter-mobile-extra hidden">
       <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700">
         <span>Тег:</span>
         <span id="active-tag-label"></span>
@@ -82,7 +111,113 @@ const statusList = getStatusList();
   </div>
 </div>
 
+<!-- Empty state — показується, коли filteredCount === 0. -->
+<div
+  id="filter-empty-state"
+  class="lb-glass-strong mb-8 px-6 py-10 sm:py-12 text-center hidden"
+>
+  <div class="mx-auto w-16 h-16 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center mb-5 border border-white/80">
+    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 9l6 6m0-6l-6 6" />
+    </svg>
+  </div>
+  <h3 id="empty-state-title" class="text-lg sm:text-xl font-black text-slate-900 mb-2">
+    Нічого не знайдено
+  </h3>
+  <p class="text-sm text-slate-500 max-w-md mx-auto mb-6">
+    Спробуй коротший запит, прибери фільтри або переглянь повний список проєктів.
+  </p>
+  <div class="flex flex-wrap items-center justify-center gap-2.5">
+    <button id="empty-state-reset" type="button" class="lb-btn lb-btn--primary !text-sm">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+      </svg>
+      Скинути фільтри
+    </button>
+    <a href="/projects" class="lb-btn lb-btn--ghost !text-sm">
+      До всіх проєктів
+    </a>
+  </div>
+</div>
+
 <style>
+  /* Sticky filter bar — слідує за гридом при скролі.
+     На mobile при прилипанні стискаємо до самого лише пошуку (елементи
+     з .lb-filter-mobile-extra ховаються), щоб бар не з'їдав пів-екрана. */
+  .lb-filter-sticky {
+    position: sticky;
+    z-index: 30;
+    transition:
+      padding 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      background 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      border-radius 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* Toggle-кнопка фільтрів видна лише на mobile у стиснутому стані */
+  .lb-filter-mobile-toggle { display: none; }
+
+  /* Фейковий placeholder — ховаємо, щойно у input з'являється значення.
+     При focus теж ховаємо, щоб курсор не накладався на текст. */
+  #search-input:not(:placeholder-shown) ~ #search-fake-placeholder,
+  #search-input:focus ~ #search-fake-placeholder {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+  .lb-fake-placeholder-text.lb-marquee {
+    animation: lbPlaceholderMarquee 6s cubic-bezier(0.4, 0, 0.6, 1) 0.9s 1 forwards;
+  }
+  @keyframes lbPlaceholderMarquee {
+    0%, 12%   { transform: translateX(0); }
+    46%, 58%  { transform: translateX(var(--marquee-end, 0)); }
+    92%, 100% { transform: translateX(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lb-fake-placeholder-text.lb-marquee { animation: none; }
+  }
+
+  @media (max-width: 639px) {
+    .lb-filter-sticky.is-stuck:not(.is-expanded) {
+      padding: 0.625rem 0.875rem;
+    }
+    .lb-filter-sticky.is-stuck:not(.is-expanded) .lb-filter-mobile-extra {
+      display: none;
+    }
+    .lb-filter-sticky.is-stuck:not(.is-expanded) > .flex.flex-col {
+      gap: 0;
+    }
+    .lb-filter-sticky.is-stuck .lb-filter-mobile-toggle {
+      display: inline-flex;
+    }
+    /* Іконка обертається при розгорнутому стані */
+    .lb-filter-toggle-icon {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .lb-filter-sticky.is-expanded .lb-filter-toggle-icon {
+      transform: rotate(180deg);
+    }
+  }
+  .lb-filter-sticky.is-stuck {
+    background: rgba(255, 255, 255, 0.88);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    backdrop-filter: blur(20px) saturate(1.2);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.95) inset,
+      0 18px 38px -22px rgba(15, 23, 42, 0.22),
+      0 4px 12px -8px rgba(99, 102, 241, 0.18);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  @media (min-width: 640px) {
+    .lb-filter-sticky.is-stuck {
+      padding-top: 0.875rem;
+      padding-bottom: 0.875rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lb-filter-sticky { transition: none; }
+  }
+
   .filter-btn {
     padding: 0.45rem 0.95rem;
     font-size: 0.72rem;
@@ -121,6 +256,51 @@ const statusList = getStatusList();
 <script>
   import Fuse from "fuse.js";
 
+  // ── Sticky-bar: відстежуємо sentinel, щоб додавати is-stuck.
+  const stickySentinel = document.getElementById("filter-bar-sentinel");
+  const stickyWrap = document.getElementById("filter-bar-wrap");
+  if (stickySentinel && stickyWrap && "IntersectionObserver" in window) {
+    const stickyObserver = new IntersectionObserver(
+      ([entry]) => {
+        const stuck = !entry.isIntersecting;
+        stickyWrap.classList.toggle("is-stuck", stuck);
+        // Якщо повернулись у нестиснутий стан — також згортаємо expand,
+        // щоб при наступному прилипанні починалося з компактного.
+        if (!stuck) stickyWrap.classList.remove("is-expanded");
+      },
+      { rootMargin: "-80px 0px 0px 0px", threshold: [0, 1] }
+    );
+    stickyObserver.observe(stickySentinel);
+  }
+
+  // ── Marquee для фейкового placeholder, якщо текст не влазить у поле.
+  const fakePlaceholder = document.getElementById("search-fake-placeholder");
+  const fakeText = fakePlaceholder?.querySelector<HTMLElement>(".lb-fake-placeholder-text");
+  if (fakePlaceholder && fakeText) {
+    // Чекаємо, поки розкладка стане стабільною
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        const overflow = fakeText.scrollWidth - fakePlaceholder.clientWidth;
+        if (overflow > 4) {
+          fakeText.style.setProperty("--marquee-end", `-${overflow + 4}px`);
+          fakeText.classList.add("lb-marquee");
+        }
+      });
+    });
+  }
+
+  // Toggle для розгортання фільтрів у mobile sticky.
+  const mobileToggle = document.getElementById("filter-mobile-toggle");
+  mobileToggle?.addEventListener("click", () => {
+    if (!stickyWrap) return;
+    const expanded = stickyWrap.classList.toggle("is-expanded");
+    mobileToggle.setAttribute("aria-expanded", String(expanded));
+    mobileToggle.setAttribute(
+      "aria-label",
+      expanded ? "Згорнути фільтри" : "Розгорнути фільтри"
+    );
+  });
+
   const searchInput = document.getElementById("search-input") as HTMLInputElement;
   const sortSelect = document.getElementById("sort-select") as HTMLSelectElement;
   const filterBar = document.getElementById("filter-bar")!;
@@ -131,6 +311,9 @@ const statusList = getStatusList();
   const clearTagBtn = document.getElementById("clear-tag-filter")!;
 
   const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-game-id]"));
+  const emptyState = document.getElementById("filter-empty-state");
+  const emptyStateTitle = document.getElementById("empty-state-title");
+  const emptyResetBtn = document.getElementById("empty-state-reset");
 
   let currentStatus = "all";
   let currentSearch = "";
@@ -152,11 +335,21 @@ const statusList = getStatusList();
     keys: ["title", "series", "tags"],
     threshold: 0.3,
     includeScore: true,
+    // Розширений синтаксис: префікс ' перед токеном = «має fuzzy-збіг».
+    // Поєднання `'tokenA 'tokenB` вимагає обох токенів — інакше нуль результатів.
+    useExtendedSearch: true,
   });
+
+  function searchGames(query: string) {
+    const tokens = query.trim().split(/\s+/).filter(Boolean);
+    if (tokens.length === 0) return gamesList;
+    const extendedQuery = tokens.map((t) => `'${t}`).join(" ");
+    return fuse.search(extendedQuery).map((r) => r.item);
+  }
 
   function applyFilters() {
     let filtered = gamesList;
-    if (currentSearch.trim()) filtered = fuse.search(currentSearch).map((r) => r.item);
+    if (currentSearch.trim()) filtered = searchGames(currentSearch);
     if (currentStatus !== "all") filtered = filtered.filter((g) => g.status === currentStatus);
     if (currentTag) filtered = filtered.filter((g) => g.tags.toLowerCase().includes(currentTag.toLowerCase()));
 
@@ -189,7 +382,41 @@ const statusList = getStatusList();
     });
 
     resultsCounter.textContent = `Знайдено: ${filtered.length} з ${cards.length}`;
+
+    // Empty state — показуємо, коли результатів немає, ховаємо інакше.
+    if (emptyState && emptyStateTitle) {
+      if (filtered.length === 0) {
+        const q = currentSearch.trim();
+        emptyStateTitle.textContent = q
+          ? `За запитом «${q}» нічого не знайдено`
+          : "За цими фільтрами нічого не знайдено";
+        emptyState.classList.remove("hidden");
+      } else {
+        emptyState.classList.add("hidden");
+      }
+    }
   }
+
+  function resetAllFilters() {
+    searchInput.value = "";
+    currentSearch = "";
+
+    statusButtons.forEach((b) => b.classList.remove("active"));
+    const allBtn = filterBar.querySelector<HTMLButtonElement>('[data-value="all"]');
+    allBtn?.classList.add("active");
+    currentStatus = "all";
+
+    currentTag = "";
+    activeTagEl.classList.add("hidden");
+    activeTagEl.classList.remove("inline-flex");
+
+    sortSelect.value = "default";
+    currentSort = "default";
+
+    applyFilters();
+  }
+
+  emptyResetBtn?.addEventListener("click", resetAllFilters);
 
   let searchTimeout: ReturnType<typeof setTimeout>;
   searchInput.addEventListener("input", () => {

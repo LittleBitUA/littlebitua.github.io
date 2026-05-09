@@ -350,7 +350,7 @@ export const games: Game[] = [
     cover: "https://cdn2.steamgriddb.com/grid/34b4bdc640e8367a103af9181039d99f.jpg",
     progress: 100,
     status: "done",
-    stage: "Готово",
+    stage: "Текстури",
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 100 },

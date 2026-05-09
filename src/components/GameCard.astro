@@ -8,6 +8,7 @@ import StatusBadge from "./StatusBadge.astro";
 import type { Game } from "../data/games";
 import { STATUS_LABELS } from "../data/games";
 import { getBadge } from "../data/gameBadges";
+import { getProgressPalette } from "../utils/statusColors";
 import "@fortawesome/fontawesome-free/css/all.css";
 
 export interface Props {
@@ -25,6 +26,7 @@ const translationPercent = translationStage?.percent ?? game.progress;
 // Сегменти: 20 кубиків × 5% кожен. Кубик або повністю кольоровий, або порожній,
 // а перший незаповнений ("next") пульсує напівпрозорим — наче ціль, до якої йдемо.
 const filledCubes = Math.floor(translationPercent / 5);
+const cubePalette = getProgressPalette(game.status, translationPercent);
 
 // Top-of-cover status pill (from game data, kept dynamic)
 const topPillLabel = game.status === "fundraising"
@@ -138,10 +140,10 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
                   return (
                     <div class="flex-1 h-2 rounded-sm bg-slate-200/80 overflow-hidden relative">
                       {isFull && (
-                        <div class="absolute inset-0" style={`background: ${translationPercent >= 100 ? "#10b981" : "#14b8a6"};`}></div>
+                        <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>
                       )}
                       {isNext && (
-                        <div class="lb-cube-next absolute inset-0" style="background: #14b8a6;"></div>
+                        <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>
                       )}
                     </div>
                   );

@@ -8,17 +8,22 @@
 //     щоб обидві версії підписів стояли в одному місці.
 //   • Для sm — без підпису, просто тонка лінія.
 
+import type { GameStatus } from "../data/games";
+import { getProgressPalette } from "../utils/statusColors";
+
 export interface Props {
   percent: number;
   showLabel?: boolean;
   size?: "sm" | "md" | "lg";
-  /** Optional accent color (hex/rgb). If omitted — auto color by percent. */
+  /** Optional accent color (hex/rgb). If omitted — auto by status/percent. */
   color?: string;
   /** Optional left-aligned inline label rendered inside the bar (md/lg only). */
   label?: string;
+  /** Game status — drives the bar color when no `color` override given. */
+  status?: GameStatus;
 }
 
-const { percent, showLabel = true, size = "md", color, label } = Astro.props;
+const { percent, showLabel = true, size = "md", color, label, status } = Astro.props;
 const clampedPercent = Math.max(0, Math.min(100, percent));
 
 // Висоти: sm — тонка декоративна, md/lg — достатньо для тексту всередині.
@@ -33,17 +38,12 @@ const textSizeMap = {
   lg: "text-[11px]",
 };
 
-const isDone = clampedPercent >= 100;
+const palette = status
+  ? getProgressPalette(status, clampedPercent)
+  : getProgressPalette("in-progress", clampedPercent);
 
-function getFillBackground(p: number, colorOverride?: string): string {
-  if (colorOverride) return colorOverride;
-  if (p >= 100) return "linear-gradient(90deg, #10b981, #14b8a6)";
-  return "linear-gradient(90deg, #6366f1, #8b5cf6)";
-}
-
-const glow = isDone
-  ? "0 0 14px -2px rgba(16,185,129,0.55), 0 0 4px rgba(16,185,129,0.45)"
-  : "0 0 14px -2px rgba(99,102,241,0.55), 0 0 4px rgba(139,92,246,0.40)";
+const fillBackground = color ?? palette.gradient;
+const glow = palette.glow;
 
 // Підпис всередині полоски — тільки для md/lg і коли showLabel === true
 const showInline = showLabel && size !== "sm";
@@ -61,7 +61,7 @@ const showInline = showLabel && size !== "sm";
     <!-- Fill -->
     <div
       class="lb-bar absolute left-0 top-0 bottom-0 rounded-full"
-      style={`--progress-width: ${clampedPercent}%; background: ${getFillBackground(clampedPercent, color)}; box-shadow: ${glow};`}
+      style={`--progress-width: ${clampedPercent}%; background: ${fillBackground}; box-shadow: ${glow};`}
     ></div>
 
     {showInline && (

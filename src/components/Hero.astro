@@ -3,6 +3,7 @@
 // Світлий dashboard-style блок з прозорими картками й featured-каруселлю.
 
 import { getOverallProgress, games, STATUS_LABELS } from "../data/games";
+import type { Game } from "../data/games";
 
 const overall = getOverallProgress();
 const totalGames = games.length;
@@ -10,18 +11,105 @@ const earlyAccessCount = games.filter((g) => g.status === "early-access").length
 const doneCount = games.filter((g) => g.status === "done").length;
 const inProgressCount = games.filter((g) => g.status === "in-progress" || g.status === "early-access" || g.status === "fundraising").length;
 
-const featuredItems = [
-  {
-    type: "news" as const,
-    title: "Сайт повністю оновлено",
-    description: "Новий світлий інтерфейс у стилі white liquid glass — легкий, прозорий, швидкий. Освіжені картки, плавні анімації, краща мобільна версія.",
-    image: "/images/site-redesign-2026.svg",
-    badge: "НОВИНА",
-    label: "Свіжий редизайн",
-    date: "28 квітня 2026",
-    noOverlay: true,
-  },
-];
+// ── Spotlight: авто-добірка «гарячих» проєктів для каруселі.
+// Рубрики: новий реліз → активний збір → свіжий прогрес-милстоун.
+// Якщо одна гра підпадає під кілька — береться лише одного разу.
+
+interface SpotlightItem {
+  type: "spotlight";
+  gameId: string;
+  title: string;
+  description: string;
+  image: string;
+  badge: string;
+  label: string;
+  date: string;
+  /** Колір акценту для бейджа (узгоджений зі статусними кольорами) */
+  accent: string;
+}
+
+function fmtDate(d: string): string {
+  return new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function pickLatestRelease(pool: Game[]): Game | null {
+  const released = pool.filter((g) => g.status === "done" && g.releaseDate);
+  if (!released.length) return null;
+  return released.sort((a, b) => (b.releaseDate! > a.releaseDate! ? 1 : -1))[0];
+}
+
+function pickTopFundraising(pool: Game[]): Game | null {
+  const active = pool.filter((g) => g.fundraisingGoal && !g.fundraisingCompleted);
+  if (!active.length) return null;
+  return active
+    .map((g) => ({ g, pct: (g.fundraisingRaised ?? 0) / g.fundraisingGoal! }))
+    .sort((a, b) => b.pct - a.pct)[0].g;
+}
+
+function pickRecentMilestone(pool: Game[]): { game: Game; date: string; milestone: string } | null {
+  const candidates = pool
+    .filter((g) => g.progressHistory && g.progressHistory.length > 0)
+    .map((g) => {
+      const last = g.progressHistory![g.progressHistory!.length - 1];
+      return { game: g, date: last.date, milestone: last.milestone || `${last.progress}% перекладено` };
+    });
+  if (!candidates.length) return null;
+  return candidates.sort((a, b) => (b.date > a.date ? 1 : -1))[0];
+}
+
+const used = new Set<string>();
+const spotlight: SpotlightItem[] = [];
+
+const release = pickLatestRelease(games);
+if (release) {
+  used.add(release.id);
+  spotlight.push({
+    type: "spotlight",
+    gameId: release.id,
+    title: release.title,
+    description: release.description,
+    image: release.cover,
+    badge: "РЕЛІЗ",
+    label: "Готова локалізація",
+    date: fmtDate(release.releaseDate!),
+    accent: "#10b981",
+  });
+}
+
+const fund = pickTopFundraising(games.filter((g) => !used.has(g.id)));
+if (fund) {
+  used.add(fund.id);
+  const pct = Math.round(((fund.fundraisingRaised ?? 0) / fund.fundraisingGoal!) * 100);
+  spotlight.push({
+    type: "spotlight",
+    gameId: fund.id,
+    title: fund.title,
+    description: `Активний збір: ${(fund.fundraisingRaised ?? 0).toLocaleString("uk-UA")} ₴ із ${fund.fundraisingGoal!.toLocaleString("uk-UA")} ₴ (${pct}%). Підтримай — і переклад продовжиться.`,
+    image: fund.cover,
+    badge: "ЗБІР",
+    label: "Триває збір коштів",
+    date: fund.lastUpdate ? fmtDate(fund.lastUpdate) : "",
+    accent: "#f59e0b",
+  });
+}
+
+const milestone = pickRecentMilestone(games.filter((g) => !used.has(g.id)));
+if (milestone) {
+  used.add(milestone.game.id);
+  spotlight.push({
+    type: "spotlight",
+    gameId: milestone.game.id,
+    title: `${milestone.game.title} — ${milestone.milestone}`,
+    description: milestone.game.description,
+    image: milestone.game.cover,
+    badge: "ПРОГРЕС",
+    label: STATUS_LABELS[milestone.game.status],
+    date: fmtDate(milestone.date),
+    accent: "#8b5cf6",
+  });
+}
+
+const featuredItems = spotlight;
 
 // Усі активні збори: і повністю-fundraising проєкти, і ті, де гра вже доступна,
 // але ведеться збір на подальші роботи (наприклад, MGS Δ).
@@ -71,51 +159,64 @@ const ringOffset = RING_C * (1 - overall / 100);
         class="lb-glass lg:col-span-5 relative min-h-[240px] overflow-hidden hero-card hero-delay-2 group"
       >
         {featuredItems.map((item, index) => (
-          <div
-            class={`featured-slide absolute inset-0 transition-opacity duration-700 ${index === 0 ? "opacity-100 z-10" : "opacity-0 z-0"}`}
+          <button
+            type="button"
+            data-game-detail={item.gameId}
+            class={`featured-slide absolute inset-0 text-left transition-opacity duration-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-300 ${index === 0 ? "opacity-100 z-10" : "opacity-0 z-0"}`}
             data-slide={index}
+            aria-label={`${item.title} — деталі`}
           >
+            <!-- Атмосферний фон: розмита обкладинка + темна вуаль -->
             <img
               src={item.image}
-              alt={item.title}
-              class="absolute inset-0 w-full h-full object-cover"
+              alt=""
+              aria-hidden="true"
+              class="absolute inset-0 w-full h-full object-cover scale-110"
+              style="filter: blur(28px) saturate(1.1) brightness(0.55);"
               loading={index === 0 ? "eager" : "lazy"}
             />
-            {!item.noOverlay && (
-              <div class="absolute inset-0 bg-gradient-to-t from-slate-900/85 via-slate-900/55 to-slate-900/10"></div>
-            )}
-            {item.noOverlay && (
-              <>
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent"></div>
-                <div
-                  class="absolute bottom-0 left-0 right-0 h-3/5 pointer-events-none"
-                  style="backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); -webkit-mask-image: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 45%, transparent 100%); mask-image: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 45%, transparent 100%);"
-                ></div>
-              </>
-            )}
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900/85 via-slate-900/65 to-slate-900/55"></div>
 
-            <div class="relative h-full flex flex-col justify-between p-6 sm:p-7">
-              <div class="flex items-start justify-between gap-3">
-                <span class="inline-flex items-center px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-lg bg-white/95 text-indigo-600 border border-white/60 shadow-sm">
-                  {item.badge}
-                </span>
-                <span class="text-[10px] font-semibold uppercase tracking-wider text-white/95 px-2.5 py-1 rounded-lg bg-slate-900/35 border border-white/25 shadow-sm">
-                  {item.date}
-                </span>
+            <!-- Контент: обкладинка ліворуч (повна, native 2:3) + текст праворуч -->
+            <div class="relative h-full flex items-stretch gap-4 sm:gap-5 p-4 sm:p-5">
+              <div class="shrink-0 w-[110px] sm:w-[130px] aspect-[2/3] rounded-xl overflow-hidden border border-white/30 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.7)] group-hover:scale-[1.02] transition-transform">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  class="w-full h-full object-cover"
+                  loading={index === 0 ? "eager" : "lazy"}
+                />
               </div>
-              <div>
-                <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-amber-300 mb-1.5 block">
-                  {item.label}
-                </span>
-                <h3 class="text-white font-bold text-xl sm:text-2xl leading-tight mb-2 drop-shadow-sm">
-                  {item.title}
-                </h3>
-                <p class="text-white/80 text-sm leading-relaxed max-w-md line-clamp-2">
-                  {item.description}
-                </p>
+
+              <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
+                <div class="flex items-start justify-between gap-2 mb-2">
+                  <span
+                    class="inline-flex items-center px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] rounded-lg bg-white/95 border border-white/60 shadow-sm shrink-0"
+                    style={`color: ${item.accent};`}
+                  >
+                    {item.badge}
+                  </span>
+                  {item.date && (
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-white/95 px-2 py-1 rounded-lg bg-white/10 border border-white/15 shadow-sm shrink-0">
+                      {item.date}
+                    </span>
+                  )}
+                </div>
+
+                <div class="flex-1 flex flex-col justify-end min-w-0">
+                  <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 mb-1.5 block truncate">
+                    {item.label}
+                  </span>
+                  <h3 class="text-white font-extrabold text-lg sm:text-xl leading-tight mb-1.5 line-clamp-2 drop-shadow-sm">
+                    {item.title}
+                  </h3>
+                  <p class="text-white/75 text-xs sm:text-[13px] leading-relaxed line-clamp-3">
+                    {item.description}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          </button>
         ))}
 
         {featuredItems.length > 1 && (
@@ -307,7 +408,7 @@ const ringOffset = RING_C * (1 - overall / 100);
   }
 
   // Carousel
-  const slides = document.querySelectorAll<HTMLDivElement>(".featured-slide");
+  const slides = document.querySelectorAll<HTMLElement>(".featured-slide");
   const dots = document.querySelectorAll<HTMLButtonElement>(".carousel-dot");
   const prevBtn = document.getElementById("carousel-prev");
   const nextBtn = document.getElementById("carousel-next");
@@ -343,6 +444,55 @@ const ringOffset = RING_C * (1 - overall / 100);
     carousel.addEventListener("mouseenter", () => clearInterval(auto));
     carousel.addEventListener("mouseleave", () => {
       auto = setInterval(() => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1), interval);
+    });
+  }
+
+  // Touch swipe — щоб на телефоні листати слайди жестом, а не чекати
+  // авто-ротацію. Якщо людина свайпнула, не відкриваємо модалку випадково.
+  if (carousel && slides.length > 1) {
+    const SWIPE_THRESHOLD = 40;
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isSwiping = false;
+    let suppressClick = false;
+
+    carousel.addEventListener("touchstart", (e) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isSwiping = false;
+      clearInterval(auto);
+    }, { passive: true });
+
+    carousel.addEventListener("touchmove", (e) => {
+      const dx = Math.abs(e.touches[0].clientX - touchStartX);
+      const dy = Math.abs(e.touches[0].clientY - touchStartY);
+      // Вважаємо свайпом, лише якщо горизонтальний рух домінує — інакше
+      // це вертикальний скрол сторінки.
+      if (dx > 10 && dx > dy) isSwiping = true;
+    }, { passive: true });
+
+    carousel.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      if (isSwiping && Math.abs(dx) > SWIPE_THRESHOLD) {
+        if (dx < 0) goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1);
+        else goToSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1);
+        suppressClick = true;
+        setTimeout(() => { suppressClick = false; }, 350);
+      }
+      // Перезапускаємо авто-ротацію після паузи
+      auto = setInterval(
+        () => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1),
+        interval
+      );
+    });
+
+    // Якщо щойно був свайп — не пропускаємо click до document delegated
+    // listener, який відкриває модалку гри.
+    carousel.addEventListener("click", (e) => {
+      if (suppressClick) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     });
   }
 </script>

@@ -1,0 +1,184 @@
+---
+// ─── Pipeline / How We Work ────────────────────────────────────
+// Освітня секція для новачків: 4 стадії процесу локалізації +
+// живий список «зараз на цій стадії». Дані тягнуться з games.ts —
+// ручної підтримки не треба.
+
+import { games } from "../data/games";
+import type { Game } from "../data/games";
+
+interface StageDef {
+  num: string;
+  key: string;          // game.stage value
+  title: string;
+  description: string;
+  accent: string;       // hex
+  bg: string;           // tailwind bg class for icon chip
+  text: string;         // tailwind text class for icon chip + 0X
+  border: string;       // tailwind border class for separator
+  iconPath: string;     // SVG path d=
+}
+
+// Палітра, що збігається зі статусними кольорами на сайті.
+const STAGES: StageDef[] = [
+  {
+    num: "01",
+    key: "Переклад",
+    title: "Переклад",
+    description:
+      "Перекладачі переносять діалоги, інтерфейс і всі написи зі скрипта гри українською. Це найдовша й найоб'ємніша стадія — місяці роботи з тисячами рядків.",
+    accent: "#8b5cf6",
+    bg: "bg-violet-50",
+    text: "text-violet-600",
+    border: "border-violet-100",
+    iconPath:
+      "M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129",
+  },
+  {
+    num: "02",
+    key: "Редактура",
+    title: "Редактура",
+    description:
+      "Редактор вичитує переклад: виправляє стилістику, граматику, узгоджує термінологію між персонажами. Без цього кроку текст звучить «чужо».",
+    accent: "#0ea5e9",
+    bg: "bg-sky-50",
+    text: "text-sky-600",
+    border: "border-sky-100",
+    iconPath:
+      "M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
+  },
+  {
+    num: "03",
+    key: "Текстури",
+    title: "Текстури",
+    description:
+      "Художники перемальовують усі написи прямо в ігрових текстурах — вивіски, плакати, документи. Без цього на екрані залишаться англійські написи.",
+    accent: "#f59e0b",
+    bg: "bg-amber-50",
+    text: "text-amber-600",
+    border: "border-amber-100",
+    iconPath:
+      "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+  },
+  {
+    num: "04",
+    key: "Готово",
+    title: "Готово",
+    description:
+      "Тестування, фінальне склеювання — і локалізація йде в реліз. Завантажуй через LBK Launcher і грай українською.",
+    accent: "#10b981",
+    bg: "bg-emerald-50",
+    text: "text-emerald-600",
+    border: "border-emerald-100",
+    iconPath:
+      "M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z",
+  },
+];
+
+// Хто на якій стадії зараз? Джерело правди — поле `stage`.
+// Для Текстур додатково підтягуємо ігри, де Текстури як підстадія в роботі.
+function gamesAtStage(stageKey: string): Game[] {
+  if (stageKey === "Текстури") {
+    return games.filter(
+      (g) =>
+        g.stage === "Текстури" ||
+        g.stageDetails?.some(
+          (d) => d.label === "Текстури" && d.percent > 0 && d.percent < 100
+        )
+    );
+  }
+  return games.filter((g) => g.stage === stageKey);
+}
+---
+
+<section id="pipeline" class="py-20 sm:py-24 relative">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12" data-animate>
+      <span class="lb-section-eyebrow mb-4">Процес</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-3">
+        Як ми працюємо
+      </h2>
+      <p class="text-slate-500 max-w-xl mx-auto">
+        4 стадії від англійського скрипта до української гри у твоїй бібліотеці.
+        Кожен проєкт іде цим самим шляхом.
+      </p>
+    </div>
+
+    <div class="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <!-- З'єднувальна лінія між стадіями (тільки на lg+) -->
+      <div
+        class="hidden lg:block absolute top-[60px] left-[12%] right-[12%] h-px pointer-events-none"
+        style="background: linear-gradient(90deg, rgba(139,92,246,0.30), rgba(14,165,233,0.30) 33%, rgba(245,158,11,0.30) 66%, rgba(16,185,129,0.30));"
+        aria-hidden="true"
+      ></div>
+
+      {STAGES.map((stage) => {
+        const stageGames = gamesAtStage(stage.key);
+        const visible = stageGames.slice(0, 4);
+        const more = Math.max(0, stageGames.length - visible.length);
+
+        return (
+          <div class="lb-glass lb-lift p-5 sm:p-6 flex flex-col relative" data-animate>
+            <div class="flex items-center justify-between mb-4">
+              <span class={`text-[11px] font-black tracking-[0.25em] ${stage.text}`}>
+                {stage.num}
+              </span>
+              <div
+                class={`w-11 h-11 rounded-2xl ${stage.bg} ${stage.text} flex items-center justify-center border border-white relative`}
+                style={`box-shadow: 0 8px 18px -10px ${stage.accent}80;`}
+              >
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d={stage.iconPath} />
+                </svg>
+              </div>
+            </div>
+
+            <h3 class="text-xl font-black text-slate-900 mb-1.5" style={`color: ${stage.accent};`}>
+              {stage.title}
+            </h3>
+
+            <p class="text-[13px] text-slate-600 leading-relaxed flex-1 mb-4">
+              {stage.description}
+            </p>
+
+            <div class={`pt-3 border-t ${stage.border}`}>
+              <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 mb-2">
+                {stage.key === "Готово"
+                  ? `Релізів: ${stageGames.length}`
+                  : stageGames.length > 0
+                    ? "Зараз працюємо над"
+                    : "Поки порожньо"}
+              </p>
+
+              {stageGames.length > 0 && (
+                <div class="flex items-center gap-1">
+                  <div class="flex -space-x-2" data-animate-stagger>
+                    {visible.map((g) => (
+                      <button
+                        type="button"
+                        data-game-detail={g.id}
+                        title={g.title}
+                        aria-label={g.title}
+                        class="relative w-9 h-12 rounded-md overflow-hidden border-2 border-white shadow-[0_4px_10px_-4px_rgba(15,23,42,0.4)] hover:scale-110 hover:z-10 transition-transform cursor-pointer"
+                      >
+                        <img src={g.cover} alt={g.title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+                      </button>
+                    ))}
+                  </div>
+                  {more > 0 && (
+                    <span
+                      class={`ml-2 inline-flex items-center px-2 py-1 text-[10px] font-bold rounded-md ${stage.bg} ${stage.text}`}
+                      title={`Ще ${more} проєктів на цій стадії`}
+                    >
+                      +{more}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

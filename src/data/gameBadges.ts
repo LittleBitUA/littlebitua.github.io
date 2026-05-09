@@ -215,6 +215,10 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     text: "Ранній доступ",
     ...BADGE_PRESETS.earlyAccess,
   },
+  "mixtape": {
+    text: "Переклад",
+    ...BADGE_PRESETS.inProgress,
+  },
 };
 
 /**
