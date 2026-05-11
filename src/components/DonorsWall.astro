@@ -1,0 +1,217 @@
+---
+// ─── Donors Wall ─────────────────────────────────────────────
+// Glass-chip wall of top supporters, ranked by donation amount (desc).
+// The #1 donor gets a subtle gradient accent + crown icon.
+
+import { rankedDonors } from "../data/donors";
+
+const list = rankedDonors();
+
+const formatAmount = (uah: number) =>
+  new Intl.NumberFormat("uk-UA").format(uah) + " ₴";
+
+// Avatar palette — soft tints that sit comfortably on the white-glass surface.
+const avatarPalette: Array<{ bg: string; fg: string }> = [
+  { bg: "#eef2ff", fg: "#4f46e5" }, // indigo
+  { bg: "#f0f9ff", fg: "#0284c7" }, // sky
+  { bg: "#faf5ff", fg: "#7c3aed" }, // violet
+  { bg: "#ecfdf5", fg: "#059669" }, // emerald
+  { bg: "#fff7ed", fg: "#ea580c" }, // orange
+  { bg: "#fdf4ff", fg: "#c026d3" }, // fuchsia
+  { bg: "#fef2f2", fg: "#dc2626" }, // red
+  { bg: "#fefce8", fg: "#ca8a04" }, // amber
+];
+
+// Stable colour per name — same nick always lands on the same swatch.
+function avatarFor(name: string) {
+  let hash = 0;
+  for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) >>> 0;
+  return avatarPalette[hash % avatarPalette.length];
+}
+
+const initial = (name: string) => name.trim().charAt(0).toUpperCase();
+---
+
+<div class="lb-donors-wall" data-animate>
+  <header class="lb-donors-wall__head">
+    <h3 class="lb-donors-wall__title">Топ донатерів</h3>
+    <p class="lb-donors-wall__subtitle">
+      Дякуємо за вашу підтримку — без вас не було б нових перекладів.
+    </p>
+  </header>
+
+  <ul class="lb-donors-wall__chips">
+    {list.map((donor, i) => {
+      const palette = avatarFor(donor.name);
+      return (
+        <li class={`lb-donor-chip${i === 0 ? " lb-donor-chip--top" : ""}`}>
+          <span
+            class="lb-donor-chip__avatar"
+            style={`background:${palette.bg};color:${palette.fg};`}
+            aria-hidden="true"
+          >
+            {initial(donor.name)}
+          </span>
+          {i === 0 && (
+            <svg class="lb-donor-chip__crown" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M5 19h14l1.5-9-4.5 3-4-6-4 6-4.5-3L5 19z" />
+            </svg>
+          )}
+          <span class="lb-donor-chip__name">{donor.name}</span>
+          <span class="lb-donor-chip__amount">{formatAmount(donor.amount)}</span>
+        </li>
+      );
+    })}
+  </ul>
+</div>
+
+<style>
+  .lb-donors-wall {
+    background: var(--lb-glass-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid var(--lb-glass-border);
+    border-radius: 24px;
+    padding: 1.75rem;
+    box-shadow: var(--lb-shadow-soft);
+  }
+
+  @media (min-width: 640px) {
+    .lb-donors-wall {
+      padding: 2rem 2.25rem;
+    }
+  }
+
+  .lb-donors-wall__head {
+    margin-bottom: 1.5rem;
+  }
+
+  .lb-donors-wall__title {
+    font-family: "Manrope", "Inter", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--lb-text-strong);
+    margin: 0 0 0.35rem;
+    letter-spacing: -0.01em;
+  }
+
+  .lb-donors-wall__subtitle {
+    font-size: 0.875rem;
+    color: var(--lb-text-muted);
+    margin: 0;
+    max-width: 56ch;
+    line-height: 1.5;
+  }
+
+  .lb-donors-wall__chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .lb-donor-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.45rem 1rem 0.45rem 0.45rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 6px 14px -10px rgba(15, 23, 42, 0.18);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .lb-donor-chip:hover {
+    transform: translateY(-2px);
+    border-color: rgba(99, 102, 241, 0.35);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 10px 22px -12px rgba(99, 102, 241, 0.32);
+  }
+
+  .lb-donor-chip__name {
+    font-family: "Manrope", "Inter", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 0.875rem;
+    color: var(--lb-text-strong);
+    letter-spacing: 0.01em;
+  }
+
+  .lb-donor-chip__amount {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--lb-text-muted);
+    padding-left: 0.55rem;
+    border-left: 1px solid rgba(15, 23, 42, 0.10);
+  }
+
+  /* Top-1 donor — gradient accent + crown + slow shimmer */
+  .lb-donor-chip--top {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.16), rgba(167, 139, 250, 0.16));
+    border-color: rgba(99, 102, 241, 0.32);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.85) inset, 0 10px 22px -12px rgba(99, 102, 241, 0.40);
+    position: relative;
+    overflow: hidden;
+  }
+  .lb-donor-chip--top > * {
+    position: relative;
+    z-index: 1;
+  }
+  .lb-donor-chip--top::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      transparent 38%,
+      rgba(255, 255, 255, 0.65) 50%,
+      transparent 62%
+    );
+    transform: translateX(-100%);
+    animation: lb-donor-shimmer 3.8s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .lb-donor-chip--top .lb-donor-chip__name {
+    color: var(--lb-accent);
+  }
+  .lb-donor-chip--top .lb-donor-chip__amount {
+    color: var(--lb-accent);
+    border-left-color: rgba(99, 102, 241, 0.25);
+  }
+
+  @keyframes lb-donor-shimmer {
+    0%   { transform: translateX(-100%); }
+    55%, 100% { transform: translateX(110%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lb-donor-chip--top::after {
+      animation: none;
+      display: none;
+    }
+  }
+
+  .lb-donor-chip__crown {
+    width: 1rem;
+    height: 1rem;
+    color: #f59e0b;
+    flex-shrink: 0;
+  }
+
+  .lb-donor-chip__avatar {
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Manrope", "Inter", system-ui, sans-serif;
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.04) inset;
+  }
+</style>

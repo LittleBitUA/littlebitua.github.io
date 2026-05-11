@@ -1,6 +1,8 @@
 ---
 // ─── Support Section ───────────────────────────────────────────
-// Light glass donate cards.
+// Light glass donate cards + ranked donors wall.
+
+import DonorsWall from "./DonorsWall.astro";
 
 const methods = [
   {
@@ -87,6 +89,10 @@ const reasons = [
           </div>
         ))}
       </div>
+    </div>
+
+    <div class="mt-10">
+      <DonorsWall />
     </div>
   </div>
 </section>
