@@ -186,10 +186,10 @@ export const games: Game[] = [
     videoUrl: "https://www.youtube.com/watch?v=7NiZAmBlMk0",
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 14193,
+    fundraisingRaised: 15715,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-05-08",
+    lastUpdate: "2026-05-12",
     stats: {
       totalLines: 24458,
       translatedLines: 6921, // 28.3%
