@@ -836,17 +836,21 @@ export const games: Game[] = [
     description:
       "Продовження культового трилера від SWERY. Нова загадка, нове місто, та ще більше божевілля.",
     cover: "https://cdn2.steamgriddb.com/thumb/10dc0bb717c02b51d7f4e06704591f05.jpg",
-    progress: 15,
+    progress: 8,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 15 },
+      { label: "Переклад", percent: 8 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Хоррор", "Містерія", "Пригоди", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1271100/Deadly_Premonition_2_A_Blessing_in_Disguise/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-05-12",
+    stats: {
+      totalLines: 18436,
+      translatedLines: 1384, // 7.51%
+    },
   },
   {
     id: "lad-ishin",
