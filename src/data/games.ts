@@ -113,11 +113,11 @@ export const games: Game[] = [
     description:
       "Увечері напередодні розлуки троє друзів рушають в останню спільну пригоду. Зіграйте в добірку чудових спогадів під найкращі пісні цілого покоління.",
     cover: "https://cdn2.steamgriddb.com/grid/de0c701f43e5097566f7c3d560bb2b23.png",
-    progress: 35,
+    progress: 38,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 35 },
+      { label: "Переклад", percent: 38 },
     ],
     tags: ["Інді", "Пригоди", "Музика", "Сюжетна"],
     steamUrl: "https://store.steampowered.com/app/2582320/Mixtape/",
@@ -126,7 +126,8 @@ export const games: Game[] = [
     lastUpdate: "2026-05-12",
     stats: {
       totalLines: 2713,
-      translatedLines: 955, // 35.20%
+      translatedLines: 1017, // 37.49%
+      totalWords: 15679, // 3761 укр + 11918 англ
     },
   },
   {
