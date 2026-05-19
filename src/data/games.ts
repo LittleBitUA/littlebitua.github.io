@@ -767,7 +767,7 @@ export const games: Game[] = [
       "Джастін, молода американська детективка, вирушає на, здавалося б, чергову рутинну справу — аж поки дивна аварія не закидає її на край цивілізації… у HOTEL BARCELONA. Тут у стінах готелю застрягли душі, а коридорами блукають сім серійних убивць. Та найстрашніше — в її голові прокидається інша особистість: доктор Карнавал, прадавнє згубне чудовисько.",
     cover: "https://cdn2.steamgriddb.com/thumb/a75ea8ff83616d5ce27efdd50da47ef3.jpg",
     progress: 60,
-    status: "in-progress",
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 60 },
@@ -776,8 +776,9 @@ export const games: Game[] = [
     ],
     tags: ["Бойовик", "Хоррор", "Піксельна графіка", "Інді"],
     steamUrl: "https://store.steampowered.com/app/2286600/HOTEL_BARCELONA/",
+    downloadUrl: "https://lbklauncher.com/games/hotel_barcelona/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-05-12",
     stats: {
       totalLines: 2238,
       translatedLines: 1341,

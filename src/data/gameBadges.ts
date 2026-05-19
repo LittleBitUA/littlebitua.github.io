@@ -164,8 +164,8 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     ...BADGE_PRESETS.fundraising,
   },
   "hotel-barcelona": {
-    text: "Переклад",
-    ...BADGE_PRESETS.inProgress,
+    text: "Ранній доступ",
+    ...BADGE_PRESETS.earlyAccess,
   },
   "deadly-premonition-dc": {
     text: "Переклад",
