@@ -1041,7 +1041,7 @@ export const games: Game[] = [
     title: "The MISSING: J.J. Macfield and the Island of Memories",
     description:
       "Дж. Дж. Макфілд прокидається на безлюдному острові в пошуках зниклої коханої. Сюрреалістичний платформер від SWERY про біль, кохання й сприйняття себе — там, де поранення стають частиною шляху.",
-    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/728240/library_600x900_2x.jpg",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/842910/library_600x900_2x.jpg",
     progress: 100,
     status: "done",
     stage: "Готово",
@@ -1051,7 +1051,8 @@ export const games: Game[] = [
       { label: "Текстури", percent: 50 },
     ],
     tags: ["Платформер", "Інді", "Сюжетна", "Атмосферна", "Психологічний"],
-    steamUrl: "https://store.steampowered.com/app/728240/The_MISSING_JJ_Macfield_and_the_Island_of_Memories/",
+    steamUrl: "https://store.steampowered.com/app/842910/The_MISSING_JJ_Macfield_and_the_Island_of_Memories/",
+    downloadUrl: "https://lbklauncher.com/games/the_missing_jj_macfield_and_the_island_of_memories/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-05-12",
   },
