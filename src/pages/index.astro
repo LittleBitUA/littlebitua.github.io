@@ -5,6 +5,7 @@
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
+import AvailableNow from "../components/AvailableNow.astro";
 import GameCard from "../components/GameCard.astro";
 import FilterBar from "../components/FilterBar.astro";
 import Pipeline from "../components/Pipeline.astro";
@@ -27,6 +28,8 @@ const sortedGames = games;
   <Header />
 
   <main class="flex-1">
+    <AvailableNow />
+
     <Hero />
 
     <!-- Projects Section -->

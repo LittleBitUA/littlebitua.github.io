@@ -766,11 +766,11 @@ export const games: Game[] = [
     description:
       "Джастін, молода американська детективка, вирушає на, здавалося б, чергову рутинну справу — аж поки дивна аварія не закидає її на край цивілізації… у HOTEL BARCELONA. Тут у стінах готелю застрягли душі, а коридорами блукають сім серійних убивць. Та найстрашніше — в її голові прокидається інша особистість: доктор Карнавал, прадавнє згубне чудовисько.",
     cover: "https://cdn2.steamgriddb.com/thumb/a75ea8ff83616d5ce27efdd50da47ef3.jpg",
-    progress: 60,
+    progress: 100,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 60 },
+      { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 0 },
       { label: "Текстури", percent: 0 },
     ],
@@ -780,8 +780,8 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-05-12",
     stats: {
-      totalLines: 2238,
-      translatedLines: 1341,
+      totalLines: 4751,
+      translatedLines: 4751, // 100%
       totalWords: 22623, // Ukrainian + English
       totalCharacters: undefined,
     },
@@ -837,11 +837,11 @@ export const games: Game[] = [
     description:
       "Продовження культового трилера від SWERY. Нова загадка, нове місто, та ще більше божевілля.",
     cover: "https://cdn2.steamgriddb.com/thumb/10dc0bb717c02b51d7f4e06704591f05.jpg",
-    progress: 8,
+    progress: 67,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 8 },
+      { label: "Переклад", percent: 67 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Хоррор", "Містерія", "Пригоди", "Відкритий світ"],
@@ -850,7 +850,7 @@ export const games: Game[] = [
     lastUpdate: "2026-05-12",
     stats: {
       totalLines: 18436,
-      translatedLines: 1384, // 7.51%
+      translatedLines: 12401, // 67.27%
     },
   },
   {
@@ -1035,6 +1035,25 @@ export const games: Game[] = [
       totalWords: 876792, // 67655 укр + 809137 англ
       totalCharacters: undefined
     }
+  },
+  {
+    id: "the-missing",
+    title: "The MISSING: J.J. Macfield and the Island of Memories",
+    description:
+      "Дж. Дж. Макфілд прокидається на безлюдному острові в пошуках зниклої коханої. Сюрреалістичний платформер від SWERY про біль, кохання й сприйняття себе — там, де поранення стають частиною шляху.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/728240/library_600x900_2x.jpg",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 50 },
+      { label: "Текстури", percent: 50 },
+    ],
+    tags: ["Платформер", "Інді", "Сюжетна", "Атмосферна", "Психологічний"],
+    steamUrl: "https://store.steampowered.com/app/728240/The_MISSING_JJ_Macfield_and_the_Island_of_Memories/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-05-12",
   },
 ];
 

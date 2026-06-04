@@ -219,6 +219,10 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     text: "Переклад",
     ...BADGE_PRESETS.inProgress,
   },
+  "the-missing": {
+    text: "Доступно",
+    ...BADGE_PRESETS.available,
+  },
 };
 
 /**
