@@ -7,9 +7,18 @@
 
 import { games } from "../data/games";
 
+// Sort: fully released ("done") come before "early-access", and within each
+// group most recently updated wins. That puts the prestige releases first
+// instead of letting a fresh early-access entry hog the featured slot.
+const STATUS_ORDER: Record<string, number> = { done: 0, "early-access": 1 };
 const available = games
   .filter((g) => g.status === "done" || g.status === "early-access")
-  .sort((a, b) => (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? ""));
+  .sort((a, b) => {
+    const sa = STATUS_ORDER[a.status] ?? 99;
+    const sb = STATUS_ORDER[b.status] ?? 99;
+    if (sa !== sb) return sa - sb;
+    return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
+  });
 
 const featured = available[0];
 const others = available.slice(1, 7); // up to 6 smaller covers (7 total in mosaic)
@@ -29,7 +38,7 @@ const totalCount = available.length;
           <div data-animate>
             <span class="lb-section-eyebrow mb-3">Грай зараз</span>
             <h2 class="text-3xl sm:text-4xl font-black text-slate-900 leading-tight mt-3 mb-3">
-              {totalCount} ігор, у які можна грати<br/>українською вже сьогодні
+              Грай українською<br/>вже сьогодні
             </h2>
             <p class="text-slate-600 text-base sm:text-lg leading-relaxed mb-5 max-w-md">
               Готові та доступні в ранньому доступі локалізації — встановлюються

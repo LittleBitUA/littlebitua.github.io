@@ -1049,6 +1049,7 @@ export const games: Game[] = [
       { label: "Переклад", percent: 13 },
     ],
     tags: ["RPG", "Інді", "Пригоди", "Симулятор", "Містерія"],
+    steamUrl: "https://store.steampowered.com/app/1452500/The_Good_Life/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-05-12",
   },
