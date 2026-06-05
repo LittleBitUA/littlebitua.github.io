@@ -315,10 +315,27 @@ const statusList = getStatusList();
   const emptyStateTitle = document.getElementById("empty-state-title");
   const emptyResetBtn = document.getElementById("empty-state-reset");
 
-  let currentStatus = "all";
-  let currentSearch = "";
+  // Initial state — picks up URL query params so external links can land
+  // directly on a pre-filtered view (e.g. /projects/?status=done).
+  const _initialParams = new URLSearchParams(location.search);
+  const _initialStatus = _initialParams.get("status") ?? "all";
+  const _initialSearch = _initialParams.get("q") ?? "";
+
+  let currentStatus = _initialStatus;
+  let currentSearch = _initialSearch;
   let currentTag = "";
   let currentSort = "default";
+
+  // Reflect the initial status pick onto the corresponding pill button.
+  if (currentStatus !== "all") {
+    document.querySelectorAll<HTMLButtonElement>(".filter-btn[data-filter='status']").forEach((b) => {
+      b.classList.toggle("active", b.dataset.value === currentStatus);
+    });
+  }
+  // Reflect ?q= into the search input so the field shows what was deep-linked.
+  if (currentSearch && searchInput) {
+    searchInput.value = currentSearch;
+  }
 
   const gamesList = cards.map((card, idx) => ({
     element: card,

@@ -223,6 +223,10 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     text: "Доступно",
     ...BADGE_PRESETS.available,
   },
+  "fire-emblem-three-houses": {
+    text: "Переклад",
+    ...BADGE_PRESETS.inProgress,
+  },
 };
 
 /**

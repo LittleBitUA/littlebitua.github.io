@@ -1037,6 +1037,23 @@ export const games: Game[] = [
     }
   },
   {
+    id: "fire-emblem-three-houses",
+    title: "Fire Emblem: Three Houses",
+    series: "Fire Emblem",
+    description:
+      "Викладаєш у Гарреґ-Маху, обираєш один із трьох домів — Чорні Орли, Сині Леви, Золоті Олені — і ведеш учнів від спокійних будніх занять до повномасштабної війни на континенті Фодлан.",
+    cover: "https://cdn2.steamgriddb.com/grid/849460026d42c840faab34d4d3b9fc33.png",
+    progress: 8,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 8 },
+    ],
+    tags: ["JRPG", "Тактика", "Покрокова", "Глибокий сюжет", "Аніме"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-05-12",
+  },
+  {
     id: "the-missing",
     title: "The MISSING: J.J. Macfield and the Island of Memories",
     description:
