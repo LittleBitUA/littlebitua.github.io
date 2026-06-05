@@ -279,26 +279,26 @@ export const games: Game[] = [
     description:
       "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
     cover: "https://cdn2.steamgriddb.com/thumb/67dffe36336093c94187f6dd9412ba89.jpg",
-    progress: 38,
+    progress: 55,
     status: "early-access",
     stage: "Переклад",
     fundraisingRaised: 9800,
     fundraisingGoal: 50000,
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [
-      { label: "Переклад", percent: 38 },
+      { label: "Переклад", percent: 55 },
       { label: "Редактура", percent: 0 },
     ],
     stats: {
       totalLines: 15981,
-      translatedLines: 6124, // 38.32%
-      totalWords: 540749, // 44626 укр + 496123 англ
+      translatedLines: 8750, // 54.75%
+      totalWords: 536590, // 57292 укр + 479298 англ
     },
     tags: ["Стелс", "Бойовик", "Глибокий сюжет", "Пригоди"],
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=ZFcVAqzto8Y",
-    lastUpdate: "2026-04-28",
+    lastUpdate: "2026-05-12",
     version: "1.1.3",
     installInstructions: `## Встановлення локалізації METAL GEAR SOLID Δ: SNAKE EATER
 
@@ -545,11 +545,11 @@ export const games: Game[] = [
     description:
       "Епічний фінал саги Disney × Square Enix: Сора з друзями вирушає протистояти Магістру Ксеанорту. Світи Toy Story, Frozen, Tangled, Pirates of the Caribbean і більше — з фірмовим бойовим рушієм та емоційною кульмінацією.",
     cover: "https://cdn2.steamgriddb.com/thumb/1318ae15a52c171bf63b0db992ba1451.jpg",
-    progress: 39,
+    progress: 45,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 39 },
+      { label: "Переклад", percent: 45 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 0 },
@@ -558,10 +558,10 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2378900/KINGDOM_HEARTS_III__ReMind_DLC/",
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_iii_re_mind_dlc/hraidan-nezalezhnosti-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-08",
+    lastUpdate: "2026-05-12",
     stats: {
       totalLines: 16570,
-      translatedLines: 6402, // 38.64%
+      translatedLines: 7501, // 45.27%
     },
   },
   {
@@ -630,18 +630,18 @@ export const games: Game[] = [
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1235140/library_600x900_2x.jpg?t=1716350681",
-    progress: 46,
+    progress: 49,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 46 },
+      { label: "Переклад", percent: 49 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1235140/Yakuza_Like_a_Dragon/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     fundraisingCompleted: true,
-    lastUpdate: "2026-05-08",
+    lastUpdate: "2026-05-12",
 
     // Extended data
     detailedDescription: "Революційна зміна для серії Yakuza — тепер з покроковими боями в стилі JRPG! Ічібан Касуґа починає нове життя після 18 років в'язниці. Захоплюючий сюжет та система класів персонажів.",
@@ -718,18 +718,18 @@ export const games: Game[] = [
     description:
       "Копай все глибше в цій незвичній грі про створення ям. Затишна інді-гра з неочікуваною глибиною — тепер українською.",
     cover: "https://cdn2.steamgriddb.com/thumb/4a8b6c75dd031ded0277ce76f50364df.png",
-    progress: 90,
-    status: "early-access",
-    stage: "Редактура",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
     stageDetails: [
-      { label: "Переклад", percent: 90 },
-      { label: "Текстури", percent: 90 },
+      { label: "Переклад", percent: 100 },
+      { label: "Текстури", percent: 100 },
     ],
     tags: ["Інді", "Симулятор", "Казуальна"],
     steamUrl: "https://store.steampowered.com/app/3244220/A_Game_About_Digging_A_Hole/",
     downloadUrl: "https://lbklauncher.com/games/a_game_about_digging_a_hole/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-02-12",
+    lastUpdate: "2026-05-12",
     installInstructions: `## Встановлення локалізації A Game About Digging A Hole
 
 ### Через LBK Launcher
@@ -842,7 +842,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 67 },
-      { label: "Редактура", percent: 0 },
+      { label: "Редактура", percent: 5 },
     ],
     tags: ["Хоррор", "Містерія", "Пригоди", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1271100/Deadly_Premonition_2_A_Blessing_in_Disguise/",
@@ -966,16 +966,16 @@ export const games: Game[] = [
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
     cover: "https://cdn2.steamgriddb.com/thumb/0f5d8f2124b95d0ef0245533fa616693.png",
-    progress: 9,
+    progress: 10,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 9 },
+      { label: "Переклад", percent: 10 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-08",
+    lastUpdate: "2026-05-12",
 
     // Extended data
     detailedDescription: "Епічний файтинг з усіма улюбленими персонажами JoJo! Від Джонатана до Джоліна — понад 50 бійців з унікальними стендами та прийомами. Відчуйте всю потужність Bizarre Adventure!",
@@ -1035,6 +1035,22 @@ export const games: Game[] = [
       totalWords: 876792, // 67655 укр + 809137 англ
       totalCharacters: undefined
     }
+  },
+  {
+    id: "the-good-life",
+    title: "The Good Life",
+    description:
+      "Журналістка-фотограф Наомі вирушає з Нью-Йорка в маленьке англійське село, щоб погасити борги — і виявляє, що вночі мешканці перетворюються на котів і собак. Затишна детективна RPG від SWERY про найщасливіше містечко на Землі.",
+    cover: "https://cdn2.steamgriddb.com/grid/6988bcd312727287326c36e724ba2367.png",
+    progress: 13,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 13 },
+    ],
+    tags: ["RPG", "Інді", "Пригоди", "Симулятор", "Містерія"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-05-12",
   },
   {
     id: "silent-hill-shattered-memories",

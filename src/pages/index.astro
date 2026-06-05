@@ -20,8 +20,12 @@ import Footer from "../components/Footer.astro";
 import GameModal from "../components/GameModal.astro";
 import { games } from "../data/games";
 
-// Use the order from src/data/games.ts directly — that file is the source of truth.
-const sortedGames = games;
+// Sort by lastUpdate desc so freshly-touched projects rise to the top of the
+// grid — visitor immediately sees that progress is moving. JS sort is stable,
+// so within a date games keep their file-order (which acts as the tiebreaker).
+const sortedGames = [...games].sort((a, b) =>
+  (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "")
+);
 ---
 
 <Layout>

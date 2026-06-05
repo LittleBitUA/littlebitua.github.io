@@ -132,8 +132,8 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     ...BADGE_PRESETS.earlyAccess,
   },
   "digging-a-hole": {
-    text: "Ранній доступ без текстур",
-    ...BADGE_PRESETS.earlyAccess,
+    text: "Доступно",
+    ...BADGE_PRESETS.available,
   },
   "as-dusk-falls": {
     text: "Ранній доступ",
@@ -228,6 +228,10 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     ...BADGE_PRESETS.inProgress,
   },
   "silent-hill-shattered-memories": {
+    text: "Переклад",
+    ...BADGE_PRESETS.inProgress,
+  },
+  "the-good-life": {
     text: "Переклад",
     ...BADGE_PRESETS.inProgress,
   },
