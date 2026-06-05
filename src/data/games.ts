@@ -350,7 +350,7 @@ export const games: Game[] = [
       "Тревіс Тачдаун купує променеву катану — і його життя злітає з котушок. У Санта-Дестрої він кидає виклик еліті найманих убивць, піднімаючись у рейтингу через шалену суміш екшену, чорного гумору й стилю Suda51. Тут кожен бій — шоу, а за трешем ховається несподівано людська історія.",
     cover: "https://cdn2.steamgriddb.com/grid/34b4bdc640e8367a103af9181039d99f.jpg",
     progress: 100,
-    status: "done",
+    status: "early-access",
     stage: "Текстури",
     stageDetails: [
       { label: "Переклад", percent: 100 },
@@ -717,13 +717,12 @@ export const games: Game[] = [
     title: "A Game About Digging A Hole™",
     description:
       "Копай все глибше в цій незвичній грі про створення ям. Затишна інді-гра з неочікуваною глибиною — тепер українською.",
-    cover: "https://cdn2.steamgriddb.com/thumb/4a8b6c75dd031ded0277ce76f50364df.png",
+    cover: "https://cdn2.steamgriddb.com/grid/6e37bf8ef1dcdb1bcf4cd4fb66167984.png",
     progress: 100,
     status: "done",
     stage: "Готово",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Текстури", percent: 100 },
     ],
     tags: ["Інді", "Симулятор", "Казуальна"],
     steamUrl: "https://store.steampowered.com/app/3244220/A_Game_About_Digging_A_Hole/",
@@ -1095,8 +1094,8 @@ export const games: Game[] = [
       "Дж. Дж. Макфілд прокидається на безлюдному острові в пошуках зниклої коханої. Сюрреалістичний платформер від SWERY про біль, кохання й сприйняття себе — там, де поранення стають частиною шляху.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/842910/library_600x900_2x.jpg",
     progress: 100,
-    status: "done",
-    stage: "Готово",
+    status: "early-access",
+    stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 50 },

@@ -112,8 +112,8 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     glow: "rgba(234, 88, 12, 0.35)",
   },
   "nmh1": {
-    text: "Доступно",
-    ...BADGE_PRESETS.available,
+    text: "Ранній доступ",
+    ...BADGE_PRESETS.earlyAccess,
   },
   "nmh3": {
     text: "Доступно",
@@ -220,8 +220,8 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     ...BADGE_PRESETS.inProgress,
   },
   "the-missing": {
-    text: "Доступно",
-    ...BADGE_PRESETS.available,
+    text: "Ранній доступ",
+    ...BADGE_PRESETS.earlyAccess,
   },
   "fire-emblem-three-houses": {
     text: "Переклад",
