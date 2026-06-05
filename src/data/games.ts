@@ -1050,6 +1050,7 @@ export const games: Game[] = [
       { label: "Переклад", percent: 65 },
     ],
     tags: ["Хоррор", "Психологічний", "Атмосферна", "Пригоди", "Сюжетна"],
+    platform: ["Wii", "PS2", "PSP"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-05-12",
   },
