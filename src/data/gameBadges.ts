@@ -227,6 +227,10 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     text: "Переклад",
     ...BADGE_PRESETS.inProgress,
   },
+  "silent-hill-shattered-memories": {
+    text: "Переклад",
+    ...BADGE_PRESETS.inProgress,
+  },
 };
 
 /**

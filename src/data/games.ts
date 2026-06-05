@@ -1037,6 +1037,23 @@ export const games: Game[] = [
     }
   },
   {
+    id: "silent-hill-shattered-memories",
+    title: "Silent Hill: Shattered Memories",
+    series: "Silent Hill",
+    description:
+      "Переосмислення першої Silent Hill. Гаррі Мейсон шукає доньку у засніженому місті, де реальність розпадається на спогади — а зустрічі з потойбіччям не вирішуються бойовою системою.",
+    cover: "https://cdn2.steamgriddb.com/grid/1e5ecaa150c05b9ec1f0ca90860785d2.png",
+    progress: 65,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 65 },
+    ],
+    tags: ["Хоррор", "Психологічний", "Атмосферна", "Пригоди", "Сюжетна"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-05-12",
+  },
+  {
     id: "fire-emblem-three-houses",
     title: "Fire Emblem: Three Houses",
     series: "Fire Emblem",
