@@ -113,20 +113,20 @@ export const games: Game[] = [
     description:
       "Увечері напередодні розлуки троє друзів рушають в останню спільну пригоду. Зіграйте в добірку чудових спогадів під найкращі пісні цілого покоління.",
     cover: "https://cdn2.steamgriddb.com/grid/de0c701f43e5097566f7c3d560bb2b23.png",
-    progress: 38,
+    progress: 62,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 38 },
+      { label: "Переклад", percent: 62 },
     ],
     tags: ["Інді", "Пригоди", "Музика", "Сюжетна"],
     steamUrl: "https://store.steampowered.com/app/2582320/Mixtape/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=BhukvsGyX2s",
-    lastUpdate: "2026-05-12",
+    lastUpdate: "2026-07-02",
     stats: {
       totalLines: 2713,
-      translatedLines: 1017, // 37.49%
+      translatedLines: 1682, // 62%
       totalWords: 15679, // 3761 укр + 11918 англ
     },
   },
@@ -170,11 +170,11 @@ export const games: Game[] = [
     description:
       "Оновлена версія культової екшен-RPG, де юнак Нір вирушає на відчайдушний пошук порятунку для своєї сестри Йони. Разом із балакучим «Ґримоаром Вайсом» та незабутніми супутниками ви досліджуватимете химерний світ, битиметеся з Тінями й розплутуватимете історію, у якій кожна відповідь має свою ціну — і веде до кількох фіналів.",
     cover: "https://cdn2.steamgriddb.com/thumb/9dcecafda1dec7a08c0630b896ff82cc.jpg",
-    progress: 29,
+    progress: 30,
     status: "fundraising",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 29 },
+      { label: "Переклад", percent: 30 },
     ],
     tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
     screenshots: [
@@ -187,10 +187,10 @@ export const games: Game[] = [
     videoUrl: "https://www.youtube.com/watch?v=7NiZAmBlMk0",
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 15715,
+    fundraisingRaised: 17550,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-05-12",
+    lastUpdate: "2026-07-02",
     stats: {
       totalLines: 24458,
       translatedLines: 6921, // 28.3%
@@ -279,27 +279,27 @@ export const games: Game[] = [
     description:
       "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
     cover: "https://cdn2.steamgriddb.com/thumb/67dffe36336093c94187f6dd9412ba89.jpg",
-    progress: 55,
+    progress: 63,
     status: "early-access",
     stage: "Переклад",
-    fundraisingRaised: 9800,
+    fundraisingRaised: 12099,
     fundraisingGoal: 50000,
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [
-      { label: "Переклад", percent: 55 },
+      { label: "Переклад", percent: 63 },
       { label: "Редактура", percent: 0 },
     ],
     stats: {
       totalLines: 15981,
-      translatedLines: 8750, // 54.75%
+      translatedLines: 10068, // 63%
       totalWords: 536590, // 57292 укр + 479298 англ
     },
     tags: ["Стелс", "Бойовик", "Глибокий сюжет", "Пригоди"],
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=ZFcVAqzto8Y",
-    lastUpdate: "2026-05-12",
-    version: "1.1.3",
+    lastUpdate: "2026-07-02",
+    version: "2.2",
     installInstructions: `## Встановлення локалізації METAL GEAR SOLID Δ: SNAKE EATER
 
 ### Через LBK Launcher
@@ -545,11 +545,11 @@ export const games: Game[] = [
     description:
       "Епічний фінал саги Disney × Square Enix: Сора з друзями вирушає протистояти Магістру Ксеанорту. Світи Toy Story, Frozen, Tangled, Pirates of the Caribbean і більше — з фірмовим бойовим рушієм та емоційною кульмінацією.",
     cover: "https://cdn2.steamgriddb.com/thumb/1318ae15a52c171bf63b0db992ba1451.jpg",
-    progress: 45,
+    progress: 49,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 45 },
+      { label: "Переклад", percent: 49 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 0 },
@@ -558,10 +558,10 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2378900/KINGDOM_HEARTS_III__ReMind_DLC/",
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_iii_re_mind_dlc/hraidan-nezalezhnosti-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-12",
+    lastUpdate: "2026-07-02",
     stats: {
       totalLines: 16570,
-      translatedLines: 7501, // 45.27%
+      translatedLines: 8119, // 49%
     },
   },
   {
@@ -836,20 +836,20 @@ export const games: Game[] = [
     description:
       "Продовження культового трилера від SWERY. Нова загадка, нове місто, та ще більше божевілля.",
     cover: "https://cdn2.steamgriddb.com/thumb/10dc0bb717c02b51d7f4e06704591f05.jpg",
-    progress: 67,
+    progress: 82,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 67 },
+      { label: "Переклад", percent: 82 },
       { label: "Редактура", percent: 5 },
     ],
     tags: ["Хоррор", "Містерія", "Пригоди", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1271100/Deadly_Premonition_2_A_Blessing_in_Disguise/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-12",
+    lastUpdate: "2026-07-02",
     stats: {
       totalLines: 18436,
-      translatedLines: 12401, // 67.27%
+      translatedLines: 15117, // 82%
     },
   },
   {
@@ -965,16 +965,16 @@ export const games: Game[] = [
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
     cover: "https://cdn2.steamgriddb.com/thumb/0f5d8f2124b95d0ef0245533fa616693.png",
-    progress: 10,
+    progress: 20,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 10 },
+      { label: "Переклад", percent: 20 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-12",
+    lastUpdate: "2026-07-02",
 
     // Extended data
     detailedDescription: "Епічний файтинг з усіма улюбленими персонажами JoJo! Від Джонатана до Джоліна — понад 50 бійців з унікальними стендами та прийомами. Відчуйте всю потужність Bizarre Adventure!",
@@ -1059,16 +1059,16 @@ export const games: Game[] = [
     description:
       "Переосмислення першої Silent Hill. Гаррі Мейсон шукає доньку у засніженому місті, де реальність розпадається на спогади — а зустрічі з потойбіччям не вирішуються бойовою системою.",
     cover: "https://cdn2.steamgriddb.com/grid/1e5ecaa150c05b9ec1f0ca90860785d2.png",
-    progress: 65,
+    progress: 90,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 65 },
+      { label: "Переклад", percent: 90 },
     ],
     tags: ["Хоррор", "Психологічний", "Атмосферна", "Пригоди", "Сюжетна"],
     platform: ["Wii", "PS2", "PSP"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-12",
+    lastUpdate: "2026-07-02",
   },
   {
     id: "fire-emblem-three-houses",
@@ -1106,6 +1106,23 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/the_missing_jj_macfield_and_the_island_of_memories/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-05-12",
+  },
+  {
+    id: "silent-hill-downpour",
+    title: "Silent Hill: Downpour",
+    series: "Silent Hill",
+    description:
+      "Мерфі Пендлтон — ув'язнений, який тікає з-під варти після автокатастрофи і опиняється у туманному місті Silent Hill. Відкритий світ із таємницями, динамічна погода та класична атмосфера жаху й психологічного напруження.",
+    cover: "https://cdn2.steamgriddb.com/grid/7f996610ab63c3bc9590c1bd8e9a7d65.png",
+    progress: 70,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 70 },
+    ],
+    tags: ["Хоррор", "Психологічний", "Відкритий світ", "Атмосферна", "Пригоди"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-07-02",
   },
 ];
 
