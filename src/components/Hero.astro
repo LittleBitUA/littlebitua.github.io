@@ -140,11 +140,11 @@ const ringOffset = RING_C * (1 - overall / 100);
 
       <!-- Brand block -->
       <div class="lb-glass-strong lg:col-span-7 p-6 sm:p-8 flex flex-col justify-center hero-card hero-delay-1">
-        <h1 class="text-[2rem] sm:text-5xl lg:text-[3.25rem] font-black tracking-tight leading-[1.05] mb-4 text-slate-900">
+        <h1 class="text-[2rem] sm:text-5xl lg:text-[3.25rem] font-black tracking-tight leading-[1.05] mb-4 text-slate-50">
           Перекладаємо те, у&nbsp;що
           <span class="lb-gradient-text whitespace-nowrap">самі граємо</span>
         </h1>
-        <p class="hero-subtitle text-base sm:text-lg leading-relaxed max-w-xl text-slate-600">
+        <p class="hero-subtitle text-base sm:text-lg leading-relaxed max-w-xl text-slate-300">
           <span class="hero-word">Сюжет,</span>
           <span class="hero-word">інтерфейс</span>
           <span class="hero-word">і дрібниці</span>
@@ -264,29 +264,29 @@ const ringOffset = RING_C * (1 - overall / 100);
                 <stop offset="100%" stop-color="#0ea5e9" />
               </linearGradient>
             </defs>
-            <circle cx="40" cy="40" r={RING_R} fill="none" stroke="rgba(15,23,42,0.08)" stroke-width="6" />
+            <circle cx="40" cy="40" r={RING_R} fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6" />
             <circle cx="40" cy="40" r={RING_R} fill="none" stroke="url(#heroRingG)" stroke-width="6"
                     stroke-linecap="round" stroke-dasharray={RING_C} stroke-dashoffset={RING_C}
                     class="ring-progress" style={`--ring-target: ${ringOffset}`} />
           </svg>
           <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-xl font-black text-slate-900 tabular-nums ring-counter" data-target={overall}>0%</span>
+            <span class="text-xl font-black text-slate-100 tabular-nums ring-counter" data-target={overall}>0%</span>
           </div>
         </div>
-        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-500">Загальний прогрес</span>
+        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-400">Загальний прогрес</span>
       </div>
 
       <!-- Project counts -->
       <div class="lb-glass p-5 flex flex-col items-center justify-center text-center min-h-[150px] hero-card hero-delay-4">
         <span class="block text-3xl font-black tabular-nums lb-gradient-text">{totalGames}</span>
-        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-500 mt-1">Усього проєктів</span>
+        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-400 mt-1">Усього проєктів</span>
         <div class="grid grid-cols-2 gap-2 mt-3 w-full text-[11px]">
           <div class="text-center">
-            <span class="block font-bold text-emerald-600 tabular-nums">{doneCount + earlyAccessCount}</span>
+            <span class="block font-bold text-emerald-400 tabular-nums">{doneCount + earlyAccessCount}</span>
             <span class="text-slate-500">доступно</span>
           </div>
           <div class="text-center">
-            <span class="block font-bold text-indigo-600 tabular-nums">{inProgressCount}</span>
+            <span class="block font-bold text-indigo-400 tabular-nums">{inProgressCount}</span>
             <span class="text-slate-500">у роботі</span>
           </div>
         </div>
@@ -299,7 +299,7 @@ const ringOffset = RING_C * (1 - overall / 100);
           return (
             <>
               <div class="mb-3">
-                <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-amber-700">Збір коштів</span>
+                <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-amber-400">Збір коштів</span>
               </div>
               <div class="space-y-3">
                 {fundraisingGames.map((game) => {
@@ -310,7 +310,7 @@ const ringOffset = RING_C * (1 - overall / 100);
                     <button
                       type="button"
                       data-game-detail={game.id}
-                      class="group w-full flex items-center gap-2.5 text-left hover:bg-amber-50/60 rounded-lg px-1.5 py-1 -mx-1.5 transition-colors"
+                      class="group w-full flex items-center gap-2.5 text-left hover:bg-amber-950/30 rounded-lg px-1.5 py-1 -mx-1.5 transition-colors"
                       aria-label={`Збір на ${game.title}`}
                     >
                       <span class="relative w-8 h-11 rounded-md overflow-hidden border border-white/80 shadow-[0_6px_14px_-8px_rgba(15,23,42,0.5)] shrink-0">
@@ -318,14 +318,14 @@ const ringOffset = RING_C * (1 - overall / 100);
                       </span>
                       <span class="flex-1 min-w-0">
                         <span class="flex items-center justify-between gap-2 mb-1">
-                          <span class="text-[11px] font-bold text-slate-800 truncate group-hover:text-amber-700 transition-colors">{game.title}</span>
-                          <span class="text-[10px] font-bold text-amber-700 tabular-nums shrink-0">{pct}%</span>
+                          <span class="text-[11px] font-bold text-slate-200 truncate group-hover:text-amber-300 transition-colors">{game.title}</span>
+                          <span class="text-[10px] font-bold text-amber-400 tabular-nums shrink-0">{pct}%</span>
                         </span>
-                        <span class="block h-1.5 rounded-full bg-amber-100 overflow-hidden">
+                        <span class="block h-1.5 rounded-full bg-amber-950/60 overflow-hidden">
                           <span class="block h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400" style={`width: ${pct}%`}></span>
                         </span>
                         <span class="block text-[10px] text-slate-500 font-medium tabular-nums mt-1">
-                          <span class="text-amber-700 font-bold">{fmt(raised)}</span> з {fmt(goal)} ₴
+                          <span class="text-amber-400 font-bold">{fmt(raised)}</span> з {fmt(goal)} ₴
                         </span>
                       </span>
                     </button>

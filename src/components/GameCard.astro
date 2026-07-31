@@ -36,11 +36,11 @@ const topPillLabel = game.status === "fundraising"
       : (game.status === "in-progress" ? STATUS_LABELS["in-progress"] : STATUS_LABELS.planned)));
 
 const topPillColor =
-  game.status === "done" ? "text-emerald-700 bg-emerald-100/85 border-emerald-200" :
-  game.status === "early-access" ? "text-sky-700 bg-sky-100/85 border-sky-200" :
-  game.status === "in-progress" ? "text-violet-700 bg-violet-100/85 border-violet-200" :
-  game.status === "fundraising" ? "text-amber-700 bg-amber-100/90 border-amber-200" :
-  "text-slate-700 bg-white/85 border-white/70";
+  game.status === "done" ? "text-emerald-300 bg-emerald-950/60 border-emerald-700/40" :
+  game.status === "early-access" ? "text-sky-300 bg-sky-950/60 border-sky-700/40" :
+  game.status === "in-progress" ? "text-violet-300 bg-violet-950/60 border-violet-700/40" :
+  game.status === "fundraising" ? "text-amber-300 bg-amber-950/60 border-amber-700/40" :
+  "text-slate-300 bg-slate-900/60 border-slate-600/40";
 
 // Чи має гра активний збір коштів (навіть якщо вона вже у ранньому доступі)
 const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
