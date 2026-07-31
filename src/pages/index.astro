@@ -17,7 +17,6 @@ import FAQ from "../components/FAQ.astro";
 import LBKLauncher from "../components/LBKLauncher.astro";
 import Support from "../components/Support.astro";
 import Footer from "../components/Footer.astro";
-import GameModal from "../components/GameModal.astro";
 import { games } from "../data/games";
 
 // Sort by lastUpdate desc so freshly-touched projects rise to the top of the
@@ -123,7 +122,6 @@ const sortedGames = [...games].sort((a, b) =>
   </main>
 
   <Footer />
-  <GameModal />
 </Layout>
 
 <style>

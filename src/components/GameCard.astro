@@ -111,14 +111,8 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
 
     <!-- Content -->
     <div class="p-4 sm:p-5 flex flex-col flex-1">
-      <h3 class="text-base font-bold leading-snug mb-2 line-clamp-2 text-slate-900 lb-card-title">
-        <button
-          type="button"
-          data-game-detail={game.id}
-          class="text-left hover:text-indigo-600 transition-colors w-full"
-        >
-          {game.title}
-        </button>
+      <h3 class="text-base font-bold leading-snug mb-2 line-clamp-2 text-slate-100 lb-card-title">
+        {game.title}
       </h3>
 
       <p class="card-desc text-[13px] leading-relaxed mb-3 line-clamp-2 text-slate-600 transition-all lb-card-desc">
@@ -206,21 +200,9 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
       </div>
 
       <!-- Tags (single row, fixed height) -->
-      <div class="flex flex-nowrap gap-1.5 mb-4 lb-card-tags">
+      <div class="flex flex-wrap gap-1.5 mb-4 lb-card-tags">
         {game.tags.slice(0, 3).map((tag) => <Tag label={tag} />)}
       </div>
-
-      <!-- Details button -->
-      <button
-        type="button"
-        data-game-detail={game.id}
-        class="lb-btn lb-btn--ghost !py-2 !text-xs w-full"
-      >
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-        </svg>
-        Детальніше
-      </button>
 
       <!-- Action row -->
       <div class="flex items-center gap-1.5 mt-2">
@@ -327,9 +309,7 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
     line-height: 1.55em;
   }
   .lb-card-tags {
-    height: 1.85rem;
-    min-height: 1.85rem;
-    overflow: hidden;
+    overflow: visible;
   }
   .lb-card-progress { min-height: 0.875rem; }
 
