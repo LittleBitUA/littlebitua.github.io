@@ -1126,7 +1126,6 @@ export const games: Game[] = [
     lastUpdate: "2026-07-31",
   },
   {
-  {
     id: "kingdom-hearts-3",
     title: "KINGDOM HEARTS III + Re Mind (DLC)",
     series: "Kingdom Hearts",
