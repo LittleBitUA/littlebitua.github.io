@@ -187,7 +187,7 @@ export const games: Game[] = [
     videoUrl: "https://www.youtube.com/watch?v=7NiZAmBlMk0",
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 17550,
+    fundraisingRaised: 28800,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
     lastUpdate: "2026-07-02",
@@ -282,7 +282,7 @@ export const games: Game[] = [
     progress: 63,
     status: "early-access",
     stage: "Переклад",
-    fundraisingRaised: 12099,
+    fundraisingRaised: 13099,
     fundraisingGoal: 50000,
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [
@@ -1131,7 +1131,7 @@ export const games: Game[] = [
     series: "Kingdom Hearts",
     description:
       "Завершення головної трилогії Kingdom Hearts. Сора, Дональд і Гуфі рушають крізь магічні світи Disney та Pixar, щоб врятувати друзів і протистояти XIII Організації. Видовищні бої, яскраві локації та фінальні відповіді на запитання, що копились десятиліттями.",
-    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1091500/library_600x900_2x.jpg",
+    cover: "https://cdn2.steamgriddb.com/grid/1318ae15a52c171bf63b0db992ba1451.png",
     progress: 50,
     status: "in-progress",
     stage: "Переклад",
