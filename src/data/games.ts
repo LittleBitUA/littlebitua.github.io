@@ -190,7 +190,10 @@ export const games: Game[] = [
     fundraisingRaised: 28800,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
-    lastUpdate: "2026-07-02",
+    lastUpdate: "2026-08-01",
+    progressHistory: [
+      { date: "2026-08-01", progress: 30, milestone: "Збір: 28 800 ₴ із 50 000 ₴ (58%)" },
+    ],
     stats: {
       totalLines: 24458,
       translatedLines: 6921, // 28.3%
@@ -538,31 +541,6 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/persona_5_royal/solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-05-08",
-  },
-  {
-    id: "kingdom-hearts-3",
-    title: "KINGDOM HEARTS III + Re Mind (DLC)",
-    description:
-      "Епічний фінал саги Disney × Square Enix: Сора з друзями вирушає протистояти Магістру Ксеанорту. Світи Toy Story, Frozen, Tangled, Pirates of the Caribbean і більше — з фірмовим бойовим рушієм та емоційною кульмінацією.",
-    cover: "https://cdn2.steamgriddb.com/thumb/1318ae15a52c171bf63b0db992ba1451.jpg",
-    progress: 49,
-    status: "early-access",
-    stage: "Переклад",
-    stageDetails: [
-      { label: "Переклад", percent: 49 },
-      { label: "Редактура", percent: 0 },
-      { label: "Шрифти", percent: 100 },
-      { label: "Текстури", percent: 0 },
-    ],
-    tags: ["Action RPG", "Disney", "Глибокий сюжет", "Пригоди"],
-    steamUrl: "https://store.steampowered.com/app/2378900/KINGDOM_HEARTS_III__ReMind_DLC/",
-    downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_iii_re_mind_dlc/hraidan-nezalezhnosti-solovina-komanda",
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-07-02",
-    stats: {
-      totalLines: 16570,
-      translatedLines: 8119, // 49%
-    },
   },
   {
     id: "yakuza-kiwami2",
@@ -995,47 +973,6 @@ export const games: Game[] = [
     }
   },
   {
-    id: "lost-judgment",
-    title: "Lost Judgment",
-    series: "Judgment",
-    description:
-      "Продовження детективного екшену. Яґамі розслідує справу, що пов'язує буллінг у школі та вбивство.",
-    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2058190/library_600x900_2x.jpg?t=1663168032",
-    progress: 14,
-    status: "in-progress",
-    stage: "Переклад",
-    stageDetails: [
-      { label: "Переклад", percent: 14 },
-      { label: "Редактура", percent: 0 },
-    ],
-    tags: ["Бойовик", "Пригоди", "Детектив", "Кримінал"],
-    steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-08",
-
-    // Extended data
-    detailedDescription: "Сіквел Judgment. Такаюкі Яґамі повертається, щоб розслідувати нову справу про буллінг та вбивство. Ще більший світ, нові механіки та напружений сюжет про справедливість.",
-    gameYear: 2021,
-    genre: ["Action", "RPG", "Детектив", "Відкритий світ"],
-    platform: ["PC", "PlayStation", "Xbox"],
-    translationSize: "large",
-    team: [
-      { name: "Little Bit Team", role: "Переклад" }
-    ],
-    progressHistory: [
-      { date: "2026-01-15", progress: 3, milestone: "Початок проєкту" },
-      { date: "2026-02-16", progress: 7, milestone: "Перші глави" },
-      { date: "2026-04-28", progress: 14, milestone: "13.75% перекладено" },
-      { date: "2026-05-08", progress: 14, milestone: "13.97% перекладено" }
-    ],
-    stats: {
-      totalLines: 94200,
-      translatedLines: 13163, // 13.97%
-      totalWords: 876792, // 67655 укр + 809137 англ
-      totalCharacters: undefined
-    }
-  },
-  {
     id: "the-good-life",
     title: "The Good Life",
     description:
@@ -1161,6 +1098,13 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2058180/Lost_Judgment/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-07-31",
+    progressHistory: [
+      { date: "2026-01-15", progress: 3, milestone: "Початок проєкту" },
+      { date: "2026-02-16", progress: 7, milestone: "Перші глави" },
+      { date: "2026-04-28", progress: 14, milestone: "13.75% перекладено" },
+      { date: "2026-05-08", progress: 14, milestone: "13.97% перекладено" },
+      { date: "2026-07-31", progress: 28, milestone: "28% перекладено" },
+    ],
   },
   {
     id: "silent-hill-downpour",
