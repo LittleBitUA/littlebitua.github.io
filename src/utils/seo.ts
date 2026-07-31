@@ -40,40 +40,30 @@ export function generateOGDescription(text: string, maxLength: number = 160): st
  * Generate Product structured data for a game (JSON-LD)
  */
 export function generateGameStructuredData(game: Game): string {
-  const structuredData = {
+  const structuredData: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
+    "@type": "VideoGame",
     "name": game.title,
     "description": game.description,
     "image": game.cover.startsWith("http") ? game.cover : `${SITE_URL}${game.cover}`,
-    "applicationCategory": "Game",
-    "operatingSystem": "Windows, PlayStation, Xbox",
+    "inLanguage": "uk-UA",
+    "gamePlatform": game.platform ?? ["PC", "PlayStation", "Xbox"],
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "UAH",
       "availability": "https://schema.org/InStock"
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": game.progress / 20, // Convert 0-100 to 0-5 scale
-      "ratingCount": "1",
-      "bestRating": "5",
-      "worstRating": "0"
-    }
   };
 
-  // Add URL if steam link exists
   if (game.steamUrl) {
     structuredData["url"] = game.steamUrl;
   }
 
-  // Add genre if exists
   if (game.genre && game.genre.length > 0) {
     structuredData["genre"] = game.genre.join(", ");
   }
 
-  // Add release date if available
   if (game.releaseDate) {
     structuredData["datePublished"] = game.releaseDate;
   }

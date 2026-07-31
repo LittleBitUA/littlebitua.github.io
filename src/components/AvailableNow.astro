@@ -78,11 +78,10 @@ const totalCount = available.length;
 
           <!-- Right: cover mosaic -->
           <div class="lb-available__mosaic" data-animate-stagger>
-            <button
-              type="button"
-              data-game-detail={featured.id}
+            <a
+              href={`/games/${featured.id}/`}
               class="lb-mosaic-cover lb-mosaic-cover--featured"
-              aria-label={`Деталі: ${featured.title}`}
+              aria-label={featured.title}
             >
               <img src={featured.cover} alt={featured.title} loading="lazy" decoding="async" />
               <span class={`lb-mosaic-cover__dot ${featured.status === "done" ? "is-done" : "is-early"}`} aria-hidden="true"></span>
@@ -92,19 +91,18 @@ const totalCount = available.length;
                 </span>
                 <span class="lb-mosaic-cover__title">{featured.title}</span>
               </span>
-            </button>
+            </a>
 
             {others.map((g) => (
-              <button
-                type="button"
-                data-game-detail={g.id}
+              <a
+                href={`/games/${g.id}/`}
                 class="lb-mosaic-cover"
-                aria-label={`Деталі: ${g.title}`}
+                aria-label={g.title}
               >
                 <img src={g.cover} alt={g.title} loading="lazy" decoding="async" />
                 <span class={`lb-mosaic-cover__dot ${g.status === "done" ? "is-done" : "is-early"}`} aria-hidden="true"></span>
                 <span class="lb-mosaic-cover__title-overlay">{g.title}</span>
-              </button>
+              </a>
             ))}
           </div>
 

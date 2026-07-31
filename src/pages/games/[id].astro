@@ -1,0 +1,323 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Tag from "../../components/Tag.astro";
+import { games, STATUS_LABELS } from "../../data/games";
+import { SITE_URL, generateGameStructuredData, generateBreadcrumbs, generateKeywords } from "../../utils/seo";
+import { getProgressPalette } from "../../utils/statusColors";
+import { getBadge } from "../../data/gameBadges";
+
+export function getStaticPaths() {
+  return games.map((game) => ({
+    params: { id: game.id },
+    props: { game },
+  }));
+}
+
+const { game } = Astro.props;
+
+const canonicalUrl = `${SITE_URL}/games/${game.id}/`;
+const pageTitle = `Українська локалізація ${game.title} — Little Bit`;
+const pageDesc = game.description.length > 155
+  ? game.description.slice(0, 152) + "..."
+  : game.description;
+const keywords = generateKeywords(game);
+
+const { "@context": _c1, ...gameSchema } = JSON.parse(generateGameStructuredData(game));
+const { "@context": _c2, ...breadcrumbSchema } = JSON.parse(generateBreadcrumbs([
+  { name: "Головна", url: `${SITE_URL}/` },
+  { name: "Локалізації", url: `${SITE_URL}/#projects` },
+  { name: game.title, url: canonicalUrl },
+]));
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [gameSchema, breadcrumbSchema],
+});
+
+const filledCubes = Math.floor(game.progress / 5);
+const cubePalette = getProgressPalette(game.status, game.progress);
+
+const topPillColor =
+  game.status === "done" ? "text-emerald-300 bg-emerald-950/60 border-emerald-700/40" :
+  game.status === "early-access" ? "text-sky-300 bg-sky-950/60 border-sky-700/40" :
+  game.status === "in-progress" ? "text-violet-300 bg-violet-950/60 border-violet-700/40" :
+  game.status === "fundraising" ? "text-amber-300 bg-amber-950/60 border-amber-700/40" :
+  "text-slate-300 bg-slate-900/60 border-slate-600/40";
+
+const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
+const fundraisingPercent = game.fundraisingGoal
+  ? Math.min(Math.round(((game.fundraisingRaised ?? 0) / game.fundraisingGoal) * 100), 100)
+  : 0;
+
+function formatDate(d: string) {
+  return new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
+}
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDesc}
+  ogImage={game.cover}
+  canonicalUrl={canonicalUrl}
+  keywords={keywords}
+  structuredData={structuredData}
+>
+  <Header />
+
+  <main class="flex-1 pt-28 pb-20">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+
+      <!-- Breadcrumbs -->
+      <nav class="mb-8" aria-label="Навігація">
+        <ol class="flex items-center gap-1.5 text-xs text-slate-500 flex-wrap">
+          <li><a href="/" class="hover:text-indigo-400 transition-colors">Головна</a></li>
+          <li aria-hidden="true">
+            <svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </li>
+          <li><a href="/#projects" class="hover:text-indigo-400 transition-colors">Локалізації</a></li>
+          <li aria-hidden="true">
+            <svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </li>
+          <li class="text-slate-300 font-semibold truncate max-w-[220px]">{game.title}</li>
+        </ol>
+      </nav>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
+
+        <!-- Cover column -->
+        <div class="shrink-0" data-animate>
+          <div class="relative aspect-[2/3] rounded-2xl overflow-hidden lb-glass mb-4">
+            <img
+              src={game.cover}
+              alt={`Обкладинка ${game.title}`}
+              class="absolute inset-0 w-full h-full object-cover"
+              loading="eager"
+              decoding="async"
+            />
+            <div class="absolute top-2.5 left-2.5 z-10">
+              <span class={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold rounded-full border ${topPillColor}`}>
+                {game.status === "done" && (
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+                {(game.status === "early-access" || game.status === "in-progress") && (
+                  <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
+                )}
+                {game.status === "fundraising" && <span class="text-xs font-bold leading-none">₴</span>}
+                {STATUS_LABELS[game.status]}
+              </span>
+            </div>
+            <div class="absolute top-2.5 right-2.5 z-10">
+              <span
+                class="px-2.5 py-1 text-xs font-extrabold tabular-nums text-white rounded-lg"
+                style="background: rgba(15,23,42,0.78); box-shadow: 0 0 0 1px rgba(255,255,255,0.18) inset;"
+              >
+                {game.progress}<span class="text-[10px] font-medium opacity-70">%</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            {game.downloadUrl && (
+              <a
+                href={game.downloadUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="lb-btn !py-2.5 !text-sm"
+                style="color:#4ade80; background: rgba(34,197,94,0.18); border: 1px solid rgba(34,197,94,0.45);"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Завантажити локалізацію
+              </a>
+            )}
+            {game.steamUrl && (
+              <a
+                href={game.steamUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="lb-btn lb-btn--ghost !py-2.5 !text-sm"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.455 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.252 0-2.265-1.014-2.265-2.265z"/>
+                </svg>
+                Відкрити в Steam
+              </a>
+            )}
+            {fundraisingActive && game.donateUrl && (
+              <a
+                href={game.donateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="lb-btn !py-2.5 !text-sm"
+                style="color:#fbbf24; background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.45);"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                Підтримати збір
+              </a>
+            )}
+            <a href="/#projects" class="lb-btn lb-btn--ghost !py-2 !text-xs">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+              Усі локалізації
+            </a>
+          </div>
+        </div>
+
+        <!-- Info column -->
+        <div data-animate>
+          <h1 class="text-2xl sm:text-3xl font-black text-slate-100 leading-snug mb-3">
+            Українська локалізація: {game.title}
+          </h1>
+
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            {game.tags.map((tag) => <Tag label={tag} />)}
+          </div>
+
+          <!-- Progress -->
+          <div class="lb-glass p-4 rounded-2xl mb-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
+              <span class="text-sm font-extrabold tabular-nums text-slate-100">{game.progress}%</span>
+            </div>
+            <div class="flex items-center gap-[2px] mb-3">
+              {Array.from({ length: 20 }).map((_, i) => {
+                const isFull = i < filledCubes;
+                const isNext = i === filledCubes && game.progress < 100;
+                return (
+                  <div class="flex-1 h-2.5 rounded-sm bg-white/10 overflow-hidden relative">
+                    {isFull && <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
+                    {isNext && <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
+                  </div>
+                );
+              })}
+            </div>
+            {game.stageDetails && game.stageDetails.length > 0 && (
+              <div class="space-y-1.5 pt-2 border-t border-white/8">
+                {game.stageDetails.map((detail) => (
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center justify-between gap-1.5 flex-shrink-0 w-[110px] px-2 py-0.5 rounded-full bg-teal-950/60 border border-teal-700/40 text-teal-300">
+                      <span class="text-[10px] font-semibold truncate">{detail.label}</span>
+                      <span class="text-[10px] font-bold tabular-nums">{detail.percent}%</span>
+                    </span>
+                    <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                      <div
+                        class="h-full rounded-full transition-all duration-500"
+                        style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "linear-gradient(90deg,#14b8a6,#0d9488)" : detail.percent > 0 ? "linear-gradient(90deg,#5eead4,#14b8a6)" : "transparent"};`}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <!-- Description -->
+          <div class="lb-glass p-4 rounded-2xl mb-4">
+            <p class="text-sm text-slate-300 leading-relaxed">{game.description}</p>
+          </div>
+
+          <!-- Fundraising -->
+          {fundraisingActive && game.fundraisingGoal && (
+            <div class="lb-glass p-4 rounded-2xl mb-4" style="border: 1px solid rgba(245,158,11,0.25);">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Збір коштів</span>
+                <span class="text-xs font-semibold text-amber-300 tabular-nums">
+                  {(game.fundraisingRaised ?? 0).toLocaleString("uk-UA")} / {game.fundraisingGoal.toLocaleString("uk-UA")} ₴ ({fundraisingPercent}%)
+                </span>
+              </div>
+              <div class="h-2 rounded-full bg-white/10 overflow-hidden mb-3">
+                <div
+                  class="h-full rounded-full"
+                  style={`width: ${fundraisingPercent}%; background: linear-gradient(90deg,#f59e0b,#fbbf24);`}
+                ></div>
+              </div>
+              {game.fundraisingDescription && (
+                <p class="text-xs text-slate-400 leading-relaxed">{game.fundraisingDescription}</p>
+              )}
+            </div>
+          )}
+
+          <!-- Stats -->
+          {game.stats && (game.stats.totalLines || game.stats.translatedLines) && (
+            <div class="lb-glass p-4 rounded-2xl mb-4">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-3">Обсяг перекладу</span>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {game.stats.totalLines && (
+                  <div>
+                    <div class="text-xl font-extrabold tabular-nums text-slate-100">
+                      {game.stats.totalLines.toLocaleString("uk-UA")}
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">рядків загалом</div>
+                  </div>
+                )}
+                {game.stats.translatedLines && (
+                  <div>
+                    <div class="text-xl font-extrabold tabular-nums text-teal-300">
+                      {game.stats.translatedLines.toLocaleString("uk-UA")}
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">перекладено</div>
+                  </div>
+                )}
+                {game.stats.totalWords && (
+                  <div>
+                    <div class="text-xl font-extrabold tabular-nums text-slate-100">
+                      {Math.round(game.stats.totalWords / 1000)}k
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">слів</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          <!-- Progress history -->
+          {game.progressHistory && game.progressHistory.length > 0 && (
+            <div class="lb-glass p-4 rounded-2xl">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-3">Хроніка прогресу</span>
+              <div class="space-y-2">
+                {game.progressHistory.slice().reverse().map((entry) => (
+                  <div class="flex items-baseline gap-3">
+                    <span class="text-[11px] text-slate-500 tabular-nums shrink-0 min-w-[100px]">
+                      {formatDate(entry.date)}
+                    </span>
+                    <span class="text-xs font-medium text-slate-300 flex-1">
+                      {entry.milestone ?? `${entry.progress}% перекладено`}
+                    </span>
+                    <span class="text-xs font-bold tabular-nums text-indigo-400 shrink-0">{entry.progress}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .lb-cube-next {
+    animation: lbCubeNext 1.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes lbCubeNext {
+    0%, 100% { opacity: 0.18; }
+    50% { opacity: 0.55; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lb-cube-next { animation: none; opacity: 0.3; }
+  }
+</style>

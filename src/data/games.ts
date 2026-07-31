@@ -1095,7 +1095,7 @@ export const games: Game[] = [
       { label: "Переклад", percent: 28 },
     ],
     tags: ["Бойовик", "Детектив", "Пригоди", "Відкритий світ", "Кримінал"],
-    steamUrl: "https://store.steampowered.com/app/2058180/Lost_Judgment/",
+    steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-07-31",
     progressHistory: [
