@@ -1149,7 +1149,7 @@ export const games: Game[] = [
     series: "Judgment",
     description:
       "Детектив Такаюкі Ягамі розслідує неоднозначне вбивство, за яким стоять таємниці шкільної системи та злочинного світу. Бойовик у всесвіті Yakuza зі стелсом, паркуром і двома різними бойовими стилями.",
-    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2058180/library_600x900_2x.jpg",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2058190/library_600x900_2x.jpg?t=1663168032",
     progress: 28,
     status: "in-progress",
     stage: "Переклад",
