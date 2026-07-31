@@ -113,20 +113,20 @@ export const games: Game[] = [
     description:
       "Увечері напередодні розлуки троє друзів рушають в останню спільну пригоду. Зіграйте в добірку чудових спогадів під найкращі пісні цілого покоління.",
     cover: "https://cdn2.steamgriddb.com/grid/de0c701f43e5097566f7c3d560bb2b23.png",
-    progress: 62,
+    progress: 80,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 62 },
+      { label: "Переклад", percent: 80 },
     ],
     tags: ["Інді", "Пригоди", "Музика", "Сюжетна"],
     steamUrl: "https://store.steampowered.com/app/2582320/Mixtape/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=BhukvsGyX2s",
-    lastUpdate: "2026-07-02",
+    lastUpdate: "2026-07-31",
     stats: {
       totalLines: 2713,
-      translatedLines: 1682, // 62%
+      translatedLines: 2170, // 80%
       totalWords: 15679, // 3761 укр + 11918 англ
     },
   },
@@ -1077,15 +1077,15 @@ export const games: Game[] = [
     description:
       "Викладаєш у Гарреґ-Маху, обираєш один із трьох домів — Чорні Орли, Сині Леви, Золоті Олені — і ведеш учнів від спокійних будніх занять до повномасштабної війни на континенті Фодлан.",
     cover: "https://cdn2.steamgriddb.com/grid/849460026d42c840faab34d4d3b9fc33.png",
-    progress: 8,
+    progress: 11,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 8 },
+      { label: "Переклад", percent: 11 },
     ],
     tags: ["JRPG", "Тактика", "Покрокова", "Глибокий сюжет", "Аніме"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-12",
+    lastUpdate: "2026-07-31",
   },
   {
     id: "the-missing",
@@ -1106,6 +1106,60 @@ export const games: Game[] = [
     downloadUrl: "https://lbklauncher.com/games/the_missing_jj_macfield_and_the_island_of_memories/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-05-12",
+  },
+  {
+    id: "metal-gear-solid-4",
+    title: "METAL GEAR SOLID 4: Guns of the Patriots — Master Collection",
+    series: "Metal Gear",
+    description:
+      "Фінал шпигунської саги Хідео Коджіми. Солід Снейк вирушає на останнє завдання — зупинити Liquid Ocelot, поки старіння стрімко забирає у нього сили. Тактичний стелс у антуражі приватних армій та глобальної систем контролю над Patriot.",
+    cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
+    progress: 50,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 50 },
+    ],
+    tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
+    steamUrl: "https://store.steampowered.com/app/4184400/METAL_GEAR_SOLID_4_Guns_of_the_Patriots__Master_Collection_Version/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-07-31",
+  },
+  {
+    id: "kingdom-hearts-3",
+    title: "KINGDOM HEARTS III + Re Mind (DLC)",
+    series: "Kingdom Hearts",
+    description:
+      "Завершення головної трилогії Kingdom Hearts. Сора, Дональд і Гуфі рушають крізь магічні світи Disney та Pixar, щоб врятувати друзів і протистояти XIII Організації. Видовищні бої, яскраві локації та фінальні відповіді на запитання, що копились десятиліттями.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1091500/library_600x900_2x.jpg",
+    progress: 50,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 50 },
+    ],
+    tags: ["Action RPG", "JRPG", "Пригоди", "Аніме", "Disney"],
+    steamUrl: "https://store.steampowered.com/app/1091500/KINGDOM_HEARTS_III__ReMind/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-07-31",
+  },
+  {
+    id: "lost-judgment",
+    title: "Lost Judgment",
+    series: "Judgment",
+    description:
+      "Детектив Такаюкі Ягамі розслідує неоднозначне вбивство, за яким стоять таємниці шкільної системи та злочинного світу. Бойовик у всесвіті Yakuza зі стелсом, паркуром і двома різними бойовими стилями.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2058180/library_600x900_2x.jpg",
+    progress: 28,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 28 },
+    ],
+    tags: ["Бойовик", "Детектив", "Пригоди", "Відкритий світ", "Кримінал"],
+    steamUrl: "https://store.steampowered.com/app/2058180/Lost_Judgment/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-07-31",
   },
   {
     id: "silent-hill-downpour",

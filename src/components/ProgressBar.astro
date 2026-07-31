@@ -52,7 +52,7 @@ const showInline = showLabel && size !== "sm";
 <div class="w-full">
   <div
     class={`lb-progress relative w-full rounded-full overflow-hidden ${heightMap[size]}`}
-    style="background: rgba(99, 102, 241, 0.10); box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 1px 2px rgba(15,23,42,0.04) inset;"
+    style="background: rgba(255,255,255,0.08); box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset;"
     role="progressbar"
     aria-valuenow={clampedPercent}
     aria-valuemin={0}
@@ -68,7 +68,7 @@ const showInline = showLabel && size !== "sm";
       <>
         <!-- Підпис на доріжці (видно там, де ще нема заповнення) -->
         <span
-          class={`lb-label-track absolute inset-0 flex items-center ${label ? "justify-between px-2.5" : "justify-end pr-2.5"} text-slate-700 ${textSizeMap[size]}`}
+          class={`lb-label-track absolute inset-0 flex items-center ${label ? "justify-between px-2.5" : "justify-end pr-2.5"} text-slate-300 ${textSizeMap[size]}`}
         >
           {label && <span class="font-semibold uppercase tracking-wider">{label}</span>}
           <span class="font-bold tabular-nums">{clampedPercent}%</span>
@@ -95,7 +95,7 @@ const showInline = showLabel && size !== "sm";
   .lb-label-fill {
     pointer-events: none;
     letter-spacing: 0.01em;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   }
   .lb-label-fill {
     text-shadow: 0 1px 1px rgba(15, 23, 42, 0.35);
