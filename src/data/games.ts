@@ -1126,6 +1126,7 @@ export const games: Game[] = [
     lastUpdate: "2026-07-31",
   },
   {
+  {
     id: "kingdom-hearts-3",
     title: "KINGDOM HEARTS III + Re Mind (DLC)",
     series: "Kingdom Hearts",
@@ -1133,13 +1134,14 @@ export const games: Game[] = [
       "Завершення головної трилогії Kingdom Hearts. Сора, Дональд і Гуфі рушають крізь магічні світи Disney та Pixar, щоб врятувати друзів і протистояти XIII Організації. Видовищні бої, яскраві локації та фінальні відповіді на запитання, що копились десятиліттями.",
     cover: "https://cdn2.steamgriddb.com/grid/1318ae15a52c171bf63b0db992ba1451.png",
     progress: 50,
-    status: "in-progress",
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 50 },
     ],
     tags: ["Action RPG", "JRPG", "Пригоди", "Аніме", "Disney"],
     steamUrl: "https://store.steampowered.com/app/1091500/KINGDOM_HEARTS_III__ReMind/",
+    downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_iii_re_mind_dlc/solovina-komanda-dmytro-naumchas-naumenko",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-07-31",
   },
