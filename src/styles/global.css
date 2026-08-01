@@ -19,9 +19,9 @@
   --lb-glass-border:    rgba(255, 255, 255, 0.10);
   --lb-glass-edge:      rgba(255, 255, 255, 0.04);
 
-  --lb-shadow-soft:  0 0 0 1px rgba(255,255,255,0.05), 0 12px 30px -16px rgba(0,0,0,0.7);
-  --lb-shadow-glass: 0 0 0 1px rgba(255,255,255,0.07), 0 24px 60px -28px rgba(0,0,0,0.8), 0 8px 24px -16px rgba(99,102,241,0.22);
-  --lb-shadow-pop:   0 0 0 1px rgba(255,255,255,0.09), 0 28px 70px -20px rgba(0,0,0,0.85), 0 14px 30px -18px rgba(99,102,241,0.28);
+  --lb-shadow-soft:  0 0 0 1px rgba(255,255,255,0.06), 0 4px 16px -6px rgba(0,0,0,0.5);
+  --lb-shadow-glass: 0 0 0 1px rgba(255,255,255,0.07), 0 8px 32px -12px rgba(0,0,0,0.6);
+  --lb-shadow-pop:   0 0 0 1px rgba(255,255,255,0.09), 0 16px 48px -16px rgba(0,0,0,0.7);
 
   --lb-accent:        #6366f1;
   --lb-accent-light:  #818cf8;
@@ -57,11 +57,8 @@
 
   body {
     background:
-      radial-gradient(900px 700px at 12% 10%, rgba(99,102,241,0.18), transparent 65%),
-      radial-gradient(820px 640px at 88% 18%, rgba(56,189,248,0.09), transparent 65%),
-      radial-gradient(900px 720px at 80% 95%, rgba(139,92,246,0.14), transparent 65%),
-      radial-gradient(720px 540px at 18% 92%, rgba(99,102,241,0.11), transparent 65%),
-      linear-gradient(180deg, var(--lb-bg-1) 0%, var(--lb-bg-2) 55%, var(--lb-bg-3) 100%);
+      radial-gradient(ellipse 100% 45% at 50% -5%, rgba(99,102,241,0.07), transparent),
+      #090b14;
     background-attachment: fixed;
     min-height: 100vh;
     position: relative;
@@ -114,27 +111,27 @@
 @layer components {
   .lb-glass {
     position: relative;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
     box-shadow: var(--lb-shadow-glass);
     overflow: hidden;
   }
 
   .lb-glass-strong {
     position: relative;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.11);
-    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 16px;
     box-shadow: var(--lb-shadow-pop);
   }
 
   .lb-glass-soft {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
     box-shadow: var(--lb-shadow-soft);
   }
 
@@ -225,15 +222,11 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.4rem 0.85rem;
-    border-radius: 999px;
-    background: rgba(99, 102, 241, 0.15);
-    color: #a5b4fc;
-    font-size: 0.7rem;
+    color: #818cf8;
+    font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.10em;
     text-transform: uppercase;
-    border: 1px solid rgba(99, 102, 241, 0.25);
   }
 
   .lb-lift {

@@ -1,498 +1,339 @@
 ---
-// ─── Hero — White Liquid Glass Bento ─────────────────────────
-// Світлий dashboard-style блок з прозорими картками й featured-каруселлю.
+// ─── Hero — merged with AvailableNow ─────────────────────────
+// Перший екран: ліворуч — messaging + CTAs + stats,
+// праворуч — мозаїка обкладинок доступних ігор.
 
-import { getOverallProgress, games, STATUS_LABELS } from "../data/games";
-import type { Game } from "../data/games";
+import { getOverallProgress, games } from "../data/games";
 
 const overall = getOverallProgress();
 const totalGames = games.length;
-const earlyAccessCount = games.filter((g) => g.status === "early-access").length;
 const doneCount = games.filter((g) => g.status === "done").length;
-const inProgressCount = games.filter((g) => g.status === "in-progress" || g.status === "early-access" || g.status === "fundraising").length;
+const earlyCount = games.filter((g) => g.status === "early-access").length;
+const inProgressCount = games.filter((g) => g.status === "in-progress").length;
 
-// ── Spotlight: авто-добірка «гарячих» проєктів для каруселі.
-// Рубрики: новий реліз → активний збір → свіжий прогрес-милстоун.
-// Якщо одна гра підпадає під кілька — береться лише одного разу.
-
-interface SpotlightItem {
-  type: "spotlight";
-  gameId: string;
-  title: string;
-  description: string;
-  image: string;
-  badge: string;
-  label: string;
-  date: string;
-  /** Колір акценту для бейджа (узгоджений зі статусними кольорами) */
-  accent: string;
-}
-
-function fmtDate(d: string): string {
-  return new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
-}
-
-function pickLatestRelease(pool: Game[]): Game | null {
-  const released = pool.filter((g) => g.status === "done" && g.releaseDate);
-  if (!released.length) return null;
-  return released.sort((a, b) => (b.releaseDate! > a.releaseDate! ? 1 : -1))[0];
-}
-
-function pickTopFundraising(pool: Game[]): Game | null {
-  const active = pool.filter((g) => g.fundraisingGoal && !g.fundraisingCompleted);
-  if (!active.length) return null;
-  return active
-    .map((g) => ({ g, pct: (g.fundraisingRaised ?? 0) / g.fundraisingGoal! }))
-    .sort((a, b) => b.pct - a.pct)[0].g;
-}
-
-function pickRecentMilestone(pool: Game[]): { game: Game; date: string; milestone: string } | null {
-  const candidates = pool
-    .filter((g) => g.progressHistory && g.progressHistory.length > 0)
-    .map((g) => {
-      const last = g.progressHistory![g.progressHistory!.length - 1];
-      return { game: g, date: last.date, milestone: last.milestone || `${last.progress}% перекладено` };
-    });
-  if (!candidates.length) return null;
-  return candidates.sort((a, b) => (b.date > a.date ? 1 : -1))[0];
-}
-
-const used = new Set<string>();
-const spotlight: SpotlightItem[] = [];
-
-const release = pickLatestRelease(games);
-if (release) {
-  used.add(release.id);
-  spotlight.push({
-    type: "spotlight",
-    gameId: release.id,
-    title: release.title,
-    description: release.description,
-    image: release.cover,
-    badge: "РЕЛІЗ",
-    label: "Готова локалізація",
-    date: fmtDate(release.releaseDate!),
-    accent: "#10b981",
+// Мозаїка: done → early-access → in-progress
+const STATUS_ORDER: Record<string, number> = { done: 0, "early-access": 1 };
+const available = games
+  .filter((g) => g.status === "done" || g.status === "early-access")
+  .sort((a, b) => {
+    const sa = STATUS_ORDER[a.status] ?? 99;
+    const sb = STATUS_ORDER[b.status] ?? 99;
+    if (sa !== sb) return sa - sb;
+    return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
   });
-}
 
-const fund = pickTopFundraising(games.filter((g) => !used.has(g.id)));
-if (fund) {
-  used.add(fund.id);
-  const pct = Math.round(((fund.fundraisingRaised ?? 0) / fund.fundraisingGoal!) * 100);
-  spotlight.push({
-    type: "spotlight",
-    gameId: fund.id,
-    title: fund.title,
-    description: `Активний збір: ${(fund.fundraisingRaised ?? 0).toLocaleString("uk-UA")} ₴ із ${fund.fundraisingGoal!.toLocaleString("uk-UA")} ₴ (${pct}%). Підтримай — і переклад продовжиться.`,
-    image: fund.cover,
-    badge: "ЗБІР",
-    label: "Триває збір коштів",
-    date: fund.lastUpdate ? fmtDate(fund.lastUpdate) : "",
-    accent: "#f59e0b",
-  });
-}
-
-const milestone = pickRecentMilestone(games.filter((g) => !used.has(g.id)));
-if (milestone) {
-  used.add(milestone.game.id);
-  spotlight.push({
-    type: "spotlight",
-    gameId: milestone.game.id,
-    title: `${milestone.game.title} — ${milestone.milestone}`,
-    description: milestone.game.description,
-    image: milestone.game.cover,
-    badge: "ПРОГРЕС",
-    label: STATUS_LABELS[milestone.game.status],
-    date: fmtDate(milestone.date),
-    accent: "#8b5cf6",
-  });
-}
-
-const featuredItems = spotlight;
-
-// Усі активні збори: і повністю-fundraising проєкти, і ті, де гра вже доступна,
-// але ведеться збір на подальші роботи (наприклад, MGS Δ).
-const fundraisingGames = games.filter(
-  (g) => !!g.fundraisingGoal && !g.fundraisingCompleted
-);
-
-const RING_R = 34;
-const RING_C = 2 * Math.PI * RING_R;
-const ringOffset = RING_C * (1 - overall / 100);
+const featured = available[0];
+const others = available.slice(1, 7);
 ---
 
-<section class="relative pt-28 pb-12 sm:pt-32 sm:pb-16">
+<section class="nd-hero">
+  <div
+    class="absolute inset-0 -z-10 pointer-events-none"
+    aria-hidden="true"
+    style="background: radial-gradient(ellipse 90% 60% at 50% -10%, rgba(99,102,241,0.12), transparent);"
+  ></div>
 
-  <!-- Static decorative gradient layer with soft bottom fade so colours don't cut off abruptly -->
-  <div class="absolute inset-0 -z-10 pointer-events-none" aria-hidden="true"
-       style="background:
-         radial-gradient(420px 360px at 12% 18%, rgba(99,102,241,0.28), transparent 65%),
-         radial-gradient(380px 340px at 92% 22%, rgba(56,189,248,0.26), transparent 65%),
-         radial-gradient(520px 420px at 50% 105%, rgba(167,139,250,0.22), transparent 65%);
-         -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 100%);
-                 mask-image: linear-gradient(180deg, #000 0%, #000 78%, transparent 100%);"></div>
+  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="nd-hero__grid">
 
-  <div class="relative z-10 mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-8">
+      <!-- ── Left: copy ── -->
+      <div class="nd-hero__copy">
 
-    <!-- ═══ Top: Title + supporting cards ═══ -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
+        <div class="nd-eyebrow">
+          <span class="nd-eyebrow__dot" aria-hidden="true"></span>
+          Локалізація відеоігор
+        </div>
 
-      <!-- Brand block -->
-      <div class="lb-glass-strong lg:col-span-7 p-6 sm:p-8 flex flex-col justify-center hero-card hero-delay-1">
-        <h1 class="text-[2rem] sm:text-5xl lg:text-[3.25rem] font-black tracking-tight leading-[1.05] mb-4 text-slate-50">
-          <span class="sr-only">Українська локалізація відеоігор — </span>Перекладаємо те, у&nbsp;що
-          <span class="lb-gradient-text whitespace-nowrap">самі граємо</span>
+        <h1 class="nd-headline">
+          Перекладаємо те,<br/>
+          у&nbsp;що <em>самі граємо</em>
         </h1>
-        <p class="hero-subtitle text-base sm:text-lg leading-relaxed max-w-xl text-slate-300">
-          <span class="hero-word">Сюжет,</span>
-          <span class="hero-word">інтерфейс</span>
-          <span class="hero-word">і дрібниці</span>
-          <span class="hero-word">—</span>
-          <span class="hero-word">українською.</span>
+
+        <p class="nd-sub">
+          Сюжет, інтерфейс і дрібниці — українською.<br class="hidden sm:block"/>
+          Без машинного перекладу. Без компромісів.
         </p>
-      </div>
 
-      <!-- Featured carousel -->
-      <div
-        id="featured-carousel"
-        class="lb-glass lg:col-span-5 relative min-h-[240px] overflow-hidden hero-card hero-delay-2 group"
-      >
-        {featuredItems.map((item, index) => (
-          <button
-            type="button"
-            data-game-detail={item.gameId}
-            class={`featured-slide absolute inset-0 text-left transition-opacity duration-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-300 ${index === 0 ? "opacity-100 z-10" : "opacity-0 z-0"}`}
-            data-slide={index}
-            aria-label={`${item.title} — деталі`}
-          >
-            <!-- Атмосферний фон: розмита обкладинка + темна вуаль -->
-            <img
-              src={item.image}
-              alt=""
-              aria-hidden="true"
-              class="absolute inset-0 w-full h-full object-cover scale-110"
-              style="filter: blur(28px) saturate(1.1) brightness(0.55);"
-              loading={index === 0 ? "eager" : "lazy"}
-            />
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-900/85 via-slate-900/65 to-slate-900/55"></div>
-
-            <!-- Контент: обкладинка ліворуч (повна, native 2:3) + текст праворуч -->
-            <div class="relative h-full flex items-stretch gap-4 sm:gap-5 p-4 sm:p-5">
-              <div class="shrink-0 w-[110px] sm:w-[130px] aspect-[2/3] rounded-xl overflow-hidden border border-white/30 shadow-[0_18px_36px_-18px_rgba(0,0,0,0.7)] group-hover:scale-[1.02] transition-transform">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  class="w-full h-full object-cover"
-                  loading={index === 0 ? "eager" : "lazy"}
-                />
-              </div>
-
-              <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
-                <div class="flex items-start justify-between gap-2 mb-2">
-                  <span
-                    class="inline-flex items-center px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] rounded-lg bg-white/95 border border-white/60 shadow-sm shrink-0"
-                    style={`color: ${item.accent};`}
-                  >
-                    {item.badge}
-                  </span>
-                  {item.date && (
-                    <span class="text-[10px] font-semibold uppercase tracking-wider text-white/95 px-2 py-1 rounded-lg bg-white/10 border border-white/15 shadow-sm shrink-0">
-                      {item.date}
-                    </span>
-                  )}
-                </div>
-
-                <div class="flex-1 flex flex-col justify-end min-w-0">
-                  <span class="text-[10px] font-bold uppercase tracking-[0.18em] text-white/75 mb-1.5 block truncate">
-                    {item.label}
-                  </span>
-                  <h3 class="text-white font-extrabold text-lg sm:text-xl leading-tight mb-1.5 line-clamp-2 drop-shadow-sm">
-                    {item.title}
-                  </h3>
-                  <p class="text-white/75 text-xs sm:text-[13px] leading-relaxed line-clamp-3">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </button>
-        ))}
-
-        {featuredItems.length > 1 && (
-          <>
-            <button
-              id="carousel-prev"
-              class="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/95 border border-white/70 text-slate-700 hover:bg-white shadow-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              aria-label="Попередній">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <button
-              id="carousel-next"
-              class="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white/95 border border-white/70 text-slate-700 hover:bg-white shadow-md items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              aria-label="Наступний">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-            <div class="absolute bottom-3.5 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
-              {featuredItems.map((_, index) => (
-                <button
-                  class={`carousel-dot h-1.5 rounded-full transition-all duration-300 ${index === 0 ? "bg-white w-6" : "bg-white/55 w-1.5 hover:bg-white/80"}`}
-                  data-dot={index}
-                  aria-label={`Слайд ${index + 1}`}
-                ></button>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-
-    <!-- ═══ Bottom: Metric cards ═══ -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-4 sm:mt-5">
-
-      <!-- Overall progress ring -->
-      <div class="lb-glass p-5 flex flex-col items-center justify-center text-center min-h-[150px] hero-card hero-delay-3">
-        <div class="relative w-[88px] h-[88px] mb-2">
-          <svg class="w-full h-full -rotate-90" viewBox="0 0 80 80">
-            <defs>
-              <linearGradient id="heroRingG" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#6366f1" />
-                <stop offset="100%" stop-color="#0ea5e9" />
-              </linearGradient>
-            </defs>
-            <circle cx="40" cy="40" r={RING_R} fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6" />
-            <circle cx="40" cy="40" r={RING_R} fill="none" stroke="url(#heroRingG)" stroke-width="6"
-                    stroke-linecap="round" stroke-dasharray={RING_C} stroke-dashoffset={RING_C}
-                    class="ring-progress" style={`--ring-target: ${ringOffset}`} />
-          </svg>
-          <div class="absolute inset-0 flex items-center justify-center">
-            <span class="text-xl font-black text-slate-100 tabular-nums ring-counter" data-target={overall}>0%</span>
-          </div>
+        <div class="nd-ctas">
+          <a href="/games/" class="nd-btn nd-btn--primary">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h10"/>
+            </svg>
+            Усі проєкти
+          </a>
+          <a href="/#launcher" class="nd-btn nd-btn--ghost">
+            Завантажити Launcher
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+          </a>
         </div>
-        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-400">Загальний прогрес</span>
-      </div>
 
-      <!-- Project counts -->
-      <div class="lb-glass p-5 flex flex-col items-center justify-center text-center min-h-[150px] hero-card hero-delay-4">
-        <span class="block text-3xl font-black tabular-nums lb-gradient-text">{totalGames}</span>
-        <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-slate-400 mt-1">Усього проєктів</span>
-        <div class="grid grid-cols-2 gap-2 mt-3 w-full text-[11px]">
-          <div class="text-center">
-            <span class="block font-bold text-emerald-400 tabular-nums">{doneCount + earlyAccessCount}</span>
-            <span class="text-slate-500">доступно</span>
+        <div class="nd-stats">
+          <div class="nd-stat">
+            <span class="nd-stat__n">{totalGames}</span>
+            <span class="nd-stat__l">проєктів</span>
           </div>
-          <div class="text-center">
-            <span class="block font-bold text-indigo-400 tabular-nums">{inProgressCount}</span>
-            <span class="text-slate-500">у роботі</span>
+          <div class="nd-divider" aria-hidden="true"></div>
+          <div class="nd-stat">
+            <span class="nd-stat__n" style="color:#34d399;">{doneCount + earlyCount}</span>
+            <span class="nd-stat__l">можна грати</span>
+          </div>
+          <div class="nd-divider" aria-hidden="true"></div>
+          <div class="nd-stat">
+            <span class="nd-stat__n" style="color:#a78bfa;">{inProgressCount}</span>
+            <span class="nd-stat__l">у роботі</span>
+          </div>
+          <div class="nd-divider" aria-hidden="true"></div>
+          <div class="nd-stat">
+            <span class="nd-stat__n" style="color:#818cf8;">{overall}%</span>
+            <span class="nd-stat__l">прогрес</span>
           </div>
         </div>
       </div>
 
-      <!-- Fundraising — компактний список з прогрес-барами та сумами -->
-      <div class="lb-glass p-4 sm:p-5 flex flex-col min-h-[150px] hero-card hero-delay-5 col-span-2">
-        {(() => {
-          const fmt = (n: number) => n.toLocaleString("uk-UA");
-          return (
-            <>
-              <div class="mb-3">
-                <span class="text-[10px] font-bold tracking-[0.16em] uppercase text-amber-400">Збір коштів</span>
-              </div>
-              <div class="space-y-3">
-                {fundraisingGames.map((game) => {
-                  const raised = game.fundraisingRaised ?? 0;
-                  const goal = game.fundraisingGoal ?? 0;
-                  const pct = goal > 0 ? Math.min(100, Math.round((raised / goal) * 100)) : 0;
-                  return (
-                    <button
-                      type="button"
-                      data-game-detail={game.id}
-                      class="group w-full flex items-center gap-2.5 text-left hover:bg-amber-950/30 rounded-lg px-1.5 py-1 -mx-1.5 transition-colors"
-                      aria-label={`Збір на ${game.title}`}
-                    >
-                      <span class="relative w-8 h-11 rounded-md overflow-hidden border border-white/80 shadow-[0_6px_14px_-8px_rgba(15,23,42,0.5)] shrink-0">
-                        <img src={game.cover} alt={game.title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-                      </span>
-                      <span class="flex-1 min-w-0">
-                        <span class="flex items-center justify-between gap-2 mb-1">
-                          <span class="text-[11px] font-bold text-slate-200 truncate group-hover:text-amber-300 transition-colors">{game.title}</span>
-                          <span class="text-[10px] font-bold text-amber-400 tabular-nums shrink-0">{pct}%</span>
-                        </span>
-                        <span class="block h-1.5 rounded-full bg-amber-950/60 overflow-hidden">
-                          <span class="block h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400" style={`width: ${pct}%`}></span>
-                        </span>
-                        <span class="block text-[10px] text-slate-500 font-medium tabular-nums mt-1">
-                          <span class="text-amber-400 font-bold">{fmt(raised)}</span> з {fmt(goal)} ₴
-                        </span>
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            </>
-          );
-        })()}
-      </div>
+      <!-- ── Right: cover mosaic ── -->
+      {featured && (
+        <div class="nd-mosaic">
+          <!-- Featured (large, spans 2 rows) -->
+          <a href={`/games/${featured.id}/`} class="nd-cover nd-cover--featured" aria-label={featured.title}>
+            <img src={featured.cover} alt={featured.title} loading="eager" decoding="async" />
+            <span class={`nd-dot ${featured.status === "done" ? "nd-dot--green" : "nd-dot--sky"}`}></span>
+            <span class="nd-caption">
+              <span class="nd-caption__status">{featured.status === "done" ? "Готово до гри" : "Ранній доступ"}</span>
+              <span class="nd-caption__title">{featured.title}</span>
+            </span>
+          </a>
+
+          <!-- 6 smaller covers -->
+          {others.map((g) => (
+            <a href={`/games/${g.id}/`} class="nd-cover" aria-label={g.title}>
+              <img src={g.cover} alt={g.title} loading="eager" decoding="async" />
+              <span class={`nd-dot ${g.status === "done" ? "nd-dot--green" : "nd-dot--sky"}`}></span>
+              <span class="nd-hover-title">{g.title}</span>
+            </a>
+          ))}
+        </div>
+      )}
 
     </div>
-
   </div>
 </section>
 
 <style>
-  .hero-card {
+  .nd-hero {
+    position: relative;
+    padding-top: 7rem;
+    padding-bottom: 5rem;
+  }
+  @media (min-width: 640px) {
+    .nd-hero { padding-top: 8.5rem; padding-bottom: 6rem; }
+  }
+
+  /* Grid: text left, mosaic right */
+  .nd-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  @media (min-width: 1024px) {
+    .nd-hero__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 4rem;
+    }
+  }
+
+  .nd-hero__copy { display: flex; flex-direction: column; }
+
+  /* Eyebrow */
+  .nd-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #818cf8;
+    margin-bottom: 1rem;
     opacity: 0;
-    transform: translateY(20px) scale(0.98);
-    animation: heroCardIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: ndUp .5s cubic-bezier(.16,1,.3,1) 0s forwards;
   }
-  .hero-delay-1 { animation-delay: 0.05s; }
-  .hero-delay-2 { animation-delay: 0.15s; }
-  .hero-delay-3 { animation-delay: 0.25s; }
-  .hero-delay-4 { animation-delay: 0.30s; }
-  .hero-delay-5 { animation-delay: 0.35s; }
-  .hero-delay-6 { animation-delay: 0.40s; }
-
-  @keyframes heroCardIn {
-    to { opacity: 1; transform: translateY(0) scale(1); }
+  .nd-eyebrow__dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #6366f1;
+    box-shadow: 0 0 8px rgba(99,102,241,.8);
+    flex-shrink: 0;
+    animation: pulse 2.8s ease-in-out infinite;
   }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-  .hero-word {
-    display: inline-block;
+  /* Headline */
+  .nd-headline {
+    font-size: clamp(2rem, 4.5vw, 3.25rem);
+    font-weight: 900;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: #f1f5f9;
+    margin-bottom: 1rem;
     opacity: 0;
-    transform: translateY(8px);
-    animation: heroWord 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .08s forwards;
   }
-  .hero-word:nth-child(1) { animation-delay: 0.4s; }
-  .hero-word:nth-child(2) { animation-delay: 0.55s; }
-  .hero-word:nth-child(3) { animation-delay: 0.7s; }
-  .hero-word:nth-child(4) { animation-delay: 0.85s; }
-  .hero-word:nth-child(5) { animation-delay: 1.0s; }
-  @keyframes heroWord { to { opacity: 1; transform: translateY(0); } }
-
-  .ring-progress {
-    transition: stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: ringDraw 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+  .nd-headline em {
+    font-style: normal;
+    background: linear-gradient(130deg, #818cf8 15%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-  @keyframes ringDraw { to { stroke-dashoffset: var(--ring-target); } }
 
-  .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+  .nd-sub {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: #94a3b8;
+    max-width: 32rem;
+    margin-bottom: 1.75rem;
+    opacity: 0;
+    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .16s forwards;
+  }
+
+  /* CTAs */
+  .nd-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .24s forwards;
+  }
+  .nd-btn {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.625rem 1.2rem;
+    border-radius: 10px;
+    font-size: 0.875rem; font-weight: 700;
+    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+    white-space: nowrap;
+  }
+  .nd-btn:hover { transform: translateY(-2px); }
+  .nd-btn--primary {
+    background: #6366f1; color: #fff;
+    box-shadow: 0 4px 18px -6px rgba(99,102,241,.6);
+  }
+  .nd-btn--primary:hover {
+    background: #4f46e5;
+    box-shadow: 0 6px 24px -6px rgba(99,102,241,.8);
+  }
+  .nd-btn--ghost {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.10);
+    color: #cbd5e1;
+  }
+  .nd-btn--ghost:hover {
+    background: rgba(255,255,255,.09);
+    border-color: rgba(255,255,255,.16);
+    color: #f1f5f9;
+  }
+
+  /* Stats */
+  .nd-stats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1.25rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,.07);
+    opacity: 0;
+    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .32s forwards;
+  }
+  .nd-stat { display: flex; flex-direction: column; gap: .1rem; }
+  .nd-stat__n {
+    font-size: 1.5rem; font-weight: 900; line-height: 1;
+    color: #e2e8f0; font-variant-numeric: tabular-nums;
+  }
+  .nd-stat__l {
+    font-size: 0.65rem; font-weight: 600; color: #475569;
+    text-transform: uppercase; letter-spacing: .07em; white-space: nowrap;
+  }
+  .nd-divider {
+    width: 1px; height: 28px;
+    background: rgba(255,255,255,.08);
+    flex-shrink: 0; align-self: center;
+  }
+
+  /* Cover mosaic */
+  .nd-mosaic {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    gap: 6px;
+    opacity: 0;
+    animation: ndUp .7s cubic-bezier(.16,1,.3,1) .2s forwards;
+  }
+  @media (max-width: 500px) {
+    .nd-mosaic {
+      grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
+    }
+    .nd-mosaic > .nd-cover:nth-child(n+6) { display: none; }
+  }
+
+  .nd-cover {
+    position: relative;
+    display: block;
+    aspect-ratio: 2/3;
+    border-radius: 12px;
     overflow: hidden;
+    background: #090b14;
+    transition: transform .22s ease, box-shadow .22s ease;
+  }
+  .nd-cover--featured { grid-row: span 2; aspect-ratio: auto; }
+  .nd-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
+  .nd-cover:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -10px rgba(0,0,0,.7); }
+  .nd-cover:hover img { transform: scale(1.05); }
+
+  /* Status dot */
+  .nd-dot {
+    position: absolute; top: 7px; right: 7px;
+    width: 9px; height: 9px; border-radius: 50%; z-index: 2;
+  }
+  .nd-dot--green { background: #10b981; box-shadow: 0 0 0 2px rgba(255,255,255,.8), 0 0 10px rgba(16,185,129,.5); }
+  .nd-dot--sky   { background: #0ea5e9; box-shadow: 0 0 0 2px rgba(255,255,255,.8), 0 0 10px rgba(14,165,233,.5); }
+
+  /* Featured caption */
+  .nd-caption {
+    position: absolute; inset-x: 0; bottom: 0;
+    padding: .75rem .85rem .85rem;
+    background: linear-gradient(180deg, transparent, rgba(7,9,18,.93));
+    display: flex; flex-direction: column; gap: .2rem;
+    pointer-events: none;
+  }
+  .nd-caption__status {
+    font-size: .6rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: .08em;
+    color: rgba(255,255,255,.6);
+  }
+  .nd-caption__title {
+    font-weight: 800; font-size: .875rem; line-height: 1.2; color: #fff;
   }
 
+  /* Hover title for small covers */
+  .nd-hover-title {
+    position: absolute; inset: 0;
+    display: flex; align-items: flex-end;
+    padding: .5rem .55rem;
+    background: linear-gradient(180deg, transparent 40%, rgba(7,9,18,.88) 100%);
+    color: #fff; font-weight: 700; font-size: .7rem; line-height: 1.2;
+    opacity: 0; transition: opacity .2s ease; pointer-events: none;
+  }
+  .nd-cover:hover .nd-hover-title { opacity: 1; }
+
+  @keyframes ndUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .hero-card, .hero-word, .ring-progress { animation: none; opacity: 1; transform: none; }
+    .nd-eyebrow, .nd-headline, .nd-sub, .nd-ctas, .nd-stats, .nd-mosaic, .nd-eyebrow__dot
+    { animation: none; opacity: 1; transform: none; }
   }
 </style>
-
-<script>
-  // Hero ring counter
-  const heroCounter = document.querySelector(".ring-counter") as HTMLSpanElement | null;
-  if (heroCounter) {
-    const target = parseInt(heroCounter.dataset.target || "0", 10);
-    const duration = 1400;
-    const start = performance.now();
-    const tick = (now: number) => {
-      const elapsed = now - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      heroCounter.textContent = `${Math.round(eased * target)}%`;
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    setTimeout(() => requestAnimationFrame(tick), 300);
-  }
-
-  // Carousel
-  const slides = document.querySelectorAll<HTMLElement>(".featured-slide");
-  const dots = document.querySelectorAll<HTMLButtonElement>(".carousel-dot");
-  const prevBtn = document.getElementById("carousel-prev");
-  const nextBtn = document.getElementById("carousel-next");
-  let currentSlide = 0;
-
-  const goToSlide = (index: number) => {
-    slides.forEach((slide, i) => {
-      slide.classList.toggle("opacity-100", i === index);
-      slide.classList.toggle("z-10", i === index);
-      slide.classList.toggle("opacity-0", i !== index);
-      slide.classList.toggle("z-0", i !== index);
-    });
-    dots.forEach((dot, i) => {
-      const active = i === index;
-      dot.classList.toggle("bg-white", active);
-      dot.classList.toggle("w-6", active);
-      dot.classList.toggle("bg-white/55", !active);
-      dot.classList.toggle("w-1.5", !active);
-    });
-    currentSlide = index;
-  };
-
-  prevBtn?.addEventListener("click", () => goToSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1));
-  nextBtn?.addEventListener("click", () => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1));
-  dots.forEach((dot, index) => dot.addEventListener("click", () => goToSlide(index)));
-
-  const isMobile = window.innerWidth < 768;
-  const interval = isMobile ? 4000 : 6000;
-  let auto = setInterval(() => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1), interval);
-
-  const carousel = document.getElementById("featured-carousel");
-  if (!isMobile && carousel) {
-    carousel.addEventListener("mouseenter", () => clearInterval(auto));
-    carousel.addEventListener("mouseleave", () => {
-      auto = setInterval(() => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1), interval);
-    });
-  }
-
-  // Touch swipe — щоб на телефоні листати слайди жестом, а не чекати
-  // авто-ротацію. Якщо людина свайпнула, не відкриваємо модалку випадково.
-  if (carousel && slides.length > 1) {
-    const SWIPE_THRESHOLD = 40;
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let isSwiping = false;
-    let suppressClick = false;
-
-    carousel.addEventListener("touchstart", (e) => {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      isSwiping = false;
-      clearInterval(auto);
-    }, { passive: true });
-
-    carousel.addEventListener("touchmove", (e) => {
-      const dx = Math.abs(e.touches[0].clientX - touchStartX);
-      const dy = Math.abs(e.touches[0].clientY - touchStartY);
-      // Вважаємо свайпом, лише якщо горизонтальний рух домінує — інакше
-      // це вертикальний скрол сторінки.
-      if (dx > 10 && dx > dy) isSwiping = true;
-    }, { passive: true });
-
-    carousel.addEventListener("touchend", (e) => {
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      if (isSwiping && Math.abs(dx) > SWIPE_THRESHOLD) {
-        if (dx < 0) goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1);
-        else goToSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1);
-        suppressClick = true;
-        setTimeout(() => { suppressClick = false; }, 350);
-      }
-      // Перезапускаємо авто-ротацію після паузи
-      auto = setInterval(
-        () => goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1),
-        interval
-      );
-    });
-
-    // Якщо щойно був свайп — не пропускаємо click до document delegated
-    // listener, який відкриває модалку гри.
-    carousel.addEventListener("click", (e) => {
-      if (suppressClick) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    });
-  }
-</script>
