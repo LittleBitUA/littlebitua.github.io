@@ -1,0 +1,90 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import GameCard from "../../components/GameCard.astro";
+import FilterBar from "../../components/FilterBar.astro";
+import Footer from "../../components/Footer.astro";
+import { games } from "../../data/games";
+import { SITE_URL } from "../../utils/seo";
+
+const sortedGames = [...games].sort((a, b) =>
+  (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "")
+);
+
+const doneCount = games.filter((g) => g.status === "done").length;
+const earlyCount = games.filter((g) => g.status === "early-access").length;
+const playable = doneCount + earlyCount;
+
+const canonicalUrl = `${SITE_URL}/games/`;
+const pageTitle = "Усі локалізації — Little Bit";
+const pageDesc = `Каталог українських локалізацій від Little Bit: ${games.length} ігор, з яких ${playable} вже можна грати.`;
+---
+
+<Layout
+  title={pageTitle}
+  description={pageDesc}
+  canonicalUrl={canonicalUrl}
+>
+  <Header />
+
+  <main class="flex-1 pt-28 pb-24">
+
+    <!-- Blurred background -->
+    <div
+      class="pointer-events-none select-none absolute inset-x-0 top-0 h-64 overflow-hidden"
+      aria-hidden="true"
+      style="z-index:0;"
+    >
+      <div
+        class="absolute inset-0"
+        style="background: radial-gradient(ellipse 80% 120% at 50% -20%, rgba(99,102,241,0.10), transparent);"
+      ></div>
+    </div>
+
+    <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" style="z-index:1;">
+
+      <!-- Page header -->
+      <div class="mb-8" data-animate>
+        <div class="flex items-end justify-between gap-4">
+          <div>
+            <span class="lb-section-eyebrow">Каталог</span>
+            <h1 class="text-2xl sm:text-3xl font-black text-white mt-1 leading-tight">
+              Усі локалізації
+            </h1>
+          </div>
+          <div class="text-right shrink-0">
+            <span class="text-2xl font-black text-slate-100">{games.length}</span>
+            <span class="text-xs font-semibold text-slate-500 block mt-0.5">проєктів</span>
+          </div>
+        </div>
+
+        <!-- Quick stats row -->
+        <div class="flex flex-wrap gap-x-5 gap-y-1 mt-3">
+          <span class="text-xs font-semibold" style="color:#34d399;">
+            {playable} можна грати
+          </span>
+          <span class="text-xs font-semibold text-slate-500">·</span>
+          <span class="text-xs font-semibold text-violet-400">
+            {games.filter((g) => g.status === "in-progress").length} у роботі
+          </span>
+          <span class="text-xs font-semibold text-slate-500">·</span>
+          <span class="text-xs font-semibold text-amber-400">
+            {games.filter((g) => g.status === "fundraising").length} збір коштів
+          </span>
+        </div>
+      </div>
+
+      <FilterBar />
+
+      <div
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4"
+        id="games-grid"
+      >
+        {sortedGames.map((game) => <GameCard game={game} />)}
+      </div>
+
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -10,16 +10,16 @@ const list = rankedDonors();
 const formatAmount = (uah: number) =>
   new Intl.NumberFormat("uk-UA").format(uah) + " ₴";
 
-// Avatar palette — soft tints that sit comfortably on the white-glass surface.
+// Avatar palette — dark tints for dark-themed surface.
 const avatarPalette: Array<{ bg: string; fg: string }> = [
-  { bg: "#eef2ff", fg: "#4f46e5" }, // indigo
-  { bg: "#f0f9ff", fg: "#0284c7" }, // sky
-  { bg: "#faf5ff", fg: "#7c3aed" }, // violet
-  { bg: "#ecfdf5", fg: "#059669" }, // emerald
-  { bg: "#fff7ed", fg: "#ea580c" }, // orange
-  { bg: "#fdf4ff", fg: "#c026d3" }, // fuchsia
-  { bg: "#fef2f2", fg: "#dc2626" }, // red
-  { bg: "#fefce8", fg: "#ca8a04" }, // amber
+  { bg: "rgba(99,102,241,0.20)",  fg: "#a5b4fc" }, // indigo
+  { bg: "rgba(14,165,233,0.18)",  fg: "#7dd3fc" }, // sky
+  { bg: "rgba(139,92,246,0.18)",  fg: "#c4b5fd" }, // violet
+  { bg: "rgba(16,185,129,0.18)",  fg: "#6ee7b7" }, // emerald
+  { bg: "rgba(245,158,11,0.18)",  fg: "#fcd34d" }, // amber
+  { bg: "rgba(192,38,211,0.18)",  fg: "#e879f9" }, // fuchsia
+  { bg: "rgba(239,68,68,0.18)",   fg: "#fca5a5" }, // red
+  { bg: "rgba(20,184,166,0.18)",  fg: "#5eead4" }, // teal
 ];
 
 // Stable colour per name — same nick always lands on the same swatch.
