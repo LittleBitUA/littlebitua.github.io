@@ -83,7 +83,42 @@ function formatDate(d: string) {
     </div>
     <!-- ── кінець Покращення 3 ──────────────────────────────────── -->
 
-    <div class="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8" style="z-index: 1;">
+    <div class="relative" style="z-index: 1;">
+
+      <!-- ── Покращення 4: Full-width hero banner ─────────────────────
+           Epic-style banner вгорі сторінки гри.
+           Щоб вимкнути: видали цей <div class="lb-game-hero-banner"> блок. -->
+      <div class="lb-game-hero-banner w-full overflow-hidden relative mb-8" style="height: clamp(180px, 32vw, 340px);">
+        <img
+          src={game.cover}
+          alt=""
+          aria-hidden="true"
+          class="absolute inset-0 w-full h-full object-cover"
+          style="object-position: center 25%;"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="absolute inset-0" style="background: linear-gradient(125deg, rgba(7,11,20,0.92) 0%, rgba(7,11,20,0.2) 55%, transparent 100%), linear-gradient(to top, rgba(7,11,20,1) 0%, transparent 48%);"></div>
+        <div class="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 px-4 sm:px-6 lg:px-8 pb-5 max-w-5xl mx-auto">
+          <div>
+            <span class={`inline-flex items-center gap-1.5 px-2.5 py-1 text-[10px] font-bold rounded-full border mb-2 ${topPillColor}`}>
+              {STATUS_LABELS[game.status]}
+            </span>
+            <p class="text-xl sm:text-2xl lg:text-[1.75rem] font-black text-white leading-tight" style="text-shadow: 0 1px 14px rgba(0,0,0,0.65);">
+              {game.title}
+            </p>
+          </div>
+          <div class="shrink-0 text-right pb-1">
+            <span class="block text-3xl sm:text-4xl font-black tabular-nums text-white" style="text-shadow: 0 0 24px rgba(99,102,241,0.55);">
+              {game.progress}<span class="text-base font-medium text-white/55">%</span>
+            </span>
+            <span class="text-[10px] text-white/45 font-semibold uppercase tracking-wider">перекладено</span>
+          </div>
+        </div>
+      </div>
+      <!-- ── кінець Покращення 4 ─────────────────────────────────── -->
+
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
 
       <!-- Breadcrumbs -->
       <nav class="mb-8" aria-label="Навігація">
@@ -319,7 +354,9 @@ function formatDate(d: string) {
           )}
         </div>
       </div>
-    </div>
+
+      </div>{/* closes mx-auto max-w-5xl */}
+    </div>{/* closes relative z-index:1 wrapper */}
   </main>
 
   <Footer />
