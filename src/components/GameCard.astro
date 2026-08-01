@@ -327,4 +327,33 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
   @media (prefers-reduced-motion: reduce) {
     .lb-cube-next { animation: none; opacity: 0.3; }
   }
+
+  /* ── Покращення 1: Status glow on hover ──────────────────────
+     Кольоровий glow під карткою при hover — колір відповідає статусу.
+     Щоб вимкнути: видали цей блок цілком. */
+  .game-card[data-status="done"]:hover .lb-glass {
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.10),
+      0 20px 50px -20px rgba(16,185,129,0.55),
+      0 8px 20px -10px rgba(16,185,129,0.25);
+  }
+  .game-card[data-status="early-access"]:hover .lb-glass {
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.10),
+      0 20px 50px -20px rgba(14,165,233,0.55),
+      0 8px 20px -10px rgba(14,165,233,0.25);
+  }
+  .game-card[data-status="in-progress"]:hover .lb-glass {
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.10),
+      0 20px 50px -20px rgba(139,92,246,0.55),
+      0 8px 20px -10px rgba(139,92,246,0.25);
+  }
+  .game-card[data-status="fundraising"]:hover .lb-glass {
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.10),
+      0 20px 50px -20px rgba(245,158,11,0.55),
+      0 8px 20px -10px rgba(245,158,11,0.25);
+  }
+  /* ── кінець Покращення 1 ──────────────────────────────────── */
 </style>
