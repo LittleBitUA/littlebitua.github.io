@@ -133,7 +133,7 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
                   return (
                     <div class="flex-1 h-2 rounded-sm bg-white/10 overflow-hidden relative">
                       {isFull && (
-                        <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>
+                        <div class="absolute inset-0 lb-cube-fill" style={`background: ${cubePalette.solid}; transition-delay: ${i * 28}ms;`}></div>
                       )}
                       {isNext && (
                         <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>
@@ -185,7 +185,7 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
                 return (
                   <div class="flex-1 h-2 rounded-sm bg-white/10 overflow-hidden relative">
                     {isFull && (
-                      <div class="absolute inset-0" style={`background: ${translationPercent >= 100 ? "#10b981" : "#14b8a6"};`}></div>
+                      <div class="absolute inset-0 lb-cube-fill" style={`background: ${translationPercent >= 100 ? "#10b981" : "#14b8a6"}; transition-delay: ${i * 28}ms;`}></div>
                     )}
                     {isNext && (
                       <div class="lb-cube-next absolute inset-0" style="background: #14b8a6;"></div>
@@ -356,4 +356,41 @@ const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
       0 8px 20px -10px rgba(245,158,11,0.25);
   }
   /* ── кінець Покращення 1 ──────────────────────────────────── */
+
+  /* ── Покращення 2: Scroll-reveal cube fill ────────────────────
+     Куби заповнюються зліва-направо при скролі до картки.
+     Щоб вимкнути: видали цей блок + <script> нижче. */
+  .lb-cube-fill {
+    transform-origin: left center;
+    transform: scaleX(0);
+    transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .lb-cubes-revealed .lb-cube-fill {
+    transform: scaleX(1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lb-cube-fill { transform: scaleX(1); transition: none; }
+  }
+  /* ── кінець Покращення 2 ──────────────────────────────────── */
 </style>
+
+<script>
+/* ── Покращення 2: Scroll-reveal cube fill ─────────────────────
+   IntersectionObserver вмикає lb-cubes-revealed на .lb-card-progress
+   щойно картка потрапляє у вʼюпорт.
+   Щоб вимкнути: видали цей <script> блок + CSS вище. */
+if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const cubeObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("lb-cubes-revealed");
+          cubeObserver.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+  document.querySelectorAll(".lb-card-progress").forEach((el) => cubeObserver.observe(el));
+}
+</script>
