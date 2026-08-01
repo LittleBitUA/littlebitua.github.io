@@ -4,12 +4,15 @@
 // праворуч — мозаїка обкладинок доступних ігор.
 
 import { getOverallProgress, games } from "../data/games";
+import { pluralize } from "../utils/pluralize";
 
 const overall = getOverallProgress();
 const totalGames = games.length;
 const doneCount = games.filter((g) => g.status === "done").length;
 const earlyCount = games.filter((g) => g.status === "early-access").length;
 const inProgressCount = games.filter((g) => g.status === "in-progress").length;
+const fundraisingCount = games.filter((g) => g.status === "fundraising").length;
+const playableCount = doneCount + earlyCount;
 
 // Мозаїка: done → early-access → in-progress
 const STATUS_ORDER: Record<string, number> = { done: 0, "early-access": 1 };
@@ -59,7 +62,7 @@ const others = available.slice(1, 7);
             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h10"/>
             </svg>
-            Усі проєкти
+            Наші проєкти
           </a>
           <a href="/#launcher" class="nd-btn nd-btn--ghost">
             Завантажити Launcher
@@ -72,7 +75,7 @@ const others = available.slice(1, 7);
         <div class="nd-stats">
           <div class="nd-stat">
             <span class="nd-stat__n">{totalGames}</span>
-            <span class="nd-stat__l">проєктів</span>
+            <span class="nd-stat__l">{pluralize(totalGames, "проєкт", "проєкти", "проєктів")}</span>
           </div>
           <div class="nd-divider" aria-hidden="true"></div>
           <div class="nd-stat">
@@ -90,27 +93,53 @@ const others = available.slice(1, 7);
             <span class="nd-stat__l">прогрес</span>
           </div>
         </div>
+
+        <!-- Quick stats row — clickable -->
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4">
+          <a href="/games/" class="nd-qs-link" style="color:#34d399;">
+            {playableCount} можна грати
+          </a>
+          <span class="text-xs text-slate-600">·</span>
+          <a href="/games/?status=in-progress" class="nd-qs-link" style="color:#a78bfa;">
+            {inProgressCount} у роботі
+          </a>
+          <span class="text-xs text-slate-600">·</span>
+          <a href="/games/?status=fundraising" class="nd-qs-link" style="color:#f59e0b;">
+            {fundraisingCount} збір коштів
+          </a>
+        </div>
       </div>
 
-      <!-- ── Right: cover mosaic ── -->
-      {featured && (
-        <div class="nd-mosaic">
-          <!-- Featured (large, spans 2 rows) -->
-          <a href={`/games/${featured.id}/`} class="nd-cover nd-cover--featured" aria-label={featured.title}>
-            <img src={featured.cover} alt={featured.title} loading="eager" decoding="async" />
-            <span class={`nd-dot ${featured.status === "done" ? "nd-dot--green" : "nd-dot--sky"}`}></span>
+      <!-- ── Right: cover mosaic (randomised client-side) ── -->
+      {available.length > 0 && (
+        <div class="nd-mosaic" id="nd-mosaic">
+          <!-- Featured placeholder -->
+          <a id="nd-feat" href="#" class="nd-cover nd-cover--featured nd-cover--loading" aria-label="">
+            <img id="nd-feat-img" src="" alt="" loading="eager" decoding="async" style="opacity:0" />
+            <span class="nd-dot nd-dot--green" id="nd-feat-dot"></span>
             <span class="nd-caption">
-              <span class="nd-caption__status">{featured.status === "done" ? "Готово до гри" : "Ранній доступ"}</span>
-              <span class="nd-caption__title">{featured.title}</span>
+              <span class="nd-caption__status" id="nd-feat-status"></span>
+              <span class="nd-caption__title" id="nd-feat-title"></span>
+              <span class="nd-cover-play">
+                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="width:.75rem;height:.75rem;flex-shrink:0">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                ГРАТИ
+              </span>
             </span>
           </a>
 
-          <!-- 6 smaller covers -->
-          {others.map((g) => (
-            <a href={`/games/${g.id}/`} class="nd-cover" aria-label={g.title}>
-              <img src={g.cover} alt={g.title} loading="eager" decoding="async" />
-              <span class={`nd-dot ${g.status === "done" ? "nd-dot--green" : "nd-dot--sky"}`}></span>
-              <span class="nd-hover-title">{g.title}</span>
+          <!-- 6 small placeholders -->
+          {Array.from({length: 6}).map((_, i) => (
+            <a id={`nd-sm-${i}`} href="#" class="nd-cover nd-cover--loading" aria-label="">
+              <img id={`nd-sm-img-${i}`} src="" alt="" loading="eager" decoding="async" style="opacity:0" />
+              <span class="nd-dot nd-dot--green" id={`nd-sm-dot-${i}`}></span>
+              <span class="nd-hover-title">
+                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="width:.65rem;height:.65rem;flex-shrink:0;margin-right:.2rem">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+                ГРАТИ
+              </span>
             </a>
           ))}
         </div>
@@ -336,4 +365,115 @@ const others = available.slice(1, 7);
     .nd-eyebrow, .nd-headline, .nd-sub, .nd-ctas, .nd-stats, .nd-mosaic, .nd-eyebrow__dot
     { animation: none; opacity: 1; transform: none; }
   }
+
+  .nd-qs-link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.15s ease, text-decoration-color 0.15s ease;
+    text-underline-offset: 3px;
+  }
+  .nd-qs-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+  }
+
+  /* Cover "ГРАТИ" strip on featured */
+  .nd-cover-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.55rem;
+    padding: 0.32rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #fff;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    transition: background 0.2s ease;
+  }
+  .nd-cover--featured:hover .nd-cover-play {
+    background: rgba(255,255,255,0.22);
+  }
+
+  /* Small card ГРАТИ (in hover-title) */
+  .nd-hover-title {
+    justify-content: center;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+  }
+
+  /* Loading skeleton shimmer */
+  .nd-cover--loading { background: rgba(255,255,255,0.04); }
+
+  /* Per-card fade-in (triggered by JS) */
+  @keyframes ndCoverReveal {
+    from { opacity: 0; transform: scale(0.93); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .nd-cover--revealed {
+    animation: ndCoverReveal 0.45s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .nd-cover--revealed img { opacity: 1 !important; }
 </style>
+
+<script define:vars={{ playableGames: available.map(g => ({ id: g.id, title: g.title, cover: g.cover, status: g.status })) }}>
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const picked = shuffle(playableGames).slice(0, 7);
+  const feat = picked[0];
+  const smalls = picked.slice(1);
+
+  function setCard(el, imgEl, dotEl, game, delay) {
+    imgEl.src = game.cover;
+    imgEl.alt = game.title;
+    el.href = `/games/${game.id}/`;
+    el.setAttribute("aria-label", game.title);
+    const isGreen = game.status === "done";
+    dotEl.className = `nd-dot ${isGreen ? "nd-dot--green" : "nd-dot--sky"}`;
+    el.classList.remove("nd-cover--loading");
+    imgEl.onload = () => {
+      el.style.animationDelay = `${delay}s`;
+      el.classList.add("nd-cover--revealed");
+    };
+    imgEl.onerror = () => {
+      el.style.animationDelay = `${delay}s`;
+      el.classList.add("nd-cover--revealed");
+    };
+  }
+
+  const featEl   = document.getElementById("nd-feat");
+  const featImg  = document.getElementById("nd-feat-img");
+  const featDot  = document.getElementById("nd-feat-dot");
+  const featStat = document.getElementById("nd-feat-status");
+  const featTitl = document.getElementById("nd-feat-title");
+
+  if (featEl && featImg && featDot && feat) {
+    featStat.textContent = feat.status === "done" ? "Повністю українською" : "Ранній доступ";
+    featTitl.textContent = feat.title;
+    setCard(featEl, featImg, featDot, feat, 0.05);
+  }
+
+  smalls.forEach((game, i) => {
+    const el  = document.getElementById(`nd-sm-${i}`);
+    const img = document.getElementById(`nd-sm-img-${i}`);
+    const dot = document.getElementById(`nd-sm-dot-${i}`);
+    if (el && img && dot) setCard(el, img, dot, game, 0.1 + i * 0.07);
+  });
+</script>

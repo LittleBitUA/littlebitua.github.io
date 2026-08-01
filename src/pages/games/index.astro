@@ -6,10 +6,16 @@ import FilterBar from "../../components/FilterBar.astro";
 import Footer from "../../components/Footer.astro";
 import { games } from "../../data/games";
 import { SITE_URL } from "../../utils/seo";
+import { pluralize } from "../../utils/pluralize";
 
-const sortedGames = [...games].sort((a, b) =>
-  (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "")
-);
+const STATUS_PRIORITY: Record<string, number> = { done: 0, "early-access": 1, "in-progress": 2, fundraising: 3 };
+
+const sortedGames = [...games].sort((a, b) => {
+  const pa = STATUS_PRIORITY[a.status] ?? 9;
+  const pb = STATUS_PRIORITY[b.status] ?? 9;
+  if (pa !== pb) return pa - pb;
+  return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
+});
 
 const doneCount = games.filter((g) => g.status === "done").length;
 const earlyCount = games.filter((g) => g.status === "early-access").length;
@@ -54,23 +60,23 @@ const pageDesc = `Каталог українських локалізацій �
           </div>
           <div class="text-right shrink-0">
             <span class="text-2xl font-black text-slate-100">{games.length}</span>
-            <span class="text-xs font-semibold text-slate-500 block mt-0.5">проєктів</span>
+            <span class="text-xs font-semibold text-slate-500 block mt-0.5">{pluralize(games.length, "проєкт", "проєкти", "проєктів")}</span>
           </div>
         </div>
 
         <!-- Quick stats row -->
         <div class="flex flex-wrap gap-x-5 gap-y-1 mt-3">
-          <span class="text-xs font-semibold" style="color:#34d399;">
+          <a href="/games/" class="qs-link" style="color:#34d399;">
             {playable} можна грати
-          </span>
+          </a>
           <span class="text-xs font-semibold text-slate-500">·</span>
-          <span class="text-xs font-semibold text-violet-400">
+          <a href="/games/?status=in-progress" class="qs-link" style="color:#a78bfa;">
             {games.filter((g) => g.status === "in-progress").length} у роботі
-          </span>
+          </a>
           <span class="text-xs font-semibold text-slate-500">·</span>
-          <span class="text-xs font-semibold text-amber-400">
+          <a href="/games/?status=fundraising" class="qs-link" style="color:#f59e0b;">
             {games.filter((g) => g.status === "fundraising").length} збір коштів
-          </span>
+          </a>
         </div>
       </div>
 
@@ -87,4 +93,21 @@ const pageDesc = `Каталог українських локалізацій �
   </main>
 
   <Footer />
+</Layout>
+
+<style>
+  .qs-link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    opacity: 0.9;
+    transition: opacity 0.15s ease;
+    text-underline-offset: 3px;
+  }
+  .qs-link:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+  }
+</style>
 </Layout>

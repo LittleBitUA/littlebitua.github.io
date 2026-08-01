@@ -1051,16 +1051,16 @@ export const games: Game[] = [
     description:
       "Фінал шпигунської саги Хідео Коджіми. Солід Снейк вирушає на останнє завдання — зупинити Liquid Ocelot, поки старіння стрімко забирає у нього сили. Тактичний стелс у антуражі приватних армій та глобальної систем контролю над Patriot.",
     cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
-    progress: 50,
+    progress: 55,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 50 },
+      { label: "Переклад", percent: 55 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
     steamUrl: "https://store.steampowered.com/app/4184400/METAL_GEAR_SOLID_4_Guns_of_the_Patriots__Master_Collection_Version/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-07-31",
+    lastUpdate: "2026-08-01",
   },
   {
     id: "kingdom-hearts-3",
