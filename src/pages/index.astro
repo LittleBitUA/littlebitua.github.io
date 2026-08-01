@@ -15,9 +15,13 @@ import Footer from "../components/Footer.astro";
 import { games } from "../data/games";
 import { getAllUpdates } from "../utils/updates";
 
-const sortedGames = [...games].sort((a, b) =>
-  (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "")
-);
+const STATUS_PRIORITY: Record<string, number> = { done: 0, "early-access": 1, "in-progress": 2, fundraising: 3 };
+const sortedGames = [...games].sort((a, b) => {
+  const pa = STATUS_PRIORITY[a.status] ?? 9;
+  const pb = STATUS_PRIORITY[b.status] ?? 9;
+  if (pa !== pb) return pa - pb;
+  return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
+});
 
 const recentUpdates = getAllUpdates().slice(0, 4);
 
@@ -41,7 +45,7 @@ function fmtDate(d: string): string {
             <h2 class="text-2xl sm:text-3xl font-black text-white mt-1">Наші проєкти</h2>
           </div>
           <a href="/games/" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300 whitespace-nowrap transition-colors">
-            Всі проєкти →
+            Наші проєкти →
           </a>
         </div>
 

@@ -6,6 +6,7 @@
 
 import { games } from "../data/games";
 import type { Game } from "../data/games";
+import { pluralize } from "../utils/pluralize";
 
 interface StageDef {
   num: string;
@@ -99,8 +100,7 @@ function gamesAtStage(stageKey: string): Game[] {
         Як ми працюємо
       </h2>
       <p class="text-slate-500 max-w-xl mx-auto">
-        4 стадії від англійського скрипта до української гри у твоїй бібліотеці.
-        Кожен проєкт іде цим самим шляхом.
+        Чотири етапи — від англомовного тексту до української версії гри у вашій бібліотеці. Саме цей шлях проходить кожен наш проєкт.
       </p>
     </div>
 
@@ -162,7 +162,7 @@ function gamesAtStage(stageKey: string): Game[] {
                   {more > 0 && (
                     <span
                       class={`ml-2 inline-flex items-center px-2 py-1 text-[10px] font-bold rounded-md ${stage.bg} ${stage.text}`}
-                      title={`Ще ${more} проєктів на цій стадії`}
+                      title={`Ще ${more} ${pluralize(more, "проєкт", "проєкти", "проєктів")} на цій стадії`}
                     >
                       +{more}
                     </span>

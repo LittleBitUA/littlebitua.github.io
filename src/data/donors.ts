@@ -9,11 +9,13 @@ export interface Donor {
 }
 
 export const donors: Donor[] = [
-  { name: "LoydiN",      amount: 11006 },
-  { name: "Krov",        amount: 9200 },
-  { name: "DiagonBlaze", amount: 7500 },
-  { name: "Alex",        amount: 4531 },
-  { name: "Хоук",        amount: 3499 },
+  { name: "LoydiN",      amount: 11606 },
+  { name: "Гред",        amount: 10000 },
+  { name: "Krov",        amount: 9200  },
+  { name: "DiagonBlaze", amount: 7500  },
+  { name: "MoreManUA",   amount: 5000  },
+  { name: "Alex",        amount: 4531  },
+  { name: "Хоук",        amount: 3499  },
 ];
 
 /** Return donors sorted by amount, biggest first. */
