@@ -14,6 +14,7 @@ import FAQ from "../components/FAQ.astro";
 import Footer from "../components/Footer.astro";
 import { games } from "../data/games";
 import { getAllUpdates } from "../utils/updates";
+import { SITE_URL } from "../utils/seo";
 
 const STATUS_PRIORITY: Record<string, number> = { done: 0, "early-access": 1, "in-progress": 2, fundraising: 3 };
 const sortedGames = [...games].sort((a, b) => {
@@ -30,7 +31,11 @@ function fmtDate(d: string): string {
 }
 ---
 
-<Layout>
+<Layout
+  title="«Little Bit» — Українські локалізації відеоігор"
+  description="Безкоштовні якісні переклади відеоігор українською. Без машинного перекладу. Сюжет, інтерфейс і дрібниці — рідною мовою."
+  canonicalUrl={SITE_URL + "/"}
+>
   <Header />
 
   <main class="flex-1">

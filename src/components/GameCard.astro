@@ -244,7 +244,10 @@ const cfg: StatusCfg = STATUS[game.status] ?? { icon: "dot", label: game.status,
 <script>
   document.querySelectorAll<HTMLElement>(".game-card").forEach((card) => {
     card.style.cursor = "pointer";
-    card.addEventListener("click", (e) => {
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "link");
+
+    function activate(e: MouseEvent | KeyboardEvent) {
       if ((e.target as HTMLElement).closest("a, button")) return;
       const id = card.dataset.gameId;
       const status = card.dataset.status;
@@ -254,6 +257,14 @@ const cfg: StatusCfg = STATUS[game.status] ?? { icon: "dot", label: game.status,
         window.open(downloadUrl, "_blank", "noopener noreferrer");
       } else {
         window.location.href = `/games/${id}/`;
+      }
+    }
+
+    card.addEventListener("click", activate);
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        activate(e);
       }
     });
   });

@@ -17,7 +17,7 @@ const totalStats = games.reduce(
 );
 
 const earlyAccessCount = games.filter((g) => g.status === "early-access").length;
-const inProgressCount = games.filter((g) => g.status === "in-progress" || g.status === "early-access").length;
+const inProgressCount = games.filter((g) => g.status === "in-progress").length;
 const totalProjects = games.length;
 
 function formatNumber(num: number): string {
@@ -38,10 +38,10 @@ function formatNumber(num: number): string {
       </div>
       <span class="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-500">Проєктів</span>
     </div>
-    <p class="text-4xl font-black text-slate-900 mb-1 tabular-nums" data-counter-target={totalProjects}>{totalProjects}</p>
-    <p class="text-xs text-slate-500">
-      <span class="text-emerald-600 font-semibold">{earlyAccessCount} у ранньому доступі</span>,
-      <span class="text-sky-600 font-semibold">{inProgressCount} у роботі</span>
+    <p class="text-4xl font-black text-white mb-1 tabular-nums" data-counter-target={totalProjects}>{totalProjects}</p>
+    <p class="text-xs text-slate-400">
+      <span class="text-emerald-400 font-semibold">{earlyAccessCount} у ранньому доступі</span>,
+      <span class="text-sky-400 font-semibold">{inProgressCount} у роботі</span>
     </p>
   </div>
 
@@ -55,7 +55,7 @@ function formatNumber(num: number): string {
         </div>
         <span class="text-[10px] font-bold uppercase tracking-[0.16em] text-sky-500">Рядків</span>
       </div>
-      <p class="text-4xl font-black text-slate-900 mb-1 tabular-nums" data-counter-target={totalStats.lines} data-counter-format="compact">{formatNumber(totalStats.lines)}</p>
+      <p class="text-4xl font-black text-white mb-1 tabular-nums" data-counter-target={totalStats.lines} data-counter-format="compact">{formatNumber(totalStats.lines)}</p>
       <p class="text-xs text-slate-500">Перекладено тексту</p>
     </div>
   )}
@@ -70,7 +70,7 @@ function formatNumber(num: number): string {
         </div>
         <span class="text-[10px] font-bold uppercase tracking-[0.16em] text-teal-500">Слів</span>
       </div>
-      <p class="text-4xl font-black text-slate-900 mb-1 tabular-nums" data-counter-target={totalStats.words} data-counter-format="compact">{formatNumber(totalStats.words)}</p>
+      <p class="text-4xl font-black text-white mb-1 tabular-nums" data-counter-target={totalStats.words} data-counter-format="compact">{formatNumber(totalStats.words)}</p>
       <p class="text-xs text-slate-500">У всіх проєктах</p>
     </div>
   )}
@@ -85,7 +85,7 @@ function formatNumber(num: number): string {
         </div>
         <span class="text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-500">Символів</span>
       </div>
-      <p class="text-4xl font-black text-slate-900 mb-1 tabular-nums" data-counter-target={totalStats.characters} data-counter-format="compact">{formatNumber(totalStats.characters)}</p>
+      <p class="text-4xl font-black text-white mb-1 tabular-nums" data-counter-target={totalStats.characters} data-counter-format="compact">{formatNumber(totalStats.characters)}</p>
       <p class="text-xs text-slate-500">Загалом</p>
     </div>
   )}

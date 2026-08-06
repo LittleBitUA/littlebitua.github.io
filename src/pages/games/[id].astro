@@ -6,7 +6,6 @@ import Tag from "../../components/Tag.astro";
 import { games, STATUS_LABELS } from "../../data/games";
 import { SITE_URL, generateGameStructuredData, generateBreadcrumbs, generateKeywords } from "../../utils/seo";
 import { getProgressPalette } from "../../utils/statusColors";
-import { getBadge } from "../../data/gameBadges";
 
 export function getStaticPaths() {
   return games.map((game) => ({
