@@ -77,6 +77,34 @@ const videoEmbedUrl = game.videoUrl ? ytEmbed(game.videoUrl) : null;
 const installHtml = game.installInstructions
   ? String(await marked.parse(game.installInstructions))
   : null;
+
+// SVG progress chart — precomputed coordinates
+const chartData = (() => {
+  const h = game.progressHistory;
+  if (!h || h.length < 2) return null;
+  const sorted = h.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const minTs = new Date(sorted[0].date).getTime();
+  const maxTs = new Date(sorted[sorted.length - 1].date).getTime();
+  const tsRange = maxTs - minTs || 1;
+  const PL = 4, PT = 8, CW = 292, CH = 72;
+  const VW = PL * 2 + CW, VH = PT * 2 + CH;
+  const cx = (d: string) => PL + ((new Date(d).getTime() - minTs) / tsRange) * CW;
+  const cy = (p: number) => PT + CH - (p / 100) * CH;
+  const pts = sorted.map(e => ({
+    x: Number(cx(e.date).toFixed(2)),
+    y: Number(cy(e.progress).toFixed(2)),
+    progress: e.progress,
+    milestone: e.milestone,
+    date: e.date,
+  }));
+  const linePts = pts.map(p => `${p.x},${p.y}`).join(" ");
+  const areaPts = `${pts[0].x},${PT + CH} ${linePts} ${pts[pts.length - 1].x},${PT + CH}`;
+  const gridLines = [25, 50, 75, 100].map(p => ({ p, y: Number(cy(p).toFixed(2)) }));
+  return { pts, linePts, areaPts, gridLines, VW, VH };
+})();
+
+// Sidebar donate CTA: show for games without downloadUrl and without active fundraise
+const showDonateOnly = !game.downloadUrl && !fundraisingActive && !!game.donateUrl;
 ---
 
 <Layout
@@ -206,6 +234,20 @@ const installHtml = game.installInstructions
                 Підтримати збір
               </a>
             )}
+            {showDonateOnly && (
+              <a
+                href={game.donateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="lb-btn !py-2.5 !text-sm"
+                style="color:#a78bfa; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.35);"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                Підтримати переклад
+              </a>
+            )}
             <a href="/#projects" class="lb-btn lb-btn--ghost !py-2 !text-xs">
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
@@ -221,9 +263,29 @@ const installHtml = game.installInstructions
             Українська локалізація: {game.title}
           </h1>
 
-          <div class="flex flex-wrap gap-1.5 mb-5">
+          <div class="flex flex-wrap gap-1.5 mb-3">
             {game.tags.map((tag) => <Tag label={tag} />)}
           </div>
+
+          <!-- Metadata row: year, platform, version, release date -->
+          {(game.gameYear || game.platform?.length || game.version || (game.releaseDate && game.status === "done")) && (
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-5">
+              {game.gameYear && (
+                <span class="text-[11px] text-slate-500 font-medium">{game.gameYear} р.</span>
+              )}
+              {game.platform && game.platform.length > 0 && (
+                <span class="text-[11px] text-slate-500 font-medium">{game.platform.join(" · ")}</span>
+              )}
+              {game.version && (
+                <span class="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-400 bg-indigo-950/50 border border-indigo-700/30 px-2 py-0.5 rounded-full">
+                  v{game.version}
+                </span>
+              )}
+              {game.releaseDate && game.status === "done" && (
+                <span class="text-[11px] text-emerald-500 font-medium">Реліз: {formatDate(game.releaseDate)}</span>
+              )}
+            </div>
+          )}
 
           <!-- Progress -->
           <div class="lb-glass p-4 rounded-2xl mb-4">
@@ -308,7 +370,7 @@ const installHtml = game.installInstructions
 
           <!-- Description -->
           <div class="lb-glass p-4 rounded-2xl mb-4">
-            <p class="text-sm text-slate-300 leading-relaxed">{game.description}</p>
+            <p class="text-sm text-slate-300 leading-relaxed">{game.detailedDescription ?? game.description}</p>
           </div>
 
           <!-- Fundraising -->
@@ -361,6 +423,14 @@ const installHtml = game.installInstructions
                     <div class="text-xs text-slate-500 mt-0.5">слів</div>
                   </div>
                 )}
+                {game.stats.totalCharacters && (
+                  <div>
+                    <div class="text-xl font-extrabold tabular-nums text-slate-100">
+                      {Math.round(game.stats.totalCharacters / 1000)}k
+                    </div>
+                    <div class="text-xs text-slate-500 mt-0.5">символів</div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -369,16 +439,64 @@ const installHtml = game.installInstructions
           {game.progressHistory && game.progressHistory.length > 0 && (
             <div class="lb-glass p-4 rounded-2xl">
               <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-3">Хроніка прогресу</span>
-              <div class="space-y-2">
+
+              {/* SVG chart — only when 2+ data points */}
+              {chartData && (
+                <div class="mb-4 -mx-1 px-1">
+                  <svg
+                    viewBox={`0 0 ${chartData.VW} ${chartData.VH}`}
+                    class="w-full"
+                    style="height: 88px;"
+                    aria-hidden="true"
+                  >
+                    <defs>
+                      <linearGradient id="pgFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#6366f1" stop-opacity="0.22"/>
+                        <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    {/* Grid lines */}
+                    {chartData.gridLines.map(({ p, y }) => (
+                      <line x1="4" y1={y} x2={chartData.VW - 4} y2={y}
+                            stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                    ))}
+                    {/* Area fill */}
+                    <polygon points={chartData.areaPts} fill="url(#pgFill)"/>
+                    {/* Line */}
+                    <polyline points={chartData.linePts} fill="none"
+                              stroke="#6366f1" stroke-width="1.5"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    {/* Dots */}
+                    {chartData.pts.map(pt => (
+                      <circle cx={pt.x} cy={pt.y} r="2.5"
+                              fill="#818cf8" stroke="#090b14" stroke-width="1.5"/>
+                    ))}
+                    {/* Last point label */}
+                    {(() => {
+                      const last = chartData.pts[chartData.pts.length - 1];
+                      return (
+                        <text x={last.x} y={last.y - 6}
+                              text-anchor="middle"
+                              font-size="8" font-weight="700" fill="#818cf8">
+                          {last.progress}%
+                        </text>
+                      );
+                    })()}
+                  </svg>
+                </div>
+              )}
+
+              {/* Compact milestone list */}
+              <div class="space-y-1.5">
                 {game.progressHistory.slice().reverse().map((entry) => (
                   <div class="flex items-baseline gap-3">
-                    <span class="text-[11px] text-slate-500 tabular-nums shrink-0 min-w-[100px]">
+                    <span class="text-[11px] text-slate-500 tabular-nums shrink-0 min-w-[90px]">
                       {formatDate(entry.date)}
                     </span>
-                    <span class="text-xs font-medium text-slate-300 flex-1">
+                    <span class="text-[11px] text-slate-400 flex-1 leading-snug">
                       {entry.milestone ?? `${entry.progress}% перекладено`}
                     </span>
-                    <span class="text-xs font-bold tabular-nums text-indigo-400 shrink-0">{entry.progress}%</span>
+                    <span class="text-[11px] font-bold tabular-nums text-indigo-400 shrink-0">{entry.progress}%</span>
                   </div>
                 ))}
               </div>
