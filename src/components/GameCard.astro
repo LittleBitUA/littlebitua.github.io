@@ -132,13 +132,18 @@ const cfg: StatusCfg = STATUS[game.status] ?? { icon: "dot", label: game.status,
                 </span>
               )}
             </div>
-            <!-- Full-width play strip — whole card click handles navigation -->
-            <div class="gc-ea-strip">
+            <a
+              href={game.downloadUrl ?? `https://lbklauncher.com`}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="gc-ea-strip"
+              onclick="event.stopPropagation()"
+            >
               <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z"/>
               </svg>
               ГРАТИ
-            </div>
+            </a>
           </div>
         ) : (
           <div>
@@ -259,14 +264,8 @@ const cfg: StatusCfg = STATUS[game.status] ?? { icon: "dot", label: game.status,
     function activate(e: MouseEvent | KeyboardEvent) {
       if ((e.target as HTMLElement).closest("a, button")) return;
       const id = card.dataset.gameId;
-      const status = card.dataset.status;
-      const downloadUrl = card.dataset.downloadUrl;
       if (!id) return;
-      if (status === "early-access" && downloadUrl) {
-        window.open(downloadUrl, "_blank", "noopener noreferrer");
-      } else {
-        window.location.href = `/games/${id}/`;
-      }
+      window.location.href = `/games/${id}/`;
     }
 
     card.addEventListener("click", activate);
