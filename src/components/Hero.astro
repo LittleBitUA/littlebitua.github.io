@@ -11,7 +11,7 @@ const totalGames = games.length;
 const doneCount = games.filter((g) => g.status === "done").length;
 const earlyCount = games.filter((g) => g.status === "early-access").length;
 const inProgressCount = games.filter((g) => g.status === "in-progress").length;
-const fundraisingCount = games.filter((g) => g.status === "fundraising").length;
+const fundraisingCount = games.filter((g) => g.fundraisingGoal && !g.fundraisingCompleted).length;
 const playableCount = doneCount + earlyCount;
 
 // Мозаїка: done → early-access → in-progress
