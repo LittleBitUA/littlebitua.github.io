@@ -1049,7 +1049,7 @@ export const games: Game[] = [
     title: "METAL GEAR SOLID 4: Guns of the Patriots — Master Collection",
     series: "Metal Gear",
     description:
-      "Фінал шпигунської саги Хідео Коджіми. Солід Снейк вирушає на останнє завдання — зупинити Liquid Ocelot, поки старіння стрімко забирає у нього сили. Тактичний стелс у антуражі приватних армій та глобальної систем контролю над Patriot.",
+      "Metal Gear Solid 4: Guns of the Patriots — завершальна глава історії Соліда Снейка. У світі, де війна перетворилася на керований бізнес, постарілий герой вирушає на свою останню місію, щоб зупинити Ліквіда Оцелота. На гравців чекають тактичне проникнення, масштабні битви, політичні інтриги та емоційне прощання з легендарною сагою.",
     cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
     progress: 60,
     status: "in-progress",
