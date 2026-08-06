@@ -202,39 +202,82 @@ function formatDate(d: string) {
 
           <!-- Progress -->
           <div class="lb-glass p-4 rounded-2xl mb-4">
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
-              <span class="text-sm font-extrabold tabular-nums text-slate-100">{game.progress}%</span>
-            </div>
-            <div class="flex items-center gap-[2px] mb-3">
-              {Array.from({ length: 20 }).map((_, i) => {
-                const isFull = i < filledCubes;
-                const isNext = i === filledCubes && game.progress < 100;
-                return (
-                  <div class="flex-1 h-2.5 rounded-sm bg-white/10 overflow-hidden relative">
-                    {isFull && <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
-                    {isNext && <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
-                  </div>
-                );
-              })}
-            </div>
-            {game.stageDetails && game.stageDetails.length > 0 && (
-              <div class="space-y-1.5 pt-2 border-t border-white/8">
-                {game.stageDetails.map((detail) => (
-                  <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center justify-between gap-1.5 flex-shrink-0 w-[110px] px-2 py-0.5 rounded-full bg-teal-950/60 border border-teal-700/40 text-teal-300">
-                      <span class="text-[10px] font-semibold truncate">{detail.label}</span>
-                      <span class="text-[10px] font-bold tabular-nums">{detail.percent}%</span>
-                    </span>
-                    <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        class="h-full rounded-full transition-all duration-500"
-                        style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "linear-gradient(90deg,#14b8a6,#0d9488)" : detail.percent > 0 ? "linear-gradient(90deg,#5eead4,#14b8a6)" : "transparent"};`}
-                      ></div>
+            {game.stageDetails && game.stageDetails.length > 0 ? (
+              <>
+                {/* Translation stage — the headline metric */}
+                {(() => {
+                  const xlat = game.stageDetails.find(d => /переклад/i.test(d.label)) ?? game.stageDetails[0];
+                  return (
+                    <div class="mb-3">
+                      <div class="flex items-center justify-between mb-1.5">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
+                        <span class="text-sm font-extrabold tabular-nums text-indigo-300">{xlat.percent}%</span>
+                      </div>
+                      <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div
+                          class="h-full rounded-full transition-all duration-500"
+                          style={`width: ${xlat.percent}%; background: ${xlat.percent >= 100 ? "linear-gradient(90deg,#818cf8,#6366f1)" : "linear-gradient(90deg,#818cf8,#6366f1)"};`}
+                        ></div>
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  );
+                })()}
+
+                {/* Overall readiness cubes */}
+                <div class="flex items-center justify-between mb-1.5 pt-2 border-t border-white/8">
+                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Загальна готовність</span>
+                  <span class="text-xs font-extrabold tabular-nums text-slate-400">{game.progress}%</span>
+                </div>
+                <div class="flex items-center gap-[2px] mb-3">
+                  {Array.from({ length: 20 }).map((_, i) => {
+                    const isFull = i < filledCubes;
+                    const isNext = i === filledCubes && game.progress < 100;
+                    return (
+                      <div class="flex-1 h-2 rounded-sm bg-white/10 overflow-hidden relative">
+                        {isFull && <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
+                        {isNext && <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* All stages breakdown */}
+                <div class="space-y-1.5 pt-2 border-t border-white/8">
+                  {game.stageDetails.map((detail) => (
+                    <div class="flex items-center gap-2">
+                      <span class="inline-flex items-center justify-between gap-1.5 flex-shrink-0 w-[110px] px-2 py-0.5 rounded-full bg-slate-800/60 border border-white/10 text-slate-400">
+                        <span class="text-[10px] font-semibold truncate">{detail.label}</span>
+                        <span class="text-[10px] font-bold tabular-nums">{detail.percent}%</span>
+                      </span>
+                      <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                        <div
+                          class="h-full rounded-full transition-all duration-500"
+                          style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "linear-gradient(90deg,#14b8a6,#0d9488)" : detail.percent > 0 ? "linear-gradient(90deg,#5eead4,#14b8a6)" : "transparent"};`}
+                        ></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
+                  <span class="text-sm font-extrabold tabular-nums text-slate-100">{game.progress}%</span>
+                </div>
+                <div class="flex items-center gap-[2px]">
+                  {Array.from({ length: 20 }).map((_, i) => {
+                    const isFull = i < filledCubes;
+                    const isNext = i === filledCubes && game.progress < 100;
+                    return (
+                      <div class="flex-1 h-2.5 rounded-sm bg-white/10 overflow-hidden relative">
+                        {isFull && <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
+                        {isNext && <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
 

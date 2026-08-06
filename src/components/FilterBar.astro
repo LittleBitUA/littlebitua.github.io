@@ -207,6 +207,7 @@ const statusList = getStatusList();
     tags: card.dataset.tags || "", status: card.dataset.status || "",
     progress: parseInt(card.dataset.progress || "0", 10),
     lastUpdate: card.dataset.lastUpdate || "",
+    fundraising: card.dataset.fundraising === "true",
   }));
 
   const fuse = new Fuse(gamesList, {
@@ -222,7 +223,9 @@ const statusList = getStatusList();
   function applyFilters() {
     let filtered = gamesList;
     if (currentSearch.trim()) filtered = searchGames(currentSearch);
-    if (currentStatus !== "all") filtered = filtered.filter(g => g.status === currentStatus);
+    if (currentStatus !== "all") filtered = filtered.filter(g =>
+      g.status === currentStatus || (currentStatus === "fundraising" && g.fundraising)
+    );
     if (currentTag) filtered = filtered.filter(g => g.tags.toLowerCase().includes(currentTag.toLowerCase()));
     filtered.sort((a, b) => {
       switch (currentSort) {
