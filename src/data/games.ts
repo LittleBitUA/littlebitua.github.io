@@ -943,16 +943,16 @@ export const games: Game[] = [
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
     cover: "https://cdn2.steamgriddb.com/thumb/0f5d8f2124b95d0ef0245533fa616693.png",
-    progress: 25,
+    progress: 38,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 25 },
+      { label: "Переклад", percent: 38 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-07-02",
+    lastUpdate: "2026-08-06",
 
     // Extended data
     detailedDescription: "Епічний файтинг з усіма улюбленими персонажами JoJo! Від Джонатана до Джоліна — понад 50 бійців з унікальними стендами та прийомами. Відчуйте всю потужність Bizarre Adventure!",
@@ -1051,16 +1051,16 @@ export const games: Game[] = [
     description:
       "Фінал шпигунської саги Хідео Коджіми. Солід Снейк вирушає на останнє завдання — зупинити Liquid Ocelot, поки старіння стрімко забирає у нього сили. Тактичний стелс у антуражі приватних армій та глобальної систем контролю над Patriot.",
     cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
-    progress: 55,
+    progress: 60,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 55 },
+      { label: "Переклад", percent: 60 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
     steamUrl: "https://store.steampowered.com/app/4184400/METAL_GEAR_SOLID_4_Guns_of_the_Patriots__Master_Collection_Version/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-08-01",
+    lastUpdate: "2026-08-06",
   },
   {
     id: "kingdom-hearts-3",

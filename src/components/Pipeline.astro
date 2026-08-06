@@ -96,10 +96,10 @@ function gamesAtStage(stageKey: string): Game[] {
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12" data-animate>
       <span class="lb-section-eyebrow mb-4">Процес</span>
-      <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-3">
+      <h2 class="text-3xl sm:text-4xl font-black text-white mt-3 mb-3">
         Як ми працюємо
       </h2>
-      <p class="text-slate-500 max-w-xl mx-auto">
+      <p class="text-slate-400 max-w-xl mx-auto">
         Чотири етапи — від англомовного тексту до української версії гри у вашій бібліотеці. Саме цей шлях проходить кожен наш проєкт.
       </p>
     </div>
@@ -148,15 +148,14 @@ function gamesAtStage(stageKey: string): Game[] {
                 <div class="flex items-center gap-1">
                   <div class="flex -space-x-2" data-animate-stagger>
                     {visible.map((g) => (
-                      <button
-                        type="button"
-                        data-game-detail={g.id}
+                      <a
+                        href={`/games/${g.id}/`}
                         title={g.title}
                         aria-label={g.title}
-                        class="relative w-9 h-12 rounded-md overflow-hidden border-2 border-white/20 shadow-[0_4px_10px_-4px_rgba(0,0,0,0.6)] hover:scale-110 hover:z-10 transition-transform cursor-pointer"
+                        class="relative w-9 h-12 rounded-md overflow-hidden border-2 border-white/20 shadow-[0_4px_10px_-4px_rgba(0,0,0,0.6)] hover:scale-110 hover:z-10 transition-transform"
                       >
                         <img src={g.cover} alt={g.title} class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
-                      </button>
+                      </a>
                     ))}
                   </div>
                   {more > 0 && (
