@@ -551,44 +551,50 @@ const installHtml = game.installInstructions
     margin-bottom: 0.75rem;
   }
 
-  /* Markdown render styles */
-  .lb-markdown h2 {
+  /* Markdown render styles — :global() needed because set:html bypasses Astro scoping */
+  .lb-markdown :global(h2) {
     font-size: 1rem;
     font-weight: 800;
     color: #f1f5f9;
-    margin: 1.25rem 0 0.5rem;
+    margin: 1.5rem 0 0.5rem;
   }
-  .lb-markdown h2:first-child { margin-top: 0; }
-  .lb-markdown h3 {
+  .lb-markdown :global(h2:first-child) { margin-top: 0; }
+  .lb-markdown :global(h3) {
     font-size: 0.875rem;
     font-weight: 700;
-    color: #cbd5e1;
-    margin: 1rem 0 0.4rem;
+    color: #a5b4fc;
+    margin: 1.1rem 0 0.35rem;
   }
-  .lb-markdown p {
+  .lb-markdown :global(p) {
     font-size: 0.875rem;
     color: #94a3b8;
     line-height: 1.65;
     margin: 0.4rem 0;
   }
-  .lb-markdown ol, .lb-markdown ul {
-    padding-left: 1.25rem;
+  .lb-markdown :global(ol) {
+    list-style-type: decimal;
+    padding-left: 1.4rem;
     margin: 0.5rem 0;
   }
-  .lb-markdown li {
+  .lb-markdown :global(ul) {
+    list-style-type: disc;
+    padding-left: 1.4rem;
+    margin: 0.5rem 0;
+  }
+  .lb-markdown :global(li) {
     font-size: 0.875rem;
     color: #94a3b8;
     line-height: 1.65;
-    margin: 0.25rem 0;
+    margin: 0.3rem 0;
   }
-  .lb-markdown a {
+  .lb-markdown :global(a) {
     color: #818cf8;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
-  .lb-markdown a:hover { color: #a5b4fc; }
-  .lb-markdown strong { color: #e2e8f0; font-weight: 700; }
-  .lb-markdown code {
+  .lb-markdown :global(a:hover) { color: #a5b4fc; }
+  .lb-markdown :global(strong) { color: #e2e8f0; font-weight: 700; }
+  .lb-markdown :global(code) {
     font-size: 0.8em;
     background: rgba(255,255,255,0.07);
     border: 1px solid rgba(255,255,255,0.1);
