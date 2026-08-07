@@ -106,6 +106,17 @@ const chartData = (() => {
 
 // Sidebar donate CTA: show for games without downloadUrl and without active fundraise
 const showDonateOnly = !game.downloadUrl && !fundraisingActive && !!game.donateUrl;
+
+// ── Progress block: показуємо кожне число рівно один раз ──
+// Раніше гра з однією стадією («Переклад 60%») малювала 60% тричі:
+// заголовний бар, куби «загальної готовності» й рядок розбивки.
+const stages = game.stageDetails ?? [];
+const xlatStage = stages.find((d) => /переклад/i.test(d.label)) ?? stages[0];
+const xlatPercent = xlatStage?.percent ?? game.progress;
+// Решта стадій — редактура, текстури, шрифти тощо
+const otherStages = stages.filter((d) => d !== xlatStage);
+// Куби загальної готовності мають сенс лише коли вона відрізняється від перекладу
+const showOverall = game.progress !== xlatPercent;
 ---
 
 <Layout
@@ -274,8 +285,14 @@ const showDonateOnly = !game.downloadUrl && !fundraisingActive && !!game.donateU
 
         <!-- Info column -->
         <div data-animate>
-          <h1 class="text-2xl sm:text-3xl font-black text-slate-100 leading-snug mb-3">
-            Українська локалізація: {game.title}
+          <!-- Префікс лишається в h1 для SEO, але візуально підпорядкований -->
+          <h1 class="mb-3">
+            <span class="block text-[0.7rem] font-bold uppercase tracking-[0.12em] text-indigo-400 mb-1.5">
+              Українська локалізація
+            </span>
+            <span class="block text-2xl sm:text-3xl font-black text-slate-100 leading-tight">
+              {game.title}
+            </span>
           </h1>
 
           <div class="flex flex-wrap gap-1.5 mb-3">
@@ -304,33 +321,26 @@ const showDonateOnly = !game.downloadUrl && !fundraisingActive && !!game.donateU
 
           <!-- Progress -->
           <div class="lb-glass p-4 rounded-2xl mb-4">
-            {game.stageDetails && game.stageDetails.length > 0 ? (
-              <>
-                {/* Translation stage — the headline metric */}
-                {(() => {
-                  const xlat = game.stageDetails.find(d => /переклад/i.test(d.label)) ?? game.stageDetails[0];
-                  return (
-                    <div class="mb-3">
-                      <div class="flex items-center justify-between mb-1.5">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
-                        <span class="text-sm font-extrabold tabular-nums text-indigo-300">{xlat.percent}%</span>
-                      </div>
-                      <div class="h-2 rounded-full bg-white/10 overflow-hidden">
-                        <div
-                          class="h-full rounded-full transition-all duration-500"
-                          style={`width: ${xlat.percent}%; background: ${xlat.percent >= 100 ? "linear-gradient(90deg,#818cf8,#6366f1)" : "linear-gradient(90deg,#818cf8,#6366f1)"};`}
-                        ></div>
-                      </div>
-                    </div>
-                  );
-                })()}
+            <!-- Головна метрика — прогрес перекладу -->
+            <div class="flex items-baseline justify-between mb-2">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
+              <span class="text-2xl font-black tabular-nums text-indigo-300 leading-none">{xlatPercent}<span class="text-sm font-bold opacity-60">%</span></span>
+            </div>
+            <div class="h-2.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                class="h-full rounded-full transition-all duration-500"
+                style={`width: ${xlatPercent}%; background: linear-gradient(90deg,#818cf8,#6366f1);`}
+              ></div>
+            </div>
 
-                {/* Overall readiness cubes */}
-                <div class="flex items-center justify-between mb-1.5 pt-2 border-t border-white/8">
+            {/* Загальна готовність — лише коли відрізняється від перекладу */}
+            {showOverall && (
+              <>
+                <div class="flex items-center justify-between mb-1.5 mt-4 pt-3 border-t border-white/8">
                   <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Загальна готовність</span>
                   <span class="text-xs font-extrabold tabular-nums text-slate-400">{game.progress}%</span>
                 </div>
-                <div class="flex items-center gap-[2px] mb-3">
+                <div class="flex items-center gap-[2px]">
                   {Array.from({ length: 20 }).map((_, i) => {
                     const isFull = i < filledCubes;
                     const isNext = i === filledCubes && game.progress < 100;
@@ -342,44 +352,27 @@ const showDonateOnly = !game.downloadUrl && !fundraisingActive && !!game.donateU
                     );
                   })}
                 </div>
+              </>
+            )}
 
-                {/* All stages breakdown */}
-                <div class="space-y-1.5 pt-2 border-t border-white/8">
-                  {game.stageDetails.map((detail) => (
-                    <div class="flex items-center gap-2">
-                      <span class="inline-flex items-center justify-between gap-1.5 flex-shrink-0 w-[110px] px-2 py-0.5 rounded-full bg-slate-800/60 border border-white/10 text-slate-400">
-                        <span class="text-[10px] font-semibold truncate">{detail.label}</span>
-                        <span class="text-[10px] font-bold tabular-nums">{detail.percent}%</span>
-                      </span>
-                      <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                        <div
-                          class="h-full rounded-full transition-all duration-500"
-                          style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "linear-gradient(90deg,#14b8a6,#0d9488)" : detail.percent > 0 ? "linear-gradient(90deg,#5eead4,#14b8a6)" : "transparent"};`}
-                        ></div>
-                      </div>
+            {/* Інші стадії — переклад уже показано вище, тому його тут немає */}
+            {otherStages.length > 0 && (
+              <div class="space-y-1.5 mt-4 pt-3 border-t border-white/8">
+                {otherStages.map((detail) => (
+                  <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center justify-between gap-1.5 flex-shrink-0 w-[110px] px-2 py-0.5 rounded-full bg-slate-800/60 border border-white/10 text-slate-400">
+                      <span class="text-[10px] font-semibold truncate">{detail.label}</span>
+                      <span class="text-[10px] font-bold tabular-nums">{detail.percent}%</span>
+                    </span>
+                    <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                      <div
+                        class="h-full rounded-full transition-all duration-500"
+                        style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "linear-gradient(90deg,#14b8a6,#0d9488)" : detail.percent > 0 ? "linear-gradient(90deg,#5eead4,#14b8a6)" : "transparent"};`}
+                      ></div>
                     </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div class="flex items-center justify-between mb-2">
-                  <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
-                  <span class="text-sm font-extrabold tabular-nums text-slate-100">{game.progress}%</span>
-                </div>
-                <div class="flex items-center gap-[2px]">
-                  {Array.from({ length: 20 }).map((_, i) => {
-                    const isFull = i < filledCubes;
-                    const isNext = i === filledCubes && game.progress < 100;
-                    return (
-                      <div class="flex-1 h-2.5 rounded-sm bg-white/10 overflow-hidden relative">
-                        {isFull && <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
-                        {isNext && <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
 
