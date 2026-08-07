@@ -78,8 +78,7 @@ const searchIndex = games.map((g) => {
         <nav class="st-nav">
           <a href="/store/" class={active === "store" ? "is-on" : ""}>Вітрина</a>
           <a href="/store/catalog/" class={active === "catalog" ? "is-on" : ""}>Каталог</a>
-          <a href="/store/#watchlist">Стежу</a>
-          <a href="/store/#free">Безкоштовно</a>
+          <a href="/store/#free">Готове</a>
         </nav>
 
         <div class="st-search">
@@ -130,7 +129,7 @@ const searchIndex = games.map((g) => {
               <span style="min-width:0">
                 <span class="st-res__t">${g.t}</span>
                 <span class="st-res__s" style="color:${g.playable ? "#4ade80" : "#818cf8"}">
-                  ${g.playable ? "Безкоштовно · можна завантажити" : g.p + "% перекладено"}
+                  ${g.playable ? "Українською · можна завантажити" : g.p + "% перекладено"}
                 </span>
               </span>
             </a>`
@@ -185,48 +184,6 @@ const searchIndex = games.map((g) => {
       document.addEventListener("click", (e) => {
         if (!e.target.closest(".st-search")) box.classList.remove("is-open");
       });
-
-      // ── Список стеження (localStorage) ──
-      const KEY = "lb-watchlist";
-      const read = () => {
-        try { return JSON.parse(localStorage.getItem(KEY) || "[]"); }
-        catch { return []; }
-      };
-      const write = (v) => localStorage.setItem(KEY, JSON.stringify(v));
-
-      function syncButtons() {
-        const list = read();
-        document.querySelectorAll("[data-watch]").forEach((b) => {
-          const on = list.includes(b.dataset.watch);
-          b.classList.toggle("is-on", on);
-          b.setAttribute("aria-pressed", String(on));
-          b.title = on ? "Не стежити" : "Стежити за перекладом";
-        });
-        document.querySelectorAll("[data-watch-count]").forEach((el) => {
-          el.textContent = String(list.length);
-        });
-        // На вітрині показуємо/ховаємо секцію зі збереженим
-        document.querySelectorAll("[data-watch-item]").forEach((el) => {
-          el.hidden = !list.includes(el.dataset.watchItem);
-        });
-        const sec = document.getElementById("watchlist");
-        if (sec) sec.hidden = list.length === 0;
-      }
-
-      document.addEventListener("click", (e) => {
-        const btn = e.target.closest("[data-watch]");
-        if (!btn) return;
-        e.preventDefault();
-        e.stopPropagation();
-        const id = btn.dataset.watch;
-        const list = read();
-        const i = list.indexOf(id);
-        if (i === -1) list.push(id); else list.splice(i, 1);
-        write(list);
-        syncButtons();
-      });
-
-      syncButtons();
 
       // ── Стрілки полиць ──
       document.querySelectorAll("[data-scroll]").forEach((btn) => {
