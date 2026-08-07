@@ -6,6 +6,9 @@
 import V4Layout from "../../layouts/V4Layout.astro";
 import { games } from "../../data/games";
 import { getAllUpdates } from "../../utils/updates";
+import { rankedDonors } from "../../data/donors";
+import { getSeriesGroups } from "../../utils/series";
+import { pluralize } from "../../utils/pluralize";
 
 type G = (typeof games)[number];
 
@@ -46,6 +49,55 @@ function fundPct(g: G): number {
   return Math.min(Math.round(((g.fundraisingRaised ?? 0) / g.fundraisingGoal) * 100), 100);
 }
 
+// ── Цифри обсягу — доказ масштабу роботи ──
+const vol = games.reduce(
+  (a, g) => {
+    a.lines += g.stats?.translatedLines ?? 0;
+    a.words += g.stats?.totalWords ?? 0;
+    return a;
+  },
+  { lines: 0, words: 0 }
+);
+
+const donors = rankedDonors();
+const donorsTotal = donors.reduce((n, d) => n + d.amount, 0);
+
+const seriesGroups = getSeriesGroups();
+
+// Широкий банер посеред сторінки — розриває ритм вертикальних обкладинок
+const spotlight = playable.find((g) => g.status === "done") ?? playable[0];
+
+const LAUNCHER_STEPS = [
+  { n: "1", t: "Встановіть LBK Launcher", d: "Безкоштовний застосунок, що керує всіма локалізаціями." },
+  { n: "2", t: "Оберіть гру", d: "У каталозі лаунчера — всі доступні переклади команди." },
+  { n: "3", t: "Грайте українською", d: "Один клац — і лаунчер сам установить переклад у гру." },
+];
+
+const FAQ_ITEMS = [
+  {
+    q: "Чи безкоштовні ваші переклади?",
+    a: "Так, звичайно. Усі наші локалізації безкоштовні й завжди такими залишаться.",
+  },
+  {
+    q: "Чи потрібна ліцензійна гра?",
+    a: "Так. Усі патчі тестуються лише з офіційними версіями ігор.",
+  },
+  {
+    q: "Як оновити переклад до нової версії?",
+    a: "LBK Launcher автоматично перевіряє оновлення. Коли вийде нова версія перекладу, ви отримаєте сповіщення та зможете оновити в один клац.",
+  },
+  {
+    q: "Куди йдуть донати?",
+    a: "На купівлю ігор для роботи, оплату праці команди та пришвидшення нових перекладів.",
+  },
+];
+
+function fmtK(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${Math.round(n / 1000)}K`;
+  return String(n);
+}
+
 // Дані для клієнтського перемикача showcase
 const featData = featured.map((g) => ({
   id: g.id,
@@ -78,8 +130,14 @@ const featData = featured.map((g) => ({
       </nav>
 
       <div class="hd__right">
-        <a href="https://lbklauncher.com/" target="_blank" rel="noopener" class="btn btn--go btn--sm">
-          Завантажити лаунчер
+        <a href="#donate" class="btn btn--warm btn--sm">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          Підтримати
+        </a>
+        <a href="https://lbklauncher.com/" target="_blank" rel="noopener" class="btn btn--go btn--sm hd__dl">
+          Лаунчер
         </a>
         <a href="/" class="hd__back">поточний сайт ↗</a>
       </div>
@@ -141,6 +199,32 @@ const featData = featured.map((g) => ({
       </section>
     )}
 
+    <!-- ── Смуга цифр: інша форма, без обкладинок ── -->
+    <section class="stats">
+      <div class="wrap stats__in">
+        <div class="st">
+          <b>{games.length}</b>
+          <span>{pluralize(games.length, "проєкт", "проєкти", "проєктів")}</span>
+        </div>
+        <div class="st st--go">
+          <b>{playableCount}</b>
+          <span>можна грати</span>
+        </div>
+        <div class="st">
+          <b>{vol.lines.toLocaleString("uk-UA")}</b>
+          <span>рядків перекладено</span>
+        </div>
+        <div class="st">
+          <b>{fmtK(vol.words)}</b>
+          <span>слів опрацьовано</span>
+        </div>
+        <div class="st st--warm">
+          <b>{donorsTotal.toLocaleString("uk-UA")} ₴</b>
+          <span>зібрано спільнотою</span>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Полиця: можна грати ── -->
     <section class="shelf-sec" id="playable">
       <div class="wrap">
@@ -173,6 +257,62 @@ const featData = featured.map((g) => ({
         </div>
       </div>
     </section>
+
+    <!-- ── Широкий спотлайт: ламає ритм вертикальних карток ── -->
+    {spotlight && (
+      <section class="shelf-sec">
+        <div class="wrap">
+          <a href={`/games/${spotlight.id}/`} class="spot">
+            <span class="spot__bg" aria-hidden="true">
+              <img src={spotlight.cover} alt="" loading="lazy" decoding="async" />
+            </span>
+            <span class="spot__b">
+              <span class="spot__k">Рекомендуємо почати з цього</span>
+              <span class="spot__t">{spotlight.title}</span>
+              <span class="spot__d">{spotlight.description}</span>
+              <span class="spot__tags">
+                {spotlight.tags.slice(0, 5).map((t) => <span class="tg">{t}</span>)}
+              </span>
+              <span class="spot__cta">
+                <span class="btn btn--go">Завантажити переклад</span>
+                <span class="spot__free">Безкоштовно, як і все інше</span>
+              </span>
+            </span>
+            <img class="spot__art" src={spotlight.cover} alt="" loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </section>
+    )}
+
+    <!-- ── Серії: широкі плитки з колажем обкладинок ── -->
+    {seriesGroups.length > 0 && (
+      <section class="shelf-sec">
+        <div class="wrap">
+          <div class="sh-head">
+            <h2>За серіями</h2>
+            <span class="sh-count">{seriesGroups.length}</span>
+          </div>
+
+          <div class="sers">
+            {seriesGroups.map((s) => (
+              <a href={`/games/series/${s.slug}/`} class="ser">
+                <span class="ser__stack">
+                  {s.games.slice(0, 3).map((g, i) => (
+                    <img src={g.cover} alt="" loading="lazy" decoding="async" style={`z-index:${3 - i}`} />
+                  ))}
+                </span>
+                <span class="ser__b">
+                  <span class="ser__t">{s.name}</span>
+                  <span class="ser__n">
+                    {s.games.length} {pluralize(s.games.length, "гра", "гри", "ігор")}
+                  </span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
 
     <!-- ── Полиця: щойно оновлені ── -->
     {recent.length > 0 && (
@@ -289,6 +429,62 @@ const featData = featured.map((g) => ({
       </section>
     )}
 
+    <!-- ── Донати + стіна донорів ── -->
+    <section class="dn" id="donate">
+      <div class="wrap dn__in">
+        <div class="dn__pitch">
+          <p class="dn__k">Підтримка</p>
+          <h2 class="dn__h">Переклади безкоштовні.<br />Робота — ні.</h2>
+          <p class="dn__p">
+            Донати йдуть на купівлю ігор для роботи, оплату команди та
+            пришвидшення нових перекладів. Кожен внесок скорочує очікування.
+          </p>
+
+          <div class="dn__cta">
+            <a href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener" class="btn btn--warm btn--lg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+              </svg>
+              Donatello
+            </a>
+            <a href="https://send.monobank.ua/jar/3h4akVJRXK" target="_blank" rel="noopener" class="btn btn--ghost btn--lg">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+              </svg>
+              Monobank
+            </a>
+          </div>
+
+          <ul class="dn__why">
+            <li>Купівля ігор для перекладу</li>
+            <li>Оплата роботи команди</li>
+            <li>Нові локалізації швидше</li>
+          </ul>
+        </div>
+
+        <!-- Стіна донорів — зовсім інший візуал: імена й суми, без артворку -->
+        <div class="wall">
+          <div class="wall__head">
+            <h3>Наші донори</h3>
+            <span class="wall__sum">{donorsTotal.toLocaleString("uk-UA")} ₴</span>
+          </div>
+
+          <ol class="wall__list">
+            {donors.map((d, i) => (
+              <li class={`dr ${i === 0 ? "dr--top" : ""}`}>
+                <span class="dr__r">{i + 1}</span>
+                <span class="dr__av" aria-hidden="true">{d.name[0]}</span>
+                <span class="dr__n">{d.name}</span>
+                <span class="dr__a">{d.amount.toLocaleString("uk-UA")} ₴</span>
+              </li>
+            ))}
+          </ol>
+
+          <p class="wall__note">Дякуємо кожному, хто вже підтримав.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- ── Уся решта ── -->
     <section class="shelf-sec" id="working">
       <div class="wrap">
@@ -322,12 +518,94 @@ const featData = featured.map((g) => ({
         </div>
       </div>
     </section>
+
+    <!-- ── Лаунчер: кроки, ще одна форма блоку ── -->
+    <section class="lnc" id="launcher">
+      <div class="wrap lnc__in">
+        <div class="lnc__lead">
+          <p class="lnc__k">Як це працює</p>
+          <h2 class="lnc__h">Три кроки до гри українською</h2>
+          <p class="lnc__p">
+            Не треба копіювати файли вручну. Лаунчер сам знайде гру,
+            встановить переклад і оновлюватиме його.
+          </p>
+          <a href="https://lbklauncher.com/" target="_blank" rel="noopener" class="btn btn--go btn--lg">
+            Завантажити LBK Launcher
+          </a>
+        </div>
+
+        <ol class="steps">
+          {LAUNCHER_STEPS.map((s) => (
+            <li class="stp">
+              <span class="stp__n">{s.n}</span>
+              <span class="stp__b">
+                <b>{s.t}</b>
+                <span>{s.d}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="shelf-sec" id="faq">
+      <div class="wrap">
+        <div class="sh-head">
+          <h2>Часті питання</h2>
+        </div>
+        <div class="faq">
+          {FAQ_ITEMS.map((f, i) => (
+            <details class="fq" open={i === 0}>
+              <summary>
+                {f.q}
+                <span class="fq__i" aria-hidden="true">+</span>
+              </summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
   </main>
 
   <footer class="ft">
-    <div class="wrap ft__in">
-      <span>Прототип v4 · вітрина</span>
-      <a href="/">← поточний сайт</a>
+    <div class="wrap">
+      <div class="ft__cols">
+        <div class="ft__brand">
+          <span class="hd__mark">LB</span>
+          <p>
+            «Little Bit» — команда, що перекладає відеоігри українською.
+            Безкоштовно, без машинного перекладу.
+          </p>
+        </div>
+
+        <div class="ft__col">
+          <h4>Локалізації</h4>
+          <a href="#playable">Можна грати</a>
+          <a href="#working">У роботі</a>
+          <a href="#fund">Збори коштів</a>
+        </div>
+
+        <div class="ft__col">
+          <h4>Спільнота</h4>
+          <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener">Telegram</a>
+          <a href="https://lbklauncher.com/" target="_blank" rel="noopener">LBK Launcher</a>
+          <a href="/rss.xml">RSS-стрічка</a>
+        </div>
+
+        <div class="ft__col">
+          <h4>Підтримка</h4>
+          <a href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener">Donatello</a>
+          <a href="https://send.monobank.ua/jar/3h4akVJRXK" target="_blank" rel="noopener">Monobank</a>
+          <a href="#faq">Часті питання</a>
+        </div>
+      </div>
+
+      <div class="ft__base">
+        <span>Прототип v4 · вітрина</span>
+        <a href="/">← поточний сайт</a>
+      </div>
     </div>
   </footer>
 </V4Layout>
@@ -667,8 +945,225 @@ const featData = featured.map((g) => ({
   .fbn__n b { color: var(--fg); font-size: .92rem; font-weight: 700; }
   .fbn__pct { margin-left: auto; color: var(--warn); font-weight: 700; }
 
+  .btn--warm { background: var(--warn); color: #1B1204; gap: .4rem; }
+  .btn--warm:hover { background: #F2B355; }
+  .hd__dl { display: none; }
+  @media (min-width: 1000px) { .hd__dl { display: inline-flex; } }
+
+  /* ─── Смуга цифр ───────────────────────────────────────────── */
+  .stats { border-block: 1px solid var(--line); background: var(--panel); }
+  .stats__in {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem 1rem;
+    padding-block: 1.15rem;
+  }
+  @media (min-width: 720px) { .stats__in { grid-template-columns: repeat(5, 1fr); } }
+  .st { display: flex; flex-direction: column; gap: .1rem; }
+  .st b { font-size: 1.3rem; font-weight: 700; color: var(--fg); line-height: 1.1; }
+  .st span { font-size: .7rem; color: var(--fg-3); }
+  .st--go b { color: var(--go); }
+  .st--warm b { color: var(--warn); }
+
+  /* ─── Широкий спотлайт ─────────────────────────────────────── */
+  .spot {
+    position: relative;
+    display: flex; align-items: center; gap: 1.5rem;
+    min-height: 250px;
+    padding: 1.6rem;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--panel);
+    border: 1px solid var(--line);
+  }
+  .spot__bg { position: absolute; inset: 0; z-index: 0; }
+  .spot__bg img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: blur(42px) saturate(1.3); transform: scale(1.25); opacity: .3;
+  }
+  .spot__b {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; gap: .55rem;
+    max-width: 62ch; flex: 1;
+  }
+  .spot__k {
+    font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--go);
+  }
+  .spot__t { font-size: clamp(1.25rem, 2.6vw, 1.9rem); font-weight: 800; color: var(--fg); line-height: 1.2; }
+  .spot__d {
+    font-size: .84rem; line-height: 1.55; color: var(--fg-2);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .spot__tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+  .spot__cta { display: flex; align-items: center; gap: .8rem; flex-wrap: wrap; margin-top: .4rem; }
+  .spot__free { font-size: .74rem; color: var(--fg-3); }
+  .spot__art {
+    position: relative; z-index: 1;
+    display: none;
+    width: 150px; aspect-ratio: 2/3; object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 18px 40px -16px rgba(0,0,0,.9);
+  }
+  @media (min-width: 820px) { .spot__art { display: block; } }
+
+  /* ─── Серії ────────────────────────────────────────────────── */
+  .sers {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: .75rem;
+  }
+  .ser {
+    display: flex; align-items: center; gap: .9rem;
+    padding: .7rem .9rem;
+    border-radius: 8px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    transition: background .15s, border-color .15s;
+  }
+  .ser:hover { background: var(--panel-2); border-color: var(--panel-3); }
+  .ser__stack { position: relative; display: flex; flex-shrink: 0; width: 62px; height: 54px; }
+  .ser__stack img {
+    position: absolute; top: 0;
+    width: 36px; height: 54px; object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid var(--bg);
+  }
+  .ser__stack img:nth-child(1) { left: 0; }
+  .ser__stack img:nth-child(2) { left: 13px; }
+  .ser__stack img:nth-child(3) { left: 26px; }
+  .ser__b { display: flex; flex-direction: column; min-width: 0; }
+  .ser__t { font-size: .88rem; font-weight: 600; color: var(--fg); line-height: 1.25; }
+  .ser__n { font-size: .72rem; color: var(--fg-3); }
+
+  /* ─── Донати ───────────────────────────────────────────────── */
+  .dn {
+    background:
+      radial-gradient(ellipse 70% 120% at 12% 0%, rgba(232,163,61,.11), transparent 62%),
+      var(--panel);
+    border-block: 1px solid var(--line);
+    padding: 2.75rem 0;
+    margin-top: 1rem;
+  }
+  .dn__in { display: grid; gap: 2rem; }
+  @media (min-width: 920px) { .dn__in { grid-template-columns: minmax(0, 1fr) 340px; gap: 3rem; } }
+
+  .dn__k {
+    margin: 0 0 .5rem;
+    font-size: .7rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--warn);
+  }
+  .dn__h { font-size: clamp(1.4rem, 3vw, 2.1rem); font-weight: 800; margin-bottom: .8rem; line-height: 1.18; }
+  .dn__p { font-size: .9rem; line-height: 1.6; max-width: 52ch; margin: 0 0 1.4rem; }
+  .dn__cta { display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 1.4rem; }
+
+  .dn__why { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .5rem .9rem; }
+  .dn__why li {
+    position: relative; padding-left: 1.15rem;
+    font-size: .8rem; color: var(--fg-2);
+  }
+  .dn__why li::before {
+    content: "✓";
+    position: absolute; left: 0;
+    color: var(--go); font-weight: 700;
+  }
+
+  /* Стіна донорів */
+  .wall { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem; }
+  .wall__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: .85rem; }
+  .wall__head h3 { font-size: .92rem; font-weight: 700; }
+  .wall__sum { font-size: .82rem; font-weight: 700; color: var(--warn); }
+
+  .wall__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .dr {
+    display: flex; align-items: center; gap: .65rem;
+    padding: .45rem 0;
+    border-top: 1px solid var(--line);
+    font-size: .82rem;
+  }
+  .dr:first-child { border-top: 0; }
+  .dr__r { width: 1.2rem; font-size: .7rem; color: var(--fg-3); font-weight: 600; }
+  .dr__av {
+    display: grid; place-items: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--panel-2); color: var(--fg-2);
+    font-size: .72rem; font-weight: 700; flex-shrink: 0;
+  }
+  .dr__n { color: var(--fg); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dr__a { margin-left: auto; font-weight: 600; color: var(--fg-2); white-space: nowrap; }
+  .dr--top .dr__av { background: var(--warn); color: #1B1204; }
+  .dr--top .dr__a { color: var(--warn); }
+
+  .wall__note { margin: .85rem 0 0; font-size: .72rem; color: var(--fg-3); text-align: center; }
+
+  /* ─── Лаунчер ──────────────────────────────────────────────── */
+  .lnc { padding: 2.75rem 0; }
+  .lnc__in { display: grid; gap: 2rem; }
+  @media (min-width: 920px) { .lnc__in { grid-template-columns: minmax(0, .85fr) minmax(0, 1fr); gap: 3rem; align-items: center; } }
+
+  .lnc__k {
+    margin: 0 0 .5rem;
+    font-size: .7rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--go);
+  }
+  .lnc__h { font-size: clamp(1.35rem, 2.8vw, 1.9rem); font-weight: 800; margin-bottom: .7rem; }
+  .lnc__p { font-size: .88rem; line-height: 1.6; margin: 0 0 1.3rem; max-width: 44ch; }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .6rem; }
+  .stp {
+    display: flex; gap: .9rem; align-items: flex-start;
+    padding: .95rem 1.1rem;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+  }
+  .stp__n {
+    display: grid; place-items: center; flex-shrink: 0;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--panel-3); color: var(--go);
+    font-size: .82rem; font-weight: 700;
+  }
+  .stp__b { display: flex; flex-direction: column; gap: .15rem; }
+  .stp__b b { color: var(--fg); font-size: .88rem; font-weight: 600; }
+  .stp__b span { font-size: .8rem; color: var(--fg-3); line-height: 1.5; }
+
+  /* ─── FAQ ──────────────────────────────────────────────────── */
+  .faq { display: flex; flex-direction: column; gap: .5rem; }
+  .fq { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  .fq summary {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .85rem 1.1rem;
+    cursor: pointer; list-style: none;
+    color: var(--fg); font-weight: 600; font-size: .88rem;
+  }
+  .fq summary::-webkit-details-marker { display: none; }
+  .fq__i { color: var(--fg-3); font-size: 1.1rem; transition: transform .2s; flex-shrink: 0; }
+  .fq[open] .fq__i { transform: rotate(45deg); }
+  .fq p {
+    margin: 0; padding: 0 1.1rem .95rem;
+    font-size: .84rem; line-height: 1.6; color: var(--fg-2);
+  }
+
   /* ─── Footer ───────────────────────────────────────────────── */
-  .ft { border-top: 1px solid var(--line); padding: 1.75rem 0; margin-top: 1.5rem; }
-  .ft__in { display: flex; justify-content: space-between; gap: 1rem; font-size: .76rem; color: var(--fg-3); }
-  .ft__in a:hover { color: var(--fg); }
+  .ft { border-top: 1px solid var(--line); padding: 2.5rem 0 1.5rem; margin-top: 1rem; background: var(--panel); }
+  .ft__cols { display: grid; gap: 1.75rem; grid-template-columns: 1fr 1fr; }
+  @media (min-width: 860px) { .ft__cols { grid-template-columns: 1.6fr repeat(3, 1fr); gap: 2.5rem; } }
+
+  .ft__brand { grid-column: 1 / -1; display: flex; flex-direction: column; gap: .7rem; }
+  @media (min-width: 860px) { .ft__brand { grid-column: auto; } }
+  .ft__brand p { margin: 0; font-size: .8rem; line-height: 1.6; color: var(--fg-3); max-width: 34ch; }
+
+  .ft__col { display: flex; flex-direction: column; gap: .45rem; }
+  .ft__col h4 {
+    margin: 0 0 .2rem; font-size: .72rem; font-weight: 700;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--fg-3);
+  }
+  .ft__col a { font-size: .82rem; color: var(--fg-2); transition: color .15s; }
+  .ft__col a:hover { color: var(--go); }
+
+  .ft__base {
+    display: flex; justify-content: space-between; gap: 1rem;
+    margin-top: 2rem; padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
+    font-size: .74rem; color: var(--fg-3);
+  }
+  .ft__base a:hover { color: var(--fg); }
 </style>
