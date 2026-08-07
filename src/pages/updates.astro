@@ -61,9 +61,20 @@ const canonicalUrl = `${SITE_URL}/updates`;
         <p class="text-slate-400 max-w-xl mx-auto">
           Кожен крок наших проєктів: прогрес перекладу, релізи, ранній доступ.
         </p>
-        <div class="flex items-center justify-center mt-5">
+        <div class="flex flex-wrap items-center justify-center gap-2 mt-5">
           <a href="/#projects" class="lb-btn lb-btn--ghost !text-sm">
             До локалізацій
+          </a>
+          <a
+            href="/rss.xml"
+            class="lb-btn lb-btn--ghost !text-sm"
+            style="color:#fb923c;"
+            title="Підписатися через RSS-читалку"
+          >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.503 20.752A3.25 3.25 0 013.252 24 3.25 3.25 0 010 20.752a3.25 3.25 0 013.252-3.248 3.25 3.25 0 013.251 3.248zM0 8.18v4.811c6.05.062 10.96 4.966 11.022 11.009h4.817C15.777 15.29 8.721 8.242 0 8.18zm0-8.153v4.811C10.58 4.898 19.152 13.461 19.183 24H24C23.97 10.796 13.245.052 0 .027z"/>
+            </svg>
+            RSS
           </a>
         </div>
       </div>

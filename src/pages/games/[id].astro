@@ -6,6 +6,7 @@ import Tag from "../../components/Tag.astro";
 import { games, STATUS_LABELS } from "../../data/games";
 import { SITE_URL, generateGameStructuredData, generateBreadcrumbs, generateKeywords } from "../../utils/seo";
 import { getProgressPalette } from "../../utils/statusColors";
+import { seriesSlug, hasSeriesPage } from "../../utils/series";
 import { marked } from "marked";
 
 export function getStaticPaths() {
@@ -152,6 +153,20 @@ const showDonateOnly = !game.downloadUrl && !fundraisingActive && !!game.donateU
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
             </svg>
           </li>
+          {hasSeriesPage(game.series) && (
+            <>
+              <li>
+                <a href={`/games/series/${seriesSlug(game.series!)}/`} class="hover:text-indigo-400 transition-colors">
+                  {game.series}
+                </a>
+              </li>
+              <li aria-hidden="true">
+                <svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </li>
+            </>
+          )}
           <li class="text-slate-300 font-semibold truncate max-w-[220px]">{game.title}</li>
         </ol>
       </nav>

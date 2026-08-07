@@ -144,21 +144,34 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  // Active section highlight
-  const sections = document.querySelectorAll("section[id]");
   const navLinks = document.querySelectorAll<HTMLAnchorElement>(".nav-link");
-  const highlightNav = () => {
-    let current = "";
-    sections.forEach((section) => {
-      const top = section.getBoundingClientRect().top;
-      if (top <= 140) current = section.id;
-    });
+  const path = location.pathname;
+  const onHome = path === "/" || path === "/index.html";
+
+  // На підсторінках підсвічуємо за URL — раніше активний стан працював
+  // лише для якорів головної, тож на /games/ і /updates меню було «мертве».
+  if (!onHome) {
     navLinks.forEach((link) => {
       const href = link.getAttribute("href") || "";
-      link.classList.toggle("active", href.endsWith(`#${current}`));
+      if (href.startsWith("#") || href.startsWith("/#")) return;
+      link.classList.toggle("active", path.startsWith(href));
     });
-  };
-  window.addEventListener("scroll", highlightNav, { passive: true });
+  } else {
+    // На головній — за секцією, повз яку скролимо
+    const sections = document.querySelectorAll("section[id]");
+    const highlightNav = () => {
+      let current = "";
+      sections.forEach((section) => {
+        if (section.getBoundingClientRect().top <= 140) current = section.id;
+      });
+      navLinks.forEach((link) => {
+        const href = link.getAttribute("href") || "";
+        link.classList.toggle("active", !!current && href.endsWith(`#${current}`));
+      });
+    };
+    window.addEventListener("scroll", highlightNav, { passive: true });
+    highlightNav();
+  }
 
   // Mobile menu
   const toggle = document.getElementById("mobile-menu-toggle");
