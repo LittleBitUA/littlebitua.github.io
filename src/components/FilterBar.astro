@@ -191,7 +191,8 @@ const statusList = getStatusList();
   const _p = new URLSearchParams(location.search);
   let currentStatus = _p.get("status") ?? "all";
   let currentSearch = _p.get("q") ?? "";
-  let currentTag = "";
+  // Теги зі сторінки гри ведуть сюди як /games/?tag=Стелс
+  let currentTag = _p.get("tag") ?? "";
   let currentSort = "default";
 
   if (currentStatus !== "all") {
@@ -200,6 +201,11 @@ const statusList = getStatusList();
     });
   }
   if (currentSearch && searchInput) searchInput.value = currentSearch;
+  if (currentTag) {
+    activeTagLabel.textContent = currentTag;
+    activeTagEl.classList.remove("hidden");
+    activeTagEl.classList.add("inline-flex");
+  }
 
   const gamesList = cards.map((card, idx) => ({
     element: card, originalIndex: idx,
@@ -299,6 +305,8 @@ const statusList = getStatusList();
   document.addEventListener("click", e => {
     const tagEl = (e.target as HTMLElement).closest("[data-tag-filter]") as HTMLElement | null;
     if (!tagEl) return;
+    // Фільтруємо на місці — переходити в каталог не треба, ми вже тут
+    e.preventDefault();
     currentTag = tagEl.dataset.tagFilter || "";
     activeTagLabel.textContent = currentTag;
     activeTagEl.classList.remove("hidden"); activeTagEl.classList.add("inline-flex");
