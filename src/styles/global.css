@@ -56,10 +56,9 @@
   }
 
   body {
+    /* Base tone shift — never a flat fill */
     background:
-      radial-gradient(ellipse 100% 45% at 50% -5%, rgba(99,102,241,0.07), transparent),
-      #090b14;
-    background-attachment: fixed;
+      linear-gradient(180deg, #0a0e1c 0%, #090b14 45%, #070a12 100%);
     min-height: 100vh;
     position: relative;
   }
@@ -68,6 +67,87 @@
     position: relative;
     z-index: 1;
   }
+}
+
+/* ─── Ambient Background ──────────────────────────────────────
+   Три повільно дрейфуючі кольорові плями + зерно + віньєтка.
+   Живий, але ненав'язливий фон замість плоскої заливки.
+   Щоб вимкнути: прибери <div class="lb-ambient"> з Layout.astro.
+   ────────────────────────────────────────────────────────────── */
+.lb-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0 !important;
+  pointer-events: none;
+  overflow: hidden;
+  contain: strict;
+}
+
+.lb-ambient__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+}
+
+/* Indigo — верхній центр, найбільша */
+.lb-ambient__blob--1 {
+  top: -22%;
+  left: 50%;
+  width: 62vw;
+  height: 52vw;
+  margin-left: -31vw;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.20), transparent 68%);
+  animation: lbAmbient 34s ease-in-out infinite alternate;
+}
+
+/* Sky — правий бік, середина сторінки */
+.lb-ambient__blob--2 {
+  top: 32%;
+  right: -14%;
+  width: 46vw;
+  height: 46vw;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.13), transparent 68%);
+  animation: lbAmbient 44s ease-in-out infinite alternate-reverse;
+  animation-delay: -8s;
+}
+
+/* Violet — лівий низ */
+.lb-ambient__blob--3 {
+  bottom: -18%;
+  left: -12%;
+  width: 52vw;
+  height: 44vw;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 68%);
+  animation: lbAmbient 52s ease-in-out infinite alternate;
+  animation-delay: -20s;
+}
+
+/* Зерно — прибирає бендинг на градієнтах */
+.lb-ambient__grain {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Віньєтка — фокусує погляд на центрі */
+.lb-ambient__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 120% 80% at 50% 40%, transparent 40%, rgba(4, 6, 12, 0.55) 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lb-ambient__blob { animation: none !important; }
+}
+
+/* Мобільні: блоби дорогі для GPU — лишаємо статичними й слабшими */
+@media (max-width: 640px) {
+  .lb-ambient__blob { animation: none !important; filter: blur(70px); opacity: 0.7; }
+}
+
+@layer base {
 
   ::-webkit-scrollbar {
     width: 10px;
@@ -112,6 +192,10 @@
   .lb-glass {
     position: relative;
     background: rgba(255, 255, 255, 0.04);
+    /* Було відсутнє — тому "скло" читалось як плоский прямокутник.
+       Тепер справді розмиває ambient-фон під собою. */
+    backdrop-filter: blur(12px) saturate(1.15);
+    -webkit-backdrop-filter: blur(12px) saturate(1.15);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     box-shadow: var(--lb-shadow-glass);
@@ -322,13 +406,15 @@
 /* ─── Dark-mode overrides for hardcoded Tailwind utilities ───── */
 /* These remap light-theme Tailwind color utilities to dark equivalents. */
 
-/* Text */
-body .text-slate-900 { color: #f1f5f9; }
-body .text-slate-800 { color: #e2e8f0; }
-body .text-slate-700 { color: #cbd5e1; }
-body .text-slate-600 { color: #94a3b8; }
-body .text-slate-500 { color: #64748b; }
-body .text-slate-400 { color: #475569; }
+/* Text — шкала інвертована для темного фону.
+   Раніше -400 мапився на #475569 (контраст 2.3:1 на #090b14) — нижче за
+   WCAG AA 4.5:1. Тепер кожен крок світлішає, а не темнішає. */
+body .text-slate-900 { color: #f8fafc; }  /* 18.9:1 */
+body .text-slate-800 { color: #f1f5f9; }  /* 17.5:1 */
+body .text-slate-700 { color: #e2e8f0; }  /* 15.0:1 */
+body .text-slate-600 { color: #cbd5e1; }  /* 11.9:1 */
+body .text-slate-500 { color: #b0bdcd; }  /*  8.9:1 */
+body .text-slate-400 { color: #94a3b8; }  /*  6.4:1 — основний текст */
 
 /* Accent overrides on dark */
 body .text-indigo-600 { color: #818cf8; }

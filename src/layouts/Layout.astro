@@ -86,6 +86,15 @@ const {
   </head>
 
   <body class="min-h-screen flex flex-col overflow-x-hidden">
+    <!-- Ambient background — drifting colour blobs + grain + vignette -->
+    <div class="lb-ambient" aria-hidden="true">
+      <div class="lb-ambient__blob lb-ambient__blob--1"></div>
+      <div class="lb-ambient__blob lb-ambient__blob--2"></div>
+      <div class="lb-ambient__blob lb-ambient__blob--3"></div>
+      <div class="lb-ambient__vignette"></div>
+      <div class="lb-ambient__grain"></div>
+    </div>
+
     <slot />
 
     <!-- Scroll-to-top — glass pill -->
