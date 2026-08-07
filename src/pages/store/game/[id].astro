@@ -177,9 +177,6 @@ const heroArt = steamHero(game);
                   <a href={`/store/game/${g.id}/`} class="gc">
                     <span class="gc__art">
                       <img src={g.cover} alt={g.title} loading="lazy" decoding="async" />
-                      {(g.status === "done" || g.status === "early-access") && (
-                        <span class="gc__badge">безкоштовно</span>
-                      )}
                     </span>
                     <span class="gc__t">{g.title}</span>
                   </a>
