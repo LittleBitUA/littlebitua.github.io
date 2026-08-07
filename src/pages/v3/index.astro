@@ -1,0 +1,619 @@
+---
+// ─── V3 Prototype — операційна панель ─────────────────────────
+// Протилежність v2: максимум даних на екран. Кожна гра — рядок
+// з розбивкою по всіх стадіях, обсягом тексту й датою оновлення.
+
+import V3Layout from "../../layouts/V3Layout.astro";
+import { games } from "../../data/games";
+import { getAllUpdates, formatUpdateDate } from "../../utils/updates";
+import { pluralize } from "../../utils/pluralize";
+
+type G = (typeof games)[number];
+
+// ── Канонічний порядок стадій; колір кодує стадію всюди ──
+const STAGES = [
+  { key: "Переклад",  short: "Переклад",  varName: "--s-xlat" },
+  { key: "Редактура", short: "Редактура", varName: "--s-edit" },
+  { key: "Текстури",  short: "Текстури",  varName: "--s-tex"  },
+  { key: "Шрифти",    short: "Шрифти",    varName: "--s-font" },
+] as const;
+
+function stagePct(g: G, key: string): number | null {
+  const d = (g.stageDetails ?? []).find((s) => s.label === key);
+  return d ? d.percent : null;
+}
+
+function xlat(g: G): number {
+  return stagePct(g, "Переклад") ?? g.progress;
+}
+
+const playable = games
+  .filter((g) => g.status === "done" || g.status === "early-access")
+  .sort((a, b) => (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? ""));
+
+const working = games
+  .filter((g) => g.status === "in-progress" || g.status === "fundraising")
+  .sort((a, b) => xlat(b) - xlat(a));
+
+const fundraisers = games.filter((g) => g.fundraisingGoal && !g.fundraisingCompleted);
+
+// ── Агрегати: реальний обсяг виконаної роботи ──
+const vol = games.reduce(
+  (a, g) => {
+    a.lines += g.stats?.translatedLines ?? 0;
+    a.total += g.stats?.totalLines ?? 0;
+    a.words += g.stats?.totalWords ?? 0;
+    a.chars += g.stats?.totalCharacters ?? 0;
+    return a;
+  },
+  { lines: 0, total: 0, words: 0, chars: 0 }
+);
+
+// Скільки проєктів має кожну стадію в роботі (0 < % < 100) і скільки завершено
+const stageStats = STAGES.map((s) => {
+  const withStage = games.filter((g) => stagePct(g, s.key) !== null);
+  return {
+    ...s,
+    total: withStage.length,
+    done: withStage.filter((g) => (stagePct(g, s.key) ?? 0) >= 100).length,
+    avg: withStage.length
+      ? Math.round(withStage.reduce((n, g) => n + (stagePct(g, s.key) ?? 0), 0) / withStage.length)
+      : 0,
+  };
+});
+
+const raisedTotal = fundraisers.reduce((n, g) => n + (g.fundraisingRaised ?? 0), 0);
+const goalTotal = fundraisers.reduce((n, g) => n + (g.fundraisingGoal ?? 0), 0);
+
+const latest = getAllUpdates().slice(0, 3);
+
+function fmtK(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+  if (n >= 1_000) return `${Math.round(n / 1000)}K`;
+  return String(n);
+}
+
+function shortDate(d?: string): string {
+  if (!d) return "—";
+  return new Date(d).toLocaleDateString("uk-UA", { day: "2-digit", month: "2-digit", year: "2-digit" });
+}
+---
+
+<V3Layout>
+  <!-- ── Header ── -->
+  <header class="hd">
+    <div class="wrap hd__in">
+      <a href="/v3/" class="hd__brand">
+        <span class="hd__mark mono">LB</span>
+        <span class="hd__name">Little Bit</span>
+        <span class="hd__sub">локалізації</span>
+      </a>
+
+      <div class="hd__chips">
+        <span class="chip"><b class="mono">{games.length}</b> проєктів</span>
+        <span class="chip chip--ok"><b class="mono">{playable.length}</b> доступно</span>
+        <span class="chip"><b class="mono">{working.length}</b> у роботі</span>
+      </div>
+
+      <a href="/" class="hd__back">поточний сайт ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── Зведення ── -->
+    <section class="wrap band">
+      <div class="band__lead">
+        <h1 class="band__h">Стан локалізацій</h1>
+        <p class="band__p">
+          Повна картина по всіх проєктах: на якій стадії кожен, скільки тексту
+          вже опрацьовано і що оновлювалось востаннє.
+        </p>
+        <div class="band__latest">
+          {latest.map((e) => (
+            <a href={`/games/${e.gameId}/`} class="lat">
+              <span class="lat__d mono">{formatUpdateDate(e.date)}</span>
+              <span class="lat__t">{e.gameTitle}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <dl class="kpis">
+        <div class="kpi">
+          <dt>Рядків перекладено</dt>
+          <dd class="mono">{vol.lines.toLocaleString("uk-UA")}</dd>
+          <small class="mono">із {vol.total.toLocaleString("uk-UA")} врахованих</small>
+        </div>
+        <div class="kpi">
+          <dt>Слів у роботі</dt>
+          <dd class="mono">{fmtK(vol.words)}</dd>
+          <small class="mono">по {games.filter((g) => g.stats?.totalWords).length} проєктах</small>
+        </div>
+        <div class="kpi">
+          <dt>Символів</dt>
+          <dd class="mono">{fmtK(vol.chars)}</dd>
+          <small class="mono">де підраховано</small>
+        </div>
+        <div class="kpi">
+          <dt>Зібрано на переклад</dt>
+          <dd class="mono kpi--warn">{raisedTotal.toLocaleString("uk-UA")} ₴</dd>
+          <small class="mono">ціль {goalTotal.toLocaleString("uk-UA")} ₴</small>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ── Стадії конвеєра ── -->
+    <section class="wrap sec">
+      <div class="sec-head">
+        <h2>Конвеєр</h2>
+        <span class="sec-head__n">4 стадії</span>
+        <span class="sec-head__rule"></span>
+      </div>
+
+      <div class="stages">
+        {stageStats.map((s, i) => (
+          <div class="stage" style={`--c: var(${s.varName});`}>
+            <div class="stage__top">
+              <span class="stage__i mono">{String(i + 1).padStart(2, "0")}</span>
+              <span class="stage__name">{s.short}</span>
+            </div>
+            <div class="stage__figs">
+              <span class="stage__avg mono">{s.avg}%</span>
+              <span class="stage__meta mono">{s.done} з {s.total} завершено</span>
+            </div>
+            <div class="stage__bar"><span style={`width:${s.avg}%`}></span></div>
+            {/* Масштаб: без нього «100%» по двох проєктах читалось
+                як «шрифти зроблено всюди» */}
+            <p class="stage__scope">
+              середнє по {s.total} {pluralize(s.total, "проєкту", "проєктах", "проєктах")}
+              з {games.length}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Дошка: готові до гри ── -->
+    <section class="wrap sec">
+      <div class="sec-head">
+        <h2>Доступно для гри</h2>
+        <span class="sec-head__n">{playable.length}</span>
+        <span class="sec-head__rule"></span>
+      </div>
+
+      <div class="board">
+        <div class="board__head">
+          <span>Проєкт</span>
+          <span class="col-ser">Серія</span>
+          {STAGES.map((s) => <span class="col-st">{s.short}</span>)}
+          <span class="col-vol">Рядків</span>
+          <span class="col-upd">Оновлено</span>
+        </div>
+
+        {playable.map((g) => (
+          <a href={`/games/${g.id}/`} class="rw">
+            <span class="rw__game">
+              <img src={g.cover} alt="" loading="lazy" decoding="async" />
+              <span class="rw__txt">
+                <span class="rw__t">{g.title}</span>
+                <span class="rw__tags">
+                  {g.status === "done"
+                    ? <span class="pip pip--ok">повністю</span>
+                    : <span class="pip">ранній доступ</span>}
+                  {g.version && <span class="pip mono">v{g.version}</span>}
+                  {g.gameYear && <span class="pip mono">{g.gameYear}</span>}
+                </span>
+              </span>
+            </span>
+
+            <span class="col-ser rw__ser">{g.series ?? "—"}</span>
+
+            {STAGES.map((s) => {
+              const p = stagePct(g, s.key);
+              return (
+                <span class="col-st cell" style={`--c: var(${s.varName});`}>
+                  {p === null ? (
+                    <span class="cell__na">—</span>
+                  ) : (
+                    <>
+                      <span class="cell__bar"><span style={`width:${p}%`}></span></span>
+                      <span class="cell__n mono">{p}</span>
+                    </>
+                  )}
+                </span>
+              );
+            })}
+
+            <span class="col-vol mono rw__vol">
+              {g.stats?.translatedLines ? g.stats.translatedLines.toLocaleString("uk-UA") : "—"}
+            </span>
+            <span class="col-upd mono rw__upd">{shortDate(g.lastUpdate)}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Дошка: у роботі ── -->
+    <section class="wrap sec">
+      <div class="sec-head">
+        <h2>У роботі</h2>
+        <span class="sec-head__n">{working.length}</span>
+        <span class="sec-head__rule"></span>
+      </div>
+
+      <div class="board">
+        <div class="board__head">
+          <span>Проєкт</span>
+          <span class="col-ser">Серія</span>
+          {STAGES.map((s) => <span class="col-st">{s.short}</span>)}
+          <span class="col-vol">Рядків</span>
+          <span class="col-upd">Оновлено</span>
+        </div>
+
+        {working.map((g) => (
+          <a href={`/games/${g.id}/`} class="rw">
+            <span class="rw__game">
+              <img src={g.cover} alt="" loading="lazy" decoding="async" />
+              <span class="rw__txt">
+                <span class="rw__t">{g.title}</span>
+                <span class="rw__tags">
+                  {g.fundraisingGoal && !g.fundraisingCompleted && (
+                    <span class="pip pip--warn">збір коштів</span>
+                  )}
+                  {g.gameYear && <span class="pip mono">{g.gameYear}</span>}
+                  {g.tags.slice(0, 2).map((t) => <span class="pip pip--dim">{t}</span>)}
+                </span>
+              </span>
+            </span>
+
+            <span class="col-ser rw__ser">{g.series ?? "—"}</span>
+
+            {STAGES.map((s) => {
+              const p = stagePct(g, s.key);
+              return (
+                <span class="col-st cell" style={`--c: var(${s.varName});`}>
+                  {p === null ? (
+                    <span class="cell__na">—</span>
+                  ) : (
+                    <>
+                      <span class="cell__bar"><span style={`width:${p}%`}></span></span>
+                      <span class="cell__n mono">{p}</span>
+                    </>
+                  )}
+                </span>
+              );
+            })}
+
+            <span class="col-vol mono rw__vol">
+              {g.stats?.translatedLines ? g.stats.translatedLines.toLocaleString("uk-UA") : "—"}
+            </span>
+            <span class="col-upd mono rw__upd">{shortDate(g.lastUpdate)}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Збори ── -->
+    {fundraisers.length > 0 && (
+      <section class="wrap sec">
+        <div class="sec-head">
+          <h2>Активні збори</h2>
+          <span class="sec-head__n">{fundraisers.length}</span>
+          <span class="sec-head__rule"></span>
+        </div>
+
+        <div class="funds">
+          {fundraisers.map((g) => {
+            const pct = Math.min(Math.round(((g.fundraisingRaised ?? 0) / g.fundraisingGoal!) * 100), 100);
+            return (
+              <article class="fund">
+                <img class="fund__art" src={g.cover} alt="" loading="lazy" decoding="async" />
+                <div class="fund__b">
+                  <h3 class="fund__t">{g.title}</h3>
+                  {g.fundraisingDescription && <p class="fund__d">{g.fundraisingDescription}</p>}
+
+                  <div class="fund__nums mono">
+                    <span class="fund__raised">{(g.fundraisingRaised ?? 0).toLocaleString("uk-UA")} ₴</span>
+                    <span class="fund__goal">/ {g.fundraisingGoal!.toLocaleString("uk-UA")} ₴</span>
+                    <span class="fund__pct">{pct}%</span>
+                  </div>
+                  <div class="fund__bar"><span style={`width:${pct}%`}></span></div>
+
+                  <div class="fund__act">
+                    <a href={g.donateUrl} target="_blank" rel="noopener" class="btn btn--warn">Підтримати</a>
+                    <a href={`/games/${g.id}/`} class="btn btn--ghost">Деталі</a>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+    )}
+  </main>
+
+  <footer class="ft">
+    <div class="wrap ft__in">
+      <span class="mono">Прототип v3 · операційна панель</span>
+      <a href="/">← поточний сайт</a>
+    </div>
+  </footer>
+</V3Layout>
+
+<style>
+  /* ─── Header ───────────────────────────────────────────────── */
+  .hd {
+    position: sticky; top: 0; z-index: 30;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .hd__in { display: flex; align-items: center; gap: 1.25rem; height: 56px; }
+  .hd__brand { display: flex; align-items: baseline; gap: 0.55rem; }
+  .hd__mark {
+    display: grid; place-items: center;
+    width: 26px; height: 26px;
+    border-radius: 5px;
+    background: var(--s-xlat); color: var(--bg);
+    font-size: 0.66rem; font-weight: 700;
+    align-self: center;
+  }
+  .hd__name { color: var(--fg); font-weight: 600; font-size: 0.92rem; }
+  .hd__sub { color: var(--fg-3); font-size: 0.76rem; display: none; }
+  @media (min-width: 640px) { .hd__sub { display: inline; } }
+
+  .hd__chips { display: none; gap: 0.45rem; margin-left: auto; }
+  @media (min-width: 900px) { .hd__chips { display: flex; } }
+  .chip {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--line-2);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    color: var(--fg-3);
+  }
+  .chip b { color: var(--fg); font-weight: 600; font-size: 0.76rem; }
+  .chip--ok b { color: var(--ok); }
+
+  .hd__back {
+    margin-left: auto; font-size: 0.74rem; color: var(--fg-3);
+    white-space: nowrap; transition: color .15s;
+  }
+  @media (min-width: 900px) { .hd__back { margin-left: 0; } }
+  .hd__back:hover { color: var(--fg); }
+
+  /* ─── Зведення ─────────────────────────────────────────────── */
+  .band {
+    display: grid;
+    gap: 2.25rem;
+    padding-block: clamp(2.25rem, 5vw, 3.75rem);
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 1000px) {
+    .band { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 3.5rem; align-items: center; }
+  }
+
+  .band__h { font-size: clamp(1.6rem, 3.4vw, 2.4rem); font-weight: 700; margin-bottom: 0.7rem; }
+  .band__p { max-width: 46ch; font-size: 0.92rem; margin: 0 0 1.4rem; }
+
+  .band__latest { display: flex; flex-direction: column; gap: 0.1rem; }
+  .lat {
+    display: flex; align-items: baseline; gap: 0.75rem;
+    padding: 0.42rem 0;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    transition: color .15s;
+  }
+  .lat:hover { color: var(--fg); }
+  .lat__d { font-size: 0.7rem; color: var(--fg-3); white-space: nowrap; min-width: 8.5ch; }
+  .lat__t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* KPI */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  @media (min-width: 620px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  .kpi { background: var(--panel); padding: 1.1rem 1rem; }
+  .kpi dt {
+    font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--fg-3); margin-bottom: 0.55rem;
+  }
+  .kpi dd {
+    margin: 0 0 0.3rem;
+    font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+    font-weight: 600; color: var(--fg); line-height: 1;
+  }
+  .kpi--warn { color: var(--warn) !important; }
+  .kpi small { font-size: 0.66rem; color: var(--fg-3); }
+
+  /* ─── Секції ───────────────────────────────────────────────── */
+  .sec { padding-block: clamp(2rem, 4.5vw, 3.25rem); }
+
+  /* ─── Конвеєр ──────────────────────────────────────────────── */
+  .stages {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  @media (min-width: 860px) { .stages { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+  .stage {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.9rem 1rem 1rem;
+  }
+  .stage__top { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.85rem; }
+  .stage__i { font-size: 0.68rem; color: var(--c); font-weight: 600; }
+  .stage__name { font-size: 0.82rem; font-weight: 600; color: var(--fg); }
+  .stage__figs { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 0.5rem; }
+  .stage__avg { font-size: 1.35rem; font-weight: 600; color: var(--fg); line-height: 1; }
+  .stage__meta { font-size: 0.66rem; color: var(--fg-3); }
+  .stage__bar { height: 3px; background: var(--line-2); border-radius: 999px; overflow: hidden; }
+  .stage__bar span { display: block; height: 100%; background: var(--c); }
+  .stage__scope {
+    margin: 0.6rem 0 0;
+    font-size: 0.64rem;
+    line-height: 1.35;
+    color: var(--fg-3);
+  }
+
+  /* ─── Дошка ────────────────────────────────────────────────── */
+  .board {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--panel);
+  }
+
+  .board__head,
+  .rw {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 78px 62px;
+    grid-template-areas: "game vol upd";
+    gap: 0.6rem 0.85rem;
+    align-items: center;
+    padding: 0.7rem 0.85rem;
+  }
+
+  .board__head {
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--line);
+    font-size: 0.66rem;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--fg-3);
+    font-weight: 600;
+  }
+  /* На вузьких екранах колонки стадій ховаємо — вони йдуть у рядок нижче */
+  .board__head .col-ser,
+  .board__head .col-st { display: none; }
+  .board__head > :first-child { grid-area: game; }
+  .board__head .col-vol { grid-area: vol; text-align: right; }
+  .board__head .col-upd { grid-area: upd; text-align: right; }
+
+  .rw { border-top: 1px solid var(--line); transition: background .14s; }
+  .rw:first-of-type { border-top: 0; }
+  .rw:hover { background: var(--panel-2); }
+
+  .rw__game { grid-area: game; display: flex; gap: 0.7rem; min-width: 0; align-items: center; }
+  .rw__game img {
+    width: 30px; height: 42px; object-fit: cover;
+    border-radius: 3px; flex-shrink: 0;
+    background: var(--panel-2);
+  }
+  .rw__txt { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+  .rw__t {
+    font-size: 0.84rem; font-weight: 500; color: var(--fg);
+    line-height: 1.3;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .rw__tags { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+
+  .pip {
+    display: inline-block;
+    padding: 0.05rem 0.36rem;
+    border: 1px solid var(--line-2);
+    border-radius: 3px;
+    font-size: 0.6rem;
+    line-height: 1.5;
+    color: var(--fg-3);
+    white-space: nowrap;
+  }
+  .pip--ok   { color: var(--ok);   border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+  .pip--warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+  .pip--dim  { display: none; }
+
+  .rw__ser { color: var(--fg-3); font-size: 0.76rem; }
+  .rw__vol { grid-area: vol; text-align: right; font-size: 0.74rem; color: var(--fg-2); }
+  .rw__upd { grid-area: upd; text-align: right; font-size: 0.7rem; color: var(--fg-3); }
+
+  /* Комірка стадії */
+  .cell { display: flex; align-items: center; gap: 0.45rem; }
+  .cell__bar {
+    flex: 1; height: 3px; min-width: 26px;
+    background: var(--line-2); border-radius: 999px; overflow: hidden;
+  }
+  .cell__bar span { display: block; height: 100%; background: var(--c); }
+  .cell__n { font-size: 0.7rem; color: var(--fg-2); min-width: 2.4ch; text-align: right; }
+  .cell__na { color: var(--fg-3); opacity: 0.4; font-size: 0.7rem; }
+
+  /* На широкому — повна таблиця зі стадіями */
+  @media (min-width: 1080px) {
+    .board__head,
+    .rw {
+      grid-template-columns:
+        minmax(0, 1.5fr) 104px repeat(4, minmax(78px, 0.62fr)) 74px 62px;
+      grid-template-areas: none;
+      gap: 0.9rem;
+    }
+    .board__head .col-ser,
+    .board__head .col-st { display: block; }
+    .board__head > :first-child,
+    .board__head .col-vol,
+    .board__head .col-upd,
+    .rw__game, .rw__vol, .rw__upd { grid-area: auto; }
+    .board__head .col-st { text-align: left; }
+    .pip--dim { display: inline-block; }
+    .rw { padding: 0.6rem 0.85rem; }
+  }
+
+  /* Стадії ховаємо лише коли таблиця згорнута */
+  @media (max-width: 1079px) {
+    .rw .col-st, .rw__ser { display: none; }
+  }
+
+  /* ─── Збори ────────────────────────────────────────────────── */
+  .funds { display: grid; gap: 0.85rem; grid-template-columns: 1fr; }
+  @media (min-width: 900px) { .funds { grid-template-columns: 1fr 1fr; } }
+
+  .fund {
+    display: flex; gap: 1.1rem;
+    padding: 1.1rem;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .fund__art { width: 76px; aspect-ratio: 2/3; object-fit: cover; border-radius: 4px; flex-shrink: 0; }
+  .fund__b { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+  .fund__t { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.4rem; line-height: 1.25; }
+  .fund__d {
+    font-size: 0.74rem; line-height: 1.5; color: var(--fg-3); margin: 0 0 0.85rem;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .fund__nums { display: flex; align-items: baseline; gap: 0.4rem; margin-bottom: 0.4rem; }
+  .fund__raised { font-size: 0.98rem; font-weight: 600; color: var(--fg); }
+  .fund__goal { font-size: 0.72rem; color: var(--fg-3); }
+  .fund__pct { margin-left: auto; font-size: 0.78rem; font-weight: 600; color: var(--warn); }
+  .fund__bar { height: 4px; background: var(--line-2); border-radius: 999px; overflow: hidden; margin-bottom: 0.9rem; }
+  .fund__bar span { display: block; height: 100%; background: var(--warn); }
+  .fund__act { display: flex; gap: 0.45rem; margin-top: auto; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0.42rem 0.9rem;
+    border-radius: 5px;
+    font-size: 0.76rem; font-weight: 600;
+    border: 1px solid transparent;
+    transition: background .15s, border-color .15s, color .15s;
+  }
+  .btn--warn { background: var(--warn); color: var(--bg); }
+  .btn--warn:hover { filter: brightness(1.1); }
+  .btn--ghost { border-color: var(--line-2); color: var(--fg-2); }
+  .btn--ghost:hover { border-color: var(--fg-3); color: var(--fg); }
+
+  /* ─── Footer ───────────────────────────────────────────────── */
+  .ft { border-top: 1px solid var(--line); padding: 1.6rem 0; }
+  .ft__in { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.72rem; color: var(--fg-3); }
+  .ft__in a { transition: color .15s; }
+  .ft__in a:hover { color: var(--fg); }
+</style>
