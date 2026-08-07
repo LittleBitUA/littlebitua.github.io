@@ -1,0 +1,316 @@
+---
+// ─── Store Prototype — вітрина ────────────────────────────────
+// Пропозиції 1, 4, 5, 7, 8, 9, 10: широкі капсули Steam, цінник,
+// кнопка дії на кожній картці, стеження, полиці за жанром.
+
+import StoreLayout from "../../layouts/StoreLayout.astro";
+import { games } from "../../data/games";
+import { getAllUpdates } from "../../utils/updates";
+import { steamCapsule, steamHero } from "../../utils/steamAssets";
+import { pluralize } from "../../utils/pluralize";
+
+type G = (typeof games)[number];
+
+function xlat(g: G): number {
+  const s = g.stageDetails ?? [];
+  return (s.find((d) => /переклад/i.test(d.label)) ?? s[0])?.percent ?? g.progress;
+}
+const isPlayable = (g: G) => g.status === "done" || g.status === "early-access";
+
+const playable = games
+  .filter(isPlayable)
+  .sort((a, b) => (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? ""));
+
+const working = games.filter((g) => !isPlayable(g)).sort((a, b) => xlat(b) - xlat(a));
+const almost = working.filter((g) => xlat(g) >= 70);
+
+// Головний банер — свіжий доступний реліз із широким артом
+const hero = playable.find((g) => steamHero(g)) ?? playable[0];
+
+// Капсули лише там, де є Steam-арт (фолбек на постер у розмітці)
+const capsules = playable.filter((g) => steamCapsule(g)).slice(0, 10);
+
+const updatedIds = [...new Set(getAllUpdates().map((e) => e.gameId))];
+const recent = updatedIds
+  .map((id) => games.find((g) => g.id === id))
+  .filter((g): g is G => !!g)
+  .slice(0, 12);
+
+// Полиці за жанром — з наявних тегів
+const GENRES = ["Бойовик", "Пригоди", "Стелс", "JRPG", "Хорор", "Відкритий світ"];
+const genreShelves = GENRES.map((tag) => ({
+  tag,
+  list: games.filter((g) => g.tags.some((t) => t.toLowerCase() === tag.toLowerCase())),
+})).filter((s) => s.list.length >= 3);
+
+const heroXlat = hero ? xlat(hero) : 0;
+---
+
+<StoreLayout active="store">
+  <main class="flex-1">
+    <!-- ── Головний банер: веде гра, не слоган ── -->
+    {hero && (
+      <section class="phero">
+        <div class="phero__bg" aria-hidden="true">
+          <img src={steamHero(hero) ?? hero.cover} alt="" data-fallback={hero.cover} decoding="async" />
+          <div class="phero__veil"></div>
+        </div>
+
+        <div class="st-wrap phero__in">
+          <div style="display:grid; gap:1.75rem; align-items:end;" class="ph-grid">
+            <div style="min-width:0;">
+              <p style="font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#4ade80;margin:0 0 .7rem;">
+                Готово до завантаження
+              </p>
+              <h1 style="font-size:clamp(1.75rem,4.5vw,3rem);font-weight:900;color:#fff;line-height:1.1;margin:0 0 .85rem;">
+                {hero.title}
+              </h1>
+              <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:1rem;">
+                {hero.tags.slice(0, 5).map((t) => <span class="st-tag">{t}</span>)}
+              </div>
+              <p style="font-size:.92rem;line-height:1.6;color:#cbd5e1;max-width:56ch;margin:0 0 1.3rem;
+                        display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">
+                {hero.description}
+              </p>
+
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;">
+                <span class="price price--lg">Безкоштовно</span>
+                <a
+                  href={hero.downloadUrl ?? `/store/game/${hero.id}/`}
+                  target={hero.downloadUrl ? "_blank" : undefined}
+                  rel={hero.downloadUrl ? "noopener" : undefined}
+                  class="st-btn st-btn--free st-btn--lg"
+                >
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                  </svg>
+                  Завантажити переклад
+                </a>
+                <a href={`/store/game/${hero.id}/`} class="st-btn st-btn--ghost st-btn--lg">Детальніше</a>
+              </div>
+            </div>
+
+            <img
+              src={hero.cover}
+              alt=""
+              class="ph-poster"
+              style="width:170px;aspect-ratio:2/3;object-fit:cover;border-radius:12px;box-shadow:0 24px 50px -20px rgba(0,0,0,.9);"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- ── Широкі капсули Steam ── -->
+    {capsules.length > 0 && (
+      <section class="st-sec st-wrap" id="free">
+        <div class="st-sh">
+          <h2>Можна завантажити зараз</h2>
+          <span class="st-sh__n">{playable.length}</span>
+          <div class="st-sh__nav">
+            <button class="st-arw" data-scroll="capRow" data-dir="-1" aria-label="Назад">‹</button>
+            <button class="st-arw" data-scroll="capRow" data-dir="1" aria-label="Далі">›</button>
+          </div>
+        </div>
+
+        <div class="st-shelf st-shelf--cap" id="capRow">
+          {capsules.map((g) => (
+            <a href={`/store/game/${g.id}/`} class="cap">
+              <span class="cap__art">
+                <img src={steamCapsule(g)!} alt={g.title} data-fallback={g.cover} loading="lazy" decoding="async" />
+              </span>
+              <span class="cap__b">
+                <span class="cap__t">{g.title}</span>
+                <span class="cap__row">
+                  <span class="price">Безкоштовно</span>
+                  <span class="cap__meta">
+                    {g.status === "done" ? "повний переклад" : `${xlat(g)}% перекладено`}
+                  </span>
+                </span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ── Список стеження ── -->
+    <section class="st-sec st-wrap" id="watchlist" hidden>
+      <div class="st-sh">
+        <h2>Ви стежите</h2>
+        <span class="st-sh__n" data-watch-count>0</span>
+      </div>
+      <div class="st-grid">
+        {games.map((g) => (
+          <div data-watch-item={g.id} hidden>
+            <a href={`/store/game/${g.id}/`} class="gc">
+              <span class="gc__art">
+                <img src={g.cover} alt={g.title} loading="lazy" decoding="async" />
+                <button class="wl" data-watch={g.id} type="button" aria-pressed="false">
+                  <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 3h14a2 2 0 012 2v16l-9-4-9 4V5a2 2 0 012-2z"/>
+                  </svg>
+                </button>
+              </span>
+              <span class="gc__t">{g.title}</span>
+              <span class="gc__foot">
+                {isPlayable(g) ? (
+                  <span class="price">Безкоштовно</span>
+                ) : (
+                  <span class="gc__prog">
+                    <span class="gc__bar"><span style={`width:${xlat(g)}%`}></span></span>
+                    <span class="gc__pct">{xlat(g)}%</span>
+                  </span>
+                )}
+              </span>
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Щойно оновлені ── -->
+    <section class="st-sec st-wrap">
+      <div class="st-sh">
+        <h2>Щойно оновлені</h2>
+        <span class="st-sh__n">{recent.length}</span>
+        <div class="st-sh__nav">
+          <button class="st-arw" data-scroll="recRow" data-dir="-1" aria-label="Назад">‹</button>
+          <button class="st-arw" data-scroll="recRow" data-dir="1" aria-label="Далі">›</button>
+        </div>
+      </div>
+
+      <div class="st-shelf st-shelf--card" id="recRow">
+        {recent.map((g) => (
+          <a href={`/store/game/${g.id}/`} class="gc">
+            <span class="gc__art">
+              <img src={g.cover} alt={g.title} loading="lazy" decoding="async" />
+              {isPlayable(g) && <span class="gc__badge">безкоштовно</span>}
+              <button class="wl" data-watch={g.id} type="button" aria-pressed="false">
+                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 3h14a2 2 0 012 2v16l-9-4-9 4V5a2 2 0 012-2z"/>
+                </svg>
+              </button>
+              <span class="gc__over">
+                <span class="gc__ovtags">
+                  {g.tags.slice(0, 3).map((t) => <span class="st-tag">{t}</span>)}
+                </span>
+                <span class="st-btn st-btn--free st-btn--sm st-btn--block">
+                  {isPlayable(g) ? "Завантажити" : "Детальніше"}
+                </span>
+              </span>
+            </span>
+            <span class="gc__t">{g.title}</span>
+            <span class="gc__foot">
+              {isPlayable(g) ? (
+                <span class="price">Безкоштовно</span>
+              ) : (
+                <span class="gc__prog">
+                  <span class="gc__bar"><span style={`width:${xlat(g)}%`}></span></span>
+                  <span class="gc__pct">{xlat(g)}%</span>
+                </span>
+              )}
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- ── Скоро ── -->
+    {almost.length > 0 && (
+      <section class="st-sec st-wrap">
+        <div class="st-sh">
+          <h2>Скоро вийде</h2>
+          <span class="st-sh__n">{almost.length}</span>
+          <a href="/store/catalog/?status=working" class="st-sh__more">Усі в роботі →</a>
+        </div>
+
+        <div class="st-shelf st-shelf--card" id="soonRow">
+          {almost.map((g) => (
+            <a href={`/store/game/${g.id}/`} class="gc">
+              <span class="gc__art">
+                <img src={g.cover} alt={g.title} loading="lazy" decoding="async" />
+                {g.fundraisingGoal && !g.fundraisingCompleted && (
+                  <span class="gc__badge gc__badge--fund">збір</span>
+                )}
+                <button class="wl" data-watch={g.id} type="button" aria-pressed="false">
+                  <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 3h14a2 2 0 012 2v16l-9-4-9 4V5a2 2 0 012-2z"/>
+                  </svg>
+                </button>
+                <span class="gc__over">
+                  <span class="gc__ovtags">
+                    {g.tags.slice(0, 3).map((t) => <span class="st-tag">{t}</span>)}
+                  </span>
+                  <span class="st-btn st-btn--ghost st-btn--sm st-btn--block">Стежити</span>
+                </span>
+              </span>
+              <span class="gc__t">{g.title}</span>
+              <span class="gc__foot">
+                <span class="gc__prog">
+                  <span class="gc__bar"><span style={`width:${xlat(g)}%`}></span></span>
+                  <span class="gc__pct">{xlat(g)}%</span>
+                </span>
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- ── Полиці за жанром ── -->
+    {genreShelves.map((s, si) => (
+      <section class="st-sec st-wrap">
+        <div class="st-sh">
+          <h2>{s.tag} українською</h2>
+          <span class="st-sh__n">{s.list.length}</span>
+          <a href={`/store/catalog/?tag=${encodeURIComponent(s.tag)}`} class="st-sh__more">Усі →</a>
+        </div>
+
+        <div class="st-shelf st-shelf--card" id={`gen${si}`}>
+          {s.list.map((g) => (
+            <a href={`/store/game/${g.id}/`} class="gc">
+              <span class="gc__art">
+                <img src={g.cover} alt={g.title} loading="lazy" decoding="async" />
+                {isPlayable(g) && <span class="gc__badge">безкоштовно</span>}
+                <button class="wl" data-watch={g.id} type="button" aria-pressed="false">
+                  <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 3h14a2 2 0 012 2v16l-9-4-9 4V5a2 2 0 012-2z"/>
+                  </svg>
+                </button>
+                <span class="gc__over">
+                  <span class="gc__ovtags">
+                    {g.tags.slice(0, 3).map((t) => <span class="st-tag">{t}</span>)}
+                  </span>
+                  <span class={`st-btn st-btn--sm st-btn--block ${isPlayable(g) ? "st-btn--free" : "st-btn--ghost"}`}>
+                    {isPlayable(g) ? "Завантажити" : "Стежити"}
+                  </span>
+                </span>
+              </span>
+              <span class="gc__t">{g.title}</span>
+              <span class="gc__foot">
+                {isPlayable(g) ? (
+                  <span class="price">Безкоштовно</span>
+                ) : (
+                  <span class="gc__prog">
+                    <span class="gc__bar"><span style={`width:${xlat(g)}%`}></span></span>
+                    <span class="gc__pct">{xlat(g)}%</span>
+                  </span>
+                )}
+              </span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </main>
+</StoreLayout>
+
+<style>
+  @media (min-width: 900px) {
+    .ph-grid { grid-template-columns: minmax(0, 1fr) auto; }
+  }
+  .ph-poster { display: none; }
+  @media (min-width: 900px) { .ph-poster { display: block; } }
+</style>

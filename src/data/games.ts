@@ -1076,7 +1076,7 @@ export const games: Game[] = [
       { label: "Переклад", percent: 50 },
     ],
     tags: ["Action RPG", "JRPG", "Пригоди", "Аніме", "Disney"],
-    steamUrl: "https://store.steampowered.com/app/1091500/KINGDOM_HEARTS_III__ReMind/",
+    steamUrl: "https://store.steampowered.com/app/2552450/KINGDOM_HEARTS_III__Re_Mind_DLC/",
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_iii_re_mind_dlc/solovina-komanda-dmytro-naumchas-naumenko",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-07-31",
