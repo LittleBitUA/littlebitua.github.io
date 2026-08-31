@@ -187,12 +187,12 @@ export const games: Game[] = [
     videoUrl: "https://www.youtube.com/watch?v=7NiZAmBlMk0",
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 28800,
+    fundraisingRaised: 29000,
     fundraisingGoal: 50000,
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
     lastUpdate: "2026-08-01",
     progressHistory: [
-      { date: "2026-08-01", progress: 30, milestone: "Збір: 28 800 ₴ із 50 000 ₴ (58%)" },
+      { date: "2026-08-01", progress: 30, milestone: "Збір: 29 000 ₴ із 50 000 ₴ (58%)" },
     ],
     stats: {
       totalLines: 24458,
@@ -285,7 +285,7 @@ export const games: Game[] = [
     progress: 63,
     status: "early-access",
     stage: "Переклад",
-    fundraisingRaised: 13099,
+    fundraisingRaised: 19212,
     fundraisingGoal: 50000,
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [
@@ -502,22 +502,18 @@ export const games: Game[] = [
   },
   {
     id: "dave-the-diver",
-    title: "Dave The Diver",
+    title: "Dave The Diver: In The Jungle",
     description:
       "Затишний пригодницький симулятор, де вдень ти пірнаєш по рибу, а ввечері керуєш суші-баром. Несподівано глибокий геймплей із купою активностей, секретів та харизматичних персонажів.",
     cover: "https://cdn2.steamgriddb.com/thumb/1d50a96e0e3d7b721de8aafbb246067d.jpg",
-    progress: 100,
-    status: "early-access",
-    stage: "Готово",
+    progress: 45,
+    status: "in-progress",
+    stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 100 },
-      { label: "Шрифти", percent: 100 },
-      { label: "Текстури", percent: 0 },
+      { label: "Переклад", percent: 45 },
     ],
     tags: ["Пригоди", "Симулятор", "Інді", "Казуальна"],
     steamUrl: "https://store.steampowered.com/app/1868140/DAVE_THE_DIVER/",
-    downloadUrl: "https://lbklauncher.com/games/dave_the_diver/solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-04-30",
   },
@@ -527,11 +523,11 @@ export const games: Game[] = [
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
     cover: "https://cdn2.steamgriddb.com/thumb/78b22a52a1e53b0d2e27e6b40569793a.jpg",
-    progress: 62,
+    progress: 63,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 62 },
+      { label: "Переклад", percent: 63 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 15 },
@@ -608,11 +604,11 @@ export const games: Game[] = [
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1235140/library_600x900_2x.jpg?t=1716350681",
-    progress: 49,
+    progress: 58,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 49 },
+      { label: "Переклад", percent: 58 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
@@ -874,11 +870,11 @@ export const games: Game[] = [
     description:
       "Інтерактивна драма про дві сім'ї, чиї долі переплітаються через пограбування в Арізоні.",
     cover: "https://cdn2.steamgriddb.com/thumb/7d3d82c29720a5cb8824d02529389ab5.jpg",
-    progress: 10,
+    progress: 15,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 10 },
+      { label: "Переклад", percent: 15 },
       { label: "Текстури", percent: 0 },
     ],
     tags: ["Інтерактивне кіно", "Драма", "Глибокий сюжет", "Пригоди"],
@@ -943,11 +939,11 @@ export const games: Game[] = [
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
     cover: "https://cdn2.steamgriddb.com/thumb/0f5d8f2124b95d0ef0245533fa616693.png",
-    progress: 38,
+    progress: 50,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 38 },
+      { label: "Переклад", percent: 50 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
@@ -1052,14 +1048,16 @@ export const games: Game[] = [
       "Metal Gear Solid 4: Guns of the Patriots — завершальна глава історії Соліда Снейка. У світі, де війна перетворилася на керований бізнес, постарілий герой вирушає на свою останню місію, щоб зупинити Ліквіда Оцелота. На гравців чекають тактичне проникнення, масштабні битви, політичні інтриги та емоційне прощання з легендарною сагою.",
     cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
     progress: 60,
-    status: "in-progress",
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 60 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
     steamUrl: "https://store.steampowered.com/app/4184400/METAL_GEAR_SOLID_4_Guns_of_the_Patriots__Master_Collection_Version/",
+    downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_4_guns_of_the_patriots_master_collection_version/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    videoUrl: "https://www.youtube.com/watch?v=HgqicXhm-XI",
     lastUpdate: "2026-08-06",
   },
   {
@@ -1069,11 +1067,11 @@ export const games: Game[] = [
     description:
       "Завершення головної трилогії Kingdom Hearts. Сора, Дональд і Гуфі рушають крізь магічні світи Disney та Pixar, щоб врятувати друзів і протистояти XIII Організації. Видовищні бої, яскраві локації та фінальні відповіді на запитання, що копились десятиліттями.",
     cover: "https://cdn2.steamgriddb.com/grid/1318ae15a52c171bf63b0db992ba1451.png",
-    progress: 50,
+    progress: 51,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 50 },
+      { label: "Переклад", percent: 51 },
     ],
     tags: ["Action RPG", "JRPG", "Пригоди", "Аніме", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552450/KINGDOM_HEARTS_III__Re_Mind_DLC/",
@@ -1088,11 +1086,11 @@ export const games: Game[] = [
     description:
       "Детектив Такаюкі Ягамі розслідує неоднозначне вбивство, за яким стоять таємниці шкільної системи та злочинного світу. Бойовик у всесвіті Yakuza зі стелсом, паркуром і двома різними бойовими стилями.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2058190/library_600x900_2x.jpg?t=1663168032",
-    progress: 28,
+    progress: 29,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 28 },
+      { label: "Переклад", percent: 29 },
     ],
     tags: ["Бойовик", "Детектив", "Пригоди", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
@@ -1103,7 +1101,7 @@ export const games: Game[] = [
       { date: "2026-02-16", progress: 7, milestone: "Перші глави" },
       { date: "2026-04-28", progress: 14, milestone: "13.75% перекладено" },
       { date: "2026-05-08", progress: 14, milestone: "13.97% перекладено" },
-      { date: "2026-07-31", progress: 28, milestone: "28% перекладено" },
+      { date: "2026-07-31", progress: 29, milestone: "29% перекладено" },
     ],
   },
   {
@@ -1122,6 +1120,24 @@ export const games: Game[] = [
     tags: ["Хоррор", "Психологічний", "Відкритий світ", "Атмосферна", "Пригоди"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-07-02",
+  },
+  {
+    id: "catherine-classic",
+    title: "Catherine Classic",
+    description:
+      "Психологічний трилер про Вінсента, який щоночі втрачає спокій уві сні, підіймаючись блоковими лабіринтами тікаючи від власних страхів, а вдень розривається між нареченою Кетрін і загадковою незнайомкою Кетріною. Суміш головоломок на виживання й історії про дорослішання, вибір і зраду.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/893180/library_600x900_2x.jpg",
+    progress: 32,
+    status: "early-access",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 32 },
+    ],
+    tags: ["Головоломка", "Психологічний", "Пригоди", "Аніме"],
+    steamUrl: "https://store.steampowered.com/app/893180/Catherine_Classic/",
+    downloadUrl: "https://lbklauncher.com/games/catherine_classic/little-bit-locus-team",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-09-01",
   },
 ];
 
