@@ -170,11 +170,11 @@ export const games: Game[] = [
     description:
       "Оновлена версія культової екшен-RPG, у якій юнак Нір вирушає на пошуки ліків для своєї смертельно хворої сестри Йони. Разом із балакучим «Ґримоаром Вайсом» і незабутніми супутниками він досліджуватиме химерний світ, битиметься з Тінями та поступово розкриватиме його трагічні таємниці. Це історія про надію, відданість і ціну порятунку, де кожна знайдена відповідь наближає до одного з кількох фіналів.",
     cover: "https://cdn2.steamgriddb.com/thumb/9dcecafda1dec7a08c0630b896ff82cc.jpg",
-    progress: 30,
+    progress: 31,
     status: "fundraising",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 30 },
+      { label: "Переклад", percent: 31 },
     ],
     tags: ["Чудовий саундтрек", "Глибокий сюжет", "Бойовик", "Пригоди"],
     screenshots: [
@@ -523,11 +523,11 @@ export const games: Game[] = [
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
     cover: "https://cdn2.steamgriddb.com/thumb/78b22a52a1e53b0d2e27e6b40569793a.jpg",
-    progress: 63,
+    progress: 64,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 63 },
+      { label: "Переклад", percent: 64 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 15 },
@@ -536,7 +536,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1687950/Persona_5_Royal/",
     downloadUrl: "https://lbklauncher.com/games/persona_5_royal/solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-08",
+    lastUpdate: "2026-09-05",
   },
   {
     id: "yakuza-kiwami2",
@@ -939,16 +939,16 @@ export const games: Game[] = [
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
     cover: "https://cdn2.steamgriddb.com/thumb/0f5d8f2124b95d0ef0245533fa616693.png",
-    progress: 50,
+    progress: 60,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 50 },
+      { label: "Переклад", percent: 60 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-08-06",
+    lastUpdate: "2026-09-05",
 
     // Extended data
     detailedDescription: "Епічний файтинг з усіма улюбленими персонажами JoJo! Від Джонатана до Джоліна — понад 50 бійців з унікальними стендами та прийомами. Відчуйте всю потужність Bizarre Adventure!",
@@ -1047,18 +1047,18 @@ export const games: Game[] = [
     description:
       "Metal Gear Solid 4: Guns of the Patriots — завершальна глава історії Соліда Снейка. У світі, де війна перетворилася на керований бізнес, постарілий герой вирушає на свою останню місію, щоб зупинити Ліквіда Оцелота. На гравців чекають тактичне проникнення, масштабні битви, політичні інтриги та емоційне прощання з легендарною сагою.",
     cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
-    progress: 60,
+    progress: 83,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 60 },
+      { label: "Переклад", percent: 83 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
     steamUrl: "https://store.steampowered.com/app/4184400/METAL_GEAR_SOLID_4_Guns_of_the_Patriots__Master_Collection_Version/",
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_4_guns_of_the_patriots_master_collection_version/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=HgqicXhm-XI",
-    lastUpdate: "2026-08-06",
+    lastUpdate: "2026-09-05",
   },
   {
     id: "kingdom-hearts-3",
