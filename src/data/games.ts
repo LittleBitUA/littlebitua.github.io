@@ -285,7 +285,7 @@ export const games: Game[] = [
     progress: 63,
     status: "early-access",
     stage: "Переклад",
-    fundraisingRaised: 19212,
+    fundraisingRaised: 21145,
     fundraisingGoal: 50000,
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [
@@ -939,16 +939,16 @@ export const games: Game[] = [
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
     cover: "https://cdn2.steamgriddb.com/thumb/0f5d8f2124b95d0ef0245533fa616693.png",
-    progress: 60,
+    progress: 82,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 60 },
+      { label: "Переклад", percent: 82 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-09-05",
+    lastUpdate: "2026-09-09",
 
     // Extended data
     detailedDescription: "Епічний файтинг з усіма улюбленими персонажами JoJo! Від Джонатана до Джоліна — понад 50 бійців з унікальними стендами та прийомами. Відчуйте всю потужність Bizarre Adventure!",
@@ -1047,18 +1047,18 @@ export const games: Game[] = [
     description:
       "Metal Gear Solid 4: Guns of the Patriots — завершальна глава історії Соліда Снейка. У світі, де війна перетворилася на керований бізнес, постарілий герой вирушає на свою останню місію, щоб зупинити Ліквіда Оцелота. На гравців чекають тактичне проникнення, масштабні битви, політичні інтриги та емоційне прощання з легендарною сагою.",
     cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
-    progress: 83,
+    progress: 90,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 83 },
+      { label: "Переклад", percent: 90 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
     steamUrl: "https://store.steampowered.com/app/4184400/METAL_GEAR_SOLID_4_Guns_of_the_Patriots__Master_Collection_Version/",
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_4_guns_of_the_patriots_master_collection_version/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=HgqicXhm-XI",
-    lastUpdate: "2026-09-05",
+    lastUpdate: "2026-09-09",
   },
   {
     id: "kingdom-hearts-3",
