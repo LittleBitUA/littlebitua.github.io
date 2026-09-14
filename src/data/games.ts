@@ -1139,6 +1139,61 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-09-01",
   },
+  {
+    id: "mgs1-master-collection",
+    title: "METAL GEAR SOLID - Master Collection Version",
+    series: "Metal Gear",
+    description:
+      "Культовий початок серії. Солід Снейк берется до участи в операції Deep Strike, щоб проникнути на острів Shadow Moses та знешкодити загрозу ядерної зброї. Революційна гра, яка визначила стандарти стелс-екшену.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2131630/library_600x900_2x.jpg",
+    progress: 3,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 3 },
+    ],
+    tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
+    steamUrl: "https://store.steampowered.com/app/2131630/METAL_GEAR_SOLID__Master_Collection_Version/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-09-14",
+  },
+  {
+    id: "mgs3-master-collection",
+    title: "METAL GEAR SOLID 3: Snake Eater - Master Collection Version",
+    series: "Metal Gear",
+    description:
+      "Легендарний преквел про молодого Зміїв під час Холодної Війни. Операція Snatcher, екзотичні локації та унікальна система виживання в джунглях. Одна з найкращих гр серії.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2131650/library_600x900_2x.jpg",
+    progress: 50,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 50 },
+    ],
+    tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
+    steamUrl: "https://store.steampowered.com/app/2131650/METAL_GEAR_SOLID_3_Snake_Eater__Master_Collection_Version/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-09-14",
+  },
+  {
+    id: "metal-gear-mg2",
+    title: "METAL GEAR & METAL GEAR 2: Solid Snake",
+    series: "Metal Gear",
+    description:
+      "Класичні нуаяри серії. Перші два Metal Gear, які поклали початок легендарній франшизі. Класичний стелс-екшен на піку свого часу.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2131680/library_600x900_2x.jpg",
+    progress: 50,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 50 },
+    ],
+    tags: ["Стелс", "Бойовик", "Тактика", "Класика"],
+    steamUrl: "https://store.steampowered.com/app/2131680/METAL_GEAR__METAL_GEAR_2_Solid_Snake/",
+    downloadUrl: "https://lbklauncher.com/games/metal_gear_metal_gear_2_solid_snake/little-bit",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-09-14",
+  },
 ];
 
 /** Get unique series names for filtering */
