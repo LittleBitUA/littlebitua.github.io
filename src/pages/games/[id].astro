@@ -294,19 +294,7 @@ const related = games
           </section>
         )}
 
-        {game.team && game.team.length > 0 && (
-          <section>
-            <h2 class="side__title">Команда</h2>
-            <ul class="side__list">
-              {game.team.map((m) => (
-                <li>
-                  {m.link ? <a href={m.link} target="_blank" rel="noopener noreferrer">{m.name}</a> : <strong>{m.name}</strong>}
-                  <span>{m.role}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )}
+        {/* Секцію «Команда» свідомо не показуємо (рішення користувача, 2026-08). Поле team у games.ts лишається. */}
 
         <section>
           <h2 class="side__title">Посилання</h2>
