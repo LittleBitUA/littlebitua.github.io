@@ -1,156 +1,42 @@
 ---
-// ─── Support Section ───────────────────────────────────────────
+// ─── Support ───────────────────────────────────────────────────
 import DonorsWall from "./DonorsWall.astro";
+
+const REASONS = ["Купівля ігор для перекладу", "Мотивація команди", "Нові переклади швидше"];
 ---
 
-<section id="support" class="sp-section">
-  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-
-    <!-- Header + CTAs -->
-    <div class="sp-header" data-animate>
-      <span class="lb-section-eyebrow">Підтримка</span>
-      <h2 class="sp-heading">Підтримайте команду</h2>
-      <p class="sp-sub">
-        Донати йдуть на купівлю ігор, мотивацію команди та пришвидшення нових перекладів.
+<section id="support" class="section">
+  <div class="container support">
+    <div>
+      <span class="eyebrow">Підтримка</span>
+      <h2>Підтримайте команду</h2>
+      <p class="support__text">
+        Усі наші локалізації безкоштовні. Донати допомагають купувати ігри, тримати темп і
+        братися за нові проєкти.
       </p>
-
-      <!-- Donate buttons -->
-      <div class="sp-ctas">
-        <a
-          href="https://donatello.to/LittleBitUA"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="sp-btn sp-btn--primary"
-        >
-          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-          </svg>
-          Donatello
-        </a>
-        <a
-          href="https://send.monobank.ua/jar/3h4akVJRXK"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="sp-btn sp-btn--ghost"
-        >
-          <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
-          </svg>
-          Monobank
-        </a>
-      </div>
-
-      <!-- Inline reasons -->
-      <div class="sp-reasons">
-        {[
-          "Закупівля ігор",
-          "Мотивація команди",
-          "Нові переклади швидше",
-        ].map((r) => (
-          <span class="sp-reason">
-            <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
-            {r}
-          </span>
-        ))}
+      <ul class="support__reasons">
+        {REASONS.map((r) => <li>{r}</li>)}
+      </ul>
+      <div class="support__actions">
+        <a href="https://donatello.to/LittleBitUA" target="_blank" rel="noopener noreferrer" class="btn btn--primary">Donatello</a>
+        <a href="https://send.monobank.ua/jar/3h4akVJRXK" target="_blank" rel="noopener noreferrer" class="btn">Банка Monobank</a>
       </div>
     </div>
-
-    <!-- Donors wall -->
-    <div data-animate>
-      <DonorsWall />
-    </div>
-
+    <DonorsWall />
   </div>
 </section>
 
 <style>
-  .sp-section {
-    padding: 4.5rem 0;
-  }
-  @media (min-width: 640px) { .sp-section { padding: 5.5rem 0; } }
+  .support { display: grid; gap: 48px; }
+  .support h2 { margin: 12px 0 14px; font-size: clamp(1.6rem, 3vw, 2.5rem); text-transform: uppercase; }
+  .support__text { max-width: 46ch; color: var(--muted); }
+  .support__reasons { display: grid; gap: 8px; margin: 24px 0 32px; }
+  .support__reasons li { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+  .support__reasons li::before { content: ""; width: 14px; height: 2px; background: var(--accent); }
+  .support__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .support__actions .btn { min-width: 180px; }
 
-  .sp-header {
-    text-align: center;
-    margin-bottom: 2.5rem;
+  @media (min-width: 1024px) {
+    .support { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 88px; align-items: start; }
   }
-
-  .sp-heading {
-    font-size: clamp(1.6rem, 3.5vw, 2.25rem);
-    font-weight: 900;
-    color: #f1f5f9;
-    letter-spacing: -0.02em;
-    margin: 0.5rem 0 0.6rem;
-  }
-
-  .sp-sub {
-    font-size: 0.95rem;
-    color: #64748b;
-    max-width: 38rem;
-    margin: 0 auto 1.75rem;
-    line-height: 1.6;
-  }
-
-  /* CTA buttons row */
-  .sp-ctas {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.625rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .sp-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.625rem 1.35rem;
-    border-radius: 10px;
-    font-size: 0.9rem;
-    font-weight: 700;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-    white-space: nowrap;
-    text-decoration: none;
-  }
-  .sp-btn:hover { transform: translateY(-2px); }
-
-  .sp-btn--primary {
-    background: #6366f1;
-    color: #fff;
-    box-shadow: 0 4px 18px -6px rgba(99, 102, 241, 0.6);
-  }
-  .sp-btn--primary:hover {
-    background: #4f46e5;
-    box-shadow: 0 6px 24px -6px rgba(99, 102, 241, 0.8);
-  }
-
-  .sp-btn--ghost {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    color: #cbd5e1;
-  }
-  .sp-btn--ghost:hover {
-    background: rgba(255, 255, 255, 0.09);
-    border-color: rgba(255, 255, 255, 0.18);
-    color: #f1f5f9;
-  }
-
-  /* Inline reasons */
-  .sp-reasons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem 1.25rem;
-  }
-
-  .sp-reason {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: #475569;
-  }
-  .sp-reason svg { color: #6366f1; }
 </style>

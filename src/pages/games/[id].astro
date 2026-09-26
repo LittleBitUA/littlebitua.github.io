@@ -1,97 +1,89 @@
 ---
+// ─── Game Page ─────────────────────────────────────────────────
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/Header.astro";
-import Footer from "../../components/Footer.astro";
+import GameCard from "../../components/GameCard.astro";
+import StageList from "../../components/StageList.astro";
 import Tag from "../../components/Tag.astro";
-import { games, STATUS_LABELS } from "../../data/games";
+import { games } from "../../data/catalog";
 import { SITE_URL, generateGameStructuredData, generateBreadcrumbs, generateKeywords } from "../../utils/seo";
-import { getProgressPalette } from "../../utils/statusColors";
 import { seriesSlug, hasSeriesPage } from "../../utils/series";
+import {
+  statusMeta, sortByStatus, isFundraising, fundraisingPercent, translationPercent,
+  earlyAccessReason, formatMoney, formatDate, stageName,
+} from "../../utils/status";
 import { marked } from "marked";
 
 export function getStaticPaths() {
-  return games.map((game) => ({
-    params: { id: game.id },
-    props: { game },
-  }));
+  return games.map((game) => ({ params: { id: game.id }, props: { game } }));
 }
 
 const { game } = Astro.props;
 
+// ── SEO ──
 const canonicalUrl = `${SITE_URL}/games/${game.id}/`;
-const pageTitle = `Українська локалізація ${game.title} — Little Bit`;
-const pageDesc = game.description.length > 155
-  ? game.description.slice(0, 152) + "..."
-  : game.description;
-const keywords = generateKeywords(game);
-
+const pageTitle = `Українська локалізація ${game.title} — «Little Bit»`;
+const pageDesc = game.description.length > 155 ? game.description.slice(0, 152) + "…" : game.description;
 const { "@context": _c1, ...gameSchema } = JSON.parse(generateGameStructuredData(game));
-const { "@context": _c2, ...breadcrumbSchema } = JSON.parse(generateBreadcrumbs([
-  { name: "Головна", url: `${SITE_URL}/` },
-  { name: "Локалізації", url: `${SITE_URL}/#projects` },
-  { name: game.title, url: canonicalUrl },
-]));
-const structuredData = JSON.stringify({
-  "@context": "https://schema.org",
-  "@graph": [gameSchema, breadcrumbSchema],
-});
+const { "@context": _c2, ...breadcrumbSchema } = JSON.parse(
+  generateBreadcrumbs([
+    { name: "Головна", url: `${SITE_URL}/` },
+    { name: "Локалізації", url: `${SITE_URL}/games/` },
+    { name: game.title, url: canonicalUrl },
+  ]),
+);
+const structuredData = JSON.stringify({ "@context": "https://schema.org", "@graph": [gameSchema, breadcrumbSchema] });
 
-const filledCubes = Math.floor(game.progress / 5);
-const cubePalette = getProgressPalette(game.status, game.progress);
+// ── Стан ──
+const st = statusMeta(game.status);
+const pct = translationPercent(game);
+const fundActive = isFundraising(game);
+const fundPct = fundraisingPercent(game);
+const fundUrl = game.fundraisingUrl ?? game.donateUrl;
+const ea = earlyAccessReason(game);
+const showSeries = hasSeriesPage(game.series);
 
-const topPillColor =
-  game.status === "done" ? "text-emerald-300 bg-emerald-950/60 border-emerald-700/40" :
-  game.status === "early-access" ? "text-sky-300 bg-sky-950/60 border-sky-700/40" :
-  game.status === "in-progress" ? "text-violet-300 bg-violet-950/60 border-violet-700/40" :
-  game.status === "fundraising" ? "text-amber-300 bg-amber-950/60 border-amber-700/40" :
-  "text-slate-300 bg-slate-900/60 border-slate-600/40";
+// ── Контент ──
+const installHtml = game.installInstructions ? String(await marked.parse(game.installInstructions)) : null;
+const ytId = game.videoUrl?.match(/(?:[?&]v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/)?.[1];
+const videoUrl = ytId ? `https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1` : null;
 
-const fundraisingActive = !!game.fundraisingGoal && !game.fundraisingCompleted;
-const fundraisingPercent = game.fundraisingGoal
-  ? Math.min(Math.round(((game.fundraisingRaised ?? 0) / game.fundraisingGoal) * 100), 100)
-  : 0;
+const facts = [
+  { label: "Статус", value: st.label },
+  { label: "Версія", value: game.version ? `v${game.version}` : null },
+  { label: "Реліз перекладу", value: game.releaseDate && game.status === "done" ? formatDate(game.releaseDate) : null },
+  { label: "Оновлено", value: game.lastUpdate ? formatDate(game.lastUpdate) : null },
+  { label: "Платформи", value: game.platform?.join(" · ") ?? null },
+  { label: "Рік гри", value: game.gameYear ? String(game.gameYear) : null },
+].filter((f) => f.value);
 
-function formatDate(d: string) {
-  return new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
-}
+const statsRows = [
+  { label: "рядків загалом", value: game.stats?.totalLines },
+  { label: "рядків перекладено", value: game.stats?.translatedLines },
+  { label: "слів", value: game.stats?.totalWords },
+  { label: "символів", value: game.stats?.totalCharacters },
+].filter((s) => s.value);
 
-// Prev / Next navigation (same sort order as main page)
-const STATUS_PRIORITY: Record<string, number> = { done: 0, "early-access": 1, "in-progress": 2, fundraising: 3 };
-const sortedForNav = [...games].sort((a, b) => {
-  const pa = STATUS_PRIORITY[a.status] ?? 9;
-  const pb = STATUS_PRIORITY[b.status] ?? 9;
-  if (pa !== pb) return pa - pb;
-  return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
-});
-const navIdx = sortedForNav.findIndex(g => g.id === game.id);
-const prevGame = navIdx > 0 ? sortedForNav[navIdx - 1] : null;
-const nextGame = navIdx < sortedForNav.length - 1 ? sortedForNav[navIdx + 1] : null;
+// Розділи нумеруються автоматично — лише ті, що реально показані
+const sections = [
+  { id: "progress", title: "Стан локалізації", show: true },
+  { id: "fund", title: "Збір коштів", show: fundActive },
+  { id: "shots", title: "Скріншоти перекладу", show: !!game.screenshots?.length },
+  { id: "video", title: "Відео", show: !!videoUrl },
+  { id: "install", title: "Як встановити", show: !!installHtml },
+  { id: "faq", title: "Часті питання", show: !!game.faq?.length },
+].filter((s) => s.show);
+const num = (id: string) => String(sections.findIndex((s) => s.id === id) + 1).padStart(2, "0");
 
-// YouTube → privacy-enhanced embed URL
-function ytEmbed(url: string): string | null {
-  const m = url.match(/(?:[?&]v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
-  return m ? `https://www.youtube-nocookie.com/embed/${m[1]}?rel=0&modestbranding=1` : null;
-}
-const videoEmbedUrl = game.videoUrl ? ytEmbed(game.videoUrl) : null;
+// ── Навігація ──
+const ordered = sortByStatus(games);
+const idx = ordered.findIndex((g) => g.id === game.id);
+const prev = idx > 0 ? ordered[idx - 1] : null;
+const next = idx < ordered.length - 1 ? ordered[idx + 1] : null;
 
-// Render install instructions markdown → HTML
-const installHtml = game.installInstructions
-  ? String(await marked.parse(game.installInstructions))
-  : null;
-
-// Sidebar donate CTA: show for games without downloadUrl and without active fundraise
-const showDonateOnly = !game.downloadUrl && !fundraisingActive && !!game.donateUrl;
-
-// ── Progress block: показуємо кожне число рівно один раз ──
-// Раніше гра з однією стадією («Переклад 60%») малювала 60% тричі:
-// заголовний бар, куби «загальної готовності» й рядок розбивки.
-const stages = game.stageDetails ?? [];
-const xlatStage = stages.find((d) => /переклад/i.test(d.label)) ?? stages[0];
-const xlatPercent = xlatStage?.percent ?? game.progress;
-// Решта стадій — редактура, текстури, шрифти тощо
-const otherStages = stages.filter((d) => d !== xlatStage);
-// Куби загальної готовності мають сенс лише коли вона відрізняється від перекладу
-const showOverall = game.progress !== xlatPercent;
+const related = games
+  .filter((g) => g.id !== game.id && ((game.series && g.series === game.series) || g.tags.some((t) => game.tags.includes(t))))
+  .sort((a, b) => Number(b.series === game.series) - Number(a.series === game.series))
+  .slice(0, 5);
 ---
 
 <Layout
@@ -99,518 +91,439 @@ const showOverall = game.progress !== xlatPercent;
   description={pageDesc}
   ogImage={game.cover}
   canonicalUrl={canonicalUrl}
-  keywords={keywords}
+  keywords={generateKeywords(game)}
   structuredData={structuredData}
 >
-  <Header />
+  <div class="backdrop" aria-hidden="true"><img src={game.cover} alt="" /></div>
 
-  <main class="flex-1 pt-28 pb-20 relative">
+  <div class="page container game" style={`--state:${st.color}`}>
+    <nav aria-label="Навігація">
+      <ol class="crumbs">
+        <li><a href="/">Головна</a></li>
+        <li class="sep" aria-hidden="true">/</li>
+        <li><a href="/games/">Каталог</a></li>
+        {showSeries && (
+          <>
+            <li class="sep" aria-hidden="true">/</li>
+            <li><a href={`/games/series/${seriesSlug(game.series!)}/`}>{game.series}</a></li>
+          </>
+        )}
+        <li class="sep" aria-hidden="true">/</li>
+        <li aria-current="page">{game.title}</li>
+      </ol>
+    </nav>
 
-    <!-- ── Покращення 3: Blurred cover background ──────────────────
-         Обкладинка гри розмивається і стає ледь помітним фоном вгорі.
-         Щоб вимкнути: видали цей <div> блок. -->
-    <div
-      class="pointer-events-none select-none absolute inset-x-0 top-0 h-[65vh] overflow-hidden"
-      aria-hidden="true"
-      style="z-index: 0;
-             -webkit-mask-image: linear-gradient(to bottom, black 0%, black 35%, transparent 100%);
-             mask-image: linear-gradient(to bottom, black 0%, black 35%, transparent 100%);"
-    >
-      <img
-        src={game.cover}
-        alt=""
-        class="w-full h-full object-cover object-top"
-        style="filter: blur(72px) saturate(0.5); opacity: 0.13; transform: scale(1.25);"
-        loading="eager"
-        decoding="async"
-      />
-      <!-- Затемнення НЕ доходить до непрозорого — інакше шар обривався
-           різкою горизонтальною межею там, де закінчувались його 65vh.
-           Плавне згасання тепер робить mask-image на контейнері. -->
-      <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(7,11,20,0.45) 0%, rgba(7,11,20,0.8) 70%, rgba(7,11,20,0.8) 100%);"></div>
-    </div>
-    <!-- ── кінець Покращення 3 ──────────────────────────────────── -->
-
-    <div class="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8" style="z-index: 1;">
-
-      <!-- Breadcrumbs -->
-      <nav class="mb-8" aria-label="Навігація">
-        <ol class="flex items-center gap-1.5 text-xs text-slate-500 flex-wrap">
-          <li><a href="/" class="hover:text-indigo-400 transition-colors">Головна</a></li>
-          <li aria-hidden="true">
-            <svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </li>
-          <li><a href="/#projects" class="hover:text-indigo-400 transition-colors">Локалізації</a></li>
-          <li aria-hidden="true">
-            <svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
-          </li>
-          {hasSeriesPage(game.series) && (
-            <>
-              <li>
-                <a href={`/games/series/${seriesSlug(game.series!)}/`} class="hover:text-indigo-400 transition-colors">
-                  {game.series}
-                </a>
-              </li>
-              <li aria-hidden="true">
-                <svg class="w-3 h-3 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </li>
-            </>
-          )}
-          <li class="text-slate-300 font-semibold truncate max-w-[220px]">{game.title}</li>
-        </ol>
-      </nav>
-
-      <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-8 items-start">
-
-        <!-- Cover column -->
-        <div class="shrink-0" data-animate>
-          <div class="relative aspect-[2/3] rounded-2xl overflow-hidden lb-glass mb-4">
-            <img
-              src={game.cover}
-              alt={`Обкладинка ${game.title}`}
-              class="absolute inset-0 w-full h-full object-cover"
-              loading="eager"
-              decoding="async"
-            />
-            <div class="absolute top-2.5 left-2.5 z-10">
-              <span class={`inline-flex items-center gap-1 px-2.5 py-1 text-[10px] font-bold rounded-full border ${topPillColor}`}>
-                {game.status === "done" && (
-                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-                {(game.status === "early-access" || game.status === "in-progress") && (
-                  <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
-                )}
-                {game.status === "fundraising" && <span class="text-xs font-bold leading-none">₴</span>}
-                {STATUS_LABELS[game.status]}
-              </span>
-            </div>
-            <div class="absolute top-2.5 right-2.5 z-10">
-              <span
-                class="px-2.5 py-1 text-xs font-extrabold tabular-nums text-white rounded-lg"
-                style="background: rgba(15,23,42,0.78); box-shadow: 0 0 0 1px rgba(255,255,255,0.18) inset;"
-              >
-                {game.progress}<span class="text-[10px] font-medium opacity-70">%</span>
-              </span>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            {game.downloadUrl && (
-              <a
-                href={game.downloadUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="lb-btn !py-2.5 !text-sm"
-                style="color:#4ade80; background: rgba(34,197,94,0.18); border: 1px solid rgba(34,197,94,0.45);"
-              >
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                </svg>
-                Завантажити локалізацію
-              </a>
-            )}
-            {game.steamUrl && (
-              <a
-                href={game.steamUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="lb-btn lb-btn--ghost !py-2.5 !text-sm"
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.455 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.252 0-2.265-1.014-2.265-2.265z"/>
-                </svg>
-                Відкрити в Steam
-              </a>
-            )}
-            {fundraisingActive && game.donateUrl && (
-              <a
-                href={game.donateUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="lb-btn !py-2.5 !text-sm"
-                style="color:#fbbf24; background: rgba(245,158,11,0.18); border: 1px solid rgba(245,158,11,0.45);"
-              >
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-                Підтримати збір
-              </a>
-            )}
-            {showDonateOnly && (
-              <a
-                href={game.donateUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="lb-btn !py-2.5 !text-sm"
-                style="color:#a78bfa; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.35);"
-              >
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-                Підтримати переклад
-              </a>
-            )}
-            <a href="/#projects" class="lb-btn lb-btn--ghost !py-2 !text-xs">
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-              Усі локалізації
-            </a>
-          </div>
-        </div>
-
-        <!-- Info column -->
-        <div data-animate>
-          <!-- Префікс лишається в h1 для SEO, але візуально підпорядкований -->
-          <h1 class="mb-3">
-            <span class="block text-[0.7rem] font-bold uppercase tracking-[0.12em] text-indigo-400 mb-1.5">
-              Українська локалізація
-            </span>
-            <span class="block text-2xl sm:text-3xl font-black text-slate-100 leading-tight">
-              {game.title}
-            </span>
-          </h1>
-
-          <div class="flex flex-wrap gap-1.5 mb-3">
-            {game.tags.map((tag) => <Tag label={tag} />)}
-          </div>
-
-          <!-- Metadata row: year, platform, version, release date -->
-          {(game.gameYear || game.platform?.length || game.version || (game.releaseDate && game.status === "done")) && (
-            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mb-5">
-              {game.gameYear && (
-                <span class="text-[11px] text-slate-500 font-medium">{game.gameYear} р.</span>
-              )}
-              {game.platform && game.platform.length > 0 && (
-                <span class="text-[11px] text-slate-500 font-medium">{game.platform.join(" · ")}</span>
-              )}
-              {game.version && (
-                <span class="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-400 bg-indigo-950/50 border border-indigo-700/30 px-2 py-0.5 rounded-full">
-                  v{game.version}
-                </span>
-              )}
-              {game.releaseDate && game.status === "done" && (
-                <span class="text-[11px] text-emerald-500 font-medium">Реліз: {formatDate(game.releaseDate)}</span>
-              )}
-            </div>
-          )}
-
-          <!-- Progress -->
-          <div class="lb-glass p-4 rounded-2xl mb-4">
-            <!-- Головна метрика — прогрес перекладу -->
-            <div class="flex items-baseline justify-between mb-2">
-              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Прогрес перекладу</span>
-              <span class="text-2xl font-black tabular-nums text-indigo-300 leading-none">{xlatPercent}<span class="text-sm font-bold opacity-60">%</span></span>
-            </div>
-            <div class="h-2.5 rounded-full bg-white/10 overflow-hidden">
-              <div
-                class="h-full rounded-full transition-all duration-500"
-                style={`width: ${xlatPercent}%; background: linear-gradient(90deg,#818cf8,#6366f1);`}
-              ></div>
-            </div>
-
-            {/* Загальна готовність — лише коли відрізняється від перекладу */}
-            {showOverall && (
-              <>
-                <div class="flex items-center justify-between mb-1.5 mt-4 pt-3 border-t border-white/8">
-                  <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Загальна готовність</span>
-                  <span class="text-xs font-extrabold tabular-nums text-slate-400">{game.progress}%</span>
-                </div>
-                <div class="flex items-center gap-[2px]">
-                  {Array.from({ length: 20 }).map((_, i) => {
-                    const isFull = i < filledCubes;
-                    const isNext = i === filledCubes && game.progress < 100;
-                    return (
-                      <div class="flex-1 h-2 rounded-sm bg-white/10 overflow-hidden relative">
-                        {isFull && <div class="absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
-                        {isNext && <div class="lb-cube-next absolute inset-0" style={`background: ${cubePalette.solid};`}></div>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-
-            {/* Інші стадії — переклад уже показано вище, тому його тут немає */}
-            {otherStages.length > 0 && (
-              <div class="space-y-1.5 mt-4 pt-3 border-t border-white/8">
-                {otherStages.map((detail) => (
-                  <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center justify-between gap-1.5 flex-shrink-0 w-[110px] px-2 py-0.5 rounded-full bg-slate-800/60 border border-white/10 text-slate-400">
-                      <span class="text-[10px] font-semibold truncate">{detail.label}</span>
-                      <span class="text-[10px] font-bold tabular-nums">{detail.percent}%</span>
-                    </span>
-                    <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        class="h-full rounded-full transition-all duration-500"
-                        style={`width: ${detail.percent}%; background: ${detail.percent >= 100 ? "linear-gradient(90deg,#14b8a6,#0d9488)" : detail.percent > 0 ? "linear-gradient(90deg,#5eead4,#14b8a6)" : "transparent"};`}
-                      ></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <!-- Description -->
-          <div class="lb-glass p-4 rounded-2xl mb-4">
-            <p class="text-sm text-slate-300 leading-relaxed">{game.detailedDescription ?? game.description}</p>
-          </div>
-
-          <!-- Fundraising -->
-          {fundraisingActive && game.fundraisingGoal && (
-            <div class="lb-glass p-4 rounded-2xl mb-4" style="border: 1px solid rgba(245,158,11,0.25);">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Збір коштів</span>
-                <span class="text-xs font-semibold text-amber-300 tabular-nums">
-                  {(game.fundraisingRaised ?? 0).toLocaleString("uk-UA")} / {game.fundraisingGoal.toLocaleString("uk-UA")} ₴ ({fundraisingPercent}%)
-                </span>
-              </div>
-              <div class="h-2 rounded-full bg-white/10 overflow-hidden mb-3">
-                <div
-                  class="h-full rounded-full"
-                  style={`width: ${fundraisingPercent}%; background: linear-gradient(90deg,#f59e0b,#fbbf24);`}
-                ></div>
-              </div>
-              {game.fundraisingDescription && (
-                <p class="text-xs text-slate-400 leading-relaxed">{game.fundraisingDescription}</p>
-              )}
-            </div>
-          )}
-
-          <!-- Stats -->
-          {game.stats && (game.stats.totalLines || game.stats.translatedLines) && (
-            <div class="lb-glass p-4 rounded-2xl mb-4">
-              <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-3">Обсяг перекладу</span>
-              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {game.stats.totalLines && (
-                  <div>
-                    <div class="text-xl font-extrabold tabular-nums text-slate-100">
-                      {game.stats.totalLines.toLocaleString("uk-UA")}
-                    </div>
-                    <div class="text-xs text-slate-500 mt-0.5">рядків загалом</div>
-                  </div>
-                )}
-                {game.stats.translatedLines && (
-                  <div>
-                    <div class="text-xl font-extrabold tabular-nums text-teal-300">
-                      {game.stats.translatedLines.toLocaleString("uk-UA")}
-                    </div>
-                    <div class="text-xs text-slate-500 mt-0.5">перекладено</div>
-                  </div>
-                )}
-                {game.stats.totalWords && (
-                  <div>
-                    <div class="text-xl font-extrabold tabular-nums text-slate-100">
-                      {Math.round(game.stats.totalWords / 1000)}k
-                    </div>
-                    <div class="text-xs text-slate-500 mt-0.5">слів</div>
-                  </div>
-                )}
-                {game.stats.totalCharacters && (
-                  <div>
-                    <div class="text-xl font-extrabold tabular-nums text-slate-100">
-                      {Math.round(game.stats.totalCharacters / 1000)}k
-                    </div>
-                    <div class="text-xs text-slate-500 mt-0.5">символів</div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-        </div>
+    <!-- ── Hero ── -->
+    <section class="intro">
+      <div class="poster">
+        <img src={game.cover} alt={game.title} width="360" height="540" loading="eager" fetchpriority="high" />
+        <span class="status poster__status">{st.label}</span>
       </div>
 
-      <!-- ── Extended sections (full-width below the two-column grid) ── -->
+      <div class="intro__copy">
+        <p class="intro__kicker">Українська локалізація</p>
+        <h1>{game.title}</h1>
+        <p class="intro__text">{game.detailedDescription ?? game.description}</p>
 
-      {/* Screenshots */}
-      {game.screenshots && game.screenshots.length > 0 && (
-        <section class="mt-10" data-animate>
-          <h2 class="lb-section-label">Скріншоти перекладу</h2>
-          <div class="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1 snap-x snap-mandatory">
-            {game.screenshots.map((src, i) => (
-              <a
-                href={src}
-                target="_blank"
-                rel="noopener"
-                class="shrink-0 rounded-xl overflow-hidden lb-lift block snap-start"
-                style="width: 260px;"
-              >
-                <img
-                  src={src}
-                  alt={`Скріншот перекладу ${i + 1}`}
-                  class="object-cover w-full"
-                  style="height: 160px;"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </a>
-            ))}
+        {game.tags.length > 0 && <div class="intro__tags">{game.tags.map((t) => <Tag label={t} />)}</div>}
+
+        <div class="intro__progress">
+          <span>{fundActive ? "Зібрано" : "Переклад тексту"}</span>
+          <strong class="num">{fundActive ? fundPct : pct}<sup>%</sup></strong>
+        </div>
+        <div class="bar intro__bar" style={fundActive ? "--state:var(--st-fund)" : pct >= 100 ? "--state:var(--st-done)" : undefined}>
+          <i style={`width:${fundActive ? fundPct : pct}%`}></i>
+        </div>
+
+        <div class="intro__actions">
+          {game.downloadUrl && (game.status === "done" || game.status === "early-access") ? (
+            <a class="btn btn--primary" href={game.downloadUrl} target="_blank" rel="noopener noreferrer">Встановити через LBK Launcher</a>
+          ) : fundActive && fundUrl ? (
+            <a class="btn btn--primary" href={fundUrl} target="_blank" rel="noopener noreferrer">Підтримати збір</a>
+          ) : null}
+          {game.steamUrl && <a class="btn" href={game.steamUrl} target="_blank" rel="noopener noreferrer">Сторінка в Steam</a>}
+          {!fundActive && game.donateUrl && <a class="btn" href={game.donateUrl} target="_blank" rel="noopener noreferrer">Підтримати команду</a>}
+        </div>
+      </div>
+    </section>
+
+    {ea && (
+      <aside class="ea" aria-labelledby="ea-title">
+        <div class="ea__head">
+          <span class="ea__badge">Ранній доступ</span>
+          <h2 id="ea-title">
+            {ea.textComplete ? "Текст перекладено повністю — грати можна вже зараз" : "Грати можна вже зараз"}
+          </h2>
+        </div>
+        <p class="ea__text">
+          Ранній доступ не означає «сирий» переклад. Ви отримуєте все, що вже готово, а решту етапів лаунчер
+          довантажить автоматично, щойно вони завершаться.
+        </p>
+        <div class="ea__cols">
+          {ea.done.length > 0 && (
+            <div class="ea__col is-done">
+              <p>Уже готово</p>
+              <ul>{ea.done.map((s) => <li>{stageName(s)}</li>)}</ul>
+            </div>
+          )}
+          {ea.pending.length > 0 && (
+            <div class="ea__col is-pending">
+              <p>Ще триває</p>
+              <ul>{ea.pending.map((s) => <li>{stageName(s)}</li>)}</ul>
+            </div>
+          )}
+        </div>
+      </aside>
+    )}
+
+    {facts.length > 0 && (
+      <dl class="facts">
+        {facts.map((f) => (
+          <div>
+            <dt>{f.label}</dt>
+            <dd>{f.value}</dd>
           </div>
+        ))}
+      </dl>
+    )}
+
+    <!-- ── Body ── -->
+    <div class="body">
+      <div class="body__main">
+        <section class="block" id="progress">
+          <h2 class="block__title"><span class="num">{num("progress")}</span>Стан локалізації</h2>
+          <StageList game={game} />
         </section>
-      )}
 
-      {/* Video */}
-      {videoEmbedUrl && (
-        <section class="mt-10" data-animate>
-          <h2 class="lb-section-label">Відео</h2>
-          <div class="aspect-video rounded-2xl overflow-hidden lb-glass">
-            <iframe
-              src={videoEmbedUrl}
-              title={`Відео: ${game.title}`}
-              class="w-full h-full border-0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen
-              loading="lazy"
-            ></iframe>
-          </div>
+        {fundActive && game.fundraisingGoal && (
+          <section class="block fund" id="fund">
+            <h2 class="block__title"><span class="num">{num("fund")}</span>Збір коштів</h2>
+            <div class="fund__numbers">
+              <strong class="num">{formatMoney(game.fundraisingRaised ?? 0)}</strong>
+              <span>зібрано з {formatMoney(game.fundraisingGoal)}</span>
+              <b class="num">{fundPct}%</b>
+            </div>
+            <div class="bar" style="--state:var(--st-fund)"><i style={`width:${fundPct}%`}></i></div>
+            {game.fundraisingDescription && <p class="fund__text">{game.fundraisingDescription}</p>}
+            <p class="fund__note">
+              <b>Прозоро:</b> усі кошти з цього збору надсилаються перекладачам, які працюють саме над {game.title}.
+            </p>
+            {fundUrl && <a class="btn btn--primary" href={fundUrl} target="_blank" rel="noopener noreferrer">Підтримати збір</a>}
+          </section>
+        )}
+
+        {game.screenshots && game.screenshots.length > 0 && (
+          <section class="block" id="shots">
+            <h2 class="block__title"><span class="num">{num("shots")}</span>Скріншоти перекладу</h2>
+            <div class="shots">
+              {game.screenshots.map((src, i) => (
+                <a href={src} target="_blank" rel="noopener noreferrer">
+                  <img src={src} alt={`Скріншот перекладу ${i + 1}`} loading="lazy" />
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {videoUrl && (
+          <section class="block" id="video">
+            <h2 class="block__title"><span class="num">{num("video")}</span>Відео</h2>
+            <div class="video">
+              <iframe
+                src={videoUrl}
+                title={`Відео: ${game.title}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                loading="lazy"
+              ></iframe>
+            </div>
+          </section>
+        )}
+
+        {installHtml && (
+          <section class="block" id="install">
+            <h2 class="block__title"><span class="num">{num("install")}</span>Як встановити</h2>
+            <div class="prose" set:html={installHtml} />
+          </section>
+        )}
+
+        {game.faq && game.faq.length > 0 && (
+          <section class="block" id="faq">
+            <h2 class="block__title"><span class="num">{num("faq")}</span>Часті питання</h2>
+            <div class="qa">
+              {game.faq.map((item) => (
+                <details>
+                  <summary>{item.question}<i aria-hidden="true">+</i></summary>
+                  <p>{item.answer}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      <aside class="body__side">
+        {statsRows.length > 0 && (
+          <section>
+            <h2 class="side__title">Обсяг роботи</h2>
+            <dl class="side__stats">
+              {statsRows.map((s) => (
+                <div>
+                  <dd class="num">{s.value!.toLocaleString("uk-UA")}</dd>
+                  <dt>{s.label}</dt>
+                </div>
+              ))}
+            </dl>
+          </section>
+        )}
+
+        {game.team && game.team.length > 0 && (
+          <section>
+            <h2 class="side__title">Команда</h2>
+            <ul class="side__list">
+              {game.team.map((m) => (
+                <li>
+                  {m.link ? <a href={m.link} target="_blank" rel="noopener noreferrer">{m.name}</a> : <strong>{m.name}</strong>}
+                  <span>{m.role}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section>
+          <h2 class="side__title">Посилання</h2>
+          <ul class="side__list side__links">
+            {game.downloadUrl && <li><a href={game.downloadUrl} target="_blank" rel="noopener noreferrer">LBK Launcher</a></li>}
+            {game.steamUrl && <li><a href={game.steamUrl} target="_blank" rel="noopener noreferrer">Steam</a></li>}
+            {game.donateUrl && <li><a href={game.donateUrl} target="_blank" rel="noopener noreferrer">Підтримати</a></li>}
+            {showSeries && <li><a href={`/games/series/${seriesSlug(game.series!)}/`}>Уся серія {game.series}</a></li>}
+          </ul>
         </section>
-      )}
-
-      {/* Installation instructions */}
-      {installHtml && (
-        <section class="mt-10" data-animate>
-          <h2 class="lb-section-label">Як встановити</h2>
-          <div class="lb-glass p-5 sm:p-6 rounded-2xl lb-markdown">
-            <Fragment set:html={installHtml} />
-          </div>
-        </section>
-      )}
-
-      {/* Team */}
-
-      {/* Per-game FAQ */}
-      {game.faq && game.faq.length > 0 && (
-        <section class="mt-10" data-animate>
-          <h2 class="lb-section-label">Часті питання</h2>
-          <div class="space-y-2">
-            {game.faq.map(item => (
-              <details class="lb-glass rounded-xl group">
-                <summary class="flex items-center justify-between gap-3 px-4 py-3.5 cursor-pointer list-none select-none text-slate-100 font-semibold text-sm">
-                  {item.question}
-                  <svg class="w-4 h-4 shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-180"
-                       fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-                  </svg>
-                </summary>
-                <p class="px-4 pb-4 text-sm text-slate-400 leading-relaxed border-t border-white/6 pt-3">{item.answer}</p>
-              </details>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <!-- Prev / Next navigation -->
-      <nav class="mt-12 pt-8 border-t border-white/8 flex items-stretch justify-between gap-3" aria-label="Між іграми">
-        {prevGame ? (
-          <a href={`/games/${prevGame.id}/`}
-             class="lb-glass flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:text-white transition-colors lb-lift max-w-[48%]">
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-            </svg>
-            <span class="truncate">{prevGame.title}</span>
-          </a>
-        ) : <div />}
-        {nextGame ? (
-          <a href={`/games/${nextGame.id}/`}
-             class="lb-glass flex items-center gap-2.5 px-4 py-3 rounded-xl text-sm font-semibold text-slate-400 hover:text-white transition-colors lb-lift max-w-[48%] ml-auto text-right">
-            <span class="truncate">{nextGame.title}</span>
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-            </svg>
-          </a>
-        ) : <div />}
-      </nav>
-
+      </aside>
     </div>
-  </main>
 
-  <Footer />
+    {related.length > 0 && (
+      <section class="related">
+        <header class="section-head">
+          <div>
+            <span class="eyebrow">Схожі проєкти</span>
+            <h2>Ще локалізації</h2>
+          </div>
+          <a href="/games/" class="link">Увесь каталог</a>
+        </header>
+        <div class="game-grid">{related.map((g) => <GameCard game={g} />)}</div>
+      </section>
+    )}
+
+    <nav class="pager" aria-label="Інші ігри">
+      {prev ? (
+        <a href={`/games/${prev.id}/`} rel="prev"><small>Попередня</small><span>{prev.title}</span></a>
+      ) : <span></span>}
+      {next && (
+        <a href={`/games/${next.id}/`} rel="next" class="pager__next"><small>Наступна</small><span>{next.title}</span></a>
+      )}
+    </nav>
+  </div>
 </Layout>
 
 <style>
-  .lb-cube-next {
-    animation: lbCubeNext 1.6s ease-in-out infinite;
-    pointer-events: none;
-  }
-  @keyframes lbCubeNext {
-    0%, 100% { opacity: 0.18; }
-    50% { opacity: 0.55; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .lb-cube-next { animation: none; opacity: 0.3; }
-  }
+  /* Розмита обкладинка як атмосфера верхньої частини */
+  .backdrop { position: absolute; inset: 0 0 auto; z-index: -1; height: 720px; overflow: hidden; pointer-events: none; }
+  .backdrop img { width: 100%; height: 100%; object-fit: cover; filter: blur(48px) saturate(0.6); opacity: 0.18; scale: 1.15; }
+  .backdrop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(8, 9, 11, 0.3), var(--bg) 85%); }
 
-  .lb-section-label {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #64748b;
-    margin-bottom: 0.75rem;
-  }
+  .game { position: relative; }
 
-  /* Markdown render styles — :global() needed because set:html bypasses Astro scoping */
-  .lb-markdown :global(h2) {
-    font-size: 1rem;
+  /* ── Intro ── */
+  .intro {
+    display: grid;
+    gap: 32px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .poster { position: relative; width: min(100%, 320px); aspect-ratio: 2 / 3; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+  .poster img { width: 100%; height: 100%; object-fit: cover; }
+  .poster__status { position: absolute; top: 12px; left: 12px; }
+
+  .intro__copy { min-width: 0; }
+  .intro__kicker { color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+  .intro h1 {
+    margin: 14px 0 20px;
+    font-size: clamp(2rem, 4.6vw, 4.5rem);
     font-weight: 800;
-    color: #f1f5f9;
-    margin: 1.5rem 0 0.5rem;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    overflow-wrap: break-word;
   }
-  .lb-markdown :global(h2:first-child) { margin-top: 0; }
-  .lb-markdown :global(h3) {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: #a5b4fc;
-    margin: 1.1rem 0 0.35rem;
-  }
-  .lb-markdown :global(p) {
-    font-size: 0.875rem;
-    color: #94a3b8;
-    line-height: 1.65;
-    margin: 0.4rem 0;
-  }
-  .lb-markdown :global(ol) {
-    list-style-type: decimal;
-    padding-left: 1.4rem;
-    margin: 0.5rem 0;
-  }
-  .lb-markdown :global(ul) {
-    list-style-type: disc;
-    padding-left: 1.4rem;
-    margin: 0.5rem 0;
-  }
-  .lb-markdown :global(li) {
-    font-size: 0.875rem;
-    color: #94a3b8;
-    line-height: 1.65;
-    margin: 0.3rem 0;
-  }
-  .lb-markdown :global(a) {
-    color: #818cf8;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-  .lb-markdown :global(a:hover) { color: #a5b4fc; }
-  .lb-markdown :global(strong) { color: #e2e8f0; font-weight: 700; }
-  .lb-markdown :global(code) {
-    font-size: 0.8em;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 4px;
-    padding: 0.1em 0.35em;
-    color: #c4b5fd;
-  }
+  .intro__text { max-width: 70ch; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+  .intro__tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 20px; }
 
-  /* Screenshots horizontal scroll */
-  .snap-x { scroll-behavior: smooth; }
+  .intro__progress {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .intro__progress span { color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .intro__progress strong { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; line-height: 0.9; }
+  .intro__progress sup { margin-left: 4px; color: var(--accent); font-size: 0.35em; vertical-align: top; }
+  .intro__bar { height: 4px; margin-top: 14px; }
+
+  .intro__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+
+  /* ── Early access explainer ── */
+  .ea {
+    margin-top: 40px;
+    padding: clamp(20px, 3vw, 32px);
+    background: #0c1119;
+    border: 1px solid rgba(92, 169, 255, 0.35);
+    border-left: 4px solid var(--st-early);
+  }
+  .ea__head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .ea__badge {
+    padding: 6px 10px;
+    background: var(--st-early);
+    color: var(--on-accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ea h2 { font-family: var(--font-body); font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 800; letter-spacing: -0.01em; }
+  .ea__text { max-width: 70ch; margin-top: 14px; color: var(--muted); }
+  .ea__cols { display: flex; flex-wrap: wrap; gap: 16px 48px; margin-top: 20px; }
+  .ea__col p { margin-bottom: 8px; color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ea__col ul { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ea__col li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    font-size: 13px;
+    font-weight: 800;
+  }
+  .ea__col li::before { content: ""; width: 8px; height: 8px; }
+  .is-done li { color: var(--st-done); border-color: rgba(86, 211, 145, 0.4); }
+  .is-done li::before { background: var(--st-done); }
+  .is-pending li { color: var(--accent); border-color: rgba(242, 212, 72, 0.35); }
+  .is-pending li::before { border: 2px solid var(--accent); }
+
+  /* ── Facts ── */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 40px;
+    border-top: 1px solid var(--line);
+  }
+  .facts div { padding: 16px 16px 16px 0; border-bottom: 1px solid var(--line); min-width: 0; }
+  .facts dt { color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .facts dd { margin-top: 6px; font-weight: 800; overflow-wrap: anywhere; }
+
+  /* ── Body ── */
+  .body { display: grid; gap: 48px; margin-top: 64px; }
+  .body__main { min-width: 0; }
+  .block { padding-bottom: 48px; margin-bottom: 48px; border-bottom: 1px solid var(--line); }
+  .block__title {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 28px;
+    font-size: clamp(1.2rem, 2vw, 1.75rem);
+    text-transform: uppercase;
+  }
+  .block__title .num { color: var(--accent); font-size: 12px; }
+
+  .fund { padding: 28px; background: var(--surface); border: 1px solid rgba(242, 169, 75, 0.35); }
+  .fund__numbers { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin-bottom: 14px; }
+  .fund__numbers strong { color: var(--st-fund); font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 800; }
+  .fund__numbers span { color: var(--muted); }
+  .fund__numbers b { margin-left: auto; font-size: 1.25rem; }
+  .fund__text { max-width: 70ch; margin-top: 20px; color: var(--muted); }
+  .fund__note { max-width: 70ch; margin: 16px 0 24px; padding-left: 12px; border-left: 3px solid var(--st-fund); color: var(--muted); font-size: 14px; }
+  .fund__note b { color: var(--st-fund); }
+
+  .shots { display: grid; gap: 10px; }
+  .shots a { aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--line); }
+  .shots img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.35s ease; }
+  .shots a:hover img { transform: scale(1.02); }
+
+  .video { aspect-ratio: 16 / 9; border: 1px solid var(--line); background: #050607; }
+  .video iframe { width: 100%; height: 100%; border: 0; }
+
+  .prose { max-width: 70ch; color: var(--muted); line-height: 1.75; }
+  .prose :global(h2), .prose :global(h3) { margin: 28px 0 10px; color: var(--ink); font-family: var(--font-body); font-size: 1.1rem; font-weight: 800; }
+  .prose :global(p) { margin-bottom: 14px; }
+  .prose :global(a) { color: var(--accent); text-decoration: underline; }
+  .prose :global(ol), .prose :global(ul) { margin-bottom: 14px; padding-left: 22px; }
+  .prose :global(ol) { list-style: decimal; }
+  .prose :global(ul) { list-style: disc; }
+  .prose :global(li) { margin-bottom: 6px; }
+  .prose :global(code) { padding: 2px 6px; background: var(--surface-2); font-size: 0.9em; }
+
+  .qa { border-top: 1px solid var(--line); }
+  .qa details { border-bottom: 1px solid var(--line); }
+  .qa summary { display: flex; justify-content: space-between; gap: 20px; padding: 18px 0; font-weight: 800; }
+  .qa summary i { color: var(--accent); font-style: normal; transition: rotate 0.2s ease; }
+  .qa details[open] summary i { rotate: 45deg; }
+  .qa p { max-width: 70ch; padding-bottom: 18px; color: var(--muted); }
+
+  /* ── Sidebar ── */
+  .body__side { display: grid; gap: 32px; align-content: start; }
+  .side__title {
+    margin-bottom: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--faint);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .side__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .side__stats dd { font-size: 1.1rem; font-weight: 700; }
+  .side__stats dt { margin-top: 4px; color: var(--faint); font-size: 12px; }
+  .side__list li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .side__list li span { color: var(--faint); }
+  .side__list a { font-weight: 700; transition: color 0.18s ease; }
+  .side__list a:hover { color: var(--accent); }
+
+  /* ── Related & pager ── */
+  .related { margin-top: 32px; }
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 64px;
+  }
+  .pager a {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--line);
+    transition: border-color 0.18s ease;
+  }
+  .pager a:hover { border-color: var(--accent); }
+  .pager small { color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .pager a span { overflow: hidden; font-weight: 800; white-space: nowrap; text-overflow: ellipsis; }
+  .pager__next { text-align: right; }
+
+  @media (min-width: 640px) {
+    .shots { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .facts { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (min-width: 900px) {
+    .intro { grid-template-columns: 320px minmax(0, 1fr); gap: clamp(32px, 5vw, 72px); align-items: end; }
+    .facts { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  }
+  @media (min-width: 1100px) {
+    .body { grid-template-columns: minmax(0, 1fr) 300px; gap: 80px; }
+  }
 </style>

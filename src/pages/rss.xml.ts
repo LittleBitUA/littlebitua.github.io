@@ -37,9 +37,9 @@ export const GET: APIRoute = () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Little Bit — Оновлення локалізацій</title>
+    <title>«Little Bit» — Оновлення локалізацій</title>
     <link>${SITE_URL}/</link>
-    <description>Усі оновлення проєктів локалізації Little Bit</description>
+    <description>Усі оновлення проєктів локалізації «Little Bit»</description>
     <language>uk</language>
     <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
 ${items}

@@ -1,0 +1,75 @@
+---
+// ─── Status legend ─────────────────────────────────────────────
+// Пояснює, що означають статуси. Головне — «ранній доступ»:
+// у гру вже можна грати, а текст часто перекладений повністю.
+---
+
+<ul class="legend" aria-label="Що означають статуси">
+  <li style="--state:var(--st-done)">
+    <b>Готово</b>
+    <span>Усі етапи завершено. Фінальну версію локалізації опубліковано.</span>
+  </li>
+  <li style="--state:var(--st-early)" class="legend__key">
+    <b>Ранній доступ — уже можна грати</b>
+    <span>
+      Текст уже може бути перекладений на 100%. Ця позначка означає, що ще триває
+      <em>редагування</em> або <em>відтворення українських написів</em>. Подальші оновлення надходитимуть через лаунчер.
+    </span>
+  </li>
+  <li style="--state:var(--st-progress)">
+    <b>У роботі</b>
+    <span>Грати поки не можна. Перебіг кожного етапу можна відстежувати на картці проєкту.</span>
+  </li>
+  <li style="--state:var(--st-fund)" class="legend__fund">
+    <b>Прозорий збір коштів</b>
+    <span>
+      Зібрані кошти передають безпосередньо <em>перекладачам, які працюють саме над цією грою</em>.
+      Поточну й необхідну суми завжди видно на картці проєкту.
+    </span>
+  </li>
+  <li class="legend__stages">
+    <b>Етапи на картці</b>
+    <span class="legend__row"><i class="is-done"></i>етап готовий</span>
+    <span class="legend__row"><i class="is-active"></i>етап у роботі</span>
+    <span class="legend__row"><i></i>ще не розпочато</span>
+  </li>
+</ul>
+
+<style>
+  .legend {
+    display: grid;
+    gap: 1px;
+    margin-bottom: 20px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .legend li {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px 18px;
+    background: var(--bg);
+    border-top: 3px solid var(--state, transparent);
+  }
+  .legend b { font-size: 13px; font-weight: 800; }
+  .legend li > span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+  .legend em { font-style: normal; color: var(--ink); font-weight: 700; }
+  .legend li.legend__key { background: #0c1119; }
+  .legend__key b { color: var(--st-early); }
+  .legend__fund b { color: var(--st-fund); }
+
+  .legend li.legend__stages { border-top-color: transparent; }
+  .legend__row { display: flex; align-items: center; gap: 10px; }
+  .legend__row i { width: 28px; height: 3px; background: rgba(255, 255, 255, 0.18); }
+  .legend__row i.is-done { background: var(--st-done); }
+  .legend__row i.is-active { background: var(--accent); }
+
+  @media (min-width: 768px) {
+    .legend { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .legend li.legend__stages { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 24px; }
+  }
+  @media (min-width: 1200px) {
+    .legend { grid-template-columns: 0.9fr 1.4fr 0.9fr 1.3fr 0.8fr; }
+    .legend li.legend__stages { grid-column: auto; flex-direction: column; align-items: stretch; gap: 6px; }
+  }
+</style>

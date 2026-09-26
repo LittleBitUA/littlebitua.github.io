@@ -1,9 +1,8 @@
 ---
 // ─── Root Layout ───────────────────────────────────────────────
-// White liquid glass shell with SEO meta tags, fonts, and global styles.
-
 import "../styles/global.css";
-import "../styles/mgs3-theme.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
 import { SITE_URL, generateOrganizationData } from "../utils/seo";
 
 export interface Props {
@@ -25,6 +24,9 @@ const {
   keywords = "українська локалізація, переклад ігор, Little Bit, Yakuza, Judgment, No More Heroes, Metal Gear Solid, NieR, Uncharted, українською, локалізація відеоігор",
   structuredData,
 } = Astro.props;
+
+const FONTS =
+  "https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@600;700;800&display=swap";
 ---
 
 <!doctype html>
@@ -33,128 +35,94 @@ const {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#070b14" />
+    <meta name="theme-color" content="#08090b" />
     <meta name="color-scheme" content="dark" />
     <meta name="keywords" content={keywords} />
-    <meta name="author" content="Little Bit" />
+    <meta name="author" content="«Little Bit»" />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalUrl} />
 
-    <!-- Open Graph -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="uk_UA" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:site_name" content="Little Bit — Локалізації" />
+    <meta property="og:site_name" content="«Little Bit» — Локалізації" />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="LB — Перекладаємо те, у що самі граємо" />
+    <meta property="og:image:alt" content="«Little Bit» — перекладаємо те, у що самі граємо" />
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content="LB — Перекладаємо те, у що самі граємо" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/favicon.svg" />
-
-    <!-- RSS autodiscovery -->
-    <link
-      rel="alternate"
-      type="application/rss+xml"
-      title="Little Bit — Оновлення локалізацій"
-      href={`${SITE_URL}/rss.xml`}
-    />
+    <link rel="alternate" type="application/rss+xml" title="«Little Bit» — Оновлення локалізацій" href={`${SITE_URL}/rss.xml`} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap"
-      as="style"
-      onload="this.onload=null;this.rel='stylesheet'"
-    />
-    <noscript>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap"
-        rel="stylesheet"
-      />
-    </noscript>
+    <link rel="stylesheet" href={FONTS} />
 
     <title>{title}</title>
 
     <script is:inline type="application/ld+json" set:html={generateOrganizationData()} />
-    {structuredData && (
-      <script is:inline type="application/ld+json" set:html={structuredData} />
-    )}
+    {structuredData && <script is:inline type="application/ld+json" set:html={structuredData} />}
   </head>
 
-  <body class="min-h-screen flex flex-col overflow-x-hidden">
-    <!-- Ambient background — drifting colour blobs + grain + vignette -->
-    <div class="lb-ambient" aria-hidden="true">
-      <div class="lb-ambient__blob lb-ambient__blob--1"></div>
-      <div class="lb-ambient__blob lb-ambient__blob--2"></div>
-      <div class="lb-ambient__blob lb-ambient__blob--3"></div>
-      <div class="lb-ambient__vignette"></div>
-      <div class="lb-ambient__grain"></div>
-    </div>
+  <body>
+    <a class="skip-link" href="#main">Перейти до вмісту</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
 
-    <slot />
-
-    <!-- Scroll-to-top — glass pill -->
-    <button
-      id="scroll-top"
-      aria-label="Прокрутити вгору"
-      class="lb-pill fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full
-             text-slate-300 hover:text-indigo-400
-             transition-all duration-300 flex items-center justify-center
-             opacity-0 translate-y-4 pointer-events-none"
-    >
-      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" />
-      </svg>
+    <button id="scroll-top" class="scroll-top" type="button" aria-label="Прокрутити вгору" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6" /></svg>
     </button>
 
     <script>
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-            }
-          });
-        },
-        { threshold: 0.08, rootMargin: "0px 0px -60px 0px" }
-      );
-
-      document
-        .querySelectorAll("[data-animate], [data-animate-stagger]")
-        .forEach((el) => observer.observe(el));
-
       const btn = document.getElementById("scroll-top")!;
-      let visible = false;
-
-      window.addEventListener("scroll", () => {
-        const shouldShow = window.scrollY > 600;
-        if (shouldShow !== visible) {
-          visible = shouldShow;
-          if (visible) {
-            btn.classList.remove("opacity-0", "translate-y-4", "pointer-events-none");
-            btn.classList.add("opacity-100", "translate-y-0");
-          } else {
-            btn.classList.add("opacity-0", "translate-y-4", "pointer-events-none");
-            btn.classList.remove("opacity-100", "translate-y-0");
-          }
-        }
-      }, { passive: true });
-
-      btn.addEventListener("click", () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
+      const sync = () => { btn.hidden = window.scrollY < 800; };
+      window.addEventListener("scroll", sync, { passive: true });
+      btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+      sync();
     </script>
   </body>
 </html>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    z-index: 100;
+    padding: 10px 14px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-weight: 800;
+    transform: translateY(-150%);
+  }
+  .skip-link:focus { transform: none; }
+
+  .scroll-top {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 40;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    transition: border-color 0.18s ease, color 0.18s ease;
+  }
+  .scroll-top[hidden] { display: none; }
+  .scroll-top:hover { border-color: var(--accent); color: var(--accent); }
+  .scroll-top svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; }
+</style>

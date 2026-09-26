@@ -1,272 +1,218 @@
 ---
+// ─── Game Card ─────────────────────────────────────────────────
+// Усе на обкладинці, як у Steam: статус угорі, внизу назва,
+// прогрес перекладу і кнопка «Грати» / «Підтримати».
+// Уся картка веде на сторінку гри (розтягнуте посилання на назві),
+// кнопка — окреме посилання поверх неї. data-* читає FilterBar.
 import type { Game } from "../data/games";
-import { getProgressPalette } from "../utils/statusColors";
+import {
+  statusMeta, isPlayable, isFundraising, fundraisingPercent, formatMoney, stagesOf, stageName,
+} from "../utils/status";
 
 export interface Props {
   game: Game;
+  headingLevel?: "h2" | "h3";
 }
+const { game, headingLevel: Heading = "h3" } = Astro.props;
 
-const { game } = Astro.props;
+const st = statusMeta(game.status);
+const fundActive = isFundraising(game) && !!game.fundraisingGoal;
 
-const translationStage = game.stageDetails?.find((d) => d.label === "Переклад");
-const translationPercent = translationStage?.percent ?? game.progress;
-const palette = getProgressPalette(game.status, translationPercent);
+// Рядки прогресу: збір (якщо триває) + кожен етап локалізації
+type Row = { label: string; pct: number; state: "done" | "active" | "todo" | "fund" };
+const rows: Row[] = [
+  ...(fundActive ? [{ label: "Зібрано", pct: fundraisingPercent(game), state: "fund" as const }] : []),
+  ...stagesOf(game).map((s) => ({
+    label: stageName(s.label),
+    pct: s.percent,
+    state: (s.percent >= 100 ? "done" : s.percent > 0 ? "active" : "todo") as Row["state"],
+  })),
+];
 
-type StatusCfg = { icon: string; label: string; color: string };
-const STATUS: Record<string, StatusCfg> = {
-  "done":         { icon: "check",    label: "Повністю українською",  color: "#10b981" },
-  "early-access": { icon: "play",     label: "Ранній доступ",  color: "#0ea5e9" },
-  "in-progress":  { icon: "progress", label: "Перекладається", color: "#8b5cf6" },
-  "fundraising":  { icon: "coin",     label: "Збір коштів",    color: "#f59e0b" },
-};
-const cfg: StatusCfg = STATUS[game.status] ?? { icon: "dot", label: game.status, color: "#64748b" };
+const fundUrl = game.fundraisingUrl ?? game.donateUrl;
+const action = fundActive && fundUrl
+  ? { label: "Підтримати", href: fundUrl, variant: "fund" }
+  : game.downloadUrl && isPlayable(game)
+    ? { label: "Грати", href: game.downloadUrl, variant: "play" }
+    : null;
 ---
 
 <article
-  class="game-card"
+  class="card"
+  style={`--state:${st.color}`}
   data-game-id={game.id}
-  data-series={game.series}
+  data-series={game.series ?? ""}
   data-status={game.status}
   data-title={game.title}
   data-tags={game.tags.join(",")}
   data-progress={game.progress}
-  data-platform={game.platform?.join(",") || ""}
-  data-translation-size={game.translationSize || ""}
-  data-game-year={game.gameYear || 0}
-  data-last-update={game.lastUpdate || ""}
-  data-download-url={game.downloadUrl ?? ""}
-  data-fundraising={game.fundraisingGoal && !game.fundraisingCompleted ? "true" : ""}
-  data-animate
+  data-last-update={game.lastUpdate ?? ""}
+  data-fundraising={isFundraising(game) ? "true" : ""}
 >
-  <div class="nd-game-card group">
-    <div class="relative aspect-[2/3] overflow-hidden rounded-2xl" style="background:#090b14; box-shadow: 0 0 0 1px rgba(255,255,255,0.07); transform: translateZ(0); -webkit-transform: translateZ(0); -webkit-mask-image: -webkit-radial-gradient(white, black);">
+  <img class="card__img" src={game.cover} alt="" width="300" height="450" loading="lazy" decoding="async" />
 
-      <!-- Cover -->
-      <img
-        src={game.cover}
-        alt={game.title}
-        class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
-        loading="lazy"
-        decoding="async"
-      />
+  <span class="status card__status">{st.label}</span>
+  {fundActive && (
+    <span class="card__money">
+      <strong class="num">{formatMoney(game.fundraisingRaised ?? 0)}</strong>
+      <small>із {formatMoney(game.fundraisingGoal!)}</small>
+    </span>
+  )}
 
-      <!-- Gradient overlay -->
-      <div
-        class="absolute inset-0"
-        style="background: linear-gradient(to top, rgba(7,9,18,0.96) 0%, rgba(7,9,18,0.45) 30%, transparent 55%);"
-      ></div>
+  <div class="card__bottom">
+    <Heading class="card__title">
+      <a href={`/games/${game.id}/`} class="card__link">{game.title}</a>
+    </Heading>
 
-      <!-- Status pill — top left -->
-      <div class="absolute top-2.5 left-2.5 z-10 flex flex-col items-start gap-1">
-        <span class="gc-pill" style={`color: ${cfg.color}; border-color: ${cfg.color}44;`}>
-          {cfg.icon === "check" && (
-            <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-            </svg>
-          )}
-          {cfg.icon === "play" && (
-            <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          )}
-          {cfg.icon === "progress" && (
-            <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/>
-            </svg>
-          )}
-          {cfg.icon === "coin" && (
-            <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-          )}
-          {cfg.label}
-        </span>
-        {game.fundraisingGoal && !game.fundraisingCompleted && game.status !== "fundraising" && (
-          <span class="gc-pill" style="color: #f59e0b; border-color: #f59e0b44;">
-            <svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            Збір коштів
-          </span>
+    <ul class="card__rows">
+      {rows.map((r) => (
+        <li class={`row is-${r.state}`}>
+          <span class="row__label">{r.label}</span>
+          <span class="row__bar" aria-hidden="true"><i style={`width:${r.pct}%`}></i></span>
+          <span class="row__pct num">{r.state === "todo" ? "—" : `${r.pct}%`}</span>
+        </li>
+      ))}
+    </ul>
+
+    {action && (
+      <a
+        href={action.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={`card__action card__action--${action.variant}`}
+        aria-label={`${action.label}: ${game.title}`}
+      >
+        {action.variant === "play" && (
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
         )}
-      </div>
-
-      <!-- Bottom: title + status content -->
-      <div class="absolute inset-x-0 bottom-0 p-3 z-10">
-        <h3 class="text-sm font-bold text-white leading-snug mb-2 nd-line-clamp">
-          {game.title}
-        </h3>
-
-        {game.status === "done" ? (
-          <div>
-            <div class="flex items-center gap-2 mb-2">
-              <div class="flex-1 h-[3px] rounded-full" style={`background: ${cfg.color};`}></div>
-              <span class="text-[10px] font-bold tabular-nums shrink-0" style={`color: ${cfg.color};`}>100%</span>
-            </div>
-            <a
-              href={game.downloadUrl ?? "/#launcher"}
-              target={game.downloadUrl ? "_blank" : "_self"}
-              rel="noopener noreferrer"
-              class="gc-play-btn"
-              onclick="event.stopPropagation()"
-            >
-              <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              ГРАТИ
-            </a>
-          </div>
-        ) : game.status === "early-access" ? (
-          <div>
-            <div class="flex items-center gap-2 mb-0.5">
-              <div class="flex-1 h-[3px] rounded-full overflow-hidden" style="background: rgba(255,255,255,0.10);">
-                <div class="h-full rounded-full" style={`width: ${translationPercent}%; background: ${palette.solid};`}></div>
-              </div>
-              <span class="text-[10px] font-bold tabular-nums shrink-0" style={`color: ${cfg.color};`}>{translationPercent}%</span>
-            </div>
-            <p class="text-[9px] text-white/30 font-medium uppercase tracking-wide mb-2">перекладено</p>
-            <a
-              href={game.downloadUrl ?? `https://lbklauncher.com`}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="gc-ea-strip"
-              onclick="event.stopPropagation()"
-            >
-              <svg class="w-3 h-3 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              ГРАТИ
-            </a>
-          </div>
-        ) : (
-          <div>
-            <div class="flex items-center gap-2 mb-1">
-              <div class="flex-1 h-[3px] rounded-full overflow-hidden" style="background: rgba(255,255,255,0.10);">
-                <div class="h-full rounded-full" style={`width: ${translationPercent}%; background: ${palette.solid};`}></div>
-              </div>
-              <span class="text-[10px] font-bold tabular-nums shrink-0" style={`color: ${cfg.color};`}>
-                {translationPercent}%
-              </span>
-            </div>
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-[9px] text-white/35 font-medium uppercase tracking-wide">перекладено</span>
-              {game.status === "fundraising" && game.fundraisingGoal && (
-                <span class="text-[9px] font-bold" style="color: #f59e0b;">
-                  {((game.fundraisingRaised ?? 0) / game.fundraisingGoal * 100).toFixed(0)}% зібрано
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
-
-    </div>
+        {action.label}
+      </a>
+    )}
   </div>
 </article>
 
 <style>
-  .nd-game-card {
-    display: block;
-    border-radius: 1rem;
+  .card {
+    position: relative;
+    aspect-ratio: 2 / 3;
+    min-width: 0;
     overflow: hidden;
-    background: #090b14;
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    transition: border-color 0.2s ease, translate 0.25s var(--ease);
   }
-  @media (hover: hover) {
-    .nd-game-card:hover { transform: translateY(-4px); }
+  .card:hover { border-color: var(--state); translate: 0 -3px; }
+
+  .card__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s var(--ease);
+  }
+  .card:hover .card__img { transform: scale(1.03); }
+
+  /* Затемнення знизу під текст */
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 9, 11, 0.35) 0%, transparent 22%, transparent 36%, rgba(8, 9, 11, 0.9) 64%, rgba(8, 9, 11, 0.97) 100%);
+    pointer-events: none;
   }
 
-  .nd-line-clamp {
+  .card__status { position: absolute; top: 8px; left: 8px; z-index: 1; }
+
+  .card__money {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    padding: 6px 8px;
+    background: var(--bg);
+  }
+  .card__money strong { color: var(--st-fund); font-size: 11px; font-weight: 700; }
+  .card__money small { color: var(--muted); font-size: 10px; font-weight: 700; }
+
+  .card__bottom {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    padding: 12px;
+  }
+
+  .card__title {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6);
+  }
+  .card__link {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: calc(1.375 * 2 * 1em); /* завжди 2 рядки висоти */
   }
+  /* Розтягнуте посилання: клікабельна вся картка */
+  .card__link::after { content: ""; position: absolute; inset: 0; z-index: 2; }
+  .card__link:focus-visible { outline: none; }
+  .card:has(.card__link:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-  .gc-pill {
-    display: inline-flex;
+  .card__rows { display: grid; gap: 5px; margin-top: 10px; }
+  .row {
+    display: grid;
+    grid-template-columns: 4.6rem minmax(0, 1fr) 2.4rem;
     align-items: center;
-    gap: 0.3rem;
-    padding: 0.2rem 0.55rem;
-    border-radius: 999px;
-    font-size: 0.68rem;
-    font-weight: 700;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    background: rgba(7, 9, 18, 0.72);
-    border: 1px solid;
-    white-space: nowrap;
-    line-height: 1.4;
+    gap: 8px;
+    font-size: 11px;
+    line-height: 1.2;
   }
+  .row__label { overflow: hidden; color: rgba(242, 240, 233, 0.78); font-weight: 700; white-space: nowrap; text-overflow: ellipsis; }
+  .row__bar { height: 3px; background: rgba(255, 255, 255, 0.18); }
+  .row__bar i { display: block; height: 100%; }
+  .row__pct { color: var(--ink); font-size: 10px; font-weight: 700; text-align: right; }
 
-  .gc-play-btn {
+  .row.is-done .row__bar i { background: var(--st-done); }
+  .row.is-done .row__pct, .row.is-done .row__label { color: var(--st-done); }
+  .row.is-active .row__bar i { background: var(--accent); }
+  .row.is-fund .row__bar i { background: var(--st-fund); }
+  .row.is-fund .row__pct, .row.is-fund .row__label { color: var(--st-fund); }
+  .row.is-todo .row__label, .row.is-todo .row__pct { color: rgba(242, 240, 233, 0.5); }
+
+  .card__action {
+    position: relative;
+    z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
-    width: 100%;
-    padding: 0.34rem 0.65rem;
-    border-radius: 8px;
-    font-size: 0.72rem;
+    gap: 6px;
+    min-height: 34px;
+    margin-top: 10px;
+    font-size: 11px;
     font-weight: 800;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    text-decoration: none;
-    line-height: 1.4;
-    color: #fff;
-    background: rgba(255,255,255,0.13);
-    border: 1px solid rgba(255,255,255,0.20);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    transition: background 0.2s ease;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background-color 0.18s ease, color 0.18s ease;
   }
-  .gc-play-btn:hover { background: rgba(255,255,255,0.20); }
+  .card__action svg { width: 12px; height: 12px; fill: currentColor; }
+  .card__action--play { background: var(--accent); color: var(--on-accent); }
+  .card__action--play:hover { background: var(--accent-hover); }
+  .card__action--fund { background: rgba(8, 9, 11, 0.8); border: 1px solid var(--st-fund); color: var(--st-fund); }
+  .card__action--fund:hover { background: var(--st-fund); color: var(--on-accent); }
 
-  /* Early-access: full-width strip, card click handles navigation */
-  .gc-ea-strip {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    padding: 0.34rem 0.5rem;
-    border-radius: 8px;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    line-height: 1.4;
-    white-space: nowrap;
-    color: #fff;
-    background: rgba(255,255,255,0.13);
-    border: 1px solid rgba(255,255,255,0.20);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    transition: background 0.2s ease;
-  }
-  @media (hover: hover) {
-    .nd-game-card:hover .gc-ea-strip { background: rgba(255,255,255,0.20); }
+  @media (max-width: 479px) {
+    .card__bottom { padding: 8px; }
+    .card__title { font-size: 12px; }
+    .row { grid-template-columns: 3.9rem minmax(0, 1fr) 2.1rem; gap: 5px; font-size: 10px; }
+    .card__rows { gap: 4px; margin-top: 6px; }
+    .card__money small { display: none; }
+    .card__action { min-height: 30px; margin-top: 8px; font-size: 10px; }
   }
 </style>
-
-<script>
-  document.querySelectorAll<HTMLElement>(".game-card").forEach((card) => {
-    card.style.cursor = "pointer";
-    card.setAttribute("tabindex", "0");
-    card.setAttribute("role", "link");
-
-    function activate(e: MouseEvent | KeyboardEvent) {
-      if ((e.target as HTMLElement).closest("a, button")) return;
-      const id = card.dataset.gameId;
-      if (!id) return;
-      window.location.href = `/games/${id}/`;
-    }
-
-    card.addEventListener("click", activate);
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        activate(e);
-      }
-    });
-  });
-</script>

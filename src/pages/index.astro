@@ -1,34 +1,25 @@
 ---
 // ─── Home Page ─────────────────────────────────────────────────
-
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import GameCard from "../components/GameCard.astro";
 import FilterBar from "../components/FilterBar.astro";
+import StatusLegend from "../components/StatusLegend.astro";
 import Pipeline from "../components/Pipeline.astro";
 import StatsCards from "../components/StatsCards.astro";
 import GetStarted from "../components/GetStarted.astro";
 import Support from "../components/Support.astro";
 import FAQ from "../components/FAQ.astro";
-import Footer from "../components/Footer.astro";
-import { games } from "../data/games";
-import { getAllUpdates } from "../utils/updates";
+import { games } from "../data/catalog";
+import { getAllUpdates, eventTone } from "../utils/updates";
 import { SITE_URL } from "../utils/seo";
+import { sortByStatus } from "../utils/status";
 
-const STATUS_PRIORITY: Record<string, number> = { done: 0, "early-access": 1, "in-progress": 2, fundraising: 3 };
-const sortedGames = [...games].sort((a, b) => {
-  const pa = STATUS_PRIORITY[a.status] ?? 9;
-  const pb = STATUS_PRIORITY[b.status] ?? 9;
-  if (pa !== pb) return pa - pb;
-  return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
-});
 
-const recentUpdates = getAllUpdates().slice(0, 4);
+const catalog = sortByStatus(games);
 
-function fmtDate(d: string): string {
-  return new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "short" });
-}
+const updates = getAllUpdates(6);
+const fmtDate = (d: string) => new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "short" });
 ---
 
 <Layout
@@ -36,78 +27,107 @@ function fmtDate(d: string): string {
   description="Безкоштовні якісні переклади відеоігор українською. Без машинного перекладу. Сюжет, інтерфейс і дрібниці — рідною мовою."
   canonicalUrl={SITE_URL + "/"}
 >
-  <Header />
+  <Hero />
 
-  <main class="flex-1">
-    <Hero />
+  <section id="projects" class="section">
+    <div class="container">
+      <header class="section-head">
+        <div>
+          <span class="eyebrow">Каталог · {games.length}</span>
+          <h2>Усі наші локалізації</h2>
+        </div>
+      </header>
+      <StatusLegend />
+      <FilterBar />
+      <div class="game-grid">
+        {catalog.map((game) => <GameCard game={game} />)}
+      </div>
+    </div>
+  </section>
 
-    <!-- ── Projects ── -->
-    <section id="projects" class="pt-10 pb-20 sm:pt-14 sm:pb-24 relative">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex items-end justify-between gap-4 mb-8" data-animate>
+  <Pipeline />
+
+  <section class="section">
+    <div class="container numbers">
+      <div>
+        <header class="section-head">
           <div>
-            <span class="lb-section-eyebrow">Локалізації</span>
-            <h2 class="text-2xl sm:text-3xl font-black text-white mt-1">Наші проєкти</h2>
+            <span class="eyebrow">Цифри</span>
+            <h2>Обсяг роботи</h2>
           </div>
-          <a href="/games/" class="text-sm font-semibold text-indigo-400 hover:text-indigo-300 whitespace-nowrap transition-colors">
-            Наші проєкти →
-          </a>
-        </div>
-
-        <FilterBar />
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4" id="games-grid">
-          {sortedGames.map((game) => <GameCard game={game} />)}
-        </div>
+        </header>
+        <StatsCards />
       </div>
-    </section>
 
-    <Pipeline />
-
-    <!-- ── Stats + Recent updates ── -->
-    <section class="py-16 sm:py-20">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-8 lg:gap-12 items-start">
-
-          <!-- Stats cards -->
-          <div data-animate>
-            <span class="lb-section-eyebrow mb-3">Цифри</span>
-            <StatsCards />
+      <div>
+        <header class="section-head">
+          <div>
+            <span class="eyebrow">Хроніка</span>
+            <h2>Останні події</h2>
           </div>
-
-          <!-- Recent updates feed -->
-          <div class="lg:w-72 shrink-0" data-animate>
-            <div class="flex items-center justify-between mb-4">
-              <span class="lb-section-eyebrow">Останні оновлення</span>
-              <a href="/updates" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
-                Всі →
-              </a>
-            </div>
-            <div class="space-y-2">
-              {recentUpdates.map((e) => (
-                <div class="flex gap-3 items-start p-3 rounded-xl" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
-                  <span class="text-[10px] font-bold text-slate-500 whitespace-nowrap mt-0.5">{fmtDate(e.date)}</span>
-                  <div class="min-w-0">
-                    <p class="text-xs font-semibold text-slate-300 truncate">{e.title}</p>
-                    {e.kind !== "update" && (
-                      <span class="text-[10px] font-bold uppercase tracking-wide" style={`color: ${e.kind === "release" ? "#10b981" : e.kind === "early-access" ? "#0ea5e9" : "#818cf8"};`}>
-                        {e.kind === "release" ? "Реліз" : e.kind === "early-access" ? "Ранній доступ" : e.kind}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-        </div>
+          <a href="/updates/" class="link">Уся хроніка</a>
+        </header>
+        <ol class="feed">
+          {updates.map((e) => {
+            const tone = eventTone(e.kind);
+            return (
+              <li>
+                <a href={`/games/${e.gameId}/`} class="feed__item" style={`--state:${tone.color}`}>
+                  <time datetime={e.date}>{fmtDate(e.date)}</time>
+                  <span class="feed__title">{e.title}</span>
+                  <span class="feed__kind">{tone.label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ol>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <GetStarted />
-    <Support />
-    <FAQ />
-  </main>
-
-  <Footer />
+  <GetStarted />
+  <Support />
+  <FAQ />
 </Layout>
+
+<style>
+  .numbers { display: grid; gap: 56px; }
+  @media (min-width: 1024px) {
+    .numbers { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 72px; }
+  }
+
+  .feed { border-top: 1px solid var(--line); }
+  .feed__item {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    transition: color 0.18s ease;
+  }
+  .feed__item:hover .feed__title { color: var(--accent); }
+  .feed__item time { color: var(--faint); font-size: 12px; font-weight: 700; }
+  .feed__title {
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: color 0.18s ease;
+  }
+  .feed__kind {
+    padding-left: 8px;
+    border-left: 3px solid var(--state);
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  @media (max-width: 479px) {
+    .feed__item { grid-template-columns: 1fr auto; }
+    .feed__item time { grid-column: 1 / -1; }
+  }
+</style>

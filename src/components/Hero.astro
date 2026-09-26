@@ -1,444 +1,309 @@
 ---
-// ─── Hero — merged with AvailableNow ─────────────────────────
-// Перший екран: ліворуч — messaging + CTAs + stats,
-// праворуч — мозаїка обкладинок доступних ігор.
-
-import { getOverallProgress, games } from "../data/games";
+// ─── Hero ──────────────────────────────────────────────────────
+// Ліворуч: хто ми, одна пропозиція, дві дії й три цифри.
+// Праворуч: стіна обкладинок ігор, у які можна грати вже зараз.
+import { games } from "../data/catalog";
 import { pluralize } from "../utils/pluralize";
+import { isPlayable, isFundraising, fundraisingPercent, statusMeta } from "../utils/status";
 
-const overall = getOverallProgress();
-const totalGames = games.length;
-const doneCount = games.filter((g) => g.status === "done").length;
-const earlyCount = games.filter((g) => g.status === "early-access").length;
-const inProgressCount = games.filter((g) => g.status === "in-progress").length;
-const fundraisingCount = games.filter((g) => g.fundraisingGoal && !g.fundraisingCompleted).length;
-const playableCount = doneCount + earlyCount;
+const playable = games
+  .filter(isPlayable)
+  .sort((a, b) => (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? ""));
+const wall = playable.slice(0, 8);
 
-// Мозаїка: done → early-access → in-progress
-const STATUS_ORDER: Record<string, number> = { done: 0, "early-access": 1 };
-const available = games
-  .filter((g) => g.status === "done" || g.status === "early-access")
-  .sort((a, b) => {
-    const sa = STATUS_ORDER[a.status] ?? 99;
-    const sb = STATUS_ORDER[b.status] ?? 99;
-    if (sa !== sb) return sa - sb;
-    return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
-  });
+const inProgress = games.filter((g) => g.status === "in-progress").length;
+const fundraisers = games.filter(isFundraising);
 
-// Мозаїка перемішується на етапі збірки, а не в браузері.
-// Раніше всі 7 <img> мали порожній src і заповнювались із JS — через це
-// preload-сканер не бачив жодної обкладинки, а LCP чекав на виконання скрипта.
-// Тепер набір рендериться сервером із реальним src; новий порядок — щодеплою.
-function shuffled<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-const picked = shuffled(available).slice(0, 7);
-const featured = picked[0];
-const others = picked.slice(1, 7);
-
-const statusLabel = (s: string) => (s === "done" ? "Повністю українською" : "Ранній доступ");
+const stats = [
+  { value: games.length, label: pluralize(games.length, "проєкт", "проєкти", "проєктів"), href: "/games/" },
+  { value: playable.length, label: "можна грати вже зараз", href: "/games/?status=playable" },
+  { value: inProgress, label: "у роботі", href: "/games/?status=in-progress" },
+];
 ---
 
-<section class="nd-hero">
-  <div class="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="nd-hero__grid">
+<section class="hero">
+  <div class="container hero__grid">
+    <div class="hero__copy">
+      <p class="hero__kicker">
+        <span>«Little Bit»</span>
+        <span>Українська локалізація відеоігор</span>
+      </p>
 
-      <!-- ── Left: copy ── -->
-      <div class="nd-hero__copy">
+      <h1 class="hero__title">
+        <span>Перекладаємо</span>
+        <span>те, у що</span>
+        <em>граємо самі</em>
+      </h1>
 
-        <div class="nd-eyebrow">
-          <span class="nd-eyebrow__dot" aria-hidden="true"></span>
-          Локалізація відеоігор
-        </div>
+      <p class="hero__lede">
+        Сюжет, інтерфейс і кожна дрібниця — українською. Без машинного перекладу, цілком безкоштовно
+        та зі встановленням в один клац через LBK Launcher.
+      </p>
 
-        <h1 class="nd-headline">
-          Перекладаємо те,<br/>
-          у&nbsp;що <em>самі граємо</em>
-        </h1>
-
-        <p class="nd-sub">
-          Сюжет, інтерфейс і дрібниці — українською.<br class="hidden sm:block"/>
-          Без машинного перекладу. Без компромісів.
-        </p>
-
-        <div class="nd-ctas">
-          <a href="/games/" class="nd-btn nd-btn--primary">
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h10"/>
-            </svg>
-            Наші проєкти
-          </a>
-          <a href="/#launcher" class="nd-btn nd-btn--ghost">
-            ЗАВАНТАЖИТИ LBK LAUNCHER
-            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-          </a>
-        </div>
-
-        <div class="nd-stats">
-          <div class="nd-stat">
-            <span class="nd-stat__n">{totalGames}</span>
-            <span class="nd-stat__l">{pluralize(totalGames, "проєкт", "проєкти", "проєктів")}</span>
-          </div>
-          <div class="nd-divider" aria-hidden="true"></div>
-          <div class="nd-stat">
-            <span class="nd-stat__n" style="color:#34d399;">{doneCount + earlyCount}</span>
-            <span class="nd-stat__l">можна грати</span>
-          </div>
-          <div class="nd-divider" aria-hidden="true"></div>
-          <div class="nd-stat">
-            <span class="nd-stat__n" style="color:#a78bfa;">{inProgressCount}</span>
-            <span class="nd-stat__l">у роботі</span>
-          </div>
-          <div class="nd-divider" aria-hidden="true"></div>
-          <div class="nd-stat">
-            <span class="nd-stat__n" style="color:#818cf8;">{overall}%</span>
-            <span class="nd-stat__l">прогрес</span>
-          </div>
-        </div>
-
-        <!-- Quick stats row — clickable -->
-        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4">
-          <a href="/games/" class="nd-qs-link" style="color:#34d399;">
-            {playableCount} можна грати
-          </a>
-          <span class="text-xs text-slate-600">·</span>
-          <a href="/games/?status=in-progress" class="nd-qs-link" style="color:#a78bfa;">
-            {inProgressCount} у роботі
-          </a>
-          <span class="text-xs text-slate-600">·</span>
-          <a href="/games/?status=fundraising" class="nd-qs-link" style="color:#f59e0b;">
-            {fundraisingCount} збір коштів
-          </a>
-        </div>
+      <div class="hero__actions">
+        <a href="/games/" class="btn btn--primary">Дивитися каталог</a>
+        <a href="/#launcher" class="btn">Як почати грати</a>
       </div>
 
-      <!-- ── Right: cover mosaic (randomised client-side) ── -->
-      {featured && (
-        <div class="nd-mosaic" id="nd-mosaic">
-          <!-- Featured cover -->
-          <a href={`/games/${featured.id}/`} class="nd-cover nd-cover--featured" aria-label={featured.title}>
-            <img
-              src={featured.cover}
-              alt={featured.title}
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-            />
-            <span class={`nd-dot ${featured.status === "done" ? "nd-dot--green" : "nd-dot--sky"}`}></span>
-            <span class="nd-caption">
-              <span class="nd-caption__status">{statusLabel(featured.status)}</span>
-              <span class="nd-caption__title">{featured.title}</span>
-              <span class="nd-cover-play">
-                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="width:.75rem;height:.75rem;flex-shrink:0">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-                ГРАТИ
-              </span>
-            </span>
-          </a>
-
-          <!-- 6 small covers -->
-          {others.map((g) => (
-            <a href={`/games/${g.id}/`} class="nd-cover" aria-label={g.title}>
-              <img src={g.cover} alt={g.title} loading="eager" decoding="async" />
-              <span class={`nd-dot ${g.status === "done" ? "nd-dot--green" : "nd-dot--sky"}`}></span>
-              <span class="nd-hover-title">
-                <svg fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" style="width:.65rem;height:.65rem;flex-shrink:0;margin-right:.2rem">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-                ГРАТИ
-              </span>
+      <ul class="hero__stats">
+        {stats.map((s) => (
+          <li>
+            <a href={s.href} class="hero__stat">
+              <strong class="num">{s.value}</strong>
+              <span>{s.label}</span>
             </a>
-          ))}
-        </div>
-      )}
+          </li>
+        ))}
+      </ul>
 
+      {fundraisers.length === 1 && (
+        <a class="hero__fund" href={`/games/${fundraisers[0].id}/`}>
+          <span class="hero__fund-dot" aria-hidden="true"></span>
+          Триває збір на <b>{fundraisers[0].title}</b> — {fundraisingPercent(fundraisers[0])}%
+        </a>
+      )}
+      {fundraisers.length > 1 && (
+        <a class="hero__fund" href="/games/?status=fundraising">
+          <span class="hero__fund-dot" aria-hidden="true"></span>
+          {pluralize(fundraisers.length, "Триває", "Тривають", "Триває")} {fundraisers.length}{" "}
+          {pluralize(fundraisers.length, "збір", "збори", "зборів")} коштів на нові переклади
+        </a>
+      )}
+    </div>
+
+    <div class="hero__wall">
+      <div class="hero__wall-head">
+        <span class="eyebrow">Можна грати вже зараз</span>
+        <a href="/games/?status=playable" class="link">Усі {playable.length}</a>
+      </div>
+      <ul class="hero__posters">
+        {wall.map((g, i) => {
+          const st = statusMeta(g.status);
+          return (
+            <li style={`--i:${i}`}>
+              <a href={`/games/${g.id}/`} class="poster" style={`--state:${st.color}`}>
+                <img
+                  src={g.cover}
+                  alt=""
+                  width="300"
+                  height="450"
+                  loading={i < 4 ? "eager" : "lazy"}
+                  fetchpriority={i === 0 ? "high" : undefined}
+                  decoding="async"
+                />
+                <span class="poster__info">
+                  {g.status === "done" && <span class="poster__state">Повністю готово</span>}
+                  <span class="poster__title">{g.title}</span>
+                </span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   </div>
 </section>
 
 <style>
-  .nd-hero {
-    position: relative;
-    padding-top: 7rem;
-    padding-bottom: 5rem;
+  .hero {
+    padding-top: calc(var(--header-h) + clamp(32px, 6vw, 72px));
+    padding-bottom: clamp(56px, 7vw, 96px);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
   }
-  @media (min-width: 640px) {
-    .nd-hero { padding-top: 8.5rem; padding-bottom: 6rem; }
-  }
-
-  /* Grid: text left, mosaic right */
-  .nd-hero__grid {
+  .hero__grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 48px;
     align-items: center;
   }
-  @media (min-width: 1024px) {
-    .nd-hero__grid {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-      gap: 4rem;
-    }
+
+  /* ── Copy ── */
+  .hero__copy { container-type: inline-size; min-width: 0; }
+
+  .hero__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    color: var(--faint);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .hero__kicker span:first-child { color: var(--accent); }
+
+  .hero__title {
+    display: flex;
+    flex-direction: column;
+    margin: 28px 0 24px;
+    /* Розмір від ширини колонки: найдовше слово «Перекладаємо» ніколи не обріжеться */
+    font-size: clamp(2.25rem, 10.5cqi, 5rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+  .hero__title span, .hero__title em { white-space: nowrap; }
+  .hero__title em { font-style: normal; color: var(--accent); }
+
+  .hero__lede {
+    max-width: 34rem;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.3vw, 1.15rem);
+    line-height: 1.65;
   }
 
-  .nd-hero__copy { display: flex; flex-direction: column; }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+  .hero__actions .btn { min-width: 200px; }
 
-  /* Eyebrow */
-  .nd-eyebrow {
+  .hero__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 40px;
+    border-block: 1px solid var(--line);
+  }
+  .hero__stat {
+    display: block;
+    height: 100%;
+    padding: 18px 16px;
+    border-left: 1px solid var(--line);
+  }
+  .hero__stats li:first-child .hero__stat { border-left: 0; padding-left: 0; }
+  .hero__stat:hover strong { color: var(--accent); }
+  .hero__stat strong {
+    display: block;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1;
+    transition: color 0.18s ease;
+  }
+  .hero__stat span {
+    display: block;
+    margin-top: 8px;
+    color: var(--faint);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  .hero__fund {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #818cf8;
-    margin-bottom: 1rem;
-    opacity: 0;
-    animation: ndUp .5s cubic-bezier(.16,1,.3,1) 0s forwards;
+    gap: 10px;
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    transition: color 0.18s ease;
   }
-  .nd-eyebrow__dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #6366f1;
-    box-shadow: 0 0 8px rgba(99,102,241,.8);
+  .hero__fund b { color: var(--ink); font-weight: 800; }
+  .hero__fund:hover { color: var(--st-fund); }
+  .hero__fund-dot {
+    width: 8px;
+    height: 8px;
     flex-shrink: 0;
-    animation: pulse 2.8s ease-in-out infinite;
-  }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
-
-  /* Headline */
-  .nd-headline {
-    font-size: clamp(2rem, 4.5vw, 3.25rem);
-    font-weight: 900;
-    line-height: 1.08;
-    letter-spacing: -0.025em;
-    color: #f1f5f9;
-    margin-bottom: 1rem;
-    opacity: 0;
-    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .08s forwards;
-  }
-  .nd-headline em {
-    font-style: normal;
-    background: linear-gradient(130deg, #818cf8 15%, #38bdf8 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    background: var(--st-fund);
+    box-shadow: 0 0 0 4px rgba(242, 169, 75, 0.18);
   }
 
-  .nd-sub {
-    font-size: 1rem;
-    line-height: 1.65;
-    color: #94a3b8;
-    max-width: 32rem;
-    margin-bottom: 1.75rem;
-    opacity: 0;
-    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .16s forwards;
-  }
-
-  /* CTAs */
-  .nd-ctas {
+  /* ── Poster wall ── */
+  .hero__wall { min-width: 0; }
+  .hero__wall-head {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.625rem;
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .24s forwards;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
   }
-  /* Радіус і градієнт синхронізовані з .lb-btn у global.css —
-     раніше Hero мав власну мову кнопок (10px, плаский колір). */
-  .nd-btn {
-    display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.7rem 1.25rem;
-    border-radius: 9999px;
-    font-size: 0.875rem; font-weight: 700;
-    border: 1px solid transparent;
-    transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
-    white-space: nowrap;
-  }
-  .nd-btn:hover { transform: translateY(-2px); }
-  .nd-btn--primary {
-    background: linear-gradient(135deg, #6366f1 0%, #7c3aed 100%);
-    color: #fff;
-    border-color: rgba(255,255,255,.14);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,.15) inset,
-      0 -1px 0 rgba(0,0,0,.30) inset,
-      0 10px 28px -10px rgba(99,102,241,.55);
-  }
-  .nd-btn--primary:hover {
-    background: linear-gradient(135deg, #818cf8 0%, #8b5cf6 100%);
-    box-shadow:
-      0 1px 0 rgba(255,255,255,.20) inset,
-      0 -1px 0 rgba(0,0,0,.30) inset,
-      0 14px 32px -10px rgba(99,102,241,.65);
-  }
-  .nd-btn--ghost {
-    background: rgba(255,255,255,.08);
-    border-color: rgba(255,255,255,.14);
-    color: #cbd5e1;
-    box-shadow: 0 0 0 1px rgba(255,255,255,.04), 0 6px 16px -8px rgba(0,0,0,.5);
-  }
-  .nd-btn--ghost:hover {
-    background: rgba(255,255,255,.12);
-    border-color: rgba(255,255,255,.18);
-    color: #f1f5f9;
-  }
-
-  /* Stats */
-  .nd-stats {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: .5rem 1.25rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,.07);
-    opacity: 0;
-    animation: ndUp .6s cubic-bezier(.16,1,.3,1) .32s forwards;
-  }
-  .nd-stat { display: flex; flex-direction: column; gap: .1rem; }
-  .nd-stat__n {
-    font-size: 1.5rem; font-weight: 900; line-height: 1;
-    color: #e2e8f0; font-variant-numeric: tabular-nums;
-  }
-  .nd-stat__l {
-    font-size: 0.65rem; font-weight: 600; color: #475569;
-    text-transform: uppercase; letter-spacing: .07em; white-space: nowrap;
-  }
-  .nd-divider {
-    width: 1px; height: 28px;
-    background: rgba(255,255,255,.08);
-    flex-shrink: 0; align-self: center;
-  }
-
-  /* Cover mosaic */
-  .nd-mosaic {
+  .hero__posters {
     display: grid;
-    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
-    grid-template-rows: auto auto;
-    gap: 6px;
-    opacity: 0;
-    animation: ndUp .7s cubic-bezier(.16,1,.3,1) .2s forwards;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
   }
-  @media (max-width: 500px) {
-    .nd-mosaic {
-      grid-template-columns: minmax(0, 2fr) repeat(2, minmax(0, 1fr));
-    }
-    .nd-mosaic > .nd-cover:nth-child(n+6) { display: none; }
+  .hero__posters li {
+    animation: poster-in 0.7s var(--ease) both;
+    animation-delay: calc(var(--i) * 60ms);
   }
 
-  .nd-cover {
+  .poster {
     position: relative;
     display: block;
-    aspect-ratio: 2/3;
-    border-radius: 12px;
+    aspect-ratio: 2 / 3;
     overflow: hidden;
-    background: #090b14;
-    transition: transform .22s ease, box-shadow .22s ease;
+    background: var(--surface);
+    border: 1px solid var(--line);
   }
-  .nd-cover--featured { grid-row: span 2; aspect-ratio: auto; }
-  .nd-cover img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .4s ease; }
-  .nd-cover:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -10px rgba(0,0,0,.7); }
-  .nd-cover:hover img { transform: scale(1.05); }
+  .poster img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease);
+  }
+  .poster::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 45%, rgba(8, 9, 11, 0.92));
+  }
+  .poster:hover img { transform: scale(1.03); }
+  .poster:hover { border-color: var(--state); }
 
-  /* Status dot */
-  .nd-dot {
-    position: absolute; top: 7px; right: 7px;
-    width: 9px; height: 9px; border-radius: 50%; z-index: 2;
+  .poster__info {
+    position: absolute;
+    inset: auto 0 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    border-bottom: 3px solid var(--state);
   }
-  .nd-dot--green { background: #10b981; box-shadow: 0 0 0 2px rgba(255,255,255,.8), 0 0 10px rgba(16,185,129,.5); }
-  .nd-dot--sky   { background: #0ea5e9; box-shadow: 0 0 0 2px rgba(255,255,255,.8), 0 0 10px rgba(14,165,233,.5); }
+  .poster__state {
+    color: var(--state);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .poster__title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.25;
+  }
 
-  /* Featured caption */
-  .nd-caption {
-    position: absolute; left: 0; right: 0; bottom: 0;
-    padding: .75rem .85rem .85rem;
-    background: linear-gradient(180deg, transparent, rgba(7,9,18,.93));
-    display: flex; flex-direction: column; gap: .2rem;
-    pointer-events: none;
-  }
-  .nd-caption__status {
-    font-size: .6rem; font-weight: 800;
-    text-transform: uppercase; letter-spacing: .08em;
-    color: rgba(255,255,255,.6);
-  }
-  .nd-caption__title {
-    font-weight: 800; font-size: .875rem; line-height: 1.2; color: #fff;
-  }
-
-  /* Hover title for small covers */
-  .nd-hover-title {
-    position: absolute; inset: 0;
-    display: flex; align-items: flex-end;
-    padding: .5rem .55rem;
-    background: linear-gradient(180deg, transparent 40%, rgba(7,9,18,.88) 100%);
-    color: #fff; font-weight: 700; font-size: .7rem; line-height: 1.2;
-    opacity: 0; transition: opacity .2s ease; pointer-events: none;
-  }
-  .nd-cover:hover .nd-hover-title { opacity: 1; }
-
-  @keyframes ndUp {
+  @keyframes poster-in {
     from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .nd-eyebrow, .nd-headline, .nd-sub, .nd-ctas, .nd-stats, .nd-mosaic, .nd-eyebrow__dot
-    { animation: none; opacity: 1; transform: none; }
+    to { opacity: 1; transform: none; }
   }
 
-  .nd-qs-link {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-decoration: none;
-    opacity: 0.9;
-    transition: opacity 0.15s ease, text-decoration-color 0.15s ease;
-    text-underline-offset: 3px;
-  }
-  .nd-qs-link:hover {
-    opacity: 1;
-    text-decoration: underline;
-    text-decoration-thickness: 1.5px;
+  @media (max-width: 639px) {
+    .hero__actions .btn { flex: 1 1 100%; }
+    .hero__stat { padding: 14px 10px; }
+    .hero__stat span { font-size: 10px; }
+    .hero__posters { gap: 6px; }
+    .poster__title { display: none; }
+    .poster__info { padding: 6px; }
+    .poster__state { font-size: 9px; }
   }
 
-  /* Cover "ГРАТИ" strip on featured */
-  .nd-cover-play {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    margin-top: 0.55rem;
-    padding: 0.32rem 0.7rem;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: #fff;
-    background: rgba(255,255,255,0.14);
-    border: 1px solid rgba(255,255,255,0.22);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    letter-spacing: 0.04em;
-    pointer-events: none;
-    transition: background 0.2s ease;
+  @media (min-width: 1024px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: clamp(48px, 5vw, 88px);
+    }
+    .hero__posters { gap: 12px; }
   }
-  .nd-cover--featured:hover .nd-cover-play {
-    background: rgba(255,255,255,0.22);
-  }
-
-  /* Small card ГРАТИ (in hover-title) */
-  .nd-hover-title {
-    justify-content: center;
-    font-size: 0.68rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
-  }
-
 </style>
-

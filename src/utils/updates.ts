@@ -1,9 +1,9 @@
 // ─── Updates Aggregator ────────────────────────────────────────
 // Збирає всі події з даних ігор (progressHistory + lastUpdate +
 // релізи) у єдиний хронологічний потік. Використовується сторінкою
-// /updates і RSS-стрічкою /feed.xml.
+// /updates і RSS-стрічкою /rss.xml.
 
-import { games, STATUS_LABELS } from "../data/games";
+import { games, STATUS_LABELS } from "../data/catalog";
 import type { Game } from "../data/games";
 
 export type UpdateEventKind =
@@ -101,7 +101,7 @@ export function getAllUpdates(limit?: number): UpdateEvent[] {
   return typeof limit === "number" ? all.slice(0, limit) : all;
 }
 
-/** Forматування дати у відображувану форму (укр). */
+/** Форматування дати у відображувану форму (укр). */
 export function formatUpdateDate(d: string): string {
   return new Date(d).toLocaleDateString("uk-UA", {
     day: "numeric",
@@ -110,36 +110,16 @@ export function formatUpdateDate(d: string): string {
   });
 }
 
-/** Колір-токен для маркера події (для UI). */
-export function eventTone(kind: UpdateEventKind): {
-  dot: string;
-  badge: string;
-  label: string;
-} {
+/** Підпис і колір події для UI (кольори — CSS-токени з global.css). */
+export function eventTone(kind: UpdateEventKind): { color: string; label: string } {
   switch (kind) {
     case "release":
-      return {
-        dot: "bg-emerald-500",
-        badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
-        label: "Реліз",
-      };
+      return { color: "var(--st-done)", label: "Реліз" };
     case "early-access":
-      return {
-        dot: "bg-sky-500",
-        badge: "bg-sky-50 text-sky-700 border-sky-200",
-        label: "Ранній доступ",
-      };
+      return { color: "var(--st-early)", label: "Ранній доступ" };
     case "milestone":
-      return {
-        dot: "bg-violet-500",
-        badge: "bg-violet-50 text-violet-700 border-violet-200",
-        label: "Milestone",
-      };
+      return { color: "var(--st-progress)", label: "Етап" };
     default:
-      return {
-        dot: "bg-indigo-500",
-        badge: "bg-indigo-50 text-indigo-700 border-indigo-200",
-        label: "Оновлення",
-      };
+      return { color: "var(--accent)", label: "Оновлення" };
   }
 }

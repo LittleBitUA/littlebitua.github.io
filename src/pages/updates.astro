@@ -1,188 +1,116 @@
 ---
-// ─── Updates Page ─────────────────────────────────────────────
-// Хроніка оновлень — агрегована з progressHistory та lastUpdate
-// усіх ігор. Друкована візуалізація RSS-стрічки.
-
+// ─── Updates Page ──────────────────────────────────────────────
+// Хроніка оновлень: зібрана з progressHistory та lastUpdate усіх ігор.
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
 import { getAllUpdates, formatUpdateDate, eventTone } from "../utils/updates";
 import { SITE_URL } from "../utils/seo";
 
 const events = getAllUpdates();
 
-// Групуємо за роком-місяцем для зручної навігації.
 const groups = new Map<string, typeof events>();
 for (const e of events) {
-  const key = e.date.slice(0, 7); // YYYY-MM
-  if (!groups.has(key)) groups.set(key, []);
-  groups.get(key)!.push(e);
+  const key = e.date.slice(0, 7);
+  groups.set(key, [...(groups.get(key) ?? []), e]);
 }
 
-function formatGroupHeader(yearMonth: string): string {
-  const [y, m] = yearMonth.split("-").map(Number);
-  return new Date(y, m - 1, 1).toLocaleDateString("uk-UA", {
-    month: "long",
-    year: "numeric",
-  });
-}
-
-const canonicalUrl = `${SITE_URL}/updates`;
+const monthTitle = (ym: string) => {
+  const [y, m] = ym.split("-").map(Number);
+  return new Date(y, m - 1, 1).toLocaleDateString("uk-UA", { month: "long", year: "numeric" });
+};
 ---
 
 <Layout
-  title="Оновлення локалізацій Yakuza, MGS, NieR — Little Bit"
-  description="Усі оновлення проєктів локалізації Little Bit: прогрес перекладу, релізи, ранній доступ. Можна підписатися через RSS."
-  canonicalUrl={canonicalUrl}
-  ogType="website"
+  title="Оновлення локалізацій Yakuza, MGS, NieR — «Little Bit»"
+  description="Усі оновлення проєктів локалізації «Little Bit»: прогрес перекладу, релізи, ранній доступ. Можна підписатися через RSS."
+  canonicalUrl={`${SITE_URL}/updates`}
 >
-  <Header />
-
-  <main class="flex-1">
-    <!-- Breadcrumbs -->
-    <nav class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pt-28 pb-4">
-      <ol class="flex items-center gap-2 text-xs text-slate-500">
-        <li><a href="/" class="hover:text-indigo-600 transition-colors">Головна</a></li>
-        <li>
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-          </svg>
-        </li>
-        <li class="text-slate-300 font-semibold">Хроніка оновлень</li>
-      </ol>
-    </nav>
-
-    <section class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-10">
-      <div class="text-center mb-10" data-animate>
-        <span class="lb-section-eyebrow mb-4">Усі оновлення</span>
-        <h1 class="text-3xl sm:text-4xl font-black text-white mt-3 mb-3">
-          Хроніка локалізацій
-        </h1>
-        <p class="text-slate-400 max-w-xl mx-auto">
-          Кожен крок наших проєктів: прогрес перекладу, релізи, ранній доступ.
-        </p>
-        <div class="flex flex-wrap items-center justify-center gap-2 mt-5">
-          <a href="/#projects" class="lb-btn lb-btn--ghost !text-sm">
-            До локалізацій
-          </a>
-          <a
-            href="/rss.xml"
-            class="lb-btn lb-btn--ghost !text-sm"
-            style="color:#fb923c;"
-            title="Підписатися через RSS-читалку"
-          >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M6.503 20.752A3.25 3.25 0 013.252 24 3.25 3.25 0 010 20.752a3.25 3.25 0 013.252-3.248 3.25 3.25 0 013.251 3.248zM0 8.18v4.811c6.05.062 10.96 4.966 11.022 11.009h4.817C15.777 15.29 8.721 8.242 0 8.18zm0-8.153v4.811C10.58 4.898 19.152 13.461 19.183 24H24C23.97 10.796 13.245.052 0 .027z"/>
-            </svg>
-            RSS
-          </a>
-        </div>
+  <div class="page container narrow">
+    <header class="section-head">
+      <div>
+        <span class="eyebrow">Хроніка</span>
+        <h1 class="title">Оновлення локалізацій</h1>
+        <p>Кожен крок наших проєктів: прогрес, релізи, ранній доступ.</p>
       </div>
+      <a href="/rss.xml" class="btn btn--sm">Підписатися через RSS</a>
+    </header>
 
-      {events.length === 0 ? (
-        <p class="text-center text-slate-500 py-16">Поки що немає подій.</p>
-      ) : (
-        <div class="space-y-10">
-          {Array.from(groups.entries()).map(([key, monthEvents]) => (
-            <div data-animate>
-              <h2 class="text-center text-sm font-black uppercase tracking-widest text-slate-400 mb-5 sticky top-20 bg-slate-900/85 backdrop-blur-md py-2 -mx-1 px-1 rounded-lg z-10">
-                {formatGroupHeader(key)}
-              </h2>
-              <div class="relative pl-7">
-                <div class="absolute left-[10px] top-2 bottom-2 w-px bg-gradient-to-b from-indigo-300 via-sky-300 to-transparent"></div>
-                <div class="space-y-4">
-                  {monthEvents.map((e) => {
-                    const tone = eventTone(e.kind);
-                    return (
-                      <div class="relative">
-                        <span class={`absolute -left-[19px] top-3 w-3 h-3 rounded-full ${tone.dot} ring-4 ring-slate-900 shadow-[0_4px_12px_-4px_rgba(15,23,42,0.3)]`}></span>
-                        <a href={`/games/${e.gameId}/`} class="block lb-glass lb-lift p-4 sm:p-5 group relative overflow-hidden lb-update-card" data-kind={e.kind}>
-                          {/* ── Покращення 5: Colored left accent strip ──
-                              Щоб вимкнути: видали цей <div> + CSS нижче. */}
-                          <div class="lb-accent-strip" aria-hidden="true"></div>
-                          <div class="flex items-start gap-4">
-                            <img
-                              src={e.gameCover}
-                              alt={e.gameTitle}
-                              class="w-14 h-20 sm:w-16 sm:h-24 rounded-lg object-cover shrink-0 border border-white/80"
-                              loading="lazy"
-                              decoding="async"
-                            />
-                            <div class="min-w-0 flex-1">
-                              <div class="flex flex-col gap-1 mb-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
-                                {e.kind !== "update" && (
-                                  <span class={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border self-start ${tone.badge}`}>
-                                    {tone.label}
-                                  </span>
-                                )}
-                                <time class="text-xs text-slate-500" datetime={e.date}>
-                                  {formatUpdateDate(e.date)}
-                                </time>
-                              </div>
-                              <h3 class="font-bold text-slate-100 group-hover:text-indigo-400 transition-colors text-base leading-snug mb-1">
-                                {e.title}
-                              </h3>
-                              <p class="text-sm text-slate-400 line-clamp-2">{e.description}</p>
-                              {typeof e.progress === "number" && (
-                                <div class="flex items-center gap-2 mt-2">
-                                  <div class="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden max-w-[180px]">
-                                    <div
-                                      class="h-full rounded-full"
-                                      style={`width: ${e.progress}%; background: ${e.progress >= 100 ? "#10b981" : "linear-gradient(90deg,#6366f1,#0ea5e9)"};`}
-                                    ></div>
-                                  </div>
-                                  <span class="text-[11px] font-bold tabular-nums text-slate-300">{e.progress}%</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </a>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
-  </main>
-
-  <Footer />
+    {events.length === 0 ? (
+      <p class="empty">Поки що немає подій.</p>
+    ) : (
+      Array.from(groups.entries()).map(([key, list]) => (
+        <section class="month">
+          <h2>{monthTitle(key)}</h2>
+          <ol>
+            {list.map((e) => {
+              const tone = eventTone(e.kind);
+              return (
+                <li>
+                  <a href={`/games/${e.gameId}/`} class="event" style={`--state:${tone.color}`}>
+                    <img src={e.gameCover} alt="" width="56" height="84" loading="lazy" decoding="async" />
+                    <div class="event__body">
+                      <p class="event__meta">
+                        <span class="event__kind">{tone.label}</span>
+                        <time datetime={e.date}>{formatUpdateDate(e.date)}</time>
+                      </p>
+                      <h3>{e.title}</h3>
+                      <p class="event__text">{e.description}</p>
+                      {typeof e.progress === "number" && (
+                        <div class="event__progress">
+                          <div class="bar"><i style={`width:${e.progress}%`}></i></div>
+                          <span class="num">{e.progress}%</span>
+                        </div>
+                      )}
+                    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      ))
+    )}
+  </div>
 </Layout>
 
 <style>
-  /* ── Покращення 5: Colored left accent strips on timeline cards ──
-     Кольорова вертикальна смужка ліворуч відповідно до типу події.
-     Щоб вимкнути: видали цей <style> блок + data-kind + .lb-accent-strip у HTML. */
-  .lb-update-card { position: relative; overflow: hidden; }
+  .narrow { max-width: 960px; }
+  .title { margin-top: 10px; font-size: clamp(1.8rem, 4vw, 3.25rem); text-transform: uppercase; }
+  .empty { padding: 64px 0; color: var(--muted); text-align: center; }
 
-  .lb-accent-strip {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    border-radius: 0 2px 2px 0;
-    transition: opacity 0.2s ease;
+  .month { margin-top: 40px; }
+  .month h2 {
+    position: sticky;
+    top: var(--header-h);
+    z-index: 5;
+    padding: 12px 0;
+    background: var(--bg);
+    color: var(--accent);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
+  .month ol { border-top: 1px solid var(--line); }
 
-  [data-kind="release"] .lb-accent-strip {
-    background: #10b981;
-    box-shadow: 0 0 14px rgba(16, 185, 129, 0.6);
+  .event {
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: 16px;
+    padding: 18px 0 18px 14px;
+    border-bottom: 1px solid var(--line);
+    border-left: 3px solid var(--state);
+    transition: background-color 0.18s ease;
   }
-  [data-kind="early-access"] .lb-accent-strip {
-    background: #0ea5e9;
-    box-shadow: 0 0 14px rgba(14, 165, 233, 0.6);
-  }
-  [data-kind="milestone"] .lb-accent-strip {
-    background: #8b5cf6;
-    box-shadow: 0 0 14px rgba(139, 92, 246, 0.6);
-  }
-  [data-kind="update"] .lb-accent-strip {
-    background: #6366f1;
-    box-shadow: 0 0 14px rgba(99, 102, 241, 0.6);
-  }
-  /* ── кінець Покращення 5 ──────────────────────────────────── */
+  .event:hover { background: var(--surface); }
+  .event:hover h3 { color: var(--accent); }
+  .event img { width: 56px; height: 84px; object-fit: cover; border: 1px solid var(--line); }
+  .event__meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; }
+  .event__kind { color: var(--state); font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+  .event__meta time { color: var(--faint); }
+  .event h3 { margin: 6px 0 4px; font-family: var(--font-body); font-size: 1rem; font-weight: 800; letter-spacing: 0; transition: color 0.18s ease; }
+  .event__text { color: var(--muted); font-size: 14px; }
+  .event__progress { display: flex; align-items: center; gap: 10px; max-width: 240px; margin-top: 10px; }
+  .event__progress .bar { flex: 1; }
+  .event__progress span { color: var(--muted); font-size: 12px; }
 </style>

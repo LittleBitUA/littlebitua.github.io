@@ -56,6 +56,8 @@ export interface Game {
   fundraisingGoal?: number;
   fundraisingCompleted?: boolean;
   fundraisingDescription?: string;
+  /** Посилання на ціль Donatello (…?g=…): суми збору оновлюються автоматично під час збірки */
+  fundraisingUrl?: string;
   lastUpdate?: string;
 
   // ── Detail Pages Data ──
@@ -190,6 +192,7 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     fundraisingRaised: 29000,
     fundraisingGoal: 50000,
+    fundraisingUrl: "https://donatello.to/LittleBitUA?g=tekstova-lokalizatsiya-nie-r-replicant-ver-1-22474487139",
     fundraisingDescription: "Переклад робитиметься з оглядом на японську мову та виконується професійним дипломованим перекладачем під ніком Retnara.",
     lastUpdate: "2026-08-01",
     progressHistory: [
@@ -288,6 +291,7 @@ export const games: Game[] = [
     stage: "Переклад",
     fundraisingRaised: 21145,
     fundraisingGoal: 50000,
+    fundraisingUrl: "https://donatello.to/LittleBitUA?g=podalsha-tekstova-lokalizatsiya-metal-gear-solid-d-snake-eater-master-collection",
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [
       { label: "Переклад", percent: 63 },
@@ -1129,7 +1133,7 @@ export const games: Game[] = [
       "Психологічний трилер про Вінсента, який щоночі втрачає спокій уві сні, підіймаючись блоковими лабіринтами тікаючи від власних страхів, а вдень розривається між нареченою Кетрін і загадковою незнайомкою Кетріною. Суміш головоломок на виживання й історії про дорослішання, вибір і зраду.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/893180/library_600x900_2x.jpg",
     progress: 32,
-    status: "early-access",
+    status: "in-progress",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 32 },
@@ -1204,7 +1208,7 @@ export const games: Game[] = [
     series: "Metal Gear",
     description:
       "Пролог до подій The Phantom Pain, у якому Біґ Бос вирушає на таємну операцію на військовій базі Кемп Омега. Гра робить ставку на відкриті локації, свободу дій, приховане проникнення та тактичний підхід, знайомить із рушієм FOX Engine і закладає основу для подій METAL GEAR SOLID V.",
-    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/311340/portrait.png",
+    cover: "https://cdn2.steamgriddb.com/grid/3d5cbcad747c5477f33557043b62bbeb.png",
     progress: 15,
     status: "in-progress",
     stage: "Переклад",

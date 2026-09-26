@@ -1,25 +1,8 @@
 ---
-// ─── Tag Component ─────────────────────────────────────────────
-// Клікабельний чип. На сторінках із FilterBar фільтрує на місці
-// (перехоплюється по data-tag-filter), на решті — веде в каталог
-// із застосованим фільтром через ?tag=
-
-export interface Props {
-  label: string;
-  color?: string;
-}
-
-const { label, color } = Astro.props;
+// ─── Tag ───────────────────────────────────────────────────────
+// Веде в каталог із фільтром за тегом (?tag=…).
+export interface Props { label: string }
+const { label } = Astro.props;
 ---
 
-<a
-  href={`/games/?tag=${encodeURIComponent(label)}`}
-  data-tag-filter={label}
-  class="inline-flex items-center px-2.5 py-1 text-[11px] font-medium rounded-lg cursor-pointer select-none whitespace-nowrap no-underline
-         text-slate-300 border border-white/18 bg-white/10
-         hover:bg-indigo-950/50 hover:text-indigo-300 hover:border-indigo-700/40
-         transition-colors duration-200"
-  style={color ? `border-color: ${color}33; color: ${color}` : undefined}
->
-  {label}
-</a>
+<a href={`/games/?tag=${encodeURIComponent(label)}`} class="chip">{label}</a>

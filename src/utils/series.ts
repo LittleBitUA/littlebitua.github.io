@@ -1,7 +1,8 @@
 // ─── Series Utilities ────────────────────────────────────────
 // Групування ігор за серіями для сторінок /games/series/[slug]/
 
-import { games, type Game } from "../data/games";
+import { games, type Game } from "../data/catalog";
+import { sortByStatus } from "./status";
 
 /** "No More Heroes" → "no-more-heroes" */
 export function seriesSlug(series: string): string {
@@ -26,24 +27,12 @@ export function getSeriesGroups(minCount = 2): { name: string; slug: string; gam
     else map.set(game.series, [game]);
   }
 
-  const STATUS_PRIORITY: Record<string, number> = {
-    done: 0,
-    "early-access": 1,
-    "in-progress": 2,
-    fundraising: 3,
-  };
-
   return Array.from(map.entries())
     .filter(([, list]) => list.length >= minCount)
     .map(([name, list]) => ({
       name,
       slug: seriesSlug(name),
-      games: list.slice().sort((a, b) => {
-        const pa = STATUS_PRIORITY[a.status] ?? 9;
-        const pb = STATUS_PRIORITY[b.status] ?? 9;
-        if (pa !== pb) return pa - pb;
-        return (b.lastUpdate ?? "").localeCompare(a.lastUpdate ?? "");
-      }),
+      games: sortByStatus(list),
     }))
     .sort((a, b) => b.games.length - a.games.length);
 }

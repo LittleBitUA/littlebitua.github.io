@@ -1,199 +1,153 @@
 ---
-// ─── Header ───────────────────────────────────────────────────
-// Floating glass pill — світлий, прозорий, з акуратною мобільною версією.
+// ─── Header ────────────────────────────────────────────────────
+const NAV = [
+  { href: "/games/", label: "Каталог" },
+  { href: "/updates/", label: "Оновлення" },
+  { href: "/#launcher", label: "LBK Launcher" },
+  { href: "/#faq", label: "FAQ" },
+];
+const path = Astro.url.pathname;
+const isActive = (href: string) => !href.includes("#") && path.startsWith(href);
 ---
 
-<header
-  id="site-header"
-  class="fixed top-0 left-0 right-0 z-50 pt-3 sm:pt-5 px-3 sm:px-4 transition-all duration-500"
->
-  <nav class="mx-auto max-w-6xl">
-    <div class="lb-pill header-pill flex items-center justify-between h-12 sm:h-14 pl-2 pr-2 sm:pl-3 sm:pr-2">
-      <!-- Brand -->
-      <a href="/" class="flex items-center gap-2.5 px-2 group shrink-0" aria-label="Little Bit — на головну">
-        <span
-          class="w-9 h-9 rounded-xl flex items-center justify-center
-                 bg-gradient-to-br from-white to-slate-100
-                 border border-white/80 shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_8px_18px_-10px_rgba(99,102,241,0.45)]
-                 group-hover:shadow-[0_1px_0_rgba(255,255,255,0.9)_inset,0_10px_22px_-8px_rgba(99,102,241,0.6)]
-                 transition-all duration-300 overflow-hidden"
-        >
-          <svg viewBox="0 0 40 40" class="w-full h-full">
-            <defs>
-              <linearGradient id="lbLogoG" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#6366f1" />
-                <stop offset="100%" stop-color="#0ea5e9" />
-              </linearGradient>
-            </defs>
-            <rect width="40" height="40" rx="10" fill="url(#lbLogoG)" />
-            <text
-              x="50%" y="55%"
-              dominant-baseline="middle" text-anchor="middle"
-              font-family="Inter, system-ui, sans-serif"
-              font-weight="900" font-size="18" fill="#ffffff"
-              letter-spacing="-1"
-            >LB</text>
-          </svg>
-        </span>
-        <span class="hidden sm:flex flex-col leading-tight">
-          <span class="text-slate-100 font-bold text-sm">«Little Bit»</span>
-          <span class="text-[10px] font-medium text-slate-400 tracking-wide">Українські локалізації</span>
+<header id="site-header" class="site-header">
+  <div class="container">
+    <nav class="bar-shell" aria-label="Головна навігація">
+      <a href="/" class="brand" aria-label="«Little Bit» — на головну">
+        <span class="brand__mark">LB</span>
+        <span class="brand__copy">
+          <strong>«Little Bit»</strong>
+          <small>Українські локалізації</small>
         </span>
       </a>
 
-      <!-- Navigation -->
-      <div class="hidden md:flex items-center gap-1">
-        <a href="/games/" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-300 hover:text-white transition-colors">
-          Локалізації
-        </a>
-        <a href="/updates" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-300 hover:text-white transition-colors">
-          Оновлення
-        </a>
-        <a href="/#launcher" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-300 hover:text-white transition-colors">
-          Лаунчер
-        </a>
-        <a href="/#faq" class="nav-link px-3 py-1.5 text-xs font-semibold rounded-full text-slate-300 hover:text-white transition-colors">
-          FAQ
-        </a>
-      </div>
+      <ul class="nav">
+        {NAV.map((item) => (
+          <li>
+            <a href={item.href} class:list={["nav__link", { "is-active": isActive(item.href) }]} aria-current={isActive(item.href) ? "page" : undefined}>
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
 
-      <div class="flex items-center gap-1.5 shrink-0">
-        <!-- Mobile menu trigger -->
-        <button
-          id="mobile-menu-toggle"
-          class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full
-                 text-slate-300 hover:text-white hover:bg-white/10
-                 transition-colors"
-          aria-label="Меню"
-          aria-expanded="false"
-        >
-          <svg id="menu-open" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-          </svg>
-          <svg id="menu-close" class="hidden w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      <div class="actions">
+        <a href="/#support" class="btn btn--primary btn--sm">Підтримати</a>
+        <button id="menu-toggle" class="menu-btn" type="button" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path class="i-open" d="M4 7h16M4 12h16M4 17h16" />
+            <path class="i-close" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </button>
-
-        <!-- Donate -->
-        <a
-          href="/#support"
-          class="lb-btn lb-btn--primary !py-2 !px-3.5 sm:!px-4 !text-xs"
-          aria-label="Підтримати команду"
-        >
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-          <span>Підтримати</span>
-        </a>
       </div>
-    </div>
+    </nav>
 
-    <!-- Mobile menu panel -->
-    <div
-      id="mobile-menu"
-      class="md:hidden mt-2 lb-glass-strong p-4 rounded-3xl flex flex-col gap-1
-             opacity-0 -translate-y-2 pointer-events-none transition-all duration-300"
-    >
-      <a href="/games/" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-white/8 hover:text-white">
-        Локалізації
-      </a>
-      <a href="/updates" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-white/8 hover:text-white">
-        Оновлення
-      </a>
-      <a href="/#launcher" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-white/8 hover:text-white">
-        LBK Launcher
-      </a>
-      <a href="/#support" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-white/8 hover:text-white">
-        Підтримати
-      </a>
-      <a href="/#faq" class="mob-link rounded-2xl px-4 py-3 text-sm font-semibold text-slate-200 hover:bg-white/8 hover:text-white">
-        FAQ
-      </a>
+    <div id="mobile-menu" class="mobile-menu" hidden>
+      {NAV.map((item) => <a href={item.href}>{item.label}</a>)}
+      <a href="/#support">Підтримати</a>
     </div>
-  </nav>
+  </div>
 </header>
-
-<style>
-  .nav-link.active {
-    color: #a5b4fc;
-    background: rgba(99, 102, 241, 0.14);
-  }
-
-  .header-scrolled .header-pill {
-    background: rgba(7, 11, 20, 0.94);
-    box-shadow:
-      0 0 0 1px rgba(255,255,255,0.08),
-      0 18px 38px -22px rgba(0, 0, 0, 0.6);
-  }
-
-  #mobile-menu.open {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-</style>
 
 <script>
   const header = document.getElementById("site-header")!;
+  const toggle = document.getElementById("menu-toggle")!;
+  const menu = document.getElementById("mobile-menu")!;
 
-  const onScroll = () => {
-    header.classList.toggle("header-scrolled", window.scrollY > 24);
-  };
+  const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 20);
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
-  const navLinks = document.querySelectorAll<HTMLAnchorElement>(".nav-link");
-  const path = location.pathname;
-  const onHome = path === "/" || path === "/index.html";
-
-  // На підсторінках підсвічуємо за URL — раніше активний стан працював
-  // лише для якорів головної, тож на /games/ і /updates меню було «мертве».
-  if (!onHome) {
-    navLinks.forEach((link) => {
-      const href = link.getAttribute("href") || "";
-      if (href.startsWith("#") || href.startsWith("/#")) return;
-      link.classList.toggle("active", path.startsWith(href));
-    });
-  } else {
-    // На головній — за секцією, повз яку скролимо
-    const sections = document.querySelectorAll("section[id]");
-    const highlightNav = () => {
-      let current = "";
-      sections.forEach((section) => {
-        if (section.getBoundingClientRect().top <= 140) current = section.id;
-      });
-      navLinks.forEach((link) => {
-        const href = link.getAttribute("href") || "";
-        link.classList.toggle("active", !!current && href.endsWith(`#${current}`));
-      });
-    };
-    window.addEventListener("scroll", highlightNav, { passive: true });
-    highlightNav();
-  }
-
-  // Mobile menu
-  const toggle = document.getElementById("mobile-menu-toggle");
-  const menu = document.getElementById("mobile-menu");
-  const iconOpen = document.getElementById("menu-open");
-  const iconClose = document.getElementById("menu-close");
-
-  toggle?.addEventListener("click", () => {
-    const open = !menu?.classList.contains("open");
-    menu?.classList.toggle("open", open);
+  const setOpen = (open: boolean) => {
+    menu.hidden = !open;
     toggle.setAttribute("aria-expanded", String(open));
-    iconOpen?.classList.toggle("hidden", open);
-    iconClose?.classList.toggle("hidden", !open);
-  });
-
-  // Close menu when navigating
-  document.querySelectorAll<HTMLAnchorElement>(".mob-link").forEach((link) => {
-    link.addEventListener("click", () => {
-      menu?.classList.remove("open");
-      toggle?.setAttribute("aria-expanded", "false");
-      iconOpen?.classList.remove("hidden");
-      iconClose?.classList.add("hidden");
-    });
-  });
+    header.classList.toggle("is-open", open);
+  };
+  toggle.addEventListener("click", () => setOpen(menu.hidden));
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setOpen(false)));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
 </script>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    padding-top: 12px;
+    transition: padding 0.2s ease;
+  }
+  .site-header.is-scrolled { padding-top: 8px; }
+
+  .bar-shell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 60px;
+    padding: 8px 8px 8px 10px;
+    background: rgba(8, 9, 11, 0.86);
+    border: 1px solid var(--line);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .is-scrolled .bar-shell { background: rgba(8, 9, 11, 0.97); }
+
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand__mark {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    background: var(--accent);
+    color: var(--on-accent);
+    font: 800 13px/1 var(--font-display);
+    letter-spacing: -0.06em;
+  }
+  .brand__copy { display: flex; flex-direction: column; line-height: 1.15; }
+  .brand__copy strong { font-size: 14px; font-weight: 800; }
+  .brand__copy small { margin-top: 3px; color: var(--faint); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .nav { display: none; gap: 4px; }
+  .nav__link {
+    display: block;
+    padding: 10px 12px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    border-bottom: 2px solid transparent;
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+  .nav__link:hover, .nav__link.is-active { color: var(--ink); border-bottom-color: var(--accent); }
+
+  .actions { display: flex; align-items: center; gap: 8px; }
+
+  .menu-btn {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line-strong);
+  }
+  .menu-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .menu-btn .i-close, .is-open .menu-btn .i-open { display: none; }
+  .is-open .menu-btn .i-close { display: inline; }
+
+  .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    margin-top: 6px;
+    padding: 6px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .mobile-menu[hidden] { display: none; }
+  .mobile-menu a { padding: 14px 12px; font-weight: 700; border-bottom: 1px solid var(--line); }
+  .mobile-menu a:last-child { border-bottom: 0; }
+  .mobile-menu a:hover { color: var(--accent); }
+
+  @media (max-width: 479px) { .brand__copy { display: none; } }
+  @media (min-width: 900px) {
+    .nav { display: flex; }
+    .menu-btn, .mobile-menu { display: none; }
+  }
+</style>

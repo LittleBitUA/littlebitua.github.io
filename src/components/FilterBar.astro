@@ -1,323 +1,261 @@
 ---
-// ─── FilterBar — compact single-row ──────────────────────────────
-import { getStatusList, STATUS_LABELS } from "../data/games";
-const statusList = getStatusList();
+// ─── FilterBar ─────────────────────────────────────────────────
+// Пошук, фільтр за статусом, сортування. Працює з будь-якими
+// елементами [data-game-id] на сторінці (див. GameCard).
+// Стан синхронізується з URL: ?status=…&q=…&tag=…
+import { getStatusList } from "../data/games";
+import { STATUS_META } from "../utils/status";
+
+const filters = [
+  { value: "all", label: "Усі" },
+  { value: "playable", label: "Можна грати" },
+  ...getStatusList().map((s) => ({ value: s, label: STATUS_META[s].label })),
+];
 ---
 
-<div id="filter-bar-sentinel" aria-hidden="true" class="h-px -mt-px"></div>
+<div class="filters" id="filters">
+  <label class="search">
+    <span class="sr-only">Пошук</span>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-5-5m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+    <input id="search-input" type="search" placeholder="Назва, серія, жанр…" autocomplete="off" />
+  </label>
 
-<div id="filter-bar-wrap" class="lb-filter-sticky lb-glass px-4 py-2.5 mb-6 top-[68px] sm:top-[84px]" data-animate>
-  <div class="flex flex-wrap items-center gap-x-2 gap-y-2">
-
-    <!-- Search -->
-    <div class="relative fb-search">
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 pointer-events-none z-10"
-           fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-      </svg>
-      <input
-        type="text"
-        id="search-input"
-        placeholder="Пошук за назвою, серією..."
-        class="w-full pl-9 pr-3 py-1.5 text-sm rounded-lg border
-               bg-white/5 border-white/10 text-slate-200
-               placeholder:text-slate-500
-               focus:outline-none focus:border-indigo-500/50 focus:bg-white/8 focus:ring-2 focus:ring-indigo-500/20
-               transition-all"
-      />
-    </div>
-
-    <!-- Divider -->
-    <div class="fb-divider" aria-hidden="true"></div>
-
-    <!-- Status pills -->
-    <div class="flex flex-wrap gap-1.5" id="filter-bar">
-      <button class="filter-btn active" data-filter="status" data-value="all">Усі</button>
-      {statusList.map((status) => (
-        <button class="filter-btn" data-filter="status" data-value={status}>
-          {STATUS_LABELS[status]}
-        </button>
-      ))}
-    </div>
-
-    <!-- Right: counter + sort -->
-    <div class="ml-auto flex items-center gap-3 shrink-0">
-      <span id="results-counter" class="text-xs font-semibold text-slate-600 tabular-nums hidden sm:block">
-        Завантаження...
-      </span>
-
-      <div class="relative">
-        <select
-          id="sort-select"
-          class="appearance-none pl-3 pr-7 py-1.5 text-xs font-bold rounded-lg border
-                 bg-white/5 border-white/10 text-slate-400
-                 hover:bg-white/8 focus:outline-none focus:border-indigo-500/40
-                 cursor-pointer"
-          style="color-scheme: dark;"
-        >
-          <option value="default">За замовчуванням</option>
-          <option value="progress-desc">Прогрес ↓</option>
-          <option value="progress-asc">Прогрес ↑</option>
-          <option value="title-asc">Назва (А→Я)</option>
-          <option value="title-desc">Назва (Я→А)</option>
-          <option value="update-desc">Останні оновлення</option>
-        </select>
-        <svg class="absolute right-2 top-1/2 -translate-y-1/2 w-2.5 h-2.5 text-slate-500 pointer-events-none"
-             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Active tag indicator -->
-    <div id="active-tag-filter" class="hidden w-full sm:w-auto">
-      <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold rounded-lg bg-indigo-950/60 border border-indigo-700/40 text-indigo-300">
-        <span>Тег:</span>
-        <span id="active-tag-label"></span>
-        <button id="clear-tag-filter" class="hover:text-indigo-200 transition-colors" aria-label="Скинути">
-          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </span>
-    </div>
-
+  <div class="status-filters" role="group" aria-label="Статус">
+    {filters.map((f) => (
+      <button type="button" class="filter-btn" data-value={f.value} aria-pressed={f.value === "all" ? "true" : "false"}>
+        {f.label}
+      </button>
+    ))}
   </div>
-</div>
 
-<!-- Empty state -->
-<div id="filter-empty-state" class="lb-glass-strong mb-8 px-6 py-10 sm:py-12 text-center hidden">
-  <div class="mx-auto w-16 h-16 rounded-2xl bg-white/6 text-slate-500 flex items-center justify-center mb-5 border border-white/10">
-    <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-      <path stroke-linecap="round" stroke-linejoin="round" d="M9 9l6 6m0-6l-6 6"/>
-    </svg>
+  <div class="filters__end">
+    <span id="results-counter" class="counter" aria-live="polite"></span>
+    <label class="sort">
+      <span class="sr-only">Сортування</span>
+      <select id="sort-select">
+        <option value="default">За статусом</option>
+        <option value="update-desc">Нещодавно оновлені</option>
+        <option value="progress-desc">Прогрес ↓</option>
+        <option value="progress-asc">Прогрес ↑</option>
+        <option value="title-asc">Назва А–Я</option>
+      </select>
+    </label>
   </div>
-  <h3 id="empty-state-title" class="text-lg sm:text-xl font-black text-slate-100 mb-2">Нічого не знайдено</h3>
-  <p class="text-sm text-slate-500 max-w-md mx-auto mb-6">
-    Спробуй коротший запит, прибери фільтри або переглянь повний список проєктів.
-  </p>
-  <div class="flex flex-wrap items-center justify-center gap-2.5">
-    <button id="empty-state-reset" type="button" class="lb-btn lb-btn--primary !text-sm">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-      </svg>
-      Скинути фільтри
+
+  <div id="active-tag" class="active-tag" hidden>
+    Тег: <b id="active-tag-label"></b>
+    <button id="clear-tag" type="button" aria-label="Скинути тег">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 18 18 6M6 6l12 12" /></svg>
     </button>
   </div>
 </div>
 
-<style>
-  .lb-filter-sticky {
-    position: sticky;
-    z-index: 30;
-    transition: padding 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s cubic-bezier(0.16,1,0.3,1), background 0.25s cubic-bezier(0.16,1,0.3,1);
-  }
-  .lb-filter-sticky.is-stuck {
-    background: rgba(7,11,20,0.95);
-    -webkit-backdrop-filter: blur(20px) saturate(1.2);
-    backdrop-filter: blur(20px) saturate(1.2);
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.07), 0 12px 28px -16px rgba(0,0,0,0.6), 0 4px 12px -8px rgba(99,102,241,0.15);
-  }
-  @media (prefers-reduced-motion: reduce) { .lb-filter-sticky { transition: none; } }
-
-  /* Search field — fixed width on larger screens */
-  .fb-search { width: 100%; }
-  @media (min-width: 480px) { .fb-search { width: 220px; flex-shrink: 0; } }
-
-  /* Thin vertical divider between search and pills */
-  .fb-divider {
-    display: none;
-    width: 1px; height: 22px;
-    background: rgba(255,255,255,0.08);
-    flex-shrink: 0;
-  }
-  @media (min-width: 480px) { .fb-divider { display: block; } }
-
-  /* Pills */
-  .filter-btn {
-    padding: 0.28rem 0.75rem;
-    font-size: 0.7rem;
-    font-weight: 700;
-    border-radius: 999px;
-    border: 1px solid rgba(255,255,255,0.10);
-    background: rgba(255,255,255,0.06);
-    color: #94a3b8;
-    transition: background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
-    cursor: pointer;
-    white-space: nowrap;
-  }
-  .filter-btn:hover {
-    background: rgba(255,255,255,0.10);
-    border-color: rgba(99,102,241,0.30);
-    color: #e2e8f0;
-  }
-  .filter-btn.active {
-    background: #6366f1;
-    color: #fff;
-    border-color: transparent;
-    box-shadow: 0 4px 14px -6px rgba(99,102,241,0.6);
-  }
-  .filter-btn.active:hover { background: #6366f1; color: #fff; border-color: transparent; }
-
-  #active-tag-filter.inline-flex { display: inline-flex; }
-</style>
+<div id="filter-empty" class="empty" hidden>
+  <p id="filter-empty-title" class="empty__title">Нічого не знайдено</p>
+  <p class="empty__text">Спробуйте коротший запит або скиньте фільтри.</p>
+  <button id="filter-reset" type="button" class="btn btn--primary btn--sm">Скинути фільтри</button>
+</div>
 
 <script>
   import Fuse from "fuse.js";
 
-  const stickySentinel = document.getElementById("filter-bar-sentinel");
-  const stickyWrap = document.getElementById("filter-bar-wrap");
-  if (stickySentinel && stickyWrap && "IntersectionObserver" in window) {
-    new IntersectionObserver(
-      ([entry]) => stickyWrap.classList.toggle("is-stuck", !entry.isIntersecting),
-      { rootMargin: "-80px 0px 0px 0px", threshold: [0,1] }
-    ).observe(stickySentinel);
-  }
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  const searchInput = $<HTMLInputElement>("search-input");
+  const sortSelect = $<HTMLSelectElement>("sort-select");
+  const counter = $("results-counter");
+  const tagBox = $("active-tag");
+  const tagLabel = $("active-tag-label");
+  const empty = $("filter-empty");
+  const emptyTitle = $("filter-empty-title");
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(".filter-btn"));
 
-  const searchInput = document.getElementById("search-input") as HTMLInputElement;
-  const sortSelect  = document.getElementById("sort-select") as HTMLSelectElement;
-  const filterBar   = document.getElementById("filter-bar")!;
-  const statusButtons = filterBar.querySelectorAll<HTMLButtonElement>(".filter-btn");
-  const resultsCounter = document.getElementById("results-counter")!;
-  const activeTagEl  = document.getElementById("active-tag-filter")!;
-  const activeTagLabel = document.getElementById("active-tag-label")!;
-  const clearTagBtn  = document.getElementById("clear-tag-filter")!;
-  const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-game-id]"));
-  const emptyState = document.getElementById("filter-empty-state");
-  const emptyStateTitle = document.getElementById("empty-state-title");
-  const emptyResetBtn = document.getElementById("empty-state-reset");
-
-  const _p = new URLSearchParams(location.search);
-  let currentStatus = _p.get("status") ?? "all";
-  let currentSearch = _p.get("q") ?? "";
-  // Теги зі сторінки гри ведуть сюди як /games/?tag=Стелс
-  let currentTag = _p.get("tag") ?? "";
-  let currentSort = "default";
-
-  if (currentStatus !== "all") {
-    document.querySelectorAll<HTMLButtonElement>(".filter-btn[data-filter='status']").forEach(b => {
-      b.classList.toggle("active", b.dataset.value === currentStatus);
-    });
-  }
-  if (currentSearch && searchInput) searchInput.value = currentSearch;
-  if (currentTag) {
-    activeTagLabel.textContent = currentTag;
-    activeTagEl.classList.remove("hidden");
-    activeTagEl.classList.add("inline-flex");
-  }
-
-  const gamesList = cards.map((card, idx) => ({
-    element: card, originalIndex: idx,
-    title: card.dataset.title || "", series: card.dataset.series || "",
-    tags: card.dataset.tags || "", status: card.dataset.status || "",
-    progress: parseInt(card.dataset.progress || "0", 10),
-    lastUpdate: card.dataset.lastUpdate || "",
-    fundraising: card.dataset.fundraising === "true",
+  const items = Array.from(document.querySelectorAll<HTMLElement>("[data-game-id]")).map((el, index) => ({
+    el,
+    index,
+    title: el.dataset.title ?? "",
+    series: el.dataset.series ?? "",
+    tags: el.dataset.tags ?? "",
+    status: el.dataset.status ?? "",
+    progress: Number(el.dataset.progress ?? 0),
+    lastUpdate: el.dataset.lastUpdate ?? "",
+    fundraising: el.dataset.fundraising === "true",
   }));
+  type Item = (typeof items)[number];
 
-  const fuse = new Fuse(gamesList, {
-    keys: ["title","series","tags"], threshold: 0.3, includeScore: true, useExtendedSearch: true,
-  });
+  const fuse = new Fuse(items, { keys: ["title", "series", "tags"], threshold: 0.3, useExtendedSearch: true });
 
-  function searchGames(query: string) {
-    const tokens = query.trim().split(/\s+/).filter(Boolean);
-    if (!tokens.length) return gamesList;
-    return fuse.search(tokens.map(t => `'${t}`).join(" ")).map(r => r.item);
-  }
+  const params = new URLSearchParams(location.search);
+  const state = {
+    status: params.get("status") ?? "all",
+    query: params.get("q") ?? "",
+    tag: params.get("tag") ?? "",
+    sort: "default",
+  };
 
-  function applyFilters() {
-    let filtered = gamesList;
-    if (currentSearch.trim()) filtered = searchGames(currentSearch);
-    if (currentStatus !== "all") filtered = filtered.filter(g =>
-      g.status === currentStatus || (currentStatus === "fundraising" && g.fundraising)
-    );
-    if (currentTag) filtered = filtered.filter(g => g.tags.toLowerCase().includes(currentTag.toLowerCase()));
-    filtered.sort((a, b) => {
-      switch (currentSort) {
-        case "progress-desc": return b.progress - a.progress;
-        case "progress-asc":  return a.progress - b.progress;
-        case "title-asc":     return a.title.localeCompare(b.title, "uk");
-        case "title-desc":    return b.title.localeCompare(a.title, "uk");
-        case "update-desc":   return b.lastUpdate.localeCompare(a.lastUpdate);
-        default:              return a.originalIndex - b.originalIndex;
-      }
-    });
-    const filteredIds = new Set(filtered.map(g => g.element.dataset.gameId));
-    cards.forEach(card => {
-      const show = filteredIds.has(card.dataset.gameId);
-      if (show) {
-        card.style.display = "";
-        card.style.order = filtered.findIndex(g => g.element === card).toString();
-        setTimeout(() => { card.style.opacity = "1"; card.style.transform = "translateY(0)"; }, 30);
-      } else {
-        card.style.opacity = "0"; card.style.transform = "translateY(12px)";
-        setTimeout(() => { card.style.display = "none"; }, 250);
-      }
-    });
-    const isFiltered = currentSearch.trim() || currentStatus !== "all" || currentTag;
-    if (isFiltered) {
-      resultsCounter.textContent = `${filtered.length} з ${cards.length}`;
-      resultsCounter.classList.remove("sm:hidden");
-    } else {
-      resultsCounter.textContent = "";
-      resultsCounter.classList.add("sm:hidden");
+  const matchesStatus = (g: Item) => {
+    switch (state.status) {
+      case "all": return true;
+      case "playable": return g.status === "done" || g.status === "early-access";
+      case "fundraising": return g.status === "fundraising" || g.fundraising;
+      default: return g.status === state.status;
     }
-    if (emptyState && emptyStateTitle) {
-      if (filtered.length === 0) {
-        emptyStateTitle.textContent = currentSearch.trim()
-          ? `За запитом «${currentSearch.trim()}» нічого не знайдено`
-          : "За цими фільтрами нічого не знайдено";
-        emptyState.classList.remove("hidden");
-      } else {
-        emptyState.classList.add("hidden");
-      }
+  };
+
+  const sorters: Record<string, (a: Item, b: Item) => number> = {
+    default: (a, b) => a.index - b.index,
+    "update-desc": (a, b) => b.lastUpdate.localeCompare(a.lastUpdate),
+    "progress-desc": (a, b) => b.progress - a.progress,
+    "progress-asc": (a, b) => a.progress - b.progress,
+    "title-asc": (a, b) => a.title.localeCompare(b.title, "uk"),
+  };
+
+  function syncUrl() {
+    const p = new URLSearchParams();
+    if (state.status !== "all") p.set("status", state.status);
+    if (state.query.trim()) p.set("q", state.query.trim());
+    if (state.tag) p.set("tag", state.tag);
+    const qs = p.toString();
+    history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+  }
+
+  function render() {
+    const query = state.query.trim();
+    let list = query
+      ? fuse.search(query.split(/\s+/).map((t) => `'${t}`).join(" ")).map((r) => r.item)
+      : items;
+    list = list.filter(matchesStatus);
+    if (state.tag) list = list.filter((g) => g.tags.toLowerCase().split(",").includes(state.tag.toLowerCase()));
+    list = [...list].sort(sorters[state.sort] ?? sorters.default);
+
+    const order = new Map(list.map((g, i) => [g.el, i]));
+    for (const { el } of items) {
+      const pos = order.get(el);
+      el.hidden = pos === undefined;
+      el.style.order = pos === undefined ? "" : String(pos);
     }
+
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.value === state.status)));
+    tagBox.hidden = !state.tag;
+    tagLabel.textContent = state.tag;
+
+    const filtered = state.status !== "all" || query || state.tag;
+    counter.textContent = filtered ? `${list.length} з ${items.length}` : "";
+    empty.hidden = list.length > 0;
+    emptyTitle.textContent = query ? `За запитом «${query}» нічого не знайдено` : "За цими фільтрами нічого не знайдено";
+
+    syncUrl();
   }
 
-  function resetAllFilters() {
-    searchInput.value = ""; currentSearch = "";
-    statusButtons.forEach(b => b.classList.remove("active"));
-    filterBar.querySelector<HTMLButtonElement>('[data-value="all"]')?.classList.add("active");
-    currentStatus = "all"; currentTag = "";
-    activeTagEl.classList.add("hidden"); activeTagEl.classList.remove("inline-flex");
-    sortSelect.value = "default"; currentSort = "default";
-    applyFilters();
-  }
-
-  emptyResetBtn?.addEventListener("click", resetAllFilters);
-
-  let searchTimeout: ReturnType<typeof setTimeout>;
+  searchInput.value = state.query;
+  let timer: ReturnType<typeof setTimeout>;
   searchInput.addEventListener("input", () => {
-    clearTimeout(searchTimeout);
-    searchTimeout = setTimeout(() => { currentSearch = searchInput.value; applyFilters(); }, 250);
+    clearTimeout(timer);
+    timer = setTimeout(() => { state.query = searchInput.value; render(); }, 200);
+  });
+  buttons.forEach((b) => b.addEventListener("click", () => { state.status = b.dataset.value ?? "all"; render(); }));
+  sortSelect.addEventListener("change", () => { state.sort = sortSelect.value; render(); });
+  $("clear-tag").addEventListener("click", () => { state.tag = ""; render(); });
+  $("filter-reset").addEventListener("click", () => {
+    Object.assign(state, { status: "all", query: "", tag: "", sort: "default" });
+    searchInput.value = "";
+    sortSelect.value = "default";
+    render();
   });
 
-  statusButtons.forEach(btn => btn.addEventListener("click", () => {
-    statusButtons.forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    currentStatus = btn.dataset.value || "all";
-    applyFilters();
-  }));
-
-  sortSelect.addEventListener("change", () => { currentSort = sortSelect.value; applyFilters(); });
-
-  document.addEventListener("click", e => {
-    const tagEl = (e.target as HTMLElement).closest("[data-tag-filter]") as HTMLElement | null;
-    if (!tagEl) return;
-    // Фільтруємо на місці — переходити в каталог не треба, ми вже тут
-    e.preventDefault();
-    currentTag = tagEl.dataset.tagFilter || "";
-    activeTagLabel.textContent = currentTag;
-    activeTagEl.classList.remove("hidden"); activeTagEl.classList.add("inline-flex");
-    applyFilters();
-  });
-
-  clearTagBtn.addEventListener("click", () => {
-    currentTag = "";
-    activeTagEl.classList.add("hidden"); activeTagEl.classList.remove("inline-flex");
-    applyFilters();
-  });
-
-  applyFilters();
+  render();
 </script>
+
+<style>
+  .filters {
+    position: sticky;
+    top: calc(var(--header-h) - 4px);
+    z-index: 30;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    margin-bottom: 28px;
+    padding: 12px 0;
+    background: rgba(8, 9, 11, 0.96);
+    border-block: 1px solid var(--line);
+  }
+
+  .search { position: relative; flex: 1 1 100%; }
+  .search svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    width: 16px;
+    height: 16px;
+    translate: 0 -50%;
+    fill: none;
+    stroke: var(--faint);
+    stroke-width: 2.2;
+    pointer-events: none;
+  }
+  .search input, .sort select {
+    width: 100%;
+    height: 40px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 14px;
+    transition: border-color 0.18s ease;
+  }
+  .search input { padding: 0 12px 0 38px; }
+  .search input::placeholder { color: var(--faint); }
+  .search input:focus, .sort select:focus { outline: none; border-color: var(--accent); }
+
+  .status-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-btn {
+    min-height: 34px;
+    padding: 0 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+  }
+  .filter-btn:hover { border-color: var(--line-strong); color: var(--ink); }
+  .filter-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+
+  .filters__end { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .counter { color: var(--faint); font-size: 12px; font-weight: 700; white-space: nowrap; }
+  .sort select { min-width: 190px; padding: 0 12px; font-size: 12px; font-weight: 700; color-scheme: dark; cursor: pointer; }
+
+  .active-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 6px 6px 10px;
+    border: 1px solid var(--accent);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .active-tag[hidden] { display: none; }
+  .active-tag b { color: var(--accent); }
+  .active-tag button { display: grid; place-items: center; width: 22px; height: 22px; }
+  .active-tag svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.4; }
+
+  .empty {
+    margin-bottom: 32px;
+    padding: 48px 20px;
+    border: 1px dashed var(--line-strong);
+    text-align: center;
+  }
+  .empty[hidden] { display: none; }
+  .empty__title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; }
+  .empty__text { margin: 8px 0 20px; color: var(--muted); }
+
+  @media (min-width: 640px) { .search { flex: 0 1 260px; } }
+  @media (max-width: 639px) {
+    .filters { position: static; }
+    .filters__end { width: 100%; }
+    .sort { flex: 1; }
+  }
+</style>

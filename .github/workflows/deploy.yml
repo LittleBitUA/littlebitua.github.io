@@ -4,6 +4,10 @@ on:
   push:
     branches: [main, _newdesign]
   workflow_dispatch:
+  # Щодня о 06:00 за Києвом (03:00 UTC): пересобираємо сайт,
+  # щоб підтягнути актуальні суми зборів із Donatello.
+  schedule:
+    - cron: "0 3 * * *"
 
 permissions:
   contents: read
