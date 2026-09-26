@@ -30,9 +30,8 @@ const stats = [
       </p>
 
       <h1 class="hero__title">
-        <span>Перекладаємо</span>
-        <span>те, у що</span>
-        <em>граємо самі</em>
+        <span>Перекладаємо те,</span>
+        <span>у що <em>граємо самі</em></span>
       </h1>
 
       <p class="hero__lede">
@@ -138,13 +137,13 @@ const stats = [
     display: flex;
     flex-direction: column;
     margin: 28px 0 24px;
-    /* Розмір від ширини колонки: найдовше слово «Перекладаємо» ніколи не обріжеться */
-    font-size: clamp(2.25rem, 10.5cqi, 5rem);
+    /* Розмір від ширини колонки: два рядки однакової довжини ніколи не обріжуться */
+    font-size: clamp(1.5rem, 6.3cqi, 4rem);
     font-weight: 800;
     line-height: 0.98;
     letter-spacing: -0.045em;
   }
-  .hero__title span, .hero__title em { white-space: nowrap; }
+  .hero__title span { white-space: nowrap; }
   .hero__title em { font-style: normal; color: var(--accent); }
 
   .hero__lede {
@@ -290,6 +289,9 @@ const stats = [
   }
 
   @media (max-width: 639px) {
+    .hero__title { font-size: clamp(1.6rem, 8.2vw, 2.4rem); }
+    .hero__title { display: block; text-wrap: balance; }
+    .hero__title span { white-space: normal; }
     .hero__actions .btn { flex: 1 1 100%; }
     .hero__stat { padding: 14px 10px; }
     .hero__stat span { font-size: 10px; }
