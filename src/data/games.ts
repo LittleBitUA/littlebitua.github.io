@@ -303,7 +303,7 @@ export const games: Game[] = [
       totalWords: 536590, // 57292 укр + 479298 англ
     },
     tags: ["Стелс", "Бойовик", "Глибокий сюжет", "Пригоди"],
-    downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-kostyanchek8-solovina-komanda",
+    downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_snake_eater/little-bit-perekladach-patriotiv-kostyanchek8-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=ZFcVAqzto8Y",
     lastUpdate: "2026-07-02",

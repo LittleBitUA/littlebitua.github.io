@@ -30,11 +30,11 @@ const rows: Row[] = [
 ];
 
 const fundUrl = game.fundraisingUrl ?? game.donateUrl;
-const action = fundActive && fundUrl
-  ? { label: "Підтримати", href: fundUrl, variant: "fund" }
-  : game.downloadUrl && isPlayable(game)
-    ? { label: "Грати", href: game.downloadUrl, variant: "play" }
-    : null;
+// Кнопки на обкладинці: «Грати», якщо гра вже доступна, і «Підтримати», якщо триває збір
+const actions = [
+  ...(game.downloadUrl && isPlayable(game) ? [{ label: "Грати", href: game.downloadUrl, variant: "play" }] : []),
+  ...(fundActive && fundUrl ? [{ label: "Підтримати", href: fundUrl, variant: "fund" }] : []),
+];
 ---
 
 <article
@@ -74,19 +74,23 @@ const action = fundActive && fundUrl
       ))}
     </ul>
 
-    {action && (
-      <a
-        href={action.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        class={`card__action card__action--${action.variant}`}
-        aria-label={`${action.label}: ${game.title}`}
-      >
-        {action.variant === "play" && (
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
-        )}
-        {action.label}
-      </a>
+    {actions.length > 0 && (
+      <div class="card__actions">
+        {actions.map((action) => (
+          <a
+            href={action.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`card__action card__action--${action.variant}`}
+            aria-label={`${action.label}: ${game.title}`}
+          >
+            {action.variant === "play" && (
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            )}
+            {action.label}
+          </a>
+        ))}
+      </div>
     )}
   </div>
 </article>
@@ -186,15 +190,19 @@ const action = fundActive && fundUrl
   .row.is-fund .row__pct, .row.is-fund .row__label { color: var(--st-fund); }
   .row.is-todo .row__label, .row.is-todo .row__pct { color: rgba(242, 240, 233, 0.5); }
 
+  .card__actions { display: flex; gap: 6px; margin-top: 10px; }
   .card__action {
     position: relative;
+    flex: 1 1 0;
+    min-width: 0;
     z-index: 3;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
     min-height: 34px;
-    margin-top: 10px;
+    padding: 0 6px;
+    white-space: nowrap;
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -213,6 +221,7 @@ const action = fundActive && fundUrl
     .row { grid-template-columns: 3.9rem minmax(0, 1fr) 2.1rem; gap: 5px; font-size: 10px; }
     .card__rows { gap: 4px; margin-top: 6px; }
     .card__money small { display: none; }
-    .card__action { min-height: 30px; margin-top: 8px; font-size: 10px; }
+    .card__actions { gap: 4px; margin-top: 8px; }
+    .card__action { min-height: 30px; font-size: 10px; letter-spacing: 0.04em; }
   }
 </style>
