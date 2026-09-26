@@ -1300,6 +1300,7 @@ export const games: Game[] = [
     tags: ["Хоррор", "Бойовик", "Психологічний", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/3764200/Resident_Evil_Requiem/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    videoUrl: "https://www.youtube.com/watch?v=5Bk3RuhjquA",
     gameYear: 2026,
     lastUpdate: "2026-09-26",
   },
