@@ -53,7 +53,7 @@ const facts = [
   { label: "Реліз перекладу", value: game.releaseDate && game.status === "done" ? formatDate(game.releaseDate) : null },
   { label: "Оновлено", value: game.lastUpdate ? formatDate(game.lastUpdate) : null },
   { label: "Платформи", value: game.platform?.join(" · ") ?? null },
-  { label: "Рік гри", value: game.gameYear ? String(game.gameYear) : null },
+  { label: "Рік виходу", value: game.gameYear ? String(game.gameYear) : null },
 ].filter((f) => f.value);
 
 const statsRows = [

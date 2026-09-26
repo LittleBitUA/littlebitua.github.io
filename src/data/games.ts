@@ -82,7 +82,7 @@ export interface Game {
   team?: TeamMember[]; // Translation team
   detailedDescription?: string; // Extended description for detail page
   releaseDate?: string; // Release date (YYYY-MM-DD)
-  gameYear?: number; // Original game release year
+  gameYear?: number; // Рік виходу (для ігор зі Steam — рік виходу в Steam)
 
   // ── Progress Tracker Data ──
   progressHistory?: ProgressEntry[]; // Historical progress data
@@ -139,6 +139,7 @@ export const games: Game[] = [
     tags: ["Інді", "Пригоди", "Музика", "Сюжетна"],
     steamUrl: "https://store.steampowered.com/app/2582320/Mixtape/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2026,
     videoUrl: "https://www.youtube.com/watch?v=BhukvsGyX2s",
     lastUpdate: "2026-09-26",
     stats: {
@@ -166,6 +167,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/3937550/Yakuza_Kiwami_3__Dark_Ties/",
     downloadUrl: "https://lbklauncher.com/games/yakuza_kiwami_3_dark_ties/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2026,
     videoUrl: "https://www.youtube.com/watch?v=-CMhSswHhn4",
     lastUpdate: "2026-04-28",
     progressHistory: [
@@ -205,6 +207,7 @@ export const games: Game[] = [
     videoUrl: "https://www.youtube.com/watch?v=7NiZAmBlMk0",
     steamUrl: "https://store.steampowered.com/app/1113560/NieR_Replicant_ver122474487139/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2021,
     fundraisingRaised: 29000,
     fundraisingGoal: 50000,
     fundraisingUrl: "https://donatello.to/LittleBitUA?g=tekstova-lokalizatsiya-nie-r-replicant-ver-1-22474487139",
@@ -237,6 +240,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2131640/METAL_GEAR_SOLID_2_Sons_of_Liberty__Master_Collection_Version/",
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_2_sons_of_liberty_master_collection_version/little-bit-perekladach-patriotiv-kostyanchek8",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2023,
     videoUrl: "https://www.youtube.com/watch?v=21t5AVKLa04",
     fundraisingCompleted: true,
     lastUpdate: "2026-04-28",
@@ -389,7 +393,7 @@ export const games: Game[] = [
     // Extended data
     releaseDate: "2026-01-02",
     detailedDescription: "Культова гра від Suda51 тепер українською! Тревіс Тачдаун вирушає у божевільну подорож, щоб стати найкращим кілером Санта-Дестрой. Стиль, екшен, абсурдний гумор — усе, що робить цю гру легендарною.",
-    gameYear: 2007,
+    gameYear: 2021,
     genre: ["Action", "Hack and Slash", "Аркада"],
     platform: ["PC", "Switch"],
     translationSize: "medium",
@@ -443,7 +447,7 @@ export const games: Game[] = [
 
     // Extended data
     detailedDescription: "Станьте диспетчером поліції та керуйте екстреними викликами. Кожне ваше рішення впливає на долі людей. Унікальна стилістика коміксу та нелінійний сюжет.",
-    gameYear: 2024,
+    gameYear: 2025,
     genre: ["Пригоди", "Симулятор", "Візуальна новела"],
     platform: ["PC"],
     translationSize: "small",
@@ -494,7 +498,7 @@ export const games: Game[] = [
     // Extended data
     releaseDate: "2025-11-26",
     detailedDescription: "Детективний екшен у світі Yakuza, де колишній адвокат Такаюкі Яґамі стає приватним детективом і береться за справу серії моторошних убивств у Камуро-чьо. Розслідування веде в самісіньке нутро кримінального міста: стеження, допити, пошук доказів і небезпечні зв'язки з якудза — усе поруч із жорсткими бійками та напруженим сюжетом, який тримає до фіналу.",
-    gameYear: 2018,
+    gameYear: 2022,
     genre: ["Action", "RPG", "Детектив", "Відкритий світ"],
     platform: ["PC", "PlayStation", "Xbox"],
     translationSize: "large",
@@ -540,6 +544,7 @@ export const games: Game[] = [
     tags: ["Пригоди", "Симулятор", "Інді", "Казуальна"],
     steamUrl: "https://store.steampowered.com/app/1868140/DAVE_THE_DIVER/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2023,
     lastUpdate: "2026-04-30",
   },
   {
@@ -562,6 +567,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1687950/Persona_5_Royal/",
     downloadUrl: "https://lbklauncher.com/games/persona_5_royal/solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2022,
     lastUpdate: "2026-09-05",
   },
   {
@@ -588,7 +594,7 @@ export const games: Game[] = [
 
     // Extended data
     detailedDescription: "Продовження історії Кадзуми Кірю — події розгортаються через рік після Yakuza Kiwami. Війна між кланом Тоджьо та альянсом Омі от-от спалахне знову. Гру повністю перенесено на Dragon Engine: поліпшена графіка й помітно підтягнутий геймплей.",
-    gameYear: 2017,
+    gameYear: 2025,
     genre: ["Action", "RPG", "Beat 'em up", "Відкритий світ"],
     platform: ["PC", "PlayStation", "Xbox"],
     translationSize: "large",
@@ -693,7 +699,7 @@ export const games: Game[] = [
     // Extended data
     releaseDate: "2026-01-14",
     detailedDescription: "Епічний фінал трилогії No More Heroes! Тревіс Тачдаун проти армії інопланетних суперзлодіїв. Божевільний екшен, відкритий світ та неповторний стиль Suda51.",
-    gameYear: 2021,
+    gameYear: 2022,
     genre: ["Action", "Hack and Slash", "Відкритий світ"],
     platform: ["PC", "Switch"],
     translationSize: "large",
@@ -730,6 +736,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/3244220/A_Game_About_Digging_A_Hole/",
     downloadUrl: "https://lbklauncher.com/games/a_game_about_digging_a_hole/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2025,
     lastUpdate: "2026-05-12",
     installInstructions: `## Встановлення локалізації A Game About Digging A Hole
 
@@ -760,6 +767,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Beat 'em up"],
     steamUrl: "https://store.steampowered.com/app/1420300/No_More_Heroes_2_Desperate_Struggle/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2021,
     lastUpdate: "2026-02-16",
   },
   {
@@ -780,6 +788,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2286600/HOTEL_BARCELONA/",
     downloadUrl: "https://lbklauncher.com/games/hotel_barcelona/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2025,
     lastUpdate: "2026-05-12",
     stats: {
       totalLines: 4751,
@@ -806,6 +815,7 @@ export const games: Game[] = [
     tags: ["Хоррор", "Містерія", "Відкритий світ", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/247660/Deadly_Premonition_The_Directors_Cut/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2013,
     lastUpdate: "2026-02-16",
     stats: {
       totalLines: 16667,
@@ -832,6 +842,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "Hack and Slash", "Інді", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/961490/Travis_Strikes_Again_No_More_Heroes_Complete_Edition/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2019,
     lastUpdate: "2026-02-16",
   },
   {
@@ -852,6 +863,7 @@ export const games: Game[] = [
     tags: ["Хоррор", "Містерія", "Пригоди", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1271100/Deadly_Premonition_2_A_Blessing_in_Disguise/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2022,
     lastUpdate: "2026-07-02",
     stats: {
       totalLines: 18436,
@@ -876,6 +888,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "RPG", "Історична", "Пригоди"],
     steamUrl: "https://store.steampowered.com/app/1805480/Like_a_Dragon_Ishin/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2023,
     lastUpdate: "2026-02-16",
   },
   {
@@ -896,6 +909,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "Пригоди", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/1088710/Yakuza_3_Remastered/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2021,
     lastUpdate: "2026-02-16",
   },
   {
@@ -915,6 +929,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1341820/As_Dusk_Falls/",
     downloadUrl: "https://lbklauncher.com/games/as_dusk_falls/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2022,
     lastUpdate: "2026-01-20",
     installInstructions: `## Встановлення локалізації As Dusk Falls
 
@@ -966,6 +981,7 @@ export const games: Game[] = [
     tags: ["Пригоди", "Відкритий світ", "Бойовик", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/758330/Shenmue_I__II/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2018,
     lastUpdate: "2026-02-16",
   },
   {
@@ -1020,6 +1036,7 @@ export const games: Game[] = [
     tags: ["RPG", "Інді", "Пригоди", "Симулятор", "Містерія"],
     steamUrl: "https://store.steampowered.com/app/1452500/The_Good_Life/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2021,
     lastUpdate: "2026-05-12",
   },
   {
@@ -1076,6 +1093,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/842910/The_MISSING_JJ_Macfield_and_the_Island_of_Memories/",
     downloadUrl: "https://lbklauncher.com/games/the_missing_jj_macfield_and_the_island_of_memories/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2018,
     lastUpdate: "2026-05-12",
   },
   {
@@ -1115,6 +1133,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2552450/KINGDOM_HEARTS_III__Re_Mind_DLC/",
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_iii_re_mind_dlc/solovina-komanda-dmytro-naumchas-naumenko",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1134,6 +1153,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "Детектив", "Пригоди", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2022,
     lastUpdate: "2026-07-31",
     progressHistory: [
       { date: "2026-01-15", progress: 3, milestone: "Початок проєкту" },
@@ -1177,6 +1197,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/893180/Catherine_Classic/",
     downloadUrl: "https://lbklauncher.com/games/catherine_classic/little-bit-locus-team",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2019,
     lastUpdate: "2026-09-01",
   },
   {
@@ -1196,6 +1217,7 @@ export const games: Game[] = [
     tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
     steamUrl: "https://store.steampowered.com/app/2131630/METAL_GEAR_SOLID__Master_Collection_Version/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2023,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1216,6 +1238,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2131650/METAL_GEAR_SOLID_3_Snake_Eater__Master_Collection_Version/",
     downloadUrl: "https://lbklauncher.com/games/metal_gear_solid_3_snake_eater_master_collection_version/little-bit-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2023,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1237,6 +1260,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2131680/METAL_GEAR__METAL_GEAR_2_Solid_Snake/",
     downloadUrl: "https://lbklauncher.com/games/metal_gear_metal_gear_2_solid_snake/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2023,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1256,6 +1280,7 @@ export const games: Game[] = [
     tags: ["Стелс", "Бойовик", "Тактика", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/311340/METAL_GEAR_SOLID_V_GROUND_ZEROES/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2014,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1275,6 +1300,7 @@ export const games: Game[] = [
     tags: ["Хоррор", "Бойовик", "Психологічний", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/3764200/Resident_Evil_Requiem/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2026,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1295,6 +1321,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2527390/Dead_Rising_Deluxe_Remaster/",
     downloadUrl: "https://lbklauncher.com/games/dead_rising_deluxe_remaster/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1314,6 +1341,7 @@ export const games: Game[] = [
     tags: ["Бойовик", "Хоррор", "Beat 'em up", "Класика"],
     steamUrl: "https://store.steampowered.com/app/427190/DEAD_RISING/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2016,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1333,6 +1361,7 @@ export const games: Game[] = [
     tags: ["Хоррор", "Психологічний", "Атмосферна", "Пригоди"],
     steamUrl: "https://store.steampowered.com/app/1636440/SILENT_HILL_Townfall/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2026,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1353,6 +1382,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_birth_by_sleep_final_mix/dmytro-naumchas-naumenko-little-bit-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1375,6 +1405,7 @@ export const games: Game[] = [
     tags: ["Action RPG", "JRPG", "Пригоди", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1394,6 +1425,7 @@ export const games: Game[] = [
     tags: ["Action RPG", "JRPG", "Пригоди", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552440/KINGDOM_HEARTS_HD_28_Final_Chapter_Prologue/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1413,6 +1445,7 @@ export const games: Game[] = [
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2072450/Like_a_Dragon_Infinite_Wealth/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     lastUpdate: "2026-09-26",
   },
   {
@@ -1497,6 +1530,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_ii",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     platform: ["PC"],
   },
   {
@@ -1516,6 +1550,7 @@ export const games: Game[] = [
     tags: ["Action RPG", "JRPG", "Пригоди", "Disney", "Збірка"],
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2024,
     platform: ["PC"],
   },
   {
