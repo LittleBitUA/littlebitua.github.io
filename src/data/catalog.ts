@@ -4,9 +4,17 @@
 // Запит виконується один раз за збірку.
 import { games as baseGames } from "./games";
 import { syncFundraising } from "../lib/fundraising";
+import { translationPercent } from "../utils/status";
 
 export * from "./games";
-export const games = await syncFundraising(baseGames);
+
+// Правило: гра, у якій текст перекладено на 100%, вважається готовою,
+// навіть якщо редактура чи малювання ще тривають. Готовий переклад
+// все одно можна оновлювати через лаунчер.
+const withDoneRule = (list: typeof baseGames) =>
+  list.map((g) => (g.status === "early-access" && translationPercent(g) >= 100 ? { ...g, status: "done" as const } : g));
+
+export const games = withDoneRule(await syncFundraising(baseGames));
 
 export function getOverallProgress(): number {
   if (games.length === 0) return 0;
