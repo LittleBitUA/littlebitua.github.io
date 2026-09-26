@@ -531,6 +531,7 @@ export const games: Game[] = [
   {
     id: "dave-the-diver",
     launcherSlug: "dave_the_diver",
+    launcherSync: false, // DLC «In The Jungle»: у лаунчері прогрес базової гри
     title: "Dave The Diver: In The Jungle",
     description:
       "Затишний пригодницький симулятор, де вдень ти пірнаєш по рибу, а ввечері керуєш суші-баром. Несподівано глибокий геймплей із купою активностей, секретів та харизматичних персонажів.",
