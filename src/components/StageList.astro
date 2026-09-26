@@ -5,7 +5,7 @@
 // не розпочатий — порожня доріжка. Так видно, що «ранній доступ»
 // може означати повністю перекладений текст без текстур.
 import type { Game } from "../data/games";
-import { stagesOf, stageName } from "../utils/status";
+import { stagesOf, stageName, isStageAbandoned } from "../utils/status";
 
 export interface Props {
   game: Game;
@@ -16,13 +16,17 @@ const stages = stagesOf(game);
 
   <ul class="stages">
     {stages.map((s) => {
-      const state = s.percent >= 100 ? "done" : s.percent > 0 ? "active" : "todo";
+      const state = s.percent < 100 && isStageAbandoned(game, s.label)
+        ? "abandoned"
+        : s.percent >= 100 ? "done" : s.percent > 0 ? "active" : "todo";
       return (
         <li class={`stage is-${state}`}>
           <span class="stage__label">
             {stageName(s.label)}
           </span>
-          <span class="stage__pct num">{state === "todo" ? "не розпочато" : `${s.percent}%`}</span>
+          <span class="stage__pct num">
+            {state === "todo" ? "не розпочато" : state === "abandoned" ? `закинуто на ${s.percent}%` : `${s.percent}%`}
+          </span>
           <span class="stage__bar" aria-hidden="true"><i style={`width:${s.percent}%`}></i></span>
         </li>
       );
@@ -53,4 +57,8 @@ const stages = stagesOf(game);
   .stage.is-active .stage__pct { color: var(--ink); }
   .stage.is-todo .stage__label, .stage.is-todo .stage__pct { color: var(--faint); }
   .stage.is-todo .stage__pct { font-size: 13px; }
+  .stage.is-abandoned .stage__label { color: var(--st-abandoned); text-decoration: line-through; text-decoration-thickness: 2px; }
+  .stage.is-abandoned .stage__pct { color: var(--st-abandoned); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; }
+  .stage.is-abandoned .stage__bar { height: 6px; }
+  .stage.is-abandoned .stage__bar i { background: var(--hatch-abandoned); }
 </style>

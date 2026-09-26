@@ -2,7 +2,7 @@
 // Central data source for all localization projects.
 // Sourced from lbklauncher.com/games?authors=Little+Bit
 
-export type GameStatus = "planned" | "in-progress" | "early-access" | "fundraising" | "done";
+export type GameStatus = "planned" | "in-progress" | "early-access" | "fundraising" | "done" | "abandoned";
 
 /** Localization work stage */
 export type LocalizationStage =
@@ -59,6 +59,19 @@ export interface Game {
   /** Посилання на ціль Donatello (…?g=…): суми збору оновлюються автоматично під час збірки */
   fundraisingUrl?: string;
   lastUpdate?: string;
+  /**
+   * Адреса гри в LBK Launcher (lbklauncher.com/games/<slug>). Звідти під час збірки
+   * беруться переклад, редактура, статус і версія. Якщо не вказано — береться з downloadUrl.
+   */
+  launcherSlug?: string;
+  /** false — не брати прогрес і статус з LBK Launcher, лишати значення з цього файлу */
+  launcherSync?: boolean;
+
+  // ── Закинуто ──
+  /** Етап, роботу над яким припинено (наприклад, "Редактура"). Без нього закинуто весь проєкт. */
+  abandonedStage?: string;
+  /** Причина, чому роботу припинено. Показується на сторінці гри. */
+  abandonedReason?: string;
 
   // ── Detail Pages Data ──
   screenshots?: string[]; // Paths to translation screenshots
@@ -96,6 +109,7 @@ export const STATUS_LABELS: Record<GameStatus, string> = {
   "early-access": "Ранній доступ",
   fundraising: "Збір коштів",
   done: "Готово",
+  abandoned: "Закинуто",
 };
 
 /** Status badge color mapping */
@@ -105,12 +119,14 @@ export const STATUS_COLORS: Record<GameStatus, string> = {
   "early-access": "bg-steam-blue/20 text-steam-blue border-steam-blue/30",
   fundraising: "bg-amber-500/20 text-amber-400 border-amber-500/30",
   done: "bg-steam-green/20 text-steam-green border-steam-green/30",
+  abandoned: "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
 /** All game localization projects */
 export const games: Game[] = [
   {
     id: "mixtape",
+    launcherSlug: "mixtape",
     title: "Mixtape",
     description:
       "Напередодні неминучої розлуки троє друзів вирушають у свою останню спільну пригоду. Проживіть разом із ними найяскравіші миті юності під пісні, що стали голосом цілого покоління.",
@@ -169,6 +185,7 @@ export const games: Game[] = [
   },
   {
     id: "nier-replicant",
+    launcherSlug: "nier_replicant_ver122474487139",
     title: "NieR Replicant™ ver.1.22474487139...",
     description:
       "Оновлена версія культової екшен-RPG, у якій юнак Нір вирушає на пошуки ліків для своєї смертельно хворої сестри Йони. Разом із балакучим «Ґримоаром Вайсом» і незабутніми супутниками він досліджуватиме химерний світ, битиметься з Тінями та поступово розкриватиме його трагічні таємниці. Це історія про надію, відданість і ціну порятунку, де кожна знайдена відповідь наближає до одного з кількох фіналів.",
@@ -405,12 +422,16 @@ export const games: Game[] = [
   },
   {
     id: "dispatch",
+    launcherSync: false,
+    abandonedStage: "Редактура",
+    abandonedReason:
+      "Для гри вийшла офіційна українська локалізація, тому редактуру нашого перекладу припинено. Сам текст перекладено повністю, і цією версією можна користуватися й надалі.",
     title: "Dispatch",
     description:
       "Сюжетна супергеройська комедія, у якій колишній герой після втрати бойового костюма влаштовується диспетчером. Тепер йому доведеться керувати командою колишніх лиходіїв, розподіляти їх між завданнями, владнувати офісні конфлікти та ухвалювати рішення, що впливатимуть на стосунки персонажів і розвиток історії.",
     cover: "https://cdn2.steamgriddb.com/thumb/bfa1e9bc09534cad8103ba543b5e0e24.jpg",
     progress: 100,
-    status: "done",
+    status: "abandoned",
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },
@@ -507,6 +528,7 @@ export const games: Game[] = [
   },
   {
     id: "dave-the-diver",
+    launcherSlug: "dave_the_diver",
     title: "Dave The Diver: In The Jungle",
     description:
       "Затишний пригодницький симулятор, де вдень ти пірнаєш по рибу, а ввечері керуєш суші-баром. Несподівано глибокий геймплей із купою активностей, секретів та харизматичних персонажів.",
@@ -524,6 +546,7 @@ export const games: Game[] = [
   },
   {
     id: "persona-5-royal",
+    launcherSlug: "persona_5_royal",
     title: "Persona 5 Royal",
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
@@ -545,6 +568,7 @@ export const games: Game[] = [
   },
   {
     id: "yakuza-kiwami2",
+    launcherSlug: "yakuza_kiwami_2",
     title: "Yakuza Kiwami 2",
     series: "Yakuza",
     description:
@@ -604,6 +628,7 @@ export const games: Game[] = [
   },
   {
     id: "yakuza-lad",
+    launcherSlug: "yakuza_like_a_dragon",
     title: "Yakuza: Like a Dragon",
     series: "Yakuza",
     description:
@@ -720,6 +745,7 @@ export const games: Game[] = [
   },
   {
     id: "nmh2",
+    launcherSlug: "no_more_heroes_2_desperate_struggle",
     title: "No More Heroes 2: Desperate Struggle",
     series: "No More Heroes",
     description:
@@ -766,6 +792,7 @@ export const games: Game[] = [
   },
   {
     id: "deadly-premonition-dc",
+    launcherSlug: "deadly_premonition_the_directors_cut",
     title: "Deadly Premonition: The Director's Cut",
     series: "Deadly Premonition",
     description:
@@ -791,6 +818,7 @@ export const games: Game[] = [
   },
   {
     id: "travis-strikes-again",
+    launcherSlug: "travis_strikes_again_no_more_heroes_complete_edition",
     title: "Travis Strikes Again: No More Heroes",
     series: "No More Heroes",
     description:
@@ -810,6 +838,7 @@ export const games: Game[] = [
   },
   {
     id: "deadly-premonition-2",
+    launcherSlug: "deadly_premonition_2_a_blessing_in_disguise",
     title: "Deadly Premonition 2: A Blessing in Disguise",
     series: "Deadly Premonition",
     description:
@@ -833,6 +862,7 @@ export const games: Game[] = [
   },
   {
     id: "lad-ishin",
+    launcherSlug: "like_a_dragon_ishin",
     title: "Like a Dragon: Ishin!",
     series: "Yakuza",
     description:
@@ -852,6 +882,7 @@ export const games: Game[] = [
   },
   {
     id: "yakuza3",
+    launcherSlug: "yakuza_3_remastered",
     title: "Yakuza 3 Remastered",
     series: "Yakuza",
     description:
@@ -922,6 +953,7 @@ export const games: Game[] = [
   },
   {
     id: "shenmue",
+    launcherSlug: "shenmue_i_ii",
     title: "Shenmue I",
     description:
       "Класика від Ю Судзукі. Рьо Хадзукі шукає вбивцю свого батька, досліджуючи Японію.",
@@ -940,6 +972,7 @@ export const games: Game[] = [
   },
   {
     id: "jojo-asbr",
+    launcherSlug: "jojos_bizarre_adventure_all_star_battle_r",
     title: "JoJo's Bizarre Adventure: All-Star Battle R",
     description:
       "Файтинг за мотивами культової манги JoJo. Понад 50 персонажів з усіх частин серії.",
@@ -975,6 +1008,7 @@ export const games: Game[] = [
   },
   {
     id: "the-good-life",
+    launcherSlug: "the_good_life",
     title: "The Good Life",
     description:
       "Журналістка-фотограф Наомі вирушає з Нью-Йорка в маленьке англійське село, щоб погасити борги — і виявляє, що вночі мешканці перетворюються на котів і собак. Затишна детективна RPG від SWERY про найщасливіше містечко на Землі.",
@@ -992,6 +1026,7 @@ export const games: Game[] = [
   },
   {
     id: "silent-hill-shattered-memories",
+    launcherSlug: "silent_hill_shattered_memories",
     title: "Silent Hill: Shattered Memories",
     series: "Silent Hill",
     description:
@@ -1086,6 +1121,7 @@ export const games: Game[] = [
   },
   {
     id: "lost-judgment",
+    launcherSlug: "lost_judgment",
     title: "Lost Judgment",
     series: "Judgment",
     description:
@@ -1111,6 +1147,7 @@ export const games: Game[] = [
   },
   {
     id: "silent-hill-downpour",
+    launcherSlug: "silent_hill_downpour",
     title: "Silent Hill: Downpour",
     series: "Silent Hill",
     description:
@@ -1146,6 +1183,7 @@ export const games: Game[] = [
   },
   {
     id: "mgs1-master-collection",
+    launcherSlug: "metal_gear_solid_master_collection_version",
     title: "METAL GEAR SOLID - Master Collection Version",
     series: "Metal Gear",
     description:
@@ -1184,17 +1222,18 @@ export const games: Game[] = [
   },
   {
     id: "metal-gear-mg2",
+    launcherSync: false,
     title: "METAL GEAR & METAL GEAR 2: Solid Snake",
     series: "Metal Gear",
     description:
       "METAL GEAR та METAL GEAR 2: Solid Snake — класичні стелс-екшени Хідео Коджіми, з яких почалася історія серії. У ролі Соліда Снейка гравець проникає на добре захищені ворожі бази, уникає прямих зіткнень, збирає спорядження, тримає зв'язок із союзниками через радіо та розкриває змови довкола ядерної зброї й бойових машин Metal Gear.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2131680/library_600x900_2x.jpg",
-    progress: 90,
-    status: "early-access",
-    stage: "Переклад",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
     stageDetails: [
-      { label: "Переклад", percent: 90 },
-      { label: "Редактура", percent: 50 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика"],
     steamUrl: "https://store.steampowered.com/app/2131680/METAL_GEAR__METAL_GEAR_2_Solid_Snake/",
@@ -1204,6 +1243,7 @@ export const games: Game[] = [
   },
   {
     id: "mgsv-ground-zeroes",
+    launcherSlug: "metal_gear_solid_v_ground_zeroes",
     title: "METAL GEAR SOLID V: GROUND ZEROES",
     series: "Metal Gear",
     description:
@@ -1222,6 +1262,7 @@ export const games: Game[] = [
   },
   {
     id: "resident-evil-requiem",
+    launcherSlug: "resident_evil_requiem",
     title: "Resident Evil Requiem",
     series: "Resident Evil",
     description:
@@ -1260,6 +1301,7 @@ export const games: Game[] = [
   },
   {
     id: "dead-rising",
+    launcherSlug: "dead_rising",
     title: "Dead Rising",
     series: "Dead Rising",
     description:
@@ -1278,6 +1320,7 @@ export const games: Game[] = [
   },
   {
     id: "silent-hill-townfall",
+    launcherSlug: "silent_hill_townfall",
     title: "Silent Hill: Townfall",
     series: "Silent Hill",
     description:
@@ -1296,6 +1339,7 @@ export const games: Game[] = [
   },
   {
     id: "kh-birth-by-sleep",
+    launcherSync: false,
     title: "KINGDOM HEARTS Birth by Sleep FINAL MIX",
     series: "Kingdom Hearts",
     description:
@@ -1315,6 +1359,7 @@ export const games: Game[] = [
   },
   {
     id: "kh-rechain-of-memories",
+    launcherSlug: "kingdom_hearts_rechain_of_memories",
     title: "KINGDOM HEARTS Re:Chain of Memories",
     series: "Kingdom Hearts",
     description:
@@ -1336,6 +1381,7 @@ export const games: Game[] = [
   },
   {
     id: "kh-dream-drop-distance",
+    launcherSlug: "kingdom_hearts_dream_drop_distance_hd",
     title: "KINGDOM HEARTS Dream Drop Distance HD",
     series: "Kingdom Hearts",
     description:
@@ -1354,6 +1400,7 @@ export const games: Game[] = [
   },
   {
     id: "lad-infinite-wealth",
+    launcherSlug: "like_a_dragon_infinite_wealth",
     title: "Like a Dragon: Infinite Wealth",
     series: "Yakuza",
     description:
@@ -1369,6 +1416,130 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/2072450/Like_a_Dragon_Infinite_Wealth/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-09-26",
+  },
+  {
+    id: "cat-quest",
+    launcherSlug: "cat_quest",
+    title: "Cat Quest",
+    description:
+      "Легендарний рольовий бойовик. У котячій пригоді Cat Quest на вас чекає багато здобичі, насичені битви та захоплива система магії.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/593280/library_600x900_2x.jpg",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
+    ],
+    tags: ["Рольова гра", "Пригоди", "Інді"],
+    steamUrl: "https://store.steampowered.com/app/593280/Cat_Quest/",
+    downloadUrl: "https://lbklauncher.com/games/cat_quest",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2017,
+    platform: ["PC"],
+  },
+  {
+    id: "florence",
+    launcherSlug: "florence",
+    title: "Florence",
+    description:
+      "Флоренс Йео трохи... застрягла. Її життя — нескінченна рутина з роботи, сну й надто довгого часу в соцмережах. Та одного дня вона зустрічає віолончеліста Кріша, який змінює все: те, як вона бачить світ і саму себе.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1102130/library_600x900_2x.jpg",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
+    ],
+    tags: ["Пригоди", "Інтерактивна історія", "Інді"],
+    steamUrl: "https://store.steampowered.com/app/1102130/Florence/",
+    downloadUrl: "https://lbklauncher.com/games/florence",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2020,
+    platform: ["PC"],
+  },
+  {
+    id: "i-am-fish",
+    launcherSlug: "i_am_fish",
+    title: "I Am Fish",
+    description:
+      "I Am Fish — це симпатична гра з реалістичною фізикою про безстрашних рибок, які втратили свою домівку та опинилися в акваріумі зоомагазину. Плавайте, літайте, перекачуйтесь та прогризайте усі перешкоди на шляху до океану, щоб здобути свободу.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1472560/library_600x900_2x.jpg",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
+    ],
+    tags: ["Пригоди", "Фізика", "Кумедна"],
+    steamUrl: "https://store.steampowered.com/app/1472560/I_Am_Fish/",
+    downloadUrl: "https://lbklauncher.com/games/i_am_fish",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2021,
+    platform: ["PC"],
+  },
+  {
+    id: "kingdom-hearts-2",
+    launcherSlug: "kingdom_hearts_ii",
+    title: "KINGDOM HEARTS II FINAL MIX",
+    series: "Kingdom Hearts",
+    description:
+      "Друга номерна частина серії KINGDOM HEARTS. Сора, Дональд і Ґуфі знову вирушають у подорож світами Disney, щоб протистояти Безсердним і загадковій Організації XIII. Гра входить до збірки KINGDOM HEARTS -HD 1.5+2.5 ReMIX-.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2552430/library_600x900_2x.jpg",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
+    ],
+    tags: ["Action RPG", "JRPG", "Пригоди", "Disney"],
+    steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
+    downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_ii",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    platform: ["PC"],
+  },
+  {
+    id: "kingdom-hearts-1525",
+    launcherSlug: "kingdom_hearts_hd_1525_remix",
+    title: "KINGDOM HEARTS -HD 1.5+2.5 ReMIX-",
+    series: "Kingdom Hearts",
+    description:
+      "KINGDOM HEARTS -HD 1.5+2.5 ReMIX- — HD-ремастер колекції з шести незабутніх історій KINGDOM HEARTS. Візьміть до рук Ключ-клинок, щоб урятувати світи Disney від темряви.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2552430/library_600x900_2x.jpg",
+    progress: 40,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 40 },
+    ],
+    tags: ["Action RPG", "JRPG", "Пригоди", "Disney", "Збірка"],
+    steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    platform: ["PC"],
+  },
+  {
+    id: "tmnt-shredders-revenge",
+    launcherSlug: "teenage_mutant_ninja_turtles_shredders_revenge",
+    title: "Teenage Mutant Ninja Turtles: Shredder's Revenge",
+    description:
+      "Teenage Mutant Ninja Turtles: Shredder's Revenge знову об'єднує Леонардо, Мікеланджело, Донателло й Рафаеля в яскравому біт-ем-апі, намальованому з любов'ю до класики.",
+    cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1361510/library_600x900_2x.jpg",
+    progress: 100,
+    status: "done",
+    stage: "Готово",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
+    ],
+    tags: ["Біт-ем-ап", "Кооператив", "Інді"],
+    steamUrl: "https://store.steampowered.com/app/1361510/Teenage_Mutant_Ninja_Turtles_Shredders_Revenge/",
+    downloadUrl: "https://lbklauncher.com/games/teenage_mutant_ninja_turtles_shredders_revenge",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    gameYear: 2022,
+    platform: ["PC"],
   },
 ];
 

@@ -30,6 +30,9 @@
   --st-progress: #b38cff;
   --st-fund: #f2a94b;
   --st-planned: #8b9099;
+  --st-abandoned: #e0685f;
+  /* Штрихування для закинутих етапів */
+  --hatch-abandoned: repeating-linear-gradient(135deg, var(--st-abandoned) 0 4px, transparent 4px 7px);
 
   /* Типографіка */
   --font-display: "Unbounded", "Manrope", system-ui, sans-serif;

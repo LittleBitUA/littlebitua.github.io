@@ -6,7 +6,7 @@
 // кнопка — окреме посилання поверх неї. data-* читає FilterBar.
 import type { Game } from "../data/games";
 import {
-  statusMeta, isPlayable, isFundraising, fundraisingPercent, formatMoney, stagesOf, stageName,
+  statusMeta, isPlayable, isFundraising, fundraisingPercent, formatMoney, stagesOf, stageName, isStageAbandoned,
 } from "../utils/status";
 
 export interface Props {
@@ -19,13 +19,15 @@ const st = statusMeta(game.status);
 const fundActive = isFundraising(game) && !!game.fundraisingGoal;
 
 // Рядки прогресу: збір (якщо триває) + кожен етап локалізації
-type Row = { label: string; pct: number; state: "done" | "active" | "todo" | "fund" };
+type Row = { label: string; pct: number; state: "done" | "active" | "todo" | "fund" | "abandoned" };
 const rows: Row[] = [
   ...(fundActive ? [{ label: "Зібрано", pct: fundraisingPercent(game), state: "fund" as const }] : []),
   ...stagesOf(game).map((s) => ({
     label: stageName(s.label),
     pct: s.percent,
-    state: (s.percent >= 100 ? "done" : s.percent > 0 ? "active" : "todo") as Row["state"],
+    state: (s.percent < 100 && isStageAbandoned(game, s.label)
+      ? "abandoned"
+      : s.percent >= 100 ? "done" : s.percent > 0 ? "active" : "todo") as Row["state"],
   })),
 ];
 
@@ -48,6 +50,7 @@ const actions = [
   data-progress={game.progress}
   data-last-update={game.lastUpdate ?? ""}
   data-fundraising={isFundraising(game) ? "true" : ""}
+  data-playable={isPlayable(game) ? "true" : ""}
 >
   <img class="card__img" src={game.cover} alt="" width="300" height="450" loading="lazy" decoding="async" />
 
@@ -66,7 +69,7 @@ const actions = [
 
     <ul class="card__rows">
       {rows.map((r) => (
-        <li class={`row is-${r.state}`}>
+        <li class={`row is-${r.state}`} title={r.state === "abandoned" ? `${r.label}: закинуто на ${r.pct}%` : undefined}>
           <span class="row__label">{r.label}</span>
           <span class="row__bar" aria-hidden="true"><i style={`width:${r.pct}%`}></i></span>
           <span class="row__pct num">{r.state === "todo" ? "—" : `${r.pct}%`}</span>
@@ -189,6 +192,11 @@ const actions = [
   .row.is-fund .row__bar i { background: var(--st-fund); }
   .row.is-fund .row__pct, .row.is-fund .row__label { color: var(--st-fund); }
   .row.is-todo .row__label, .row.is-todo .row__pct { color: rgba(242, 240, 233, 0.5); }
+  /* Закинутий етап: закреслена назва й заштрихована смуга до місця, де зупинились */
+  .row.is-abandoned .row__label { color: var(--st-abandoned); text-decoration: line-through; text-decoration-thickness: 1.5px; }
+  .row.is-abandoned .row__pct { color: var(--st-abandoned); }
+  .row.is-abandoned .row__bar { height: 4px; }
+  .row.is-abandoned .row__bar i { background: var(--hatch-abandoned); }
 
   .card__actions { display: flex; gap: 6px; margin-top: 10px; }
   .card__action {

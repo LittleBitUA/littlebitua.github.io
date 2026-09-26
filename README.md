@@ -33,3 +33,27 @@ Catherine Classic переведено з `early-access` у `in-progress`.
 
 Щоб зібрати без мережі: `FUNDRAISING_SYNC=off npm run build`.
 Коли збір завершено — поставте `fundraisingCompleted: true`.
+
+## Прогрес із LBK Launcher
+Під час збірки `src/lib/launcher.ts` бере з публічного API лаунчера
+(`lbklauncher.com/api/games-list?authors=…`) переклад і редактуру у %, статус, версію й дату оновлення
+для авторів «Little Bit» і «Солов’їна команда». Описи, обкладинки, теги, етапи «Малювання»/«Шрифти»
+та збори лишаються з `games.ts`.
+
+- Прив'язка гри: поле `launcherSlug` або адреса в `downloadUrl` (`lbklauncher.com/games/<slug>/…`).
+- Статуси: `completed` → Готово, `in-progress` / `tech-improvement` → Ранній доступ,
+  `planned` → У роботі (або Заплановано, якщо 0%). Переклад 100% у ранньому доступі показується як «Готово».
+- **Ручний пріоритет:** `launcherSync: false` — гра бере цифри лише з `games.ts` (зараз: Dispatch,
+  KH Birth by Sleep, Metal Gear & Metal Gear 2).
+- У лозі збірки видно `[launcher] оновлено N з M` і ігри, яких немає на сайті.
+- Без мережі: `LAUNCHER_SYNC=off npm run build`.
+
+## Статус «Закинуто»
+```ts
+status: "abandoned",
+abandonedStage: "Редактура",          // без поля — закинуто весь проєкт
+abandonedReason: "Вийшов офіційний український переклад…",
+launcherSync: false,
+```
+Картка показує закреслений заштрихований етап, сторінка гри — червоний блок із причиною.
+Якщо є `downloadUrl`, гра лишається в «Можна грати».

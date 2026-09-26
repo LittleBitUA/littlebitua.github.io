@@ -10,6 +10,7 @@ export const STATUS_META: Record<GameStatus, { label: string; color: string }> =
   "in-progress": { label: "У роботі", color: "var(--st-progress)" },
   fundraising: { label: "Збір коштів", color: "var(--st-fund)" },
   planned: { label: "Заплановано", color: "var(--st-planned)" },
+  abandoned: { label: "Закинуто", color: "var(--st-abandoned)" },
 };
 
 export const statusMeta = (status: GameStatus) => STATUS_META[status] ?? STATUS_META.planned;
@@ -21,6 +22,7 @@ const STATUS_PRIORITY: Record<GameStatus, number> = {
   "in-progress": 2,
   fundraising: 3,
   planned: 4,
+  abandoned: 5,
 };
 
 export function sortByStatus(list: Game[]): Game[] {
@@ -30,7 +32,13 @@ export function sortByStatus(list: Game[]): Game[] {
   });
 }
 
-export const isPlayable = (g: Game) => g.status === "done" || g.status === "early-access";
+/** Чи можна вже грати: готові ігри, ранній доступ і закинуті проєкти, де переклад уже вийшов. */
+export const isPlayable = (g: Game) =>
+  g.status === "done" || g.status === "early-access" || (g.status === "abandoned" && !!g.downloadUrl);
+
+/** Чи закинуто саме цей етап (або весь проєкт, якщо етап не вказано). */
+export const isStageAbandoned = (g: Game, label: string) =>
+  g.status === "abandoned" && (!g.abandonedStage || g.abandonedStage.toLowerCase() === label.toLowerCase());
 
 export const isFundraising = (g: Game) => !!g.fundraisingGoal && !g.fundraisingCompleted;
 

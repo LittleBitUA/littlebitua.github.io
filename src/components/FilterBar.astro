@@ -79,6 +79,7 @@ const filters = [
     progress: Number(el.dataset.progress ?? 0),
     lastUpdate: el.dataset.lastUpdate ?? "",
     fundraising: el.dataset.fundraising === "true",
+    playable: el.dataset.playable === "true",
   }));
   type Item = (typeof items)[number];
 
@@ -95,7 +96,7 @@ const filters = [
   const matchesStatus = (g: Item) => {
     switch (state.status) {
       case "all": return true;
-      case "playable": return g.status === "done" || g.status === "early-access";
+      case "playable": return g.playable;
       case "fundraising": return g.status === "fundraising" || g.fundraising;
       default: return g.status === state.status;
     }

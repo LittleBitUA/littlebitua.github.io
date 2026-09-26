@@ -27,11 +27,16 @@
       Поточну й необхідну суми завжди видно на картці проєкту.
     </span>
   </li>
+  <li style="--state:var(--st-abandoned)" class="legend__ab">
+    <b>Закинуто</b>
+    <span>Роботу над грою або окремим етапом припинено. Причину пояснено на сторінці гри.</span>
+  </li>
   <li class="legend__stages">
     <b>Етапи на картці</b>
     <span class="legend__row"><i class="is-done"></i>етап готовий</span>
     <span class="legend__row"><i class="is-active"></i>етап у роботі</span>
     <span class="legend__row"><i></i>ще не розпочато</span>
+    <span class="legend__row"><i class="is-ab"></i>закинуто</span>
   </li>
 </ul>
 
@@ -57,6 +62,8 @@
   .legend li.legend__key { background: #0c1119; }
   .legend__key b { color: var(--st-early); }
   .legend__fund b { color: var(--st-fund); }
+  .legend__ab b { color: var(--st-abandoned); }
+  .legend__row i.is-ab { height: 4px; background: var(--hatch-abandoned); }
 
   .legend li.legend__stages { border-top-color: transparent; }
   .legend__row { display: flex; align-items: center; gap: 10px; }
@@ -69,7 +76,7 @@
     .legend li.legend__stages { grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px 24px; }
   }
   @media (min-width: 1200px) {
-    .legend { grid-template-columns: 0.9fr 1.4fr 0.9fr 1.3fr 0.8fr; }
+    .legend { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .legend li.legend__stages { grid-column: auto; flex-direction: column; align-items: stretch; gap: 6px; }
   }
 </style>

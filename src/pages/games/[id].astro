@@ -9,7 +9,7 @@ import { SITE_URL, generateGameStructuredData, generateBreadcrumbs, generateKeyw
 import { seriesSlug, hasSeriesPage } from "../../utils/series";
 import {
   statusMeta, sortByStatus, isFundraising, fundraisingPercent, translationPercent,
-  earlyAccessReason, formatMoney, formatDate, stageName,
+  earlyAccessReason, formatMoney, formatDate, stageName, isPlayable,
 } from "../../utils/status";
 import { marked } from "marked";
 
@@ -136,7 +136,7 @@ const related = games
         </div>
 
         <div class="intro__actions">
-          {game.downloadUrl && (game.status === "done" || game.status === "early-access") ? (
+          {game.downloadUrl && isPlayable(game) ? (
             <a class="btn btn--primary" href={game.downloadUrl} target="_blank" rel="noopener noreferrer">Встановити через LBK Launcher</a>
           ) : fundActive && fundUrl ? (
             <a class="btn btn--primary" href={fundUrl} target="_blank" rel="noopener noreferrer">Підтримати збір</a>
@@ -146,6 +146,23 @@ const related = games
         </div>
       </div>
     </section>
+
+    {game.status === "abandoned" && (
+      <aside class="ab" aria-labelledby="ab-title">
+        <div class="ab__head">
+          <span class="ab__badge">Закинуто</span>
+          <h2 id="ab-title">
+            {game.abandonedStage ? `${stageName(game.abandonedStage)}: роботу припинено` : "Роботу над проєктом припинено"}
+          </h2>
+        </div>
+        {game.abandonedReason && (
+          <div class="ab__reason">
+            <p class="ab__label">Причина</p>
+            <p>{game.abandonedReason}</p>
+          </div>
+        )}
+      </aside>
+    )}
 
     {ea && (
       <aside class="ea" aria-labelledby="ea-title">
@@ -374,6 +391,31 @@ const related = games
   .intro__bar { height: 4px; margin-top: 14px; }
 
   .intro__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+
+  /* ── Abandoned ── */
+  .ab {
+    margin-top: 40px;
+    padding: clamp(20px, 3vw, 32px);
+    background:
+      linear-gradient(90deg, rgba(224, 104, 95, 0.1), transparent 60%),
+      #140c0c;
+    border: 1px solid rgba(224, 104, 95, 0.35);
+    border-left: 4px solid var(--st-abandoned);
+  }
+  .ab__head { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+  .ab__badge {
+    padding: 6px 10px;
+    background: var(--st-abandoned);
+    color: var(--on-accent);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ab h2 { font-family: var(--font-body); font-size: clamp(1.1rem, 2vw, 1.4rem); font-weight: 800; letter-spacing: -0.01em; }
+  .ab__reason { margin-top: 18px; padding-left: 14px; border-left: 2px solid rgba(224, 104, 95, 0.5); }
+  .ab__label { color: var(--st-abandoned); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+  .ab__reason p + p { margin-top: 6px; max-width: 70ch; color: var(--muted); }
 
   /* ── Early access explainer ── */
   .ea {
