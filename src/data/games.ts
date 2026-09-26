@@ -2,7 +2,7 @@
 // Central data source for all localization projects.
 // Sourced from lbklauncher.com/games?authors=Little+Bit
 
-export type GameStatus = "planned" | "in-progress" | "early-access" | "fundraising" | "done" | "abandoned";
+export type GameStatus = "planned" | "in-progress" | "early-access" | "fundraising" | "done";
 
 /** Localization work stage */
 export type LocalizationStage =
@@ -68,9 +68,9 @@ export interface Game {
   launcherSync?: boolean;
 
   // ── Закинуто ──
-  /** Етап, роботу над яким припинено (наприклад, "Редактура"). Без нього закинуто весь проєкт. */
+  /** Етап, роботу над яким припинено (наприклад, "Редактура"). Статус гри від цього не змінюється. */
   abandonedStage?: string;
-  /** Причина, чому роботу припинено. Показується на сторінці гри. */
+  /** Причина, чому етап закинуто. Показується на сторінці гри. */
   abandonedReason?: string;
 
   // ── Detail Pages Data ──
@@ -109,7 +109,6 @@ export const STATUS_LABELS: Record<GameStatus, string> = {
   "early-access": "Ранній доступ",
   fundraising: "Збір коштів",
   done: "Готово",
-  abandoned: "Закинуто",
 };
 
 /** Status badge color mapping */
@@ -119,7 +118,6 @@ export const STATUS_COLORS: Record<GameStatus, string> = {
   "early-access": "bg-steam-blue/20 text-steam-blue border-steam-blue/30",
   fundraising: "bg-amber-500/20 text-amber-400 border-amber-500/30",
   done: "bg-steam-green/20 text-steam-green border-steam-green/30",
-  abandoned: "bg-red-500/20 text-red-400 border-red-500/30",
 };
 
 /** All game localization projects */
@@ -431,7 +429,7 @@ export const games: Game[] = [
       "Сюжетна супергеройська комедія, у якій колишній герой після втрати бойового костюма влаштовується диспетчером. Тепер йому доведеться керувати командою колишніх лиходіїв, розподіляти їх між завданнями, владнувати офісні конфлікти та ухвалювати рішення, що впливатимуть на стосунки персонажів і розвиток історії.",
     cover: "https://cdn2.steamgriddb.com/thumb/bfa1e9bc09534cad8103ba543b5e0e24.jpg",
     progress: 100,
-    status: "abandoned",
+    status: "done",
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },

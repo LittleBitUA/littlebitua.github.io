@@ -147,12 +147,12 @@ const related = games
       </div>
     </section>
 
-    {game.status === "abandoned" && (
+    {game.abandonedStage && (
       <aside class="ab" aria-labelledby="ab-title">
         <div class="ab__head">
           <span class="ab__badge">Закинуто</span>
           <h2 id="ab-title">
-            {game.abandonedStage ? `${stageName(game.abandonedStage)}: роботу припинено` : "Роботу над проєктом припинено"}
+            {stageName(game.abandonedStage)}: роботу припинено
           </h2>
         </div>
         {game.abandonedReason && (

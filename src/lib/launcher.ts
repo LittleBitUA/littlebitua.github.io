@@ -82,10 +82,10 @@ function ourTranslation(game: LauncherGame): LauncherTranslation | null {
  *   in-progress       → early-access (гра вже доступна в лаунчері)
  *   tech-improvement  → early-access (доступна, триває технічне доопрацювання)
  *   planned           → in-progress, або planned, якщо переклад ще не почато
- * Збір коштів і «Закинуто» лишаються як у games.ts.
+ * Збір коштів лишається як у games.ts.
  */
 function mapStatus(site: Game, t: LauncherTranslation): GameStatus {
-  if (site.status === "fundraising" || site.status === "abandoned") return site.status;
+  if (site.status === "fundraising") return "fundraising";
   switch (t.status) {
     case "completed":
       return "done";
