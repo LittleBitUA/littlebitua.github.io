@@ -4,7 +4,7 @@
 // Праворуч: стіна обкладинок ігор, у які можна грати вже зараз.
 import { games } from "../data/catalog";
 import { pluralize } from "../utils/pluralize";
-import { isPlayable, isFundraising, fundraisingPercent, statusMeta } from "../utils/status";
+import { isPlayable, isFundraising, fundraisingPercent } from "../utils/status";
 
 const playable = games
   .filter(isPlayable)
@@ -77,10 +77,9 @@ const stats = [
       </div>
       <ul class="hero__posters">
         {wall.map((g, i) => {
-          const st = statusMeta(g.status);
           return (
             <li style={`--i:${i}`}>
-              <a href={`/games/${g.id}/`} class="poster" style={`--state:${st.color}`}>
+              <a href={`/games/${g.id}/`} class="poster">
                 <img
                   src={g.cover}
                   alt=""
@@ -91,7 +90,6 @@ const stats = [
                   decoding="async"
                 />
                 <span class="poster__info">
-                  {g.status === "done" && <span class="poster__state">Повністю готово</span>}
                   <span class="poster__title">{g.title}</span>
                 </span>
               </a>
@@ -254,24 +252,13 @@ const stats = [
     background: linear-gradient(180deg, transparent 45%, rgba(8, 9, 11, 0.92));
   }
   .poster:hover img { transform: scale(1.03); }
-  .poster:hover { border-color: var(--state); }
+  .poster:hover { border-color: var(--accent); }
 
   .poster__info {
     position: absolute;
     inset: auto 0 0;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
     padding: 10px;
-    border-bottom: 3px solid var(--state);
-  }
-  .poster__state {
-    color: var(--state);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
   }
   .poster__title {
     display: -webkit-box;
@@ -298,7 +285,6 @@ const stats = [
     .hero__posters { gap: 6px; }
     .poster__title { display: none; }
     .poster__info { padding: 6px; }
-    .poster__state { font-size: 9px; }
   }
 
   @media (min-width: 1024px) {
