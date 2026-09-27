@@ -58,7 +58,7 @@ export interface Game {
   fundraisingDescription?: string;
   /** Посилання на ціль Donatello (…?g=…): суми збору оновлюються автоматично під час збірки */
   fundraisingUrl?: string;
-  /** Збір тимчасово призупинено: суми лишаються як є, кнопки донату не показуються, Donatello не опитується */
+  /** Збір тимчасово призупинено: на сайті не показується, Donatello не опитується; суми лишаються на потім */
   fundraisingPaused?: boolean;
   lastUpdate?: string;
   /**

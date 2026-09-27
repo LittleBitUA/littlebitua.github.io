@@ -36,10 +36,8 @@ export const isPlayable = (g: Game) => g.status === "done" || g.status === "earl
 export const isStageAbandoned = (g: Game, label: string) =>
   !!g.abandonedStage && g.abandonedStage.toLowerCase() === label.toLowerCase();
 
-export const isFundraising = (g: Game) => !!g.fundraisingGoal && !g.fundraisingCompleted;
-
-/** Збір, у який можна задонатити просто зараз (не завершений і не на паузі). */
-export const isFundraisingOpen = (g: Game) => isFundraising(g) && !g.fundraisingPaused;
+/** Активний збір. Призупинений збір (fundraisingPaused) на сайті не показується зовсім. */
+export const isFundraising = (g: Game) => !!g.fundraisingGoal && !g.fundraisingCompleted && !g.fundraisingPaused;
 
 export function fundraisingPercent(g: Game): number {
   if (!g.fundraisingGoal) return 0;

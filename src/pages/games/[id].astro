@@ -39,8 +39,7 @@ const structuredData = JSON.stringify({ "@context": "https://schema.org", "@grap
 const st = statusMeta(game.status);
 const pct = translationPercent(game);
 const fundActive = isFundraising(game);
-const fundPaused = fundActive && !!game.fundraisingPaused;
-const fundOpen = fundActive && !fundPaused;
+const fundOpen = fundActive;
 const fundPct = fundraisingPercent(game);
 const fundUrl = game.fundraisingUrl ?? game.donateUrl;
 const ea = earlyAccessReason(game);
@@ -238,7 +237,6 @@ const related = games
         {fundActive && game.fundraisingGoal && (
           <section class="block fund" id="fund">
             <h2 class="block__title"><span class="num">{num("fund")}</span>Збір коштів</h2>
-            {fundPaused && <p class="fund__paused">Збір на паузі</p>}
             <div class="fund__numbers">
               <strong class="num">{formatMoney(game.fundraisingRaised ?? 0)}</strong>
               <span>зібрано з {formatMoney(game.fundraisingGoal)}</span>
@@ -507,17 +505,6 @@ const related = games
   .fund__numbers strong { color: var(--st-fund); font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 800; }
   .fund__numbers span { color: var(--muted); }
   .fund__numbers b { margin-left: auto; font-size: 1.25rem; }
-  .fund__paused {
-    display: inline-block;
-    margin-bottom: 16px;
-    padding: 6px 10px;
-    border: 1px solid var(--line-strong);
-    color: var(--ink);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
   .fund__text { max-width: 70ch; margin-top: 20px; color: var(--muted); }
   .fund__note { max-width: 70ch; margin: 16px 0 24px; padding-left: 12px; border-left: 3px solid var(--st-fund); color: var(--muted); font-size: 14px; }
   .fund__note b { color: var(--st-fund); }

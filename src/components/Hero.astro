@@ -4,7 +4,7 @@
 // Праворуч: стіна обкладинок ігор, у які можна грати вже зараз.
 import { games } from "../data/catalog";
 import { pluralize } from "../utils/pluralize";
-import { isPlayable, isFundraisingOpen, fundraisingPercent } from "../utils/status";
+import { isPlayable, isFundraising, fundraisingPercent } from "../utils/status";
 import { cover } from "../lib/cover";
 
 const playable = games
@@ -13,7 +13,7 @@ const playable = games
 const wall = await Promise.all(playable.slice(0, 8).map(async (g) => ({ ...g, cover: await cover(g.cover, 400) })));
 
 const inProgress = games.filter((g) => g.status === "in-progress").length;
-const fundraisers = games.filter(isFundraisingOpen);
+const fundraisers = games.filter(isFundraising);
 
 const stats = [
   { value: games.length, label: pluralize(games.length, "проєкт", "проєкти", "проєктів"), href: "/games/" },
