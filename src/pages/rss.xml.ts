@@ -1,35 +1,37 @@
+// ─── RSS ───────────────────────────────────────────────────────
+// Один запис на кожен звіт хронології: новий звіт — одне сповіщення
+// в RSS-читалці з переліком того, що вийшло, оновилося й готується.
 import type { APIRoute } from "astro";
-import { getAllUpdates } from "../utils/updates";
+import { reports } from "../lib/chronology";
 import { SITE_URL } from "../utils/seo";
 
-/** Convert YYYY-MM-DD to RFC 822 (RSS pubDate). Parse as UTC noon to avoid
- *  timezone boundary shifting the date by ±1 day. */
-function toRFC822(dateStr: string): string {
-  return new Date(`${dateStr}T12:00:00Z`).toUTCString();
-}
+const escapeXml = (str: string) =>
+  str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
-function escapeXml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
-}
+const GROUPS = [
+  { kind: "released", label: "Вийшли" },
+  { kind: "updated", label: "Оновлюються" },
+  { kind: "upcoming", label: "Ще не вийшли" },
+] as const;
 
 export const GET: APIRoute = () => {
-  const updates = getAllUpdates();
-
-  const items = updates
-    .map((event) => {
-      const link = `${SITE_URL}/games/${event.gameId}/`;
-      const guid = `${link}${event.date}`;
+  const items = reports
+    .map((r, i) => {
+      const link = i === 0 ? `${SITE_URL}/chronology/` : `${SITE_URL}/chronology/${r.date}/`;
+      const body = GROUPS.map((g) => {
+        const list = r.entries.filter((e) => e.kind === g.kind);
+        if (!list.length) return "";
+        const li = list
+          .map((e) => `<li>${e.date ? `${e.date} — ` : ""}${e.title}${e.note ? ` (${e.note})` : ""}</li>`)
+          .join("");
+        return `<h3>${g.label}</h3><ul>${li}</ul>`;
+      }).join("");
       return `    <item>
-      <title>${escapeXml(event.title)}</title>
-      <link>${escapeXml(link)}</link>
-      <description>${escapeXml(event.description)}</description>
-      <pubDate>${toRFC822(event.date)}</pubDate>
-      <guid isPermaLink="false">${escapeXml(guid)}</guid>
+      <title>${escapeXml(`Звіт про переклади станом на ${r.dateLabel}`)}</title>
+      <link>${link}</link>
+      <description>${escapeXml(body)}</description>
+      <pubDate>${new Date(`${r.date}T12:00:00Z`).toUTCString()}</pubDate>
+      <guid isPermaLink="false">${SITE_URL}/chronology/${r.date}/</guid>
     </item>`;
     })
     .join("\n");
@@ -37,18 +39,14 @@ export const GET: APIRoute = () => {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>«Little Bit» — Оновлення локалізацій</title>
-    <link>${SITE_URL}/</link>
-    <description>Усі оновлення проєктів локалізації «Little Bit»</description>
+    <title>«Little Bit» — Хронологія перекладів</title>
+    <link>${SITE_URL}/chronology/</link>
+    <description>Звіти «Little Bit» про українські переклади: що вийшло, що оновлюється, що готується</description>
     <language>uk</language>
     <atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />
 ${items}
   </channel>
 </rss>`;
 
-  return new Response(xml, {
-    headers: {
-      "Content-Type": "application/rss+xml; charset=utf-8",
-    },
-  });
+  return new Response(xml, { headers: { "Content-Type": "application/rss+xml; charset=utf-8" } });
 };

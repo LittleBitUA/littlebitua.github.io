@@ -58,6 +58,8 @@ export interface Game {
   fundraisingDescription?: string;
   /** Посилання на ціль Donatello (…?g=…): суми збору оновлюються автоматично під час збірки */
   fundraisingUrl?: string;
+  /** Збір тимчасово призупинено: суми лишаються як є, кнопки донату не показуються, Donatello не опитується */
+  fundraisingPaused?: boolean;
   lastUpdate?: string;
   /**
    * Адреса гри в LBK Launcher (lbklauncher.com/games/<slug>). Звідти під час збірки
@@ -308,8 +310,9 @@ export const games: Game[] = [
     progress: 63,
     status: "early-access",
     stage: "Переклад",
-    fundraisingRaised: 21145,
+    fundraisingRaised: 33475,
     fundraisingGoal: 50000,
+    fundraisingPaused: true,
     fundraisingUrl: "https://donatello.to/LittleBitUA?g=podalsha-tekstova-lokalizatsiya-metal-gear-solid-d-snake-eater-master-collection",
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [

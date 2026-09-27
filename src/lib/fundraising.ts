@@ -82,6 +82,7 @@ export async function syncFundraising(list: Game[]): Promise<Game[]> {
   if (process.env.FUNDRAISING_SYNC === "off") return list;
 
   const targets = list
+    .filter((g) => !g.fundraisingPaused) // призупинений збір: суми з games.ts
     .map((g) => ({ game: g, ref: parseDonatelloUrl(g.fundraisingUrl) }))
     .filter((t): t is { game: Game; ref: { slug: string; goal: string } } => !!t.ref);
   if (targets.length === 0) return list;

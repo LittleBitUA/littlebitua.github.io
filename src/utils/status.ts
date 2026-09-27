@@ -38,6 +38,9 @@ export const isStageAbandoned = (g: Game, label: string) =>
 
 export const isFundraising = (g: Game) => !!g.fundraisingGoal && !g.fundraisingCompleted;
 
+/** Збір, у який можна задонатити просто зараз (не завершений і не на паузі). */
+export const isFundraisingOpen = (g: Game) => isFundraising(g) && !g.fundraisingPaused;
+
 export function fundraisingPercent(g: Game): number {
   if (!g.fundraisingGoal) return 0;
   return Math.min(100, Math.round(((g.fundraisingRaised ?? 0) / g.fundraisingGoal) * 100));

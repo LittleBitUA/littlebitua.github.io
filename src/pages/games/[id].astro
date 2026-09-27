@@ -12,7 +12,8 @@ import {
   earlyAccessReason, formatMoney, formatDate, stageName, isPlayable,
 } from "../../utils/status";
 import { marked } from "marked";
-import { chronologyAnchor } from "../../lib/chronology";
+import { chronologyEntry, latestReport } from "../../lib/chronology";
+import { cover } from "../../lib/cover";
 
 export function getStaticPaths() {
   return games.map((game) => ({ params: { id: game.id }, props: { game } }));
@@ -38,11 +39,15 @@ const structuredData = JSON.stringify({ "@context": "https://schema.org", "@grap
 const st = statusMeta(game.status);
 const pct = translationPercent(game);
 const fundActive = isFundraising(game);
+const fundPaused = fundActive && !!game.fundraisingPaused;
+const fundOpen = fundActive && !fundPaused;
 const fundPct = fundraisingPercent(game);
 const fundUrl = game.fundraisingUrl ?? game.donateUrl;
 const ea = earlyAccessReason(game);
 const showSeries = hasSeriesPage(game.series);
-const chronologyUrl = chronologyAnchor(game.id);
+const chron = chronologyEntry(game.id);
+const poster = await cover(game.cover, 720);
+const backdrop = await cover(game.cover, 400);
 
 // ── Контент ──
 const installHtml = game.installInstructions ? String(await marked.parse(game.installInstructions)) : null;
@@ -68,6 +73,7 @@ const statsRows = [
 // Розділи нумеруються автоматично — лише ті, що реально показані
 const sections = [
   { id: "progress", title: "Стан локалізації", show: true },
+  { id: "report", title: "Стан проєкту", show: !!chron },
   { id: "fund", title: "Збір коштів", show: fundActive },
   { id: "shots", title: "Скріншоти перекладу", show: !!game.screenshots?.length },
   { id: "video", title: "Відео", show: !!videoUrl },
@@ -96,7 +102,7 @@ const related = games
   keywords={generateKeywords(game)}
   structuredData={structuredData}
 >
-  <div class="backdrop" aria-hidden="true"><img src={game.cover} alt="" /></div>
+  <div class="backdrop" aria-hidden="true"><img src={backdrop} alt="" /></div>
 
   <div class="page container game" style={`--state:${st.color}`}>
     <nav aria-label="Навігація">
@@ -118,7 +124,7 @@ const related = games
     <!-- ── Hero ── -->
     <section class="intro">
       <div class="poster">
-        <img src={game.cover} alt={game.title} width="360" height="540" loading="eager" fetchpriority="high" />
+        <img src={poster} alt={game.title} width="360" height="540" loading="eager" fetchpriority="high" />
         <span class="status poster__status">{st.label}</span>
       </div>
 
@@ -130,21 +136,21 @@ const related = games
         {game.tags.length > 0 && <div class="intro__tags">{game.tags.map((t) => <Tag label={t} />)}</div>}
 
         <div class="intro__progress">
-          <span>{fundActive ? "Зібрано" : "Переклад тексту"}</span>
-          <strong class="num">{fundActive ? fundPct : pct}<sup>%</sup></strong>
+          <span>{fundOpen ? "Зібрано" : "Переклад тексту"}</span>
+          <strong class="num">{fundOpen ? fundPct : pct}<sup>%</sup></strong>
         </div>
-        <div class="bar intro__bar" style={fundActive ? "--state:var(--st-fund)" : pct >= 100 ? "--state:var(--st-done)" : undefined}>
-          <i style={`width:${fundActive ? fundPct : pct}%`}></i>
+        <div class="bar intro__bar" style={fundOpen ? "--state:var(--st-fund)" : pct >= 100 ? "--state:var(--st-done)" : undefined}>
+          <i style={`width:${fundOpen ? fundPct : pct}%`}></i>
         </div>
 
         <div class="intro__actions">
           {game.downloadUrl && isPlayable(game) ? (
             <a class="btn btn--primary" href={game.downloadUrl} target="_blank" rel="noopener noreferrer">Встановити через LBK Launcher</a>
-          ) : fundActive && fundUrl ? (
+          ) : fundOpen && fundUrl ? (
             <a class="btn btn--primary" href={fundUrl} target="_blank" rel="noopener noreferrer">Підтримати збір</a>
           ) : null}
           {game.steamUrl && <a class="btn" href={game.steamUrl} target="_blank" rel="noopener noreferrer">Сторінка в Steam</a>}
-          {!fundActive && game.donateUrl && <a class="btn" href={game.donateUrl} target="_blank" rel="noopener noreferrer">Підтримати команду</a>}
+          {!fundOpen && game.donateUrl && <a class="btn" href={game.donateUrl} target="_blank" rel="noopener noreferrer">Підтримати команду</a>}
         </div>
       </div>
     </section>
@@ -214,9 +220,25 @@ const related = games
           <StageList game={game} />
         </section>
 
+        {chron && latestReport && (
+          <section class="block" id="report">
+            <h2 class="block__title"><span class="num">{num("report")}</span>Стан проєкту</h2>
+            <div class="chron">
+              <p class="chron__meta">
+                <span>Зі звіту станом на {latestReport.dateLabel}</span>
+                {chron.date && <span>Вихід: {chron.date}</span>}
+                {chron.note && <span>{chron.note}</span>}
+              </p>
+              <div class="chron__text" set:html={chron.html} />
+              <a class="link" href={`/chronology/#${chron.id}`}>Уся хронологія перекладів</a>
+            </div>
+          </section>
+        )}
+
         {fundActive && game.fundraisingGoal && (
           <section class="block fund" id="fund">
             <h2 class="block__title"><span class="num">{num("fund")}</span>Збір коштів</h2>
+            {fundPaused && <p class="fund__paused">Збір на паузі</p>}
             <div class="fund__numbers">
               <strong class="num">{formatMoney(game.fundraisingRaised ?? 0)}</strong>
               <span>зібрано з {formatMoney(game.fundraisingGoal)}</span>
@@ -227,7 +249,7 @@ const related = games
             <p class="fund__note">
               <b>Прозоро:</b> усі кошти з цього збору надсилаються перекладачам, які працюють саме над {game.title}.
             </p>
-            {fundUrl && <a class="btn btn--primary" href={fundUrl} target="_blank" rel="noopener noreferrer">Підтримати збір</a>}
+            {fundOpen && fundUrl && <a class="btn btn--primary" href={fundUrl} target="_blank" rel="noopener noreferrer">Підтримати збір</a>}
           </section>
         )}
 
@@ -305,7 +327,6 @@ const related = games
             {game.steamUrl && <li><a href={game.steamUrl} target="_blank" rel="noopener noreferrer">Steam</a></li>}
             {game.donateUrl && <li><a href={game.donateUrl} target="_blank" rel="noopener noreferrer">Підтримати</a></li>}
             {showSeries && <li><a href={`/games/series/${seriesSlug(game.series!)}/`}>Уся серія {game.series}</a></li>}
-            {chronologyUrl && <li><a href={chronologyUrl}>Історія проєкту в хронології</a></li>}
           </ul>
         </section>
       </aside>
@@ -382,6 +403,16 @@ const related = games
   .intro__bar { height: 4px; margin-top: 14px; }
 
   .intro__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+
+  /* ── Стан проєкту (зі звіту хронології) ── */
+  .chron { padding: 20px 22px; background: var(--surface); border: 1px solid var(--line); border-left: 3px solid var(--accent); }
+  .chron__meta { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .chron__meta span:first-child { color: var(--accent); }
+  .chron__text { max-width: 72ch; margin: 12px 0 18px; color: var(--muted); line-height: 1.75; }
+  .chron__text :global(p + p) { margin-top: 10px; }
+  .chron__text :global(strong) { color: var(--ink); }
+  .chron__text :global(a) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .chron__text :global(.hl) { color: var(--accent); font-weight: 700; }
 
   /* ── Abandoned ── */
   .ab {
@@ -476,6 +507,17 @@ const related = games
   .fund__numbers strong { color: var(--st-fund); font-size: clamp(1.8rem, 3vw, 3rem); font-weight: 800; }
   .fund__numbers span { color: var(--muted); }
   .fund__numbers b { margin-left: auto; font-size: 1.25rem; }
+  .fund__paused {
+    display: inline-block;
+    margin-bottom: 16px;
+    padding: 6px 10px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
   .fund__text { max-width: 70ch; margin-top: 20px; color: var(--muted); }
   .fund__note { max-width: 70ch; margin: 16px 0 24px; padding-left: 12px; border-left: 3px solid var(--st-fund); color: var(--muted); font-size: 14px; }
   .fund__note b { color: var(--st-fund); }

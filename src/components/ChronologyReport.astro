@@ -3,6 +3,7 @@
 // Рендер одного звіту (див. src/lib/chronology.ts): шапка, липка панель
 // з пошуком / фільтрами / розділами, стрічка часу, примітка, архів.
 import { reports, type Report } from "../lib/chronology";
+import { cover } from "../lib/cover";
 
 export interface Props { report: Report; isLatest: boolean }
 const { report, isLatest } = Astro.props;
@@ -17,6 +18,9 @@ const FILTERS = [
   { value: "fund", label: "Зі збором" },
 ];
 const others = reports.filter((r) => r.date !== report.date);
+const thumbs = new Map(
+  await Promise.all(report.entries.filter((e) => e.game).map(async (e) => [e.id, await cover(e.game!.cover, 160)] as const)),
+);
 ---
 
 <div class="page container chron">
@@ -116,7 +120,7 @@ const others = reports.filter((r) => r.date !== report.date);
                 >
                   {it.entry.game ? (
                     <a class="entry__cover" href={`/games/${it.entry.game.id}/`} tabindex="-1" aria-hidden="true">
-                      <img src={it.entry.game.cover} alt="" width="72" height="108" loading="lazy" decoding="async" />
+                      <img src={thumbs.get(it.entry.id) ?? it.entry.game.cover} alt="" width="72" height="108" loading="lazy" decoding="async" />
                     </a>
                   ) : (
                     <span class="entry__cover entry__cover--empty" aria-hidden="true"></span>

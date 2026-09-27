@@ -238,8 +238,20 @@ export const reports: Report[] = Object.entries(files)
 
 export const latestReport: Report | undefined = reports[0];
 
-/** Якір гри в найсвіжішому звіті (для посилання зі сторінки гри). */
+// Ігри, описані у звіті разом з іншою грою
+const SHARED_ENTRY: Record<string, string> = {
+  "dead-rising": "dead-rising-deluxe-remaster",
+  "lad-ishin": "lost-judgment",
+};
+
+/** Запис гри в найсвіжішому звіті (для блоку «Стан проєкту» на сторінці гри). */
+export function chronologyEntry(gameId: string): Entry | null {
+  const id = SHARED_ENTRY[gameId] ?? gameId;
+  return latestReport?.entries.find((e) => e.game?.id === id) ?? null;
+}
+
+/** Якір гри в найсвіжішому звіті. */
 export function chronologyAnchor(gameId: string): string | null {
-  const entry = latestReport?.entries.find((e) => e.game?.id === gameId);
+  const entry = chronologyEntry(gameId);
   return entry ? `/chronology/#${entry.id}` : null;
 }

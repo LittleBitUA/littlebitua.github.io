@@ -11,15 +11,25 @@ import GetStarted from "../components/GetStarted.astro";
 import Support from "../components/Support.astro";
 import FAQ from "../components/FAQ.astro";
 import { games } from "../data/catalog";
-import { getAllUpdates, eventTone } from "../utils/updates";
 import { SITE_URL } from "../utils/seo";
 import { sortByStatus } from "../utils/status";
-
+import { fetchTelegramPosts } from "../lib/telegram";
+import { latestReport } from "../lib/chronology";
+import { cover } from "../lib/cover";
 
 const catalog = sortByStatus(games);
 
-const updates = getAllUpdates(6);
-const fmtDate = (d: string) => new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "short" });
+// Права колонка: свіжі пости каналу про наші ігри; якщо Telegram недоступний — останні виходи зі звіту
+const posts = await fetchTelegramPosts(3);
+const telegramNews = await Promise.all(posts.map(async (p) => ({ ...p, thumb: await cover(p.game.cover, 120) })));
+const releases = await Promise.all(
+  (latestReport?.entries ?? [])
+    .filter((e) => e.kind === "released" && e.date)
+    .slice(-5)
+    .reverse()
+    .map(async (e) => ({ ...e, thumb: e.game ? await cover(e.game.cover, 120) : null })),
+);
+const fmtDate = (d: string) => new Date(d).toLocaleDateString("uk-UA", { day: "numeric", month: "long" });
 ---
 
 <Layout
@@ -60,27 +70,54 @@ const fmtDate = (d: string) => new Date(d).toLocaleDateString("uk-UA", { day: "n
       </div>
 
       <div>
-        <header class="section-head">
-          <div>
-            <span class="eyebrow">Хроніка</span>
-            <h2>Останні події</h2>
-          </div>
-          <a href="/updates/" class="link">Уся хроніка</a>
-        </header>
-        <ol class="feed">
-          {updates.map((e) => {
-            const tone = eventTone(e.kind);
-            return (
-              <li>
-                <a href={`/games/${e.gameId}/`} class="feed__item" style={`--state:${tone.color}`}>
-                  <time datetime={e.date}>{fmtDate(e.date)}</time>
-                  <span class="feed__title">{e.title}</span>
-                  <span class="feed__kind">{tone.label}</span>
-                </a>
-              </li>
-            );
-          })}
-        </ol>
+        {telegramNews.length > 0 ? (
+          <>
+            <header class="section-head">
+              <div>
+                <span class="eyebrow">Telegram-канал</span>
+                <h2>Новини</h2>
+              </div>
+              <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer" class="link">Підписатися</a>
+            </header>
+            <ol class="feed">
+              {telegramNews.map((p) => (
+                <li>
+                  <a href={p.url} target="_blank" rel="noopener noreferrer" class="feed__item">
+                    <img src={p.thumb} alt="" width="48" height="72" loading="lazy" decoding="async" />
+                    <span class="feed__body">
+                      <span class="feed__meta"><time datetime={p.date}>{fmtDate(p.date)}</time>{p.kicker}</span>
+                      <span class="feed__title">{p.game.title}</span>
+                      {p.excerpt && <span class="feed__text">{p.excerpt}</span>}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </>
+        ) : (
+          <>
+            <header class="section-head">
+              <div>
+                <span class="eyebrow">Хронологія</span>
+                <h2>Останні виходи</h2>
+              </div>
+              <a href="/chronology/" class="link">Уся хронологія</a>
+            </header>
+            <ol class="feed">
+              {releases.map((e) => (
+                <li>
+                  <a href={`/chronology/#${e.id}`} class="feed__item">
+                    {e.thumb ? <img src={e.thumb} alt="" width="48" height="72" loading="lazy" decoding="async" /> : <span />}
+                    <span class="feed__body">
+                      <span class="feed__meta">{e.date}{e.note && ` · ${e.note}`}</span>
+                      <span class="feed__title">{e.title}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
       </div>
     </div>
   </section>
@@ -99,35 +136,24 @@ const fmtDate = (d: string) => new Date(d).toLocaleDateString("uk-UA", { day: "n
   .feed { border-top: 1px solid var(--line); }
   .feed__item {
     display: grid;
-    grid-template-columns: 64px minmax(0, 1fr) auto;
-    align-items: baseline;
-    gap: 12px;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 14px;
     padding: 14px 0;
     border-bottom: 1px solid var(--line);
-    transition: color 0.18s ease;
   }
+  .feed__item img { width: 48px; height: 72px; object-fit: cover; border: 1px solid var(--line); }
+  .feed__body { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .feed__meta { color: var(--muted); font-size: 12px; font-weight: 700; }
+  .feed__meta time { margin-right: 8px; color: var(--accent); font-weight: 800; }
+  .feed__title { font-size: 15px; font-weight: 800; transition: color 0.18s ease; }
   .feed__item:hover .feed__title { color: var(--accent); }
-  .feed__item time { color: var(--faint); font-size: 12px; font-weight: 700; }
-  .feed__title {
+  .feed__text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    font-size: 14px;
-    font-weight: 700;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    transition: color 0.18s ease;
-  }
-  .feed__kind {
-    padding-left: 8px;
-    border-left: 3px solid var(--state);
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-  @media (max-width: 479px) {
-    .feed__item { grid-template-columns: 1fr auto; }
-    .feed__item time { grid-column: 1 / -1; }
+    color: var(--faint);
+    font-size: 13px;
+    line-height: 1.5;
   }
 </style>

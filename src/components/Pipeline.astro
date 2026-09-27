@@ -5,6 +5,7 @@
 import { games, type Game } from "../data/catalog";
 import { pluralize } from "../utils/pluralize";
 import { stageName } from "../utils/status";
+import { cover } from "../lib/cover";
 
 const STAGES = [
   {
@@ -37,6 +38,9 @@ function gamesAtStage(key: string): Game[] {
   }
   return games.filter((g) => g.stage === key);
 }
+
+// Мініатюри обкладинок (стиснуті під час збірки)
+const thumbs = new Map(await Promise.all(games.map(async (g) => [g.id, await cover(g.cover, 96)] as const)));
 ---
 
 <section id="pipeline" class="section">
@@ -69,7 +73,7 @@ function gamesAtStage(key: string): Game[] {
                 <div class="stage__covers">
                   {shown.map((g) => (
                     <a href={`/games/${g.id}/`} title={g.title}>
-                      <img src={g.cover} alt={g.title} width="40" height="60" loading="lazy" />
+                      <img src={thumbs.get(g.id) ?? g.cover} alt={g.title} width="40" height="60" loading="lazy" />
                     </a>
                   ))}
                   {more > 0 && <span class="stage__more">+{more}</span>}
