@@ -12,6 +12,7 @@ import {
   earlyAccessReason, formatMoney, formatDate, stageName, isPlayable,
 } from "../../utils/status";
 import { marked } from "marked";
+import { chronologyAnchor } from "../../lib/chronology";
 
 export function getStaticPaths() {
   return games.map((game) => ({ params: { id: game.id }, props: { game } }));
@@ -41,6 +42,7 @@ const fundPct = fundraisingPercent(game);
 const fundUrl = game.fundraisingUrl ?? game.donateUrl;
 const ea = earlyAccessReason(game);
 const showSeries = hasSeriesPage(game.series);
+const chronologyUrl = chronologyAnchor(game.id);
 
 // ── Контент ──
 const installHtml = game.installInstructions ? String(await marked.parse(game.installInstructions)) : null;
@@ -303,6 +305,7 @@ const related = games
             {game.steamUrl && <li><a href={game.steamUrl} target="_blank" rel="noopener noreferrer">Steam</a></li>}
             {game.donateUrl && <li><a href={game.donateUrl} target="_blank" rel="noopener noreferrer">Підтримати</a></li>}
             {showSeries && <li><a href={`/games/series/${seriesSlug(game.series!)}/`}>Уся серія {game.series}</a></li>}
+            {chronologyUrl && <li><a href={chronologyUrl}>Історія проєкту в хронології</a></li>}
           </ul>
         </section>
       </aside>

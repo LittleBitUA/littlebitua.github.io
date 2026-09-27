@@ -1,0 +1,517 @@
+---
+// ─── Chronology report ─────────────────────────────────────────
+// Рендер одного звіту (див. src/lib/chronology.ts): шапка, липка панель
+// з пошуком / фільтрами / розділами, стрічка часу, примітка, архів.
+import { reports, type Report } from "../lib/chronology";
+
+export interface Props { report: Report; isLatest: boolean }
+const { report, isLatest } = Astro.props;
+const base = isLatest ? "/chronology/" : `/chronology/${report.date}/`;
+
+const FILTERS = [
+  { value: "all", label: "Усі" },
+  { value: "released", label: "Вийшли" },
+  { value: "updated", label: "Оновлюються" },
+  { value: "upcoming", label: "Ще не вийшли" },
+  { value: "ea", label: "Ранній доступ" },
+  { value: "fund", label: "Зі збором" },
+];
+const others = reports.filter((r) => r.date !== report.date);
+---
+
+<div class="page container chron">
+  <nav aria-label="Навігація">
+    <ol class="crumbs">
+      <li><a href="/">Головна</a></li>
+      <li class="sep" aria-hidden="true">/</li>
+      {isLatest ? (
+        <li aria-current="page">Хронологія</li>
+      ) : (
+        <>
+          <li><a href="/chronology/">Хронологія</a></li>
+          <li class="sep" aria-hidden="true">/</li>
+          <li aria-current="page">{report.dateLabel}</li>
+        </>
+      )}
+    </ol>
+  </nav>
+
+  {!isLatest && (
+    <p class="archived">
+      Це архівний звіт від {report.dateLabel}. <a href="/chronology/">Відкрити найсвіжіший звіт</a>
+    </p>
+  )}
+
+  <header class="intro">
+    <span class="eyebrow">Хронологія</span>
+    <h1>{report.title}</h1>
+    <p class="intro__asof">Станом на {report.dateLabel}</p>
+    {report.intro.map((p) => <p class="intro__lead" set:html={p} />)}
+  </header>
+
+  <!-- Липка панель: пошук, фільтри, розділи (на вузьких екранах) -->
+  <div class="bar-tools" id="chron-tools">
+    <div class="bar-tools__row">
+      <label class="search">
+        <span class="sr-only">Пошук у звіті</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-5-5m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+        <input id="chron-q" type="search" placeholder="Гра, учасник, інструмент…" autocomplete="off" />
+      </label>
+      <div class="chips" role="group" aria-label="Фільтр">
+        {FILTERS.map((f) => (
+          <button type="button" class="chip-btn" data-filter={f.value} aria-pressed={f.value === "all" ? "true" : "false"}>{f.label}</button>
+        ))}
+      </div>
+      <span class="count" id="chron-count" aria-live="polite"></span>
+    </div>
+  </div>
+  <nav class="secnav" aria-label="Розділи звіту">
+    {report.sections.map((s) => <a href={`#${s.id}`}>{s.short}</a>)}
+  </nav>
+
+  <div class="layout">
+    <aside class="toc" aria-label="Зміст">
+      <p class="toc__title">Зміст</p>
+      <ol>
+        {report.sections.map((s) => (
+          <li>
+            <a href={`#${s.id}`}>{s.title}</a>
+            {s.toc.length > 0 && (
+              <ol class="toc__sub">{s.toc.map((t) => <li><a href={`#${t.id}`}>{t.text}</a></li>)}</ol>
+            )}
+          </li>
+        ))}
+        {report.footnote && <li><a href="#note">Як читати фінансові дані</a></li>}
+        {others.length > 0 && <li><a href="#archive">Архів звітів</a></li>}
+      </ol>
+    </aside>
+
+    <div class="report">
+      <p class="empty" id="chron-empty" hidden>Нічого не знайдено. Спробуйте інший запит або фільтр.</p>
+
+      {report.sections.map((s) => (
+        <section class="sec" id={s.id} data-sec>
+          <h2 class="sec__title">{s.title}</h2>
+          {s.lead && <div class="sec__lead" set:html={s.lead} />}
+
+          <div class="tl">
+            {s.items.map((it) =>
+              it.kind === "node" ? (
+                it.level === 1 ? (
+                  <h3 class="tl-period" id={it.id} data-level="1"><span class="tl-dot" aria-hidden="true"></span>{it.text}</h3>
+                ) : (
+                  <p class="tl-month" id={it.id} data-level="2">{it.text}</p>
+                )
+              ) : it.kind === "summary" ? (
+                <div class="tl-summary" set:html={it.html} />
+              ) : (
+                <article
+                  class="entry"
+                  id={it.entry.id}
+                  data-entry
+                  data-kind={it.entry.kind}
+                  data-ea={it.entry.earlyAccess ? "1" : ""}
+                  data-fund={it.entry.fundraising ? "1" : ""}
+                  data-search={it.entry.search}
+                >
+                  {it.entry.game ? (
+                    <a class="entry__cover" href={`/games/${it.entry.game.id}/`} tabindex="-1" aria-hidden="true">
+                      <img src={it.entry.game.cover} alt="" width="72" height="108" loading="lazy" decoding="async" />
+                    </a>
+                  ) : (
+                    <span class="entry__cover entry__cover--empty" aria-hidden="true"></span>
+                  )}
+                  <div class="entry__body">
+                    <div class="entry__meta">
+                      {it.entry.date && <span class="entry__date">{it.entry.date}</span>}
+                      {it.entry.note && <span class="entry__note">{it.entry.note}</span>}
+                      <button type="button" class="entry__copy" data-copy={`${base}#${it.entry.id}`} aria-label={`Скопіювати посилання на «${it.entry.title}»`}>
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1" /></svg>
+                        <span>Посилання</span>
+                      </button>
+                    </div>
+                    <h4 class="entry__title">
+                      {it.entry.game ? <a href={`/games/${it.entry.game.id}/`}>{it.entry.title}</a> : it.entry.title}
+                    </h4>
+                    <div class="entry__text" set:html={it.entry.html} />
+                  </div>
+                </article>
+              ),
+            )}
+          </div>
+        </section>
+      ))}
+
+      {report.footnote && <aside class="note" id="note" set:html={report.footnote} />}
+
+      {others.length > 0 && (
+        <section class="archive" id="archive">
+          <h2 class="archive__title">Архів звітів</h2>
+          <ul>
+            {reports.map((r, i) => (
+              <li>
+                <a href={i === 0 ? "/chronology/" : `/chronology/${r.date}/`} aria-current={r.date === report.date ? "page" : undefined}>
+                  Станом на {r.dateLabel}
+                </a>
+                {i === 0 && <span>найсвіжіший</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+  </div>
+</div>
+
+<script>
+  const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T | null;
+  const input = $<HTMLInputElement>("chron-q");
+  const count = $("chron-count");
+  const empty = $("chron-empty");
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(".chip-btn"));
+  const entries = Array.from(document.querySelectorAll<HTMLElement>("[data-entry]"));
+  const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-sec]"));
+
+  const params = new URLSearchParams(location.search);
+  const state = { filter: params.get("f") ?? "all", q: params.get("q") ?? "" };
+
+  const matches = (el: HTMLElement) => {
+    const d = el.dataset;
+    const byFilter =
+      state.filter === "all" ||
+      (state.filter === "ea" && d.ea === "1") ||
+      (state.filter === "fund" && d.fund === "1") ||
+      d.kind === state.filter;
+    const words = state.q.toLowerCase().trim().split(/\s+/).filter(Boolean);
+    return byFilter && words.every((w) => (d.search ?? "").includes(w));
+  };
+
+  function apply() {
+    const active = state.filter !== "all" || state.q.trim() !== "";
+    let shown = 0;
+    for (const el of entries) {
+      const ok = matches(el);
+      el.hidden = !ok;
+      if (ok) shown++;
+    }
+    // Вузли (рік, квартал, група) показуємо, лише якщо під ними є видимі картки
+    for (const sec of sections) {
+      const kids = Array.from(sec.querySelector(".tl")?.children ?? []) as HTMLElement[];
+      kids.forEach((el, i) => {
+        if (el.classList.contains("tl-summary")) { el.hidden = active; return; }
+        const level = Number(el.dataset.level);
+        if (!level) return;
+        let visible = false;
+        for (let j = i + 1; j < kids.length; j++) {
+          const next = kids[j];
+          const nl = Number(next.dataset.level);
+          if (nl && nl <= level) break;
+          if (next.dataset.entry !== undefined && !next.hidden) { visible = true; break; }
+        }
+        el.hidden = !visible;
+      });
+      sec.hidden = !entries.some((e) => sec.contains(e) && !e.hidden);
+    }
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === state.filter)));
+    if (count) count.textContent = active ? `${shown} з ${entries.length}` : "";
+    if (empty) empty.hidden = shown > 0;
+
+    const p = new URLSearchParams();
+    if (state.filter !== "all") p.set("f", state.filter);
+    if (state.q.trim()) p.set("q", state.q.trim());
+    const qs = p.toString();
+    history.replaceState(null, "", (qs ? `?${qs}` : location.pathname) + location.hash);
+  }
+
+  if (input) {
+    input.value = state.q;
+    let t: ReturnType<typeof setTimeout>;
+    input.addEventListener("input", () => {
+      clearTimeout(t);
+      t = setTimeout(() => { state.q = input.value; apply(); }, 150);
+    });
+  }
+  buttons.forEach((b) => b.addEventListener("click", () => { state.filter = b.dataset.filter ?? "all"; apply(); }));
+  apply();
+
+  // Копіювання посилання на картку
+  document.querySelectorAll<HTMLButtonElement>(".entry__copy").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const url = new URL(btn.dataset.copy ?? "", location.origin).toString();
+      const label = btn.querySelector("span");
+      try {
+        await navigator.clipboard.writeText(url);
+        if (label) label.textContent = "Скопійовано";
+      } catch {
+        if (label) label.textContent = "Не вдалося";
+      }
+      history.replaceState(null, "", url.replace(location.origin, "") );
+      setTimeout(() => { if (label) label.textContent = "Посилання"; }, 1600);
+    });
+  });
+</script>
+
+<style>
+  /* ── Шапка ── */
+  .archived {
+    margin-top: 20px;
+    padding: 12px 16px;
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .archived a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .intro { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+  .intro h1 { margin-top: 12px; font-size: clamp(2rem, 4.6vw, 4rem); font-weight: 800; line-height: 1; letter-spacing: -0.045em; }
+  .intro__asof {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 6px 10px;
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .intro__lead { max-width: 78ch; margin-top: 18px; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+
+  /* ── Липка панель ── */
+  .bar-tools {
+    margin-top: 36px;
+    padding: 12px 0;
+    background: rgba(8, 9, 11, 0.96);
+    border-block: 1px solid var(--line);
+  }
+  .bar-tools__row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+  .search { position: relative; flex: 1 1 100%; }
+  .search svg { position: absolute; left: 12px; top: 50%; width: 16px; height: 16px; translate: 0 -50%; fill: none; stroke: var(--faint); stroke-width: 2.2; pointer-events: none; }
+  .search input {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px 0 38px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .search input::placeholder { color: var(--faint); }
+  .search input:focus { outline: none; border-color: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip-btn {
+    min-height: 34px;
+    padding: 0 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: border-color 0.18s ease, color 0.18s ease;
+  }
+  .chip-btn:hover { border-color: var(--line-strong); color: var(--ink); }
+  .chip-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .count { margin-left: auto; color: var(--faint); font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+  /* На вузьких екранах закріплена лише смуга розділів; пошук і фільтри прокручуються */
+  .secnav {
+    position: sticky;
+    top: calc(var(--header-h) - 4px);
+    z-index: 20;
+    display: flex;
+    gap: 6px;
+    padding: 10px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: rgba(8, 9, 11, 0.96);
+    border-bottom: 1px solid var(--line);
+  }
+  .secnav::-webkit-scrollbar { display: none; }
+  .secnav a {
+    flex-shrink: 0;
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  .secnav a:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── Розкладка зі змістом ── */
+  .layout { display: grid; gap: 40px; margin-top: 36px; }
+  .toc { display: none; }
+  .report { min-width: 0; }
+  .empty { padding: 48px 20px; border: 1px dashed var(--line-strong); color: var(--muted); text-align: center; }
+
+  /* ── Розділ ── */
+  .sec { scroll-margin-top: calc(var(--header-h) + 80px); }
+  .sec + .sec { margin-top: 64px; }
+  .sec__title {
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    text-transform: uppercase;
+  }
+  .sec__lead { max-width: 78ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
+  .sec__lead :global(strong) { color: var(--ink); }
+
+  /* ── Стрічка часу ── */
+  .tl { position: relative; margin-top: 28px; padding-left: 28px; }
+  .tl::before { content: ""; position: absolute; top: 6px; bottom: 0; left: 5px; width: 2px; background: var(--line); }
+
+  .tl-period {
+    position: relative;
+    margin: 40px 0 14px;
+    font-size: clamp(1.15rem, 2vw, 1.5rem);
+    text-transform: uppercase;
+    scroll-margin-top: calc(var(--header-h) + 80px);
+  }
+  .tl-period:first-child { margin-top: 0; }
+  .tl-dot {
+    position: absolute;
+    top: 50%;
+    left: -28px;
+    width: 12px;
+    height: 12px;
+    translate: 0 -50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--bg);
+  }
+  .tl-month {
+    position: relative;
+    margin: 26px 0 10px;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    scroll-margin-top: calc(var(--header-h) + 80px);
+  }
+  .tl-month::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -26px;
+    width: 8px;
+    height: 8px;
+    translate: 0 -50%;
+    border: 2px solid var(--accent);
+    background: var(--bg);
+  }
+  .tl-summary { margin-bottom: 14px; }
+  .tl-summary :global(p) {
+    display: inline-block;
+    max-width: 78ch;
+    padding: 8px 12px;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .tl-summary :global(strong) { color: var(--ink); font-weight: 700; }
+
+  /* ── Картка гри ── */
+  .entry {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 18px;
+    margin-bottom: 12px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    scroll-margin-top: calc(var(--header-h) + 80px);
+    transition: border-color 0.18s ease;
+  }
+  .entry:hover { border-color: var(--line-strong); }
+  .entry:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .entry__cover { display: block; width: 72px; height: 108px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+  .entry__cover img { width: 100%; height: 100%; object-fit: cover; }
+  .entry__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+  .entry__date { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+  .entry__note {
+    padding: 3px 7px;
+    border: 1px solid var(--line-strong);
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .entry__copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    padding: 3px 6px;
+    color: var(--faint);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: color 0.18s ease;
+  }
+  .entry__copy svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+  .entry__copy:hover { color: var(--accent); }
+  .entry__title { margin-top: 6px; font-family: var(--font-body); font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.3; }
+  .entry__title a:hover { color: var(--accent); }
+  .entry__text { margin-top: 10px; color: var(--muted); font-size: 15px; line-height: 1.7; }
+  .entry__text :global(p + p) { margin-top: 10px; }
+  .entry__text :global(strong) { color: var(--ink); }
+  .entry__text :global(em) { color: var(--ink); }
+  .entry__text :global(a), .note :global(a) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+  .chron :global(.hl) { color: var(--accent); font-weight: 700; }
+
+  /* ── Примітка та архів ── */
+  .note {
+    margin-top: 48px;
+    padding: 18px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+    scroll-margin-top: calc(var(--header-h) + 80px);
+  }
+  .note :global(strong) { color: var(--ink); }
+  .archive { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header-h) + 80px); }
+  .archive__title { font-size: 1.1rem; text-transform: uppercase; }
+  .archive ul { margin-top: 12px; }
+  .archive li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .archive a { font-weight: 700; }
+  .archive a:hover, .archive a[aria-current] { color: var(--accent); }
+  .archive span { color: var(--faint); font-size: 12px; }
+
+  @media (max-width: 639px) {
+    .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip-btn { flex-shrink: 0; }
+  }
+  @media (max-width: 559px) {
+    .tl { padding-left: 20px; }
+    .tl::before { left: 3px; }
+    .tl-dot { left: -20px; width: 10px; height: 10px; }
+    .tl-month::before { left: -19px; }
+    .entry { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; padding: 14px; }
+    .entry__cover { width: 52px; height: 78px; }
+    .entry__text { font-size: 14px; }
+    .entry__copy span { display: none; }
+  }
+  @media (min-width: 640px) {
+    .search { flex: 0 1 280px; }
+  }
+  @media (min-width: 1100px) {
+    .secnav { display: none; }
+    .bar-tools { position: sticky; top: calc(var(--header-h) - 4px); z-index: 20; }
+    .layout { grid-template-columns: 240px minmax(0, 1fr); gap: 64px; }
+    .toc { display: block; position: sticky; top: calc(var(--header-h) + 90px); align-self: start; max-height: calc(100vh - var(--header-h) - 110px); overflow-y: auto; }
+    .toc__title { color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+    .toc > ol { margin-top: 12px; border-left: 1px solid var(--line); }
+    .toc a { display: block; padding: 7px 0 7px 14px; color: var(--muted); font-size: 14px; font-weight: 700; line-height: 1.35; transition: color 0.18s ease; }
+    .toc a:hover { color: var(--accent); }
+    .toc__sub a { padding: 4px 0 4px 26px; color: var(--faint); font-size: 13px; font-weight: 600; }
+  }
+</style>

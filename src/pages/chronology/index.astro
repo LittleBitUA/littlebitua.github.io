@@ -1,0 +1,18 @@
+---
+// ─── /chronology/ — найсвіжіший звіт ───────────────────────────
+import Layout from "../../layouts/Layout.astro";
+import ChronologyReport from "../../components/ChronologyReport.astro";
+import { latestReport } from "../../lib/chronology";
+import { SITE_URL } from "../../utils/seo";
+
+const report = latestReport!;
+---
+
+<Layout
+  title="Хронологія перекладів — «Little Bit»"
+  description={`Звіт «Little Bit» станом на ${report.dateLabel}: дати виходу українських перекладів, ранній доступ, оновлення й плани — з обсягом роботи, зборами коштів та учасниками.`}
+  canonicalUrl={`${SITE_URL}/chronology/`}
+  ogImage={`${SITE_URL}/images/og-chronology.png`}
+>
+  <ChronologyReport report={report} isLatest />
+</Layout>

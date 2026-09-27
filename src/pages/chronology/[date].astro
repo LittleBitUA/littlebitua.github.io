@@ -1,0 +1,22 @@
+---
+// ─── /chronology/<РРРР-ММ-ДД>/ — конкретний звіт (архів) ───────
+import Layout from "../../layouts/Layout.astro";
+import ChronologyReport from "../../components/ChronologyReport.astro";
+import { reports } from "../../lib/chronology";
+import { SITE_URL } from "../../utils/seo";
+
+export function getStaticPaths() {
+  return reports.map((report, i) => ({ params: { date: report.date }, props: { report, isLatest: i === 0 } }));
+}
+
+const { report, isLatest } = Astro.props;
+---
+
+<Layout
+  title={`Хронологія перекладів станом на ${report.dateLabel} — «Little Bit»`}
+  description={`Архівний звіт «Little Bit» станом на ${report.dateLabel}: українські переклади, ранній доступ, збори коштів та учасники.`}
+  canonicalUrl={isLatest ? `${SITE_URL}/chronology/` : `${SITE_URL}/chronology/${report.date}/`}
+  ogImage={`${SITE_URL}/images/og-chronology.png`}
+>
+  <ChronologyReport report={report} isLatest={isLatest} />
+</Layout>
