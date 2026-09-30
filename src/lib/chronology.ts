@@ -242,6 +242,7 @@ export const latestReport: Report | undefined = reports[0];
 const SHARED_ENTRY: Record<string, string> = {
   "dead-rising": "dead-rising-deluxe-remaster",
   "lad-ishin": "lost-judgment",
+  "kingdom-hearts-2": "kingdom-hearts-1525",
 };
 
 /** Запис гри в найсвіжішому звіті (для блоку «Стан проєкту» на сторінці гри). */
