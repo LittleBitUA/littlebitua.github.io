@@ -1386,10 +1386,13 @@ export const games: Game[] = [
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 80 },
+      { label: "Текстури", percent: 30 },
     ],
     tags: ["Action RPG", "JRPG", "Пригоди", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
-    downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_birth_by_sleep_final_mix/dmytro-naumchas-naumenko-little-bit-solovina-komanda",
+    // У лаунчері гра — частина сторінки збірки 1.5+2.5 (там 40%), тож цифри лише звідси
+    launcherSync: false,
+    downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_hd_1525_remix/little-bit-dmytro-naumchas-naumenko-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2024,
     lastUpdate: "2026-09-30",
@@ -1522,7 +1525,8 @@ export const games: Game[] = [
   },
   {
     id: "kingdom-hearts-2",
-    launcherSlug: "kingdom_hearts_ii",
+    // У лаунчері гра — частина сторінки збірки 1.5+2.5 (там 40%), тож цифри лише звідси
+    launcherSync: false,
     title: "KINGDOM HEARTS II FINAL MIX",
     series: "Kingdom Hearts",
     description:
@@ -1537,7 +1541,7 @@ export const games: Game[] = [
     ],
     tags: ["Action RPG", "JRPG", "Пригоди", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
-    downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_ii",
+    downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_hd_1525_remix/little-bit-dmytro-naumchas-naumenko-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2024,
     platform: ["PC"],
