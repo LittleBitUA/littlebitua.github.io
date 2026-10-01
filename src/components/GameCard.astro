@@ -7,7 +7,7 @@
 import type { Game } from "../data/games";
 import { cover } from "../lib/cover";
 import {
-  statusMeta, isPlayable, isFundraising, fundraisingPercent, formatMoney, stagesOf, stageName, isStageAbandoned,
+  statusMeta, isPlayable, isFundraising, fundraisingPercent, formatMoney, formatPct, stagesOf, stageName, isStageAbandoned,
 } from "../utils/status";
 
 export interface Props {
@@ -71,10 +71,10 @@ const actions = [
 
     <ul class="card__rows">
       {rows.map((r) => (
-        <li class={`row is-${r.state}`} title={r.state === "abandoned" ? `${r.label}: закинуто на ${r.pct}%` : undefined}>
+        <li class={`row is-${r.state}`} title={r.state === "abandoned" ? `${r.label}: закинуто на ${formatPct(r.pct)}%` : undefined}>
           <span class="row__label">{r.label}</span>
           <span class="row__bar" aria-hidden="true"><i style={`width:${r.pct}%`}></i></span>
-          <span class="row__pct num">{r.state === "todo" ? "—" : `${r.pct}%`}</span>
+          <span class="row__pct num">{r.state === "todo" ? "—" : `${formatPct(r.pct)}%`}</span>
         </li>
       ))}
     </ul>
@@ -177,7 +177,7 @@ const actions = [
   .card__rows { display: grid; gap: 5px; margin-top: 10px; }
   .row {
     display: grid;
-    grid-template-columns: 4.6rem minmax(0, 1fr) 2.4rem;
+    grid-template-columns: 4.6rem minmax(0, 1fr) minmax(2.4rem, auto);
     align-items: center;
     gap: 8px;
     font-size: 11px;
@@ -186,7 +186,7 @@ const actions = [
   .row__label { overflow: hidden; color: rgba(242, 240, 233, 0.78); font-weight: 700; white-space: nowrap; text-overflow: ellipsis; }
   .row__bar { height: 3px; background: rgba(255, 255, 255, 0.18); }
   .row__bar i { display: block; height: 100%; }
-  .row__pct { color: var(--ink); font-size: 10px; font-weight: 700; text-align: right; }
+  .row__pct { color: var(--ink); font-size: 10px; font-weight: 700; text-align: right; white-space: nowrap; }
 
   .row.is-done .row__bar i { background: var(--st-done); }
   .row.is-done .row__pct, .row.is-done .row__label { color: var(--st-done); }
@@ -228,7 +228,7 @@ const actions = [
   @media (max-width: 479px) {
     .card__bottom { padding: 8px; }
     .card__title { font-size: 12px; }
-    .row { grid-template-columns: 3.9rem minmax(0, 1fr) 2.1rem; gap: 5px; font-size: 10px; }
+    .row { grid-template-columns: 3.9rem minmax(0, 1fr) minmax(2.1rem, auto); gap: 5px; font-size: 10px; }
     .card__rows { gap: 4px; margin-top: 6px; }
     .card__money small { display: none; }
     .card__actions { gap: 4px; margin-top: 8px; }

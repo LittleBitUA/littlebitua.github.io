@@ -49,6 +49,9 @@ export function translationPercent(g: Game): number {
   return g.stageDetails?.find((d) => /переклад/i.test(d.label))?.percent ?? g.progress;
 }
 
+/** Відсоток для показу: дробова частина через кому («23,38»). */
+export const formatPct = (value: number) => String(value).replace(".", ",");
+
 export const formatMoney = (value: number) => value.toLocaleString("uk-UA") + " ₴";
 
 export const formatDate = (value: string) =>

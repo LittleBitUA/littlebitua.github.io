@@ -5,7 +5,7 @@
 // не розпочатий — порожня доріжка. Так видно, що «ранній доступ»
 // може означати повністю перекладений текст без текстур.
 import type { Game } from "../data/games";
-import { stagesOf, stageName, isStageAbandoned } from "../utils/status";
+import { stagesOf, stageName, isStageAbandoned, formatPct } from "../utils/status";
 
 export interface Props {
   game: Game;
@@ -25,7 +25,7 @@ const stages = stagesOf(game);
             {stageName(s.label)}
           </span>
           <span class="stage__pct num">
-            {state === "todo" ? "не розпочато" : state === "abandoned" ? `закинуто на ${s.percent}%` : `${s.percent}%`}
+            {state === "todo" ? "не розпочато" : state === "abandoned" ? `закинуто на ${formatPct(s.percent)}%` : `${formatPct(s.percent)}%`}
           </span>
           <span class="stage__bar" aria-hidden="true"><i style={`width:${s.percent}%`}></i></span>
         </li>

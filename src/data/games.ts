@@ -1294,23 +1294,25 @@ export const games: Game[] = [
   {
     id: "resident-evil-requiem",
     launcherSlug: "resident_evil_requiem",
+    // Лаунчер показує лише цілі відсотки, а тут точне значення від команди
+    launcherSync: false,
     title: "Resident Evil Requiem",
     series: "Resident Evil",
     description:
       "Дев'ята основна частина культової серії survival horror від Capcom, що повертає гравців туди, де колись почався справжній кошмар, — до Раккун-Сіті. У центрі історії — аналітикиня ФБР Ґрейс Ешкрофт та легендарний Леон С. Кеннеді: дві різні історії та два підходи до виживання поєднують психологічний горор, дослідження небезпечних локацій, загадки й видовищні сутички.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/3764200/ed3b2cae7d15f598f41006f5f1e605ec5517b5e4/library_capsule_2x.jpg",
-    progress: 17,
+    progress: 23.38,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 17 },
+      { label: "Переклад", percent: 23.38 },
     ],
     tags: ["Хоррор", "Бойовик", "Психологічний", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/3764200/Resident_Evil_Requiem/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     videoUrl: "https://www.youtube.com/watch?v=5Bk3RuhjquA",
     gameYear: 2026,
-    lastUpdate: "2026-09-30",
+    lastUpdate: "2026-10-01",
   },
   {
     id: "dead-rising-deluxe-remaster",
