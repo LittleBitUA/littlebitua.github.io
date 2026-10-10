@@ -59,6 +59,8 @@ const GAME_IDS: Record<string, string> = {
   "NieR Replicant™ ver.1.22474487139...": "nier-replicant",
   "Silent Hill: Townfall": "silent-hill-townfall",
   "Like a Dragon: Infinite Wealth": "lad-infinite-wealth",
+  "ROMEO IS A DEAD MAN": "romeo-is-a-dead-man",
+  "Shadows of the Damned: Hella Remastered": "shadows-of-the-damned",
 };
 // Довші назви перевіряємо першими («… Re Mind (DLC)» раніше за «… Re Mind»)
 const KNOWN = Object.keys(GAME_IDS).sort((a, b) => b.length - a.length);
