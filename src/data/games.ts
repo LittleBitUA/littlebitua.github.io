@@ -136,7 +136,7 @@ export const games: Game[] = [
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 90 },
+      { label: "Редактура", percent: 100 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 0 },
     ],
@@ -165,7 +165,7 @@ export const games: Game[] = [
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 90 },
+      { label: "Редактура", percent: 93 },
     ],
     tags: ["Бойовик", "Шутер", "Хоррор", "Чорний гумор"],
     steamUrl: "https://store.steampowered.com/app/2535440/Shadows_of_the_Damned_Hella_Remastered/",
@@ -222,11 +222,11 @@ export const games: Game[] = [
     description:
       "Ремейк третьої частини серії Yakuza на Dragon Engine. Кірю намагається жити мирним життям в Окінаві, але минуле знову нагадує про себе.",
     cover: "https://cdn2.steamgriddb.com/thumb/d7fbe5fb946867aacf79463f8f36981c.jpg",
-    progress: 38,
+    progress: 37,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 38 },
+      { label: "Переклад", percent: 37 },
       { label: "Редактура", percent: 0 },
       { label: "Текстури", percent: 40 },
     ],
@@ -296,11 +296,11 @@ export const games: Game[] = [
     description:
       "METAL GEAR SOLID 2: Sons of Liberty — Master Collection Version — культовий стелс-екшен, де місія на танкері переростає у змову планетарного масштабу. На вас чекають проникнення без зайвого шуму, гаджети, напружені босфайти та історія про інформацію, контроль і правду — актуальна й сьогодні.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2131640/library_600x900_2x.jpg?t=1710478205",
-    progress: 60,
+    progress: 70,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 60 },
+      { label: "Переклад", percent: 70 },
       { label: "Редактура", percent: 0 },
     ],
     tags: ["Бойовик", "Стелс", "Глибокий сюжет", "Пригоди"],
@@ -329,7 +329,7 @@ export const games: Game[] = [
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 90 },
-      { label: "Редактура", percent: 50 },
+      { label: "Редактура", percent: 80 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
     downloadUrl: "https://lbklauncher.com/games/uncharted_drakes_fortune/little-bit",
@@ -555,7 +555,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 90 },
-      { label: "Редактура", percent: 0 },
+      { label: "Редактура", percent: 10 },
     ],
     tags: ["Бойовик", "Детектив", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2058180/Judgment/",
@@ -623,11 +623,11 @@ export const games: Game[] = [
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
     cover: "https://cdn2.steamgriddb.com/thumb/78b22a52a1e53b0d2e27e6b40569793a.jpg",
-    progress: 64,
+    progress: 63,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 64 },
+      { label: "Переклад", percent: 63 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 15 },
@@ -647,12 +647,12 @@ export const games: Game[] = [
     description:
       "Повний текстовий переклад гри українською та українізовані текстури. Усе — від сюжету й побічних активностей до інтерфейсу, підказок.",
     cover: "https://cdn2.steamgriddb.com/thumb/30d35f85cc2976e1427452715a353eb9.jpg",
-    progress: 96,
+    progress: 95,
     status: "in-progress",
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 95 },
-      { label: "Редактура", percent: 16 },
+      { label: "Редактура", percent: 20 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["Бойовик", "Відкритий світ", "Beat 'em up", "Кримінал"],
@@ -707,11 +707,11 @@ export const games: Game[] = [
     description:
       "Yakuza: Like a Dragon — нова глава серії з іншим героєм і свіжим підходом. Ічібан Касуґа виходить на волю після довгих років і опиняється в світі, де його зрадили й списали з рахунків. Попереду — Йокоґама, нові друзі, дивакуваті підробітки та велика кримінальна змова, а всі розбірки тут вирішуються вже в покрокових боях у стилі JRPG.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1235140/library_600x900_2x.jpg?t=1716350681",
-    progress: 58,
+    progress: 54,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 58 },
+      { label: "Переклад", percent: 54 },
       { label: "Текстури", percent: 30 },
     ],
     tags: ["RPG", "JRPG", "Покрокова", "Відкритий світ"],
@@ -751,12 +751,12 @@ export const games: Game[] = [
     description:
       "Повернення Тревіса Тачдауна після довгої паузи, коли над Санта-Дестроєм нависає справді космічна загроза. Прибульці та їхній лідер Фу перетворюють порятунок світу на змагання в «галактичному рейтингу супергероїв», тож Тревіс знову береться за променеву катану й прорізає собі шлях крізь абсурд, стиль і шалену сатиру — у наймасштабнішій та найхимернішій частині серії.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1744330/library_600x900_2x.jpg?t=1665510381",
-    progress: 50,
+    progress: 98,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 90 },
-      { label: "Редактура", percent: 10 },
+      { label: "Переклад", percent: 98 },
+      { label: "Редактура", percent: 60 },
       { label: "Текстури", percent: 50 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Комедія"],
@@ -800,6 +800,7 @@ export const games: Game[] = [
     stage: "Готово",
     stageDetails: [
       { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
     ],
     tags: ["Інді", "Симулятор", "Казуальна"],
     steamUrl: "https://store.steampowered.com/app/3244220/A_Game_About_Digging_A_Hole/",
@@ -825,7 +826,7 @@ export const games: Game[] = [
     description:
       "Гра продовжує історію Тревіса Тачдауна — тепер він повертається в гру з новою люттю та конкретною метою. Щоб знову піднятися на вершину рейтингу найманих убивць, Тревіс проходить крізь ще божевільніші дуелі, жорсткіші сутички й дикий калейдоскоп стилю, сатири та чорного гумору.",
     cover: "https://cdn2.steamgriddb.com/grid/19f960c299756abbce4d8dbe2e096a1d.png",
-    progress: 80,
+    progress: 100,
     status: "in-progress",
     stage: "Редактура",
     stageDetails: [
@@ -922,12 +923,12 @@ export const games: Game[] = [
     description:
       "Продовження культового трилера від SWERY. Нова загадка, нове місто, та ще більше божевілля.",
     cover: "https://cdn2.steamgriddb.com/thumb/10dc0bb717c02b51d7f4e06704591f05.jpg",
-    progress: 82,
+    progress: 80,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 82 },
-      { label: "Редактура", percent: 5 },
+      { label: "Переклад", percent: 80 },
+      { label: "Редактура", percent: 10 },
     ],
     tags: ["Хоррор", "Містерія", "Пригоди", "Відкритий світ"],
     steamUrl: "https://store.steampowered.com/app/1271100/Deadly_Premonition_2_A_Blessing_in_Disguise/",
@@ -987,11 +988,11 @@ export const games: Game[] = [
     description:
       "Інтерактивна драма про дві сім'ї, чиї долі переплітаються через пограбування в Арізоні.",
     cover: "https://cdn2.steamgriddb.com/thumb/7d3d82c29720a5cb8824d02529389ab5.jpg",
-    progress: 15,
+    progress: 10,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 15 },
+      { label: "Переклад", percent: 10 },
       { label: "Текстури", percent: 0 },
     ],
     tags: ["Інтерактивне кіно", "Драма", "Глибокий сюжет", "Пригоди"],
@@ -1066,6 +1067,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 23 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
@@ -1175,11 +1177,12 @@ export const games: Game[] = [
     description:
       "Metal Gear Solid 4: Guns of the Patriots — завершальна глава історії Соліда Снейка. У світі, де війна перетворилася на керований бізнес, постарілий герой вирушає на свою останню місію, щоб зупинити Ліквіда Оцелота. На гравців чекають тактичне проникнення, масштабні битви, політичні інтриги та емоційне прощання з легендарною сагою.",
     cover: "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/2492670/157a186fed0c042110ab99871bdad8e341811ec1/library_capsule_2x.jpg?t=1785222293",
-    progress: 90,
+    progress: 95,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 90 },
+      { label: "Переклад", percent: 95 },
+      { label: "Редактура", percent: 10 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика", "Глибокий сюжет"],
     steamUrl: "https://store.steampowered.com/app/4184400/METAL_GEAR_SOLID_4_Guns_of_the_Patriots__Master_Collection_Version/",
@@ -1195,11 +1198,11 @@ export const games: Game[] = [
     description:
       "Завершення головної трилогії Kingdom Hearts. Сора, Дональд і Гуфі рушають крізь магічні світи Disney та Pixar, щоб врятувати друзів і протистояти XIII Організації. Видовищні бої, яскраві локації та фінальні відповіді на запитання, що копились десятиліттями.",
     cover: "https://cdn2.steamgriddb.com/grid/1318ae15a52c171bf63b0db992ba1451.png",
-    progress: 58,
+    progress: 57,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 58 },
+      { label: "Переклад", percent: 57 },
     ],
     tags: ["Action RPG", "JRPG", "Пригоди", "Аніме", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552450/KINGDOM_HEARTS_III__Re_Mind_DLC/",
@@ -1216,11 +1219,11 @@ export const games: Game[] = [
     description:
       "Детектив Такаюкі Ягамі розслідує неоднозначне вбивство, за яким стоять таємниці шкільної системи та злочинного світу. Бойовик у всесвіті Yakuza зі стелсом, паркуром і двома різними бойовими стилями.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/2058190/library_600x900_2x.jpg?t=1663168032",
-    progress: 29,
+    progress: 17,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 29 },
+      { label: "Переклад", percent: 17 },
     ],
     tags: ["Бойовик", "Детектив", "Пригоди", "Відкритий світ", "Кримінал"],
     steamUrl: "https://store.steampowered.com/app/2058190/Lost_Judgment/",
@@ -1243,11 +1246,12 @@ export const games: Game[] = [
     description:
       "Мерфі Пендлтон — ув'язнений, який тікає з-під варти після автокатастрофи і опиняється у туманному місті Сайлент-Гілл. Відкритий світ із таємницями, динамічна погода та класична атмосфера жаху й психологічного напруження.",
     cover: "https://cdn2.steamgriddb.com/grid/7f996610ab63c3bc9590c1bd8e9a7d65.png",
-    progress: 70,
+    progress: 60,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 70 },
+      { label: "Переклад", percent: 60 },
+      { label: "Редактура", percent: 10 },
     ],
     tags: ["Хоррор", "Психологічний", "Відкритий світ", "Атмосферна", "Пригоди"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
@@ -1365,11 +1369,11 @@ export const games: Game[] = [
     description:
       "Дев'ята основна частина культової серії survival horror від Capcom, що повертає гравців туди, де колись почався справжній кошмар, — до Раккун-Сіті. У центрі історії — аналітикиня ФБР Ґрейс Ешкрофт та легендарний Леон С. Кеннеді: дві різні історії та два підходи до виживання поєднують психологічний горор, дослідження небезпечних локацій, загадки й видовищні сутички.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/3764200/ed3b2cae7d15f598f41006f5f1e605ec5517b5e4/library_capsule_2x.jpg",
-    progress: 28,
+    progress: 32,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 28 },
+      { label: "Переклад", percent: 32 },
     ],
     tags: ["Хоррор", "Бойовик", "Психологічний", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/3764200/Resident_Evil_Requiem/",
@@ -1407,11 +1411,12 @@ export const games: Game[] = [
     description:
       "Культовий зомбі-екшен про фотожурналіста Френка Веста, який прибуває до торгового центру Вілламетта, щоб розслідувати загадковий спалах. У нього є лише 72 години, щоб з'ясувати правду, рятувати вцілілих і пробиватися крізь орди мерців усім, що потрапить під руку.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/427190/library_600x900_2x.jpg",
-    progress: 80,
+    progress: 100,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 80 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 40 },
     ],
     tags: ["Бойовик", "Хоррор", "Beat 'em up", "Класика"],
     steamUrl: "https://store.steampowered.com/app/427190/DEAD_RISING/",
@@ -1478,7 +1483,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 10 },
+      { label: "Редактура", percent: 44 },
     ],
     tags: ["Action RPG", "JRPG", "Пригоди", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
