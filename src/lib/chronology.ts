@@ -61,6 +61,8 @@ const GAME_IDS: Record<string, string> = {
   "Like a Dragon: Infinite Wealth": "lad-infinite-wealth",
   "ROMEO IS A DEAD MAN": "romeo-is-a-dead-man",
   "Shadows of the Damned: Hella Remastered": "shadows-of-the-damned",
+  "Killer is Dead - Nightmare Edition": "killer-is-dead",
+  "Shenmue I & II": "shenmue",
 };
 // Довші назви перевіряємо першими («… Re Mind (DLC)» раніше за «… Re Mind»)
 const KNOWN = Object.keys(GAME_IDS).sort((a, b) => b.length - a.length);

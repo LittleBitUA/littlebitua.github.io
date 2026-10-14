@@ -153,7 +153,8 @@ export const games: Game[] = [
       translatedLines: 2713, // 100%
       totalWords: 15679, // 3761 укр + 11918 англ
     },
-  },  {
+  },
+  {
     id: "shadows-of-the-damned",
     title: "Shadows of the Damned: Hella Remastered",
     description:
@@ -172,7 +173,8 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-10-10",
     gameYear: 2024,
-  },  {
+  },
+  {
     id: "romeo-is-a-dead-man",
     title: "ROMEO IS A DEAD MAN",
     description:
@@ -191,7 +193,8 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-10-10",
     gameYear: 2026,
-  },  {
+  },
+  {
     id: "killer-is-dead",
     launcherSlug: "killer_is_dead_nightmare_edition",
     title: "Killer is Dead - Nightmare Edition",
@@ -199,15 +202,17 @@ export const games: Game[] = [
       "Мондо Заппа — кат на державній службі з катаною та кібернетичною рукою. Він виконує замовлення на ліквідацію найдивніших цілей, від божевільних убивць до істот із темного боку Місяця. Стильний hack and slash від Suda51 з сюрреалістичним сюжетом і впізнаваною візуальною манерою.",
     cover: "https://cdn2.steamgriddb.com/thumb/7bd9b89f3787c90eb1a89eb12fae70d3.jpg",
     progress: 100,
-    status: "in-progress",
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 100 },
     ],
     tags: ["Hack and Slash", "Бойовик", "Чорний гумор"],
     steamUrl: "https://store.steampowered.com/app/261110/Killer_is_Dead__Nightmare_Edition/",
+    downloadUrl: "https://lbklauncher.com/games/killer_is_dead_nightmare_edition/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-10-10",
+    lastUpdate: "2026-10-14",
     gameYear: 2014,
   },
   {
@@ -1035,18 +1040,19 @@ export const games: Game[] = [
     description:
       "Класика від Ю Судзукі. Рьо Хадзукі шукає вбивцю свого батька, досліджуючи Японію.",
     cover: "https://cdn2.steamgriddb.com/thumb/963d79c80b622f504a6970dde6ffab0e.jpg",
-    progress: 30,
-    status: "in-progress",
+    progress: 50,
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 30 },
-      { label: "Редактура", percent: 0 },
+      { label: "Переклад", percent: 50 },
+      { label: "Редактура", percent: 5 },
     ],
     tags: ["Пригоди", "Відкритий світ", "Бойовик", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/758330/Shenmue_I__II/",
+    downloadUrl: "https://lbklauncher.com/games/shenmue_i_ii/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2018,
-    lastUpdate: "2026-10-10",
+    lastUpdate: "2026-10-14",
   },
   {
     id: "jojo-asbr",
@@ -1111,16 +1117,18 @@ export const games: Game[] = [
     description:
       "Переосмислення першої Silent Hill. Гаррі Мейсон шукає доньку у засніженому місті, де реальність розпадається на спогади — а зустрічі з потойбіччям не вирішуються бойовою системою.",
     cover: "https://cdn2.steamgriddb.com/grid/1e5ecaa150c05b9ec1f0ca90860785d2.png",
-    progress: 90,
-    status: "in-progress",
+    progress: 100,
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 90 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 90 },
     ],
     tags: ["Хоррор", "Психологічний", "Атмосферна", "Пригоди", "Сюжетна"],
     platform: ["Wii", "PS2", "PSP"],
+    downloadUrl: "https://lbklauncher.com/games/silent_hill_shattered_memories/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-07-02",
+    lastUpdate: "2026-10-14",
   },
   {
     id: "fire-emblem-three-houses",
