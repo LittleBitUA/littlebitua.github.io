@@ -216,6 +216,26 @@ export const games: Game[] = [
     gameYear: 2014,
   },
   {
+    id: "dragon-quest-xi-s",
+    launcherSlug: "dragon_quest_xi_s_echoes_of_an_elusive_age_definitive_edition",
+    title: "DRAGON QUEST® XI S: Echoes of an Elusive Age™ - Definitive Edition",
+    series: "Dragon Quest",
+    description:
+      "Юнак із тихого гірського селища дізнається, що він — переродження легендарного Світлоносця, якого королівство раптом оголошує загрозою. Утікаючи від переслідувачів, він збирає вірних супутників і вирушає через світ Ердреї, щоб розкрити таємницю свого призначення. Класична японська RPG від творців серії з покроковими боями та яскравим світом за дизайном Акіри Торіями.",
+    cover: "https://cdn2.steamgriddb.com/thumb/a44531997fab340499c42410656d1b5b.jpg",
+    progress: 8,
+    status: "in-progress",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 8 },
+    ],
+    tags: ["JRPG", "RPG", "Пригоди", "Покрокова"],
+    steamUrl: "https://store.steampowered.com/app/1295510/DRAGON_QUEST_XI_S_Echoes_of_an_Elusive_Age__Definitive_Edition/",
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-10-17",
+    gameYear: 2020,
+  },
+  {
     id: "yakuza-kiwami3",
     title: "Yakuza Kiwami 3 & Dark Ties",
     series: "Yakuza",
@@ -902,12 +922,12 @@ export const games: Game[] = [
     description:
       "Тревіс Тачдаун потрапляє всередину ігрової консолі. Спін-оф серії з кооперативним геймплеєм.",
     cover: "https://cdn2.steamgriddb.com/thumb/3fb9ea9011a179ca6ef04fcb1e828d24.jpg",
-    progress: 23,
+    progress: 100,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 23 },
-      { label: "Редактура", percent: 0 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 60 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Інді", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/961490/Travis_Strikes_Again_No_More_Heroes_Complete_Edition/",
@@ -953,7 +973,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 15 },
-      { label: "Редактура", percent: 0 },
+      { label: "Редактура", percent: 3 },
     ],
     tags: ["Бойовик", "RPG", "Історична", "Пригоди"],
     steamUrl: "https://store.steampowered.com/app/1805480/Like_a_Dragon_Ishin/",
@@ -1046,7 +1066,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 50 },
-      { label: "Редактура", percent: 5 },
+      { label: "Редактура", percent: 10 },
     ],
     tags: ["Пригоди", "Відкритий світ", "Бойовик", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/758330/Shenmue_I__II/",

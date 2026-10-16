@@ -63,6 +63,7 @@ const GAME_IDS: Record<string, string> = {
   "Shadows of the Damned: Hella Remastered": "shadows-of-the-damned",
   "Killer is Dead - Nightmare Edition": "killer-is-dead",
   "Shenmue I & II": "shenmue",
+  "DRAGON QUEST® XI S: Echoes of an Elusive Age™ - Definitive Edition": "dragon-quest-xi-s",
 };
 // Довші назви перевіряємо першими («… Re Mind (DLC)» раніше за «… Re Mind»)
 const KNOWN = Object.keys(GAME_IDS).sort((a, b) => b.length - a.length);
