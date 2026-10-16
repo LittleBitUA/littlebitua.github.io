@@ -923,7 +923,7 @@ export const games: Game[] = [
       "Тревіс Тачдаун потрапляє всередину ігрової консолі. Спін-оф серії з кооперативним геймплеєм.",
     cover: "https://cdn2.steamgriddb.com/thumb/3fb9ea9011a179ca6ef04fcb1e828d24.jpg",
     progress: 100,
-    status: "in-progress",
+    status: "early-access",
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
@@ -931,9 +931,11 @@ export const games: Game[] = [
     ],
     tags: ["Бойовик", "Hack and Slash", "Інді", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/961490/Travis_Strikes_Again_No_More_Heroes_Complete_Edition/",
+    downloadUrl: "https://lbklauncher.com/games/travis_strikes_again_no_more_heroes_complete_edition/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2019,
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-10-15",
+    releaseDate: "2026-10-15",
   },
   {
     id: "deadly-premonition-2",
