@@ -767,6 +767,8 @@ export const games: Game[] = [
   },
   {
     id: "nmh3",
+    // Редактура 80% від команди; у лаунчері поки 70%. Коли там оновлять — прибрати.
+    launcherSync: false,
     title: "No More Heroes 3",
     series: "No More Heroes",
     description:
@@ -777,14 +779,14 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 70 },
+      { label: "Редактура", percent: 80 },
       { label: "Текстури", percent: 50 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Комедія"],
     steamUrl: "https://store.steampowered.com/app/1744330/No_More_Heroes_3/",
     downloadUrl: "https://lbklauncher.com/games/no_more_heroes_3/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-01-14",
+    lastUpdate: "2026-10-23",
 
     // Extended data
     releaseDate: "2026-01-14",
