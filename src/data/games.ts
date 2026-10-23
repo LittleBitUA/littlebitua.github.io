@@ -767,8 +767,6 @@ export const games: Game[] = [
   },
   {
     id: "nmh3",
-    // Редактура 80% від команди; у лаунчері поки 70%. Коли там оновлять — прибрати.
-    launcherSync: false,
     title: "No More Heroes 3",
     series: "No More Heroes",
     description:
