@@ -339,22 +339,23 @@ export const games: Game[] = [
   },
   {
     id: "uncharted1",
-    title: "Uncharted: Drake's Fortune",
+    title: "Uncharted: Drake's Fortune Remastered",
     series: "Uncharted",
     description:
       "Натан Дрейк вирушає на пошуки скарбів Ель Дорадо. Перша частина культової пригодницької серії — тепер українською.",
     cover: "https://cdn2.steamgriddb.com/thumb/9f4e3ec64878410b0467d41b63b1be21.jpg",
-    progress: 90,
+    progress: 100,
     status: "early-access",
     stage: "Редактура",
     stageDetails: [
-      { label: "Переклад", percent: 90 },
-      { label: "Редактура", percent: 80 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 90 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
-    downloadUrl: "https://lbklauncher.com/games/uncharted_drakes_fortune/little-bit",
+    downloadUrl: "https://lbklauncher.com/games/uncharted_drakes_fortune_remastered/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-04-28",
+    lastUpdate: "2026-10-22",
+    releaseDate: "2026-10-22",
 
     // Extended data
     detailedDescription: "Початок легендарної серії про мисливця за скарбами Натана Дрейка. Захоплюючі пригоди в джунглях Амазонки, загадка Ель Дорадо та незабутні персонажі.",
@@ -372,7 +373,7 @@ export const games: Game[] = [
     ],
     stats: {
       totalLines: 3332,
-      translatedLines: 2920, // 87.64%
+      translatedLines: 3332, // 100%
       totalWords: 14999, // 13013 укр + 1986 англ
       totalCharacters: 82494 // Приблизно
     },
@@ -643,11 +644,11 @@ export const games: Game[] = [
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
     cover: "https://cdn2.steamgriddb.com/thumb/78b22a52a1e53b0d2e27e6b40569793a.jpg",
-    progress: 63,
+    progress: 64,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 63 },
+      { label: "Переклад", percent: 64 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 15 },
@@ -771,12 +772,12 @@ export const games: Game[] = [
     description:
       "Повернення Тревіса Тачдауна після довгої паузи, коли над Санта-Дестроєм нависає справді космічна загроза. Прибульці та їхній лідер Фу перетворюють порятунок світу на змагання в «галактичному рейтингу супергероїв», тож Тревіс знову береться за променеву катану й прорізає собі шлях крізь абсурд, стиль і шалену сатиру — у наймасштабнішій та найхимернішій частині серії.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/1744330/library_600x900_2x.jpg?t=1665510381",
-    progress: 98,
+    progress: 100,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 98 },
-      { label: "Редактура", percent: 60 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 70 },
       { label: "Текстури", percent: 50 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Комедія"],
@@ -1035,27 +1036,53 @@ export const games: Game[] = [
   },
   {
     id: "uncharted2",
-    title: "Uncharted 2: Among Thieves",
+    title: "Uncharted 2: Among Thieves Remastered",
     series: "Uncharted",
     description:
       "Натан Дрейк шукає легендарне місто Шамбала. Друга частина серії з ще масштабнішими пригодами.",
-    cover: "https://cdn2.steamgriddb.com/thumb/66dcd06dc5ad523aaeae95e64187e4ca.jpg",
-    progress: 5,
-    status: "in-progress",
-    stage: "Переклад",
+    cover: "https://cdn2.steamgriddb.com/grid/b83e6b8e6e7354e181fd5f87998124e8.png",
+    progress: 100,
+    status: "early-access",
+    stage: "Редактура",
     stageDetails: [
-      { label: "Переклад", percent: 5 },
-      { label: "Редактура", percent: 0 },
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 90 },
+      { label: "Шрифти", percent: 100 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
+    downloadUrl: "https://lbklauncher.com/games/uncharted_among_thieves_remastered/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-05-08",
+    fundraisingRaised: 3000,
+    fundraisingGoal: 3000,
+    fundraisingCompleted: true,
+    lastUpdate: "2026-10-23",
+    releaseDate: "2026-10-23",
     stats: {
       totalLines: 7091,
-      translatedLines: 385, // 5.43%
+      translatedLines: 7091, // 100%
       totalWords: 36553, // 1362 укр + 35191 англ
     },
   },
+  {
+    id: "uncharted3",
+    launcherSlug: "uncharted_3_drakes_deception",
+    title: "Uncharted 3: Drake's Deception",
+    series: "Uncharted",
+    description:
+      "Натан Дрейк і його наставник Саллі вирушають слідами Лоуренса Аравійського до втраченого міста в пустелі Руб-ель-Халі. Третя частина серії з погонями, перестрілками та подорожжю від Лондона до Аравійського півострова.",
+    cover: "https://cdn2.steamgriddb.com/thumb/079091f31eb570f95f9f9bd75eb8bf99.jpg",
+    progress: 0,
+    status: "planned",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 0 },
+    ],
+    tags: ["Бойовик", "Пригоди", "Шутер"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-10-23",
+    gameYear: 2011,
+  },
+
   {
     id: "shenmue",
     launcherSlug: "shenmue_i_ii",
@@ -1089,7 +1116,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 23 },
+      { label: "Редактура", percent: 50 },
     ],
     tags: ["Файтинг", "Аніме", "Бойовик", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/1372110/JoJos_Bizarre_Adventure_AllStar_Battle_R/",
@@ -1391,11 +1418,11 @@ export const games: Game[] = [
     description:
       "Дев'ята основна частина культової серії survival horror від Capcom, що повертає гравців туди, де колись почався справжній кошмар, — до Раккун-Сіті. У центрі історії — аналітикиня ФБР Ґрейс Ешкрофт та легендарний Леон С. Кеннеді: дві різні історії та два підходи до виживання поєднують психологічний горор, дослідження небезпечних локацій, загадки й видовищні сутички.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/3764200/ed3b2cae7d15f598f41006f5f1e605ec5517b5e4/library_capsule_2x.jpg",
-    progress: 32,
+    progress: 79,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 32 },
+      { label: "Переклад", percent: 79 },
     ],
     tags: ["Хоррор", "Бойовик", "Психологічний", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/3764200/Resident_Evil_Requiem/",
