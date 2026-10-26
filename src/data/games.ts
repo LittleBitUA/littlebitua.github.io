@@ -381,8 +381,11 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     fundraisingCompleted: true,
     lastUpdate: "2026-10-24",
-    releaseDate: "2026-10-23",
+    releaseDate: "2026-10-24",
     gameYear: 2015,
+    team: [
+      { name: "Дмитро Бидлов", role: "Переклад" },
+    ],
   },
   {
     id: "mgs-snake-eater",
