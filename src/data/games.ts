@@ -241,7 +241,7 @@ export const games: Game[] = [
     title: "Gravity Rush™ Remastered",
     description:
       "Дівчина Кет прокидається без спогадів у місті Гексвіль, що ширяє в небі, і разом із загадковим котом отримує владу над гравітацією. Вона бігає стінами, падає в небо й захищає мешканців від химерних істот, поступово розкриваючи таємницю власного минулого. Пригодницький екшен із рукотворним світом у стилі європейських коміксів.",
-    cover: "https://cdn2.steamgriddb.com/thumb/27af6e8b4742e5cd7afe864b67a323d4.jpg",
+    cover: "https://cdn2.steamgriddb.com/grid/93058caa4389f7c69bfb0e6ee0472a95.png",
     progress: 100,
     status: "early-access",
     stage: "Редактура",
