@@ -223,17 +223,36 @@ export const games: Game[] = [
     description:
       "Юнак із тихого гірського селища дізнається, що він — переродження легендарного Світлоносця, якого королівство раптом оголошує загрозою. Утікаючи від переслідувачів, він збирає вірних супутників і вирушає через світ Ердреї, щоб розкрити таємницю свого призначення. Класична японська RPG від творців серії з покроковими боями та яскравим світом за дизайном Акіри Торіями.",
     cover: "https://cdn2.steamgriddb.com/thumb/a44531997fab340499c42410656d1b5b.jpg",
-    progress: 8,
+    progress: 9,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 8 },
+      { label: "Переклад", percent: 9 },
     ],
     tags: ["JRPG", "RPG", "Пригоди", "Покрокова"],
     steamUrl: "https://store.steampowered.com/app/1295510/DRAGON_QUEST_XI_S_Echoes_of_an_Elusive_Age__Definitive_Edition/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-10-17",
     gameYear: 2020,
+  },
+  {
+    id: "gravity-rush",
+    launcherSlug: "gravity_rush_remastered",
+    title: "Gravity Rush™ Remastered",
+    description:
+      "Дівчина Кет прокидається без спогадів у місті Гексвіль, що ширяє в небі, і разом із загадковим котом отримує владу над гравітацією. Вона бігає стінами, падає в небо й захищає мешканців від химерних істот, поступово розкриваючи таємницю власного минулого. Пригодницький екшен із рукотворним світом у стилі європейських коміксів.",
+    cover: "https://cdn2.steamgriddb.com/thumb/27af6e8b4742e5cd7afe864b67a323d4.jpg",
+    progress: 100,
+    status: "in-progress",
+    stage: "Редактура",
+    stageDetails: [
+      { label: "Переклад", percent: 100 },
+      { label: "Редактура", percent: 20 },
+    ],
+    tags: ["Бойовик", "Пригоди", "Відкритий світ", "Аніме"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-10-24",
+    gameYear: 2015,
   },
   {
     id: "yakuza-kiwami3",
@@ -338,54 +357,27 @@ export const games: Game[] = [
     ],
   },
   {
-    id: "uncharted1",
-    title: "Uncharted: Drake's Fortune Remastered",
+    id: "uncharted-collection",
+    title: "Uncharted: The Nathan Drake Collection",
     series: "Uncharted",
     description:
-      "Натан Дрейк вирушає на пошуки скарбів Ель Дорадо. Перша частина культової пригодницької серії — тепер українською.",
-    cover: "https://cdn2.steamgriddb.com/thumb/9f4e3ec64878410b0467d41b63b1be21.jpg",
+      "Три перші пригоди мисливця за скарбами Натана Дрейка в одній збірці: пошуки Ель Дорадо в Drake's Fortune, гонитва за легендарною Шамбалою в Among Thieves і подорож до втраченого міста в аравійській пустелі в Drake's Deception. Український переклад охоплює всі три частини.",
+    cover: "https://supabase.lbklauncher.com/storage/v1/object/public/game-images/dfe6f72f-ad86-8718-9453-d623c8c06287/thumbnail.webp?v=1792798127729",
     progress: 100,
     status: "early-access",
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 90 },
+      { label: "Шрифти", percent: 100 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
-    downloadUrl: "https://lbklauncher.com/games/uncharted_drakes_fortune_remastered/little-bit",
+    downloadUrl: "https://lbklauncher.com/games/uncharted_the_nathan_drake_collection/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-10-22",
-    releaseDate: "2026-10-22",
-
-    // Extended data
-    detailedDescription: "Початок легендарної серії про мисливця за скарбами Натана Дрейка. Захоплюючі пригоди в джунглях Амазонки, загадка Ель Дорадо та незабутні персонажі.",
-    gameYear: 2007,
-    genre: ["Action", "Пригоди", "Шутер"],
-    platform: ["PlayStation"],
-    translationSize: "small",
-    team: [
-      { name: "Little Bit Team", role: "Переклад та редакція" }
-    ],
-    progressHistory: [
-      { date: "2025-12-01", progress: 60, milestone: "Основний сюжет" },
-      { date: "2026-01-15", progress: 80, milestone: "Завершення перекладу" },
-      { date: "2026-02-16", progress: 90, milestone: "Редактура" }
-    ],
-    stats: {
-      totalLines: 3332,
-      translatedLines: 3332, // 100%
-      totalWords: 14999, // 13013 укр + 1986 англ
-      totalCharacters: 82494 // Приблизно
-    },
-    installInstructions: `## Встановлення локалізації Uncharted: Drake's Fortune
-
-### Через LBK Launcher
-1. Завантажте та встановіть [LBK Launcher](https://lbklauncher.com/)
-2. Запустіть лаунчер та знайдіть Uncharted: Drake's Fortune у списку
-3. Натисніть "Встановити локалізацію"
-4. Запускайте гру як зазвичай
-
-**Важливо:** Патч працює з версією гри для PlayStation.`
+    fundraisingCompleted: true,
+    lastUpdate: "2026-10-24",
+    releaseDate: "2026-10-23",
+    gameYear: 2015,
   },
   {
     id: "mgs-snake-eater",
@@ -644,11 +636,11 @@ export const games: Game[] = [
     description:
       "Розширене видання культової JRPG про команду «Примарних крадіїв» — старшокласників, які крадуть викривлені бажання дорослих. Стильний бойовий рушій, харизматичні персонажі, життя у Токіо й глибока соціальна симуляція.",
     cover: "https://cdn2.steamgriddb.com/thumb/78b22a52a1e53b0d2e27e6b40569793a.jpg",
-    progress: 64,
+    progress: 65,
     status: "early-access",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 64 },
+      { label: "Переклад", percent: 65 },
       { label: "Редактура", percent: 0 },
       { label: "Шрифти", percent: 100 },
       { label: "Текстури", percent: 15 },
@@ -777,7 +769,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 80 },
+      { label: "Редактура", percent: 97 },
       { label: "Текстури", percent: 50 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Комедія"],
@@ -1033,54 +1025,6 @@ export const games: Game[] = [
 4. Запускайте гру через Steam як зазвичай
 
 **Важливо:** Патч працює з версією гри Steam.`
-  },
-  {
-    id: "uncharted2",
-    title: "Uncharted 2: Among Thieves Remastered",
-    series: "Uncharted",
-    description:
-      "Натан Дрейк шукає легендарне місто Шамбала. Друга частина серії з ще масштабнішими пригодами.",
-    cover: "https://cdn2.steamgriddb.com/grid/b83e6b8e6e7354e181fd5f87998124e8.png",
-    progress: 100,
-    status: "early-access",
-    stage: "Редактура",
-    stageDetails: [
-      { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 90 },
-      { label: "Шрифти", percent: 100 },
-    ],
-    tags: ["Бойовик", "Пригоди", "Шутер"],
-    downloadUrl: "https://lbklauncher.com/games/uncharted_among_thieves_remastered/little-bit",
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    fundraisingRaised: 3000,
-    fundraisingGoal: 3000,
-    fundraisingCompleted: true,
-    lastUpdate: "2026-10-23",
-    releaseDate: "2026-10-23",
-    stats: {
-      totalLines: 7091,
-      translatedLines: 7091, // 100%
-      totalWords: 36553, // 1362 укр + 35191 англ
-    },
-  },
-  {
-    id: "uncharted3",
-    launcherSlug: "uncharted_3_drakes_deception",
-    title: "Uncharted 3: Drake's Deception",
-    series: "Uncharted",
-    description:
-      "Натан Дрейк і його наставник Саллі вирушають слідами Лоуренса Аравійського до втраченого міста в пустелі Руб-ель-Халі. Третя частина серії з погонями, перестрілками та подорожжю від Лондона до Аравійського півострова.",
-    cover: "https://cdn2.steamgriddb.com/thumb/079091f31eb570f95f9f9bd75eb8bf99.jpg",
-    progress: 0,
-    status: "planned",
-    stage: "Переклад",
-    stageDetails: [
-      { label: "Переклад", percent: 0 },
-    ],
-    tags: ["Бойовик", "Пригоди", "Шутер"],
-    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-10-23",
-    gameYear: 2011,
   },
 
   {

@@ -127,9 +127,9 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     text: "Ранній доступ",
     ...BADGE_PRESETS.earlyAccess,
   },
-  "uncharted1": {
-    text: "Ранній доступ",
-    ...BADGE_PRESETS.earlyAccess,
+  "uncharted-collection": {
+    text: "Доступно",
+    ...BADGE_PRESETS.available,
   },
   "digging-a-hole": {
     text: "Доступно",
@@ -184,10 +184,6 @@ export const GAME_BADGES: Record<string, GameBadge> = {
     ...BADGE_PRESETS.inProgress,
   },
   "yakuza3": {
-    text: "Переклад",
-    ...BADGE_PRESETS.inProgress,
-  },
-  "uncharted2": {
     text: "Переклад",
     ...BADGE_PRESETS.inProgress,
   },
