@@ -107,13 +107,18 @@ const since = human(points[0]?.date ?? today);
         const text = [`переклад ${p.t}%`, p.e != null ? `редактура ${p.e}%` : null].filter(Boolean).join(" · ");
         const left = x(p.date);
         return (
-          <button type="button" class:list={["pchart__pt", { "is-right": left > 70, "is-left": left < 30, "is-high": p.t > 60 }]}
-                  style={`left:${left}%;top:${y(p.t)}%`} aria-label={`${human(p.date)}: ${text}`}>
+          <span class:list={["pchart__pt", { "is-right": left > 70, "is-left": left < 30, "is-high": p.t > 60 }]}
+                style={`left:${left}%;top:${y(p.t)}%`} aria-hidden="true">
             <span class="pchart__tip"><b>{human(p.date)}</b>{text}{prev && p.t > prev.t && <em> (+{p.t - prev.t})</em>}</span>
-          </button>
+          </span>
         );
       })}
     </div>
+
+    <!-- Ті самі точки текстом — для читачів екрана -->
+    <ol class="sr-only">
+      {points.map((p) => <li>{human(p.date)}: переклад {p.t}%{p.e != null && `, редактура ${p.e}%`}</li>)}
+    </ol>
 
     <div class="pchart__axis" aria-hidden="true">
       {ticks.map((t) => <span style={`left:${t.pos}%`}>{t.label}</span>)}
@@ -164,8 +169,7 @@ const since = human(points[0]?.date ?? today);
     box-shadow: 0 0 0 3px rgba(20, 16, 24, 0.9);
     transition: transform 0.15s ease;
   }
-  .pchart__pt:hover::before, .pchart__pt:focus-visible::before { transform: scale(1.4); }
-  .pchart__pt:focus-visible { outline: none; }
+  .pchart__pt:hover::before { transform: scale(1.4); }
   .pchart__tip {
     position: absolute;
     bottom: calc(100% + 6px);
@@ -192,10 +196,9 @@ const since = human(points[0]?.date ?? today);
   .pchart__tip em { color: var(--st-done); font-style: normal; font-weight: 700; }
   /* Точки вгорі графіка — підказка під точкою, щоб не налазила на заголовок */
   .is-high .pchart__tip { top: calc(100% + 6px); bottom: auto; }
-  .pchart__pt:hover, .pchart__pt:focus-visible { z-index: 2; }
-  .pchart__pt:hover .pchart__tip, .pchart__pt:focus-visible .pchart__tip { opacity: 1; transform: translate(-50%, 0); }
-  .is-left:hover .pchart__tip, .is-left:focus-visible .pchart__tip,
-  .is-right:hover .pchart__tip, .is-right:focus-visible .pchart__tip { transform: none; }
+  .pchart__pt:hover { z-index: 2; }
+  .pchart__pt:hover .pchart__tip { opacity: 1; transform: translate(-50%, 0); }
+  .is-left:hover .pchart__tip, .is-right:hover .pchart__tip { transform: none; }
 
   .pchart__axis { position: relative; height: 22px; margin: 8px 6px 0; color: rgba(255, 255, 255, 0.5); font-size: 12px; }
   .pchart__axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }

@@ -1,0 +1,129 @@
+---
+// ─── Сторінка учасника команди ─────────────────────────────────
+import Layout from "../../layouts/Layout.astro";
+import PersonAvatar from "../../components/PersonAvatar.astro";
+import Poster from "../../components/cinema/Poster.astro";
+import { PEOPLE, type Person } from "../../data/people";
+import { games } from "../../data/catalog";
+import { isPlayable } from "../../utils/status";
+import { pluralize } from "../../utils/pluralize";
+import { SITE_URL, generateBreadcrumbs } from "../../utils/seo";
+import { artOf } from "../../lib/art";
+
+export function getStaticPaths() {
+  return PEOPLE.map((p) => ({ params: { slug: p.slug }, props: { person: p } }));
+}
+const { person } = Astro.props as { person: Person };
+
+const byId = new Map(games.map((g) => [g.id, g]));
+const work = person.credits
+  .map((c) => ({ game: byId.get(c.game)!, role: c.role }))
+  .filter((w) => w.game)
+  // Спершу те, у що вже можна грати, далі — за прогресом
+  .sort((a, b) => Number(isPlayable(b.game)) - Number(isPlayable(a.game)) || b.game.progress - a.game.progress);
+const released = work.filter((w) => isPlayable(w.game)).length;
+const inWork = work.length - released;
+
+// Тло сторінки — банер першої гри зі списку
+const art = work.length ? await artOf(work[0].game) : null;
+
+// Інші учасники, з якими ця людина працювала над тими самими іграми
+const ids = new Set(person.credits.map((c) => c.game));
+const colleagues = PEOPLE.filter((p) => p !== person && p.credits.some((c) => ids.has(c.game)));
+
+const canonicalUrl = `${SITE_URL}/team/${person.slug}/`;
+const structuredData = generateBreadcrumbs([
+  { name: "Головна", url: `${SITE_URL}/` },
+  { name: "Команда", url: `${SITE_URL}/team/` },
+  { name: person.name, url: canonicalUrl },
+]);
+---
+
+<Layout
+  title={`${person.name} — локалізації українською | «Little Bit»`}
+  description={`${person.name}: ${work.length} ${pluralize(work.length, "проєкт", "проєкти", "проєктів")} українських локалізацій «Little Bit»${work.length ? ` — ${work.slice(0, 4).map((w) => w.game.title).join(", ")}` : ""}.`}
+  canonicalUrl={canonicalUrl}
+  ogImage={art?.banner ? SITE_URL + art.banner : undefined}
+  structuredData={structuredData}
+  tint={art?.tint}
+>
+  <div class="page container">
+    <nav aria-label="Навігація">
+      <ol class="crumbs">
+        <li><a href="/">Головна</a></li>
+        <li class="sep" aria-hidden="true">/</li>
+        <li><a href="/team/">Команда</a></li>
+        <li class="sep" aria-hidden="true">/</li>
+        <li aria-current="page">{person.name}</li>
+      </ol>
+    </nav>
+
+    <header class="hero">
+      <PersonAvatar name={person.name} slug={person.slug} size={96} />
+      <div>
+        <span class="eyebrow">{person.team ? "Команда-партнер" : "Учасник команди"}</span>
+        <h1 class="title">{person.name}</h1>
+        {person.about && <p class="about">{person.about}</p>}
+        <p class="c-meta stats">
+          <span>{work.length} {pluralize(work.length, "проєкт", "проєкти", "проєктів")}</span>
+          {released > 0 && <span>{released} уже можна грати</span>}
+          {inWork > 0 && <span>{inWork} у роботі</span>}
+        </p>
+        {person.link && (
+          <a class="c-btn c-btn--glass link" href={person.link} target="_blank" rel="noopener noreferrer">Профіль →</a>
+        )}
+      </div>
+    </header>
+
+    <h2 class="sec">Проєкти</h2>
+    <ul class="works">
+      {work.map((w) => (
+        <li>
+          <Poster game={w.game} />
+          <strong>{w.game.title}</strong>
+          <small>{w.role}</small>
+        </li>
+      ))}
+    </ul>
+
+    {colleagues.length > 0 && (
+      <>
+        <h2 class="sec">Працює разом із</h2>
+        <ul class="mates">
+          {colleagues.map((p) => (
+            <li><a href={`/team/${p.slug}/`} class="mate"><PersonAvatar name={p.name} slug={p.slug} size={30} />{p.name}</a></li>
+          ))}
+        </ul>
+      </>
+    )}
+
+    <p class="back"><a href="/team/">← Уся команда</a></p>
+  </div>
+</Layout>
+
+<style>
+  .hero { display: flex; align-items: center; gap: 28px; margin: 28px 0 44px; }
+  .title { margin-top: 8px; font-size: clamp(1.8rem, 4vw, 3rem); }
+  .about { max-width: 62ch; margin-top: 10px; color: var(--muted); line-height: 1.6; }
+  .stats { margin-top: 14px; }
+  .link { min-height: 42px; margin-top: 18px; }
+
+  .sec { margin: 8px 0 16px; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 600; }
+  .works { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 24px 16px; margin-bottom: 48px; }
+  .works li { display: grid; gap: 4px; align-content: start; }
+  .works strong { margin-top: 8px; font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .works small { color: var(--muted); font-size: 12px; line-height: 1.4; }
+
+  .mates { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mate { display: inline-flex; align-items: center; gap: 10px; padding: 5px 16px 5px 5px; border-radius: 9999px; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--line); font-size: 14px; font-weight: 600; transition: background-color 0.18s ease; }
+  .mate:hover { background: rgba(255, 255, 255, 0.14); }
+
+  .back { margin-top: 48px; }
+  .back a { color: var(--muted); }
+  .back a:hover { color: var(--ink); }
+
+  @media (max-width: 640px) {
+    .hero { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+</style>

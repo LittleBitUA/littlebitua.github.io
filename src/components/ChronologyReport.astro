@@ -4,6 +4,7 @@
 // з пошуком / фільтрами / розділами, стрічка часу, примітка, архів.
 import { reports, type Report } from "../lib/chronology";
 import { cover } from "../lib/cover";
+import { liveNumbers, liveLabel } from "../lib/live";
 
 export interface Props { report: Report; isLatest: boolean }
 const { report, isLatest } = Astro.props;
@@ -138,6 +139,14 @@ const thumbs = new Map(
                       {it.entry.game ? <a href={`/games/${it.entry.game.id}/`}>{it.entry.title}</a> : it.entry.title}
                     </h4>
                     <div class="entry__text" set:html={it.entry.html} />
+                    {(() => {
+                      const live = it.entry.game ? liveNumbers(it.entry.game, it.entry.html) : null;
+                      return live?.differs && (
+                        <p class="entry__live" title="Звіт написано раніше; це свіжі цифри з LBK Launcher">
+                          <span>Зараз</span>{liveLabel(live)}
+                        </p>
+                      );
+                    })()}
                   </div>
                 </article>
               ),
@@ -473,6 +482,8 @@ const thumbs = new Map(
   .entry__title a:hover { color: var(--accent); }
   .entry__text { margin-top: 10px; color: var(--muted); font-size: 15px; line-height: 1.7; }
   .entry__text :global(p + p) { margin-top: 10px; }
+  .entry__live { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 12px 6px 6px; border-radius: 9999px; background: rgba(255, 255, 255, 0.07); color: var(--ink); font-size: 13px; font-weight: 700; }
+  .entry__live span { padding: 3px 9px; border-radius: 9999px; background: var(--st-done); color: #0b0b0d; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
   .entry__text :global(strong) { color: var(--ink); }
   .entry__text :global(em) { color: var(--ink); }
   .entry__text :global(a), .note :global(a) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }

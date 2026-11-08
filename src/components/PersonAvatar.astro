@@ -1,0 +1,44 @@
+---
+// Аватарка учасника. Якщо в src/assets/team/ є файл <slug>.(webp|jpg|jpeg|png) —
+// показуємо його (стискається під час збірки), інакше — ініціали з кольором,
+// сталим для кожного імені.
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
+import { initialsOf, hueOf } from "../data/people";
+
+const PHOTOS = import.meta.glob<{ default: ImageMetadata }>("../assets/team/*.{webp,jpg,jpeg,png}", { eager: true });
+
+export interface Props { name: string; slug: string; size?: number }
+const { name, slug, size = 56 } = Astro.props;
+const hue = hueOf(name);
+
+const photo = Object.entries(PHOTOS).find(([path]) => path.split("/").pop()!.replace(/\.\w+$/, "") === slug)?.[1].default;
+// Квадрат удвічі більший за показ — щоб на щільних екранах було чітко
+const px = Math.max(160, size * 2);
+const src = photo ? (await getImage({ src: photo, width: px, height: px, fit: "cover", format: "webp", quality: 82 })).src : null;
+---
+
+{src ? (
+  <img class="avatar avatar--img" src={src} alt="" width={size} height={size} style={`--s:${size}px`} loading="lazy" decoding="async" />
+) : (
+  <span class="avatar" style={`--h:${hue};--s:${size}px`} aria-hidden="true">{initialsOf(name)}</span>
+)}
+
+<style>
+  .avatar {
+    display: inline-grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: var(--s);
+    height: var(--s);
+    border-radius: 50%;
+    background: linear-gradient(140deg, hsl(var(--h) 55% 62%), hsl(calc(var(--h) + 40) 50% 40%));
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18) inset;
+    color: #fff;
+    font-size: calc(var(--s) * 0.36);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
+  }
+  .avatar--img { object-fit: cover; background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18); }
+</style>

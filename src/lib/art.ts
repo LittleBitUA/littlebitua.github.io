@@ -15,6 +15,8 @@ export interface GameArt {
   bannerSrcset: string | null;
   /** Логотип з прозорим тлом, якщо він є */
   logo: string | null;
+  /** Логотип у двох розмірах: на телефоні він дрібний, нема сенсу вантажити великий */
+  logoSrcset: string | null;
   /** Колір теми у форматі rgb(r g b) */
   tint: string;
 }
@@ -88,6 +90,10 @@ async function resolve(g: Game): Promise<GameArt> {
     banner: bannerSrc ? await cover(bannerSrc, 1920, 84) : null,
     bannerSrcset: sizes ? sizes.join(", ") : null,
     logo: logoBytes && g.launcherArt ? await cover(g.launcherArt.logo, 720) : null,
+    logoSrcset:
+      logoBytes && g.launcherArt
+        ? `${await cover(g.launcherArt.logo, 360)} 360w, ${await cover(g.launcherArt.logo, 720)} 720w, ${await cover(g.launcherArt.logo, 1120)} 1120w`
+        : null,
     tint: tintSource ? await tintOf(tintSource) : FALLBACK_TINT,
   };
 }

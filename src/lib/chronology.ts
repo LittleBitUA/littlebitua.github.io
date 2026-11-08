@@ -261,7 +261,8 @@ const SHARED_ENTRY: Record<string, string> = {
 /** Запис гри в найсвіжішому звіті (для блоку «Стан проєкту» на сторінці гри). */
 export function chronologyEntry(gameId: string): Entry | null {
   const id = SHARED_ENTRY[gameId] ?? gameId;
-  return latestReport?.entries.find((e) => e.game?.id === id) ?? null;
+  // Якщо про гру кілька записів (ранній доступ, потім повний реліз) — беремо найсвіжіший, тобто останній
+  return latestReport?.entries.findLast((e) => e.game?.id === id) ?? null;
 }
 
 /** Якір гри в найсвіжішому звіті. */

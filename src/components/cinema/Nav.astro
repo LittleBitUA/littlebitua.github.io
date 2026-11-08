@@ -7,6 +7,7 @@ const TABS = [
   { href: "/", label: "Головна" },
   { href: "/games/", label: "Каталог" },
   { href: "/chronology/", label: "Хронологія" },
+  { href: "/team/", label: "Команда" },
   { href: "/#launcher", label: "LBK Launcher" },
 ];
 const path = Astro.url.pathname;
@@ -130,7 +131,10 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
 
   @media (max-width: 760px) {
     .cnav__sep, .cnav__icon, .cnav__cta { display: none; }
-    .cnav__tab { padding: 9px 16px; font-size: 13px; }
+    /* LBK Launcher є в нижній панелі — угорі лишаємо місце іншим вкладкам */
+    .cnav__tab[href="/#launcher"] { display: none; }
+    .cnav__tab { padding: 9px 13px; font-size: 13px; }
+    @media (max-width: 380px) { .cnav__tab { padding: 9px 10px; font-size: 12.5px; } }
 
     .cdock {
       position: fixed;

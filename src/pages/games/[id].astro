@@ -16,6 +16,9 @@ import { marked } from "marked";
 import { chronologyEntry, latestReport } from "../../lib/chronology";
 import { cover } from "../../lib/cover";
 import { artOf } from "../../lib/art";
+import { liveNumbers, liveLabel } from "../../lib/live";
+import { peopleOf } from "../../data/people";
+import PersonAvatar from "../../components/PersonAvatar.astro";
 
 export function getStaticPaths() {
   return games.map((game) => ({ params: { id: game.id }, props: { game } }));
@@ -46,6 +49,9 @@ const fundUrl = game.fundraisingUrl ?? game.donateUrl;
 const ea = earlyAccessReason(game);
 const showSeries = hasSeriesPage(game.series);
 const chron = chronologyEntry(game.id);
+// Свіжі цифри з LBK Launcher — звіт міг застаріти
+const live = chron ? liveNumbers(game, chron.html) : null;
+const crew = peopleOf(game.id);
 const art = await artOf(game);
 const poster = await cover(game.cover, 720);
 const stages = stagesOf(game);
@@ -123,7 +129,7 @@ const related = games
         <a class="gh__back" href="/games/">← Каталог{showSeries && <span> · {game.series}</span>}</a>
         {art.logo ? (
           <>
-            <img class="c-logo gh__logo" src={art.logo} alt="" fetchpriority="high" decoding="async" />
+            <img class="c-logo gh__logo" src={art.logo} srcset={art.logoSrcset ?? undefined} sizes="(max-width: 760px) 80vw, 560px" alt="" fetchpriority="high" decoding="async" />
             <h1 class="sr-only">Українська локалізація {game.title}</h1>
           </>
         ) : (
@@ -258,6 +264,22 @@ const related = games
       </section>
     )}
 
+    {crew.length > 0 && (
+      <section class="gsec">
+        <h2 class="gsec__title">Над локалізацією працюють</h2>
+        <ul class="crew">
+          {crew.map(({ person, role }) => (
+            <li>
+              <a href={`/team/${person.slug}/`} class="c-panel crew__item">
+                <PersonAvatar name={person.name} slug={person.slug} size={40} />
+                <span><strong>{person.name}</strong><small>{role}</small></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     {chron && latestReport && (
       <section class="gsec">
         <h2 class="gsec__title">Стан проєкту</h2>
@@ -267,6 +289,13 @@ const related = games
             {chron.date && <span class="c-label">Вихід: {chron.date}</span>}
           </p>
           <div class="chron__text" set:html={chron.html} />
+          {live?.differs && (
+            <p class="chron__live">
+              <span class="chron__now">Зараз</span>
+              {liveLabel(live)}
+              <small>за даними LBK Launcher; звіт написано раніше, тож цифри в ньому могли застаріти</small>
+            </p>
+          )}
           <a class="chron__link" href={`/chronology/#${chron.id}`}>Уся хронологія перекладів →</a>
         </div>
       </section>
@@ -490,6 +519,16 @@ const related = games
   .chron__text :global(a) { text-decoration: underline; text-underline-offset: 3px; }
   .chron__text :global(.hl) { color: #fff; font-weight: 700; }
   .chron__link { font-size: 14px; font-weight: 700; }
+  .chron__live { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: -4px 0 18px; padding: 12px 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.07); font-weight: 700; }
+  .chron__live small { flex-basis: 100%; color: rgba(255, 255, 255, 0.55); font-size: 12px; font-weight: 500; }
+  .chron__now { padding: 3px 9px; border-radius: 9999px; background: var(--st-done); color: #0b0b0d; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .crew { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 10px; }
+  .crew__item { display: flex; align-items: center; gap: 12px; height: 100%; padding: 12px 14px; transition: border-color 0.2s ease; }
+  .crew__item:hover { border-color: rgba(255, 255, 255, 0.4); }
+  .crew__item span { display: grid; gap: 2px; min-width: 0; }
+  .crew__item strong { font-size: 15px; font-weight: 700; }
+  .crew__item small { color: rgba(255, 255, 255, 0.6); font-size: 12px; line-height: 1.35; }
   .chron__link:hover { text-decoration: underline; }
 
   .shot { position: relative; display: grid; gap: 10px; }

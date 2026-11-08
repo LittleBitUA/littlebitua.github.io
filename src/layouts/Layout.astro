@@ -72,7 +72,10 @@ const FONTS =
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href={FONTS} />
+    <!-- Шрифти не блокують показ сторінки: спершу системний шрифт, далі DM Sans (display=swap) -->
+    <link rel="preload" as="style" href={FONTS} />
+    <link rel="stylesheet" href={FONTS} media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href={FONTS} /></noscript>
 
     <title>{title}</title>
 

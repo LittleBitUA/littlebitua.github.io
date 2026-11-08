@@ -425,6 +425,13 @@ export const games: Game[] = [
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    screenshots: [
+      "/images/GoldenAbyss_1.webp",
+      "/images/GoldenAbyss_2.webp",
+      "/images/GoldenAbyss_3.webp",
+      "/images/GoldenAbyss_4.webp",
+      "/images/GoldenAbyss_5.webp",
+    ],
     lastUpdate: "2026-11-08",
     gameYear: 2011,
   },

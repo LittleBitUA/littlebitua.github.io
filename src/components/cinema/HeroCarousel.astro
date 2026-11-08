@@ -59,12 +59,19 @@ const slides = await Promise.all(
       style={`--state:${s.st.color}`}
     >
       <picture class="slide__bg" aria-hidden="true">
-        <img src={s.art.banner ?? s.poster} srcset={s.art.bannerSrcset ?? undefined} sizes="100vw" alt="" fetchpriority={s.i === 0 ? "high" : "low"} decoding="async" />
+        {/* Перший банер вантажиться одразу, решта — коли до них доходить черга (див. hydrate у скрипті) */}
+        {s.i === 0 ? (
+          <img src={s.art.banner ?? s.poster} srcset={s.art.bannerSrcset ?? undefined} sizes="100vw" alt="" fetchpriority="high" decoding="async" />
+        ) : (
+          <img data-src={s.art.banner ?? s.poster} data-srcset={s.art.bannerSrcset ?? undefined} sizes="100vw" alt="" decoding="async" />
+        )}
       </picture>
 
       <div class="slide__copy">
         {s.art.logo ? (
-          <img class="c-logo slide__logo" src={s.art.logo} alt={s.g.title} fetchpriority={s.i === 0 ? "high" : "low"} decoding="async" />
+          <img class="c-logo slide__logo" {...(s.i === 0
+            ? { src: s.art.logo, srcset: s.art.logoSrcset, fetchpriority: "high" }
+            : { "data-src": s.art.logo, "data-srcset": s.art.logoSrcset })} sizes="(max-width: 760px) 200px, 560px" alt={s.g.title} decoding="async" />
         ) : (
           <h2 class="c-title slide__title">{s.g.title}</h2>
         )}
@@ -131,8 +138,20 @@ const slides = await Promise.all(
     let paused = reduced;
     let timer: number | undefined;
 
+    // Підставляє справжні адреси картинок слайда (до цього вони лежать у data-src)
+    const hydrate = (i: number) => {
+      slides[(i + slides.length) % slides.length].querySelectorAll<HTMLImageElement>("img[data-src]").forEach((img) => {
+        if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+        img.src = img.dataset.src!;
+        img.removeAttribute("data-src");
+      });
+    };
+
     const show = (next: number) => {
       index = (next + slides.length) % slides.length;
+      // Поточний слайд і наступний — щоб до зміни слайда картинка вже встигла завантажитися
+      hydrate(index);
+      hydrate(index + 1);
       slides.forEach((s, i) => {
         const on = i === index;
         s.classList.toggle("is-active", on);
@@ -185,7 +204,13 @@ const slides = await Promise.all(
       paused = true;
       pauseBtn.setAttribute("aria-pressed", "true");
       show(start - 1);
-    } else schedule();
+    } else {
+      schedule();
+      // Другий банер — після завантаження сторінки, щоб не заважати першому екрану
+      const preload = () => hydrate(1);
+      if (document.readyState === "complete") preload();
+      else window.addEventListener("load", preload, { once: true });
+    }
   }
 </script>
 

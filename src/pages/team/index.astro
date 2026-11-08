@@ -1,0 +1,112 @@
+---
+// ─── Команда: усі люди, які працюють над локалізаціями ─────────
+import Layout from "../../layouts/Layout.astro";
+import PersonAvatar from "../../components/PersonAvatar.astro";
+import { PEOPLE } from "../../data/people";
+import { games } from "../../data/catalog";
+import { isPlayable } from "../../utils/status";
+import { pluralize } from "../../utils/pluralize";
+import { SITE_URL } from "../../utils/seo";
+import { cover } from "../../lib/cover";
+
+const byId = new Map(games.map((g) => [g.id, g]));
+const ROLES: [string, RegExp][] = [
+  ["Переклад", /переклад/i],
+  ["Редактура", /редакт|звірка/i],
+  ["Технічна частина", /технічн|рекомпіляц|інтеграц/i],
+  ["Шрифти", /шрифт/i],
+  ["Текстури", /текстур/i],
+  ["Графіка", /графік/i],
+  ["Тестування", /тестув/i],
+  ["Ініціатива", /ініціатив/i],
+];
+const cards = await Promise.all(
+  PEOPLE.map(async (p) => {
+    const list = p.credits.map((c) => byId.get(c.game)).filter((g) => !!g);
+    // Основні ролі людини одним рядком: «Переклад · Редактура · Технічна частина»
+    const roles = ROLES.filter(([, re]) => p.credits.some((c) => re.test(c.role))).map(([label]) => label);
+    return {
+      p,
+      count: list.length,
+      released: list.filter(isPlayable).length,
+      roles: roles.slice(0, 3).join(" · "),
+      covers: await Promise.all(list.slice(0, 4).map((g) => cover(g.cover, 120))),
+    };
+  }),
+);
+const people = cards.filter((c) => !c.p.team);
+const teams = cards.filter((c) => c.p.team);
+---
+
+<Layout
+  title="Команда — хто перекладає ігри українською | «Little Bit»"
+  description={`Люди, які роблять українські локалізації «Little Bit»: перекладачі, редактори, художники й технічні фахівці. ${people.length} учасників.`}
+  canonicalUrl={`${SITE_URL}/team/`}
+>
+  <div class="page container">
+    <header class="head">
+      <span class="eyebrow">Команда · {people.length} {pluralize(people.length, "учасник", "учасники", "учасників")}</span>
+      <h1 class="title">Хто робить переклади</h1>
+      <p class="lead">
+        Перекладачі, редактори, художники й технічні фахівці. Більшість працює у вільний час, тож кожна гра тут —
+        чиясь велика робота. Бракує художників для текстур: якщо вмієте й хочете допомогти,
+        <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer">напишіть нам</a>.
+      </p>
+    </header>
+
+    <ul class="people">
+      {[...people, ...teams].map(({ p, count, released, roles, covers }) => (
+        <li>
+          <a href={`/team/${p.slug}/`} class="c-panel person">
+            <PersonAvatar name={p.name} slug={p.slug} size={52} />
+            <span class="person__main">
+              <strong>{p.name}{p.team && <em> · команда</em>}</strong>
+              <small>{roles}</small>
+              <small class="person__count">
+                {count} {pluralize(count, "проєкт", "проєкти", "проєктів")}{released > 0 && ` · ${released} уже можна грати`}
+              </small>
+            </span>
+            <span class="person__covers" aria-hidden="true">
+              {covers.map((src) => <img src={src} alt="" width="30" height="45" loading="lazy" />)}
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <p class="note">
+      Тут поточний склад команди. Над окремими проєктами працювали й інші люди — їх згадано у звітах <a href="/chronology/">хронології</a>. Хочете долучитися — напишіть у
+      <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer">Telegram</a>.
+    </p>
+  </div>
+</Layout>
+
+<style>
+  .head { margin: 24px 0 32px; }
+  .title { margin-top: 10px; font-size: clamp(1.8rem, 4vw, 3.25rem); }
+  .lead { max-width: 70ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
+  .lead a, .note a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+  .people { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
+  .person {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 100%;
+    padding: 16px;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .person:hover { border-color: rgba(255, 255, 255, 0.4); transform: translateY(-2px); }
+  .person__main { display: grid; flex: 1; gap: 3px; min-width: 0; }
+  .person__main strong { font-size: 16px; font-weight: 700; }
+  .person__main em { color: var(--faint); font-style: normal; font-weight: 500; }
+  .person__main small { overflow: hidden; color: var(--muted); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+  .person__main .person__count { color: var(--faint); font-size: 12px; }
+  .person__covers { display: flex; flex-shrink: 0; }
+  .person__covers img { width: 30px; height: 45px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 2px rgba(20, 18, 24, 0.9); }
+  .person__covers img + img { margin-left: -12px; }
+
+  .note { margin-top: 40px; color: var(--faint); font-size: 13px; }
+
+  @media (max-width: 420px) { .person__covers { display: none; } }
+</style>
