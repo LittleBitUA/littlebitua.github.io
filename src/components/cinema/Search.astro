@@ -227,13 +227,14 @@ const FILTERS = [
   .search__chip.is-active { background: #f4f1f4; border-color: #f4f1f4; color: #111; }
 
   .search__results { max-height: min(56vh, 520px); overflow-y: auto; padding: 0 8px 8px; }
-  .search__item { display: flex; align-items: center; gap: 14px; padding: 8px 10px; border-radius: 10px; }
-  .search__item img { width: 40px; height: 60px; flex-shrink: 0; object-fit: cover; border-radius: 6px; }
-  .search__item span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .search__item strong { overflow: hidden; font-size: 15px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
-  .search__item small { color: rgba(255, 255, 255, 0.6); font-size: 12px; }
-  .search__item small b { color: var(--state); font-weight: 700; }
-  .search__item.is-active, .search__item:hover { background: rgba(255, 255, 255, 0.1); }
+  /* Результати вставляє скрипт — Astro не позначає їх, тому стилі через :global */
+  .search__results :global(.search__item) { display: flex; align-items: center; gap: 14px; padding: 8px 10px; border-radius: 10px; }
+  .search__results :global(.search__item img) { width: 40px; height: 60px; flex-shrink: 0; object-fit: cover; border-radius: 6px; }
+  .search__results :global(.search__item span) { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .search__results :global(.search__item strong) { overflow: hidden; font-size: 15px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+  .search__results :global(.search__item small) { color: rgba(255, 255, 255, 0.6); font-size: 12px; }
+  .search__results :global(.search__item small b) { color: var(--state); font-weight: 700; }
+  .search__results :global(.search__item.is-active), .search__results :global(.search__item:hover) { background: rgba(255, 255, 255, 0.1); }
 
   .search__hint { padding: 4px 18px 18px; color: rgba(255, 255, 255, 0.5); font: 500 12px/1.4 ui-monospace, monospace; }
 </style>
