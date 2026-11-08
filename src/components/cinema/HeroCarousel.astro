@@ -59,7 +59,7 @@ const slides = await Promise.all(
       style={`--state:${s.st.color}`}
     >
       <picture class="slide__bg" aria-hidden="true">
-        <img src={s.art.banner ?? s.poster} alt="" fetchpriority={s.i === 0 ? "high" : "low"} decoding="async" />
+        <img src={s.art.banner ?? s.poster} srcset={s.art.bannerSrcset ?? undefined} sizes="100vw" alt="" fetchpriority={s.i === 0 ? "high" : "low"} decoding="async" />
       </picture>
 
       <div class="slide__copy">

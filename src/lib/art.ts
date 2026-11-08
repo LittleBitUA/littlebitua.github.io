@@ -1,7 +1,7 @@
 // ─── Game artwork ──────────────────────────────────────────────
 // Широкий банер, логотип і колір теми гри для «кінематографічного» дизайну.
-// Банер і логотип беремо з LBK Launcher (launcherArt), запасний варіант —
-// library_hero зі Steam. Колір теми — домінантний колір банера, приглушений,
+// Банер — library_hero зі Steam (3840×1240, чіткий навіть на великих екранах),
+// запасний варіант — банер з LBK Launcher (1920×620). Логотип — з лаунчера. Колір теми — домінантний колір банера, приглушений,
 // щоб на ньому читався світлий текст. Усе рахується один раз під час збірки.
 
 import sharp from "sharp";
@@ -11,6 +11,8 @@ import { cover } from "./cover";
 export interface GameArt {
   /** Стиснутий банер для тла (або null — тоді тлом служить обкладинка) */
   banner: string | null;
+  /** Кілька розмірів банера для srcset, щоб на великих екранах він не розмивався */
+  bannerSrcset: string | null;
   /** Логотип з прозорим тлом, якщо він є */
   logo: string | null;
   /** Колір теми у форматі rgb(r g b) */
@@ -18,6 +20,7 @@ export interface GameArt {
 }
 
 const FALLBACK_TINT = "rgb(38 30 44)";
+const BANNER_WIDTHS = [1280, 1920, 2560, 3200];
 const TIMEOUT_MS = 20_000;
 
 const bytesCache = new Map<string, Promise<Buffer | null>>();
@@ -64,8 +67,8 @@ async function tintOf(bytes: Buffer): Promise<string> {
 
 async function resolve(g: Game): Promise<GameArt> {
   const bannerCandidates = [
-    g.launcherArt?.banner,
     steamAppId(g) && `https://shared.steamstatic.com/store_item_assets/steam/apps/${steamAppId(g)}/library_hero.jpg`,
+    g.launcherArt?.banner,
   ].filter(Boolean) as string[];
 
   let bannerSrc: string | null = null;
@@ -78,8 +81,12 @@ async function resolve(g: Game): Promise<GameArt> {
   const logoBytes = g.launcherArt?.logo ? await fetchBytes(g.launcherArt.logo) : null;
 
   const tintSource = bannerBytes ?? (await fetchBytes(g.cover));
+  const sizes = bannerSrc
+    ? await Promise.all(BANNER_WIDTHS.map(async (w) => `${await cover(bannerSrc!, w, 84)} ${w}w`))
+    : null;
   return {
-    banner: bannerSrc ? await cover(bannerSrc, 1920) : null,
+    banner: bannerSrc ? await cover(bannerSrc, 1920, 84) : null,
+    bannerSrcset: sizes ? sizes.join(", ") : null,
     logo: logoBytes && g.launcherArt ? await cover(g.launcherArt.logo, 720) : null,
     tint: tintSource ? await tintOf(tintSource) : FALLBACK_TINT,
   };

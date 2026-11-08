@@ -54,7 +54,8 @@ const editing = stages.find((s) => /редакт/i.test(s.label));
 const installHtml = game.installInstructions ? String(await marked.parse(game.installInstructions)) : null;
 const ytId = game.videoUrl?.match(/(?:[?&]v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/)?.[1];
 const videoUrl = ytId ? `https://www.youtube-nocookie.com/embed/${ytId}?rel=0&modestbranding=1` : null;
-const shots = await Promise.all((game.screenshots ?? []).map((src) => cover(src, 640)));
+// Локальні скріншоти (/images/…) вже стиснуті — віддаємо як є
+const shots = await Promise.all((game.screenshots ?? []).map((src) => (src.startsWith("/") ? src : cover(src, 640))));
 
 const meta = [
   pct >= 100 ? "Текст перекладено" : `Перекладено ${formatPct(pct)}%`,
@@ -113,7 +114,7 @@ const related = games
   <!-- ── Hero ── -->
   <section class="gh" style={`--state:${st.color}`}>
     <picture class="gh__bg" aria-hidden="true">
-      <img src={art.banner ?? poster} alt="" fetchpriority="high" decoding="async" />
+      <img src={art.banner ?? poster} srcset={art.bannerSrcset ?? undefined} sizes="100vw" alt="" fetchpriority="high" decoding="async" />
     </picture>
 
     <div class="gh__inner">

@@ -8,11 +8,11 @@ import { getImage } from "astro:assets";
 
 const cache = new Map<string, Promise<string>>();
 
-export function cover(src: string, width = 400): Promise<string> {
-  const key = `${src}|${width}`;
+export function cover(src: string, width = 400, quality = 78): Promise<string> {
+  const key = `${src}|${width}|${quality}`;
   let result = cache.get(key);
   if (!result) {
-    result = getImage({ src, width, inferSize: true, format: "webp", quality: 78 })
+    result = getImage({ src, width, inferSize: true, format: "webp", quality })
       .then((img) => img.src)
       .catch((err) => {
         console.warn(`[cover] ${src}: ${(err as Error).message}. Використовую оригінал.`);
