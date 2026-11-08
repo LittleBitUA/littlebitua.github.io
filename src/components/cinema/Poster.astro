@@ -17,8 +17,8 @@ const img = await cover(game.cover, 360);
 const fund = isFundraising(game) && !!game.fundraisingGoal;
 const pct = fund ? fundraisingPercent(game) : translationPercent(game);
 const caption = fund ? `зібрано ${pct}%` : pct >= 100 ? "перекладено" : `перекладено ${formatPct(pct)}%`;
-// Плашку показуємо, коли статус важливий для рішення «грати чи чекати»
-const badge = game.status === "early-access" ? "Ранній доступ" : fund ? "Збір" : game.status === "planned" ? "Скоро" : null;
+// Плашка статусу на кожному постері; під час збору — «Збір»
+const badge = fund ? "Збір коштів" : st.label;
 ---
 
 <a href={`/games/${game.id}/`} class="poster" style={`--state:${fund ? "var(--st-fund)" : st.color}`} aria-label={`${game.title} — ${st.label}, ${caption}`}>

@@ -265,26 +265,28 @@ const slides = await Promise.all(
     opacity: 0;
     transition: opacity 0.2s ease;
   }
-  .hero__side--prev { left: 0; background: linear-gradient(90deg, rgba(0, 0, 0, 0.35), transparent); }
-  .hero__side--next { right: 0; background: linear-gradient(270deg, rgba(0, 0, 0, 0.35), transparent); }
+  .hero__side--prev { left: 0; }
+  .hero__side--next { right: 0; }
   .hero__side:hover, .hero__side:focus-visible { opacity: 1; }
   .hero__side svg {
     width: 52px;
     height: 52px;
     padding: 13px;
     border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.24);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: rgba(14, 12, 18, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     fill: none;
     stroke: currentColor;
     stroke-width: 2.4;
     stroke-linecap: round;
     stroke-linejoin: round;
-    transition: transform 0.18s ease, background-color 0.18s ease;
+    transform: scale(0.9);
+    transition: transform 0.2s ease, background-color 0.2s ease;
   }
-  .hero__side:hover svg { transform: scale(1.08); background: rgba(255, 255, 255, 0.28); }
+  .hero__side:hover svg { transform: scale(1); background: rgba(14, 12, 18, 0.65); }
   /* На сенсорних екранах слайди гортаються свайпом */
   @media (hover: none), (max-width: 760px) { .hero__side { display: none; } }
 

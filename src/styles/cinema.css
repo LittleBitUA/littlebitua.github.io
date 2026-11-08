@@ -58,16 +58,14 @@ body.cinema h1, body.cinema h2, body.cinema h3 {
 
 .c-btn--glass {
   padding: 0 22px;
-  background: color-mix(in srgb, var(--tint) 55%, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--glass-line);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   color: #fff;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
   text-transform: none;
   letter-spacing: 0;
   font-weight: 600;
 }
-.c-btn--glass:hover { background: color-mix(in srgb, var(--tint) 40%, rgba(255, 255, 255, 0.2)); }
+.c-btn--glass:hover { background: rgba(255, 255, 255, 0.18); }
 .c-btn--fund { background: #f2a94b; color: #160d02; }
 .c-btn--fund:hover { background: #ffbe66; }
 
@@ -77,10 +75,8 @@ body.cinema h1, body.cinema h2, body.cinema h3 {
   align-items: center;
   min-height: 52px;
   border-radius: var(--pill);
-  background: color-mix(in srgb, var(--tint) 55%, rgba(255, 255, 255, 0.08));
-  border: 1px solid var(--glass-line);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
 }
 .c-group a {
   display: inline-flex;
@@ -93,8 +89,8 @@ body.cinema h1, body.cinema h2, body.cinema h3 {
   font-weight: 600;
   white-space: nowrap;
 }
-.c-group a + a { border-left: 1px solid var(--glass-line); }
-.c-group a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+.c-group a + a { border-left: 1px solid rgba(255, 255, 255, 0.16); }
+.c-group a:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
 .c-group a:first-child { border-radius: var(--pill) 0 0 var(--pill); }
 .c-group a:last-child { border-radius: 0 var(--pill) var(--pill) 0; }
 .c-group svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }

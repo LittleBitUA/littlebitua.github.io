@@ -6,6 +6,7 @@ import { SITE_URL, generateBreadcrumbs } from "../../../utils/seo";
 import { getSeriesGroups } from "../../../utils/series";
 import { pluralize } from "../../../utils/pluralize";
 import { isPlayable } from "../../../utils/status";
+import { artOf } from "../../../lib/art";
 
 export function getStaticPaths() {
   return getSeriesGroups().map((group) => ({ params: { slug: group.slug }, props: { group } }));
@@ -13,6 +14,9 @@ export function getStaticPaths() {
 
 const { group } = Astro.props;
 const list = group.games;
+// Превʼю посилання: широкий банер першої гри серії, у якої він є
+const arts = await Promise.all(list.map(artOf));
+const previewBanner = arts.find((a) => a.banner)?.banner;
 const playable = list.filter(isPlayable).length;
 const inProgress = list.filter((g) => g.status === "in-progress").length;
 const noun = pluralize(list.length, "проєкт", "проєкти", "проєктів");
@@ -43,7 +47,7 @@ const others = getSeriesGroups().filter((g) => g.slug !== group.slug);
   title={`${group.name} українською — усі локалізації «Little Bit»`}
   description={`Українські локалізації серії ${group.name}: ${list.length} ${noun}, з яких ${playable} вже можна грати.`}
   canonicalUrl={canonicalUrl}
-  ogImage={list[0].cover}
+  ogImage={previewBanner ? SITE_URL + previewBanner : list[0].cover}
   structuredData={structuredData}
 >
   <div class="page container">

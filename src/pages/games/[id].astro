@@ -105,7 +105,7 @@ const related = games
 <Layout
   title={pageTitle}
   description={pageDesc}
-  ogImage={game.cover}
+  ogImage={art.banner ? SITE_URL + art.banner : game.cover}
   canonicalUrl={canonicalUrl}
   keywords={generateKeywords(game)}
   structuredData={structuredData}
