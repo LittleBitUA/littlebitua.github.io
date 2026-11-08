@@ -83,6 +83,15 @@ export const PEOPLE: Person[] = [
     ],
   },
   {
+    slug: "cherrybee",
+    name: "CherryBee",
+    credits: [
+      { game: "yakuza-lad", role: "Переклад" },
+      { game: "as-dusk-falls", role: "Переклад" },
+      { game: "yakuza-kiwami2", role: "Переклад" },
+    ],
+  },
+  {
     slug: "molfar",
     name: "мольфар",
     credits: [{ game: "jojo-asbr", role: "Текстури" }],
