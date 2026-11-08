@@ -59,6 +59,7 @@ export const PEOPLE: Person[] = [
       { game: "the-missing", role: "Переклад і редактура" },
       { game: "mgs-snake-eater", role: "Переклад і редактура" },
       { game: "resident-evil-requiem", role: "Переклад" },
+      { game: "romeo-is-a-dead-man", role: "Переклад" },
       { game: "kingdom-hearts-3", role: "Переклад" },
       { game: "silent-hill-townfall", role: "Переклад" },
       { game: "dave-the-diver", role: "Переклад доповнення In The Jungle" },
