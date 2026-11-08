@@ -1,0 +1,239 @@
+---
+// ─── Пошук поверх сторінки ─────────────────────────────────────
+// Відкривається кнопкою пошуку в навігації, клавішею «/» або Ctrl/⌘+K.
+// Дані про ігри вбудовані в сторінку, тож результати з'являються одразу.
+import { games } from "../../data/catalog";
+import { cover } from "../../lib/cover";
+import { statusMeta, translationPercent, formatPct, isPlayable, isFundraising } from "../../utils/status";
+
+const items = await Promise.all(
+  games.map(async (g) => {
+    const pct = translationPercent(g);
+    return {
+      id: g.id,
+      title: g.title,
+      series: g.series ?? "",
+      tags: g.tags.join(" "),
+      status: statusMeta(g.status).label,
+      color: statusMeta(g.status).color,
+      group: isPlayable(g) ? "playable" : isFundraising(g) ? "fund" : g.status === "planned" ? "planned" : "work",
+      pct: pct >= 100 ? "текст перекладено" : `перекладено ${formatPct(pct)}%`,
+      thumb: await cover(g.cover, 120),
+    };
+  }),
+);
+
+const FILTERS = [
+  { id: "all", label: "Усі" },
+  { id: "playable", label: "Можна грати" },
+  { id: "work", label: "У роботі" },
+  { id: "fund", label: "Збір коштів" },
+  { id: "planned", label: "Заплановано" },
+];
+---
+
+<dialog class="search" id="search" aria-label="Пошук гри">
+  <div class="search__panel">
+    <label class="search__field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+      <input id="search-q" type="search" placeholder="Пошук гри, серії чи жанру…" autocomplete="off" spellcheck="false" />
+      <kbd>Esc</kbd>
+    </label>
+    <div class="search__filters" role="radiogroup" aria-label="Фільтр">
+      {FILTERS.map((f, i) => (
+        <button type="button" role="radio" class:list={["search__chip", { "is-active": i === 0 }]} data-filter={f.id} aria-checked={i === 0 ? "true" : "false"}>
+          {f.label}
+        </button>
+      ))}
+    </div>
+    <ul class="search__results" id="search-results" role="listbox" aria-label="Результати"></ul>
+    <p class="search__hint" id="search-hint">Почніть вводити назву гри.</p>
+  </div>
+</dialog>
+
+<script type="application/json" id="search-data" set:html={JSON.stringify(items)} />
+
+<script>
+  import Fuse from "fuse.js";
+
+  type Item = { id: string; title: string; series: string; tags: string; status: string; color: string; group: string; pct: string; thumb: string };
+
+  const dialog = document.getElementById("search") as HTMLDialogElement;
+  const input = document.getElementById("search-q") as HTMLInputElement;
+  const list = document.getElementById("search-results")!;
+  const hint = document.getElementById("search-hint")!;
+  const chips = [...dialog.querySelectorAll<HTMLButtonElement>(".search__chip")];
+  const items: Item[] = JSON.parse(document.getElementById("search-data")!.textContent ?? "[]");
+  const fuse = new Fuse(items, { keys: [{ name: "title", weight: 3 }, "series", "tags"], threshold: 0.35, ignoreLocation: true, includeScore: true });
+
+  // Назви ігор латиницею, а шукають часто кирилицею: «якуза», «метал гір».
+  // Тому шукаємо ще й за транслітерацією та за запитом, набраним не в тій розкладці («ьуефд» → «metal»).
+  const TRANSLIT: Record<string, string> = {
+    а: "a", б: "b", в: "v", г: "g", ґ: "g", д: "d", е: "e", є: "ye", ж: "zh", з: "z", и: "i", і: "i", ї: "yi", й: "y",
+    к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "h", ц: "ts", ч: "ch",
+    ш: "sh", щ: "sch", ь: "", ю: "yu", я: "ya", ы: "y", э: "e", ё: "yo", ъ: "", "'": "", "’": "",
+  };
+  const UA = "йцукенгшщзхїфівапролджєячсмитьбю";
+  const EN = "qwertyuiop[]asdfghjkl;'zxcvbnm,.";
+  const translit = (q: string) => [...q.toLowerCase()].map((c) => TRANSLIT[c] ?? c).join("");
+  const fromLayout = (q: string) => [...q.toLowerCase()].map((c) => (UA.includes(c) ? EN[UA.indexOf(c)] : c)).join("");
+
+  function find(q: string): Item[] {
+    const variants = [...new Set([q, translit(q), fromLayout(q)])];
+    const best = new Map<string, { item: Item; score: number }>();
+    for (const v of variants) {
+      for (const r of fuse.search(v)) {
+        const prev = best.get(r.item.id);
+        if (!prev || (r.score ?? 1) < prev.score) best.set(r.item.id, { item: r.item, score: r.score ?? 1 });
+      }
+    }
+    return [...best.values()].sort((a, b) => a.score - b.score).map((x) => x.item);
+  }
+
+  let filter = "all";
+  let active = 0;
+  let shown: Item[] = [];
+
+  const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
+
+  function render() {
+    const q = input.value.trim();
+    let result = q ? find(q) : filter === "all" ? [] : items;
+    if (filter !== "all") result = result.filter((i) => i.group === filter);
+    shown = result.slice(0, 30);
+    active = 0;
+
+    list.innerHTML = shown
+      .map(
+        (i, n) => `<li role="option" aria-selected="${n === 0}">
+          <a href="/games/${i.id}/" class="search__item${n === 0 ? " is-active" : ""}" style="--state:${i.color}">
+            <img src="${i.thumb}" alt="" width="40" height="60" loading="lazy" />
+            <span><strong>${escape(i.title)}</strong><small>${i.series ? escape(i.series) + " · " : ""}<b>${escape(i.status)}</b> · ${i.pct}</small></span>
+          </a></li>`,
+      )
+      .join("");
+
+    hint.hidden = shown.length > 0;
+    hint.textContent = q || filter !== "all" ? "Нічого не знайдено. Спробуйте іншу назву." : "Почніть вводити назву гри.";
+  }
+
+  function highlight(n: number) {
+    const links = [...list.querySelectorAll<HTMLAnchorElement>(".search__item")];
+    if (!links.length) return;
+    active = (n + links.length) % links.length;
+    links.forEach((a, i) => {
+      a.classList.toggle("is-active", i === active);
+      a.parentElement!.setAttribute("aria-selected", String(i === active));
+    });
+    links[active].scrollIntoView({ block: "nearest" });
+  }
+
+  function open() {
+    if (dialog.open) return;
+    dialog.showModal();
+    input.focus();
+    input.select();
+    render();
+  }
+
+  document.querySelectorAll("[data-search-open]").forEach((el) =>
+    el.addEventListener("click", (e) => { e.preventDefault(); open(); }),
+  );
+  document.addEventListener("keydown", (e) => {
+    const typing = e.target instanceof HTMLElement && (e.target.isContentEditable || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName));
+    if ((e.key === "k" && (e.metaKey || e.ctrlKey)) || (e.key === "/" && !typing)) {
+      e.preventDefault();
+      open();
+    }
+  });
+
+  input.addEventListener("input", render);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowDown") { e.preventDefault(); highlight(active + 1); }
+    if (e.key === "ArrowUp") { e.preventDefault(); highlight(active - 1); }
+    if (e.key === "Enter" && shown[active]) location.href = `/games/${shown[active].id}/`;
+  });
+  chips.forEach((c) =>
+    c.addEventListener("click", () => {
+      filter = c.dataset.filter!;
+      chips.forEach((x) => {
+        x.classList.toggle("is-active", x === c);
+        x.setAttribute("aria-checked", String(x === c));
+      });
+      render();
+      input.focus();
+    }),
+  );
+  // Клік повз панель закриває пошук
+  dialog.addEventListener("click", (e) => { if (e.target === dialog) dialog.close(); });
+</script>
+
+<style>
+  .search {
+    width: min(640px, calc(100vw - 24px));
+    max-width: none;
+    max-height: none;
+    margin: clamp(72px, 12vh, 140px) auto 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #fff;
+    overflow: visible;
+  }
+  .search::backdrop { background: rgba(5, 5, 7, 0.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+
+  .search__panel {
+    overflow: hidden;
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--tint) 30%, rgba(16, 14, 18, 0.9));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+  }
+
+  .search__field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .search__field svg { width: 20px; height: 20px; flex-shrink: 0; fill: none; stroke: rgba(255, 255, 255, 0.65); stroke-width: 2; stroke-linecap: round; }
+  .search__field input {
+    flex: 1;
+    min-width: 0;
+    height: 60px;
+    border: 0;
+    background: transparent;
+    font-size: 17px;
+    outline: none;
+  }
+  .search__field input::placeholder { color: rgba(255, 255, 255, 0.45); }
+  .search__field input::-webkit-search-cancel-button { display: none; }
+  .search__field kbd { padding: 3px 7px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px; color: rgba(255, 255, 255, 0.55); font: 600 11px/1 ui-monospace, monospace; }
+
+  .search__filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px 18px; }
+  .search__chip {
+    padding: 8px 14px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .search__chip:hover { background: rgba(255, 255, 255, 0.08); }
+  .search__chip.is-active { background: #f4f1f4; border-color: #f4f1f4; color: #111; }
+
+  .search__results { max-height: min(56vh, 520px); overflow-y: auto; padding: 0 8px 8px; }
+  .search__item { display: flex; align-items: center; gap: 14px; padding: 8px 10px; border-radius: 10px; }
+  .search__item img { width: 40px; height: 60px; flex-shrink: 0; object-fit: cover; border-radius: 6px; }
+  .search__item span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .search__item strong { overflow: hidden; font-size: 15px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
+  .search__item small { color: rgba(255, 255, 255, 0.6); font-size: 12px; }
+  .search__item small b { color: var(--state); font-weight: 700; }
+  .search__item.is-active, .search__item:hover { background: rgba(255, 255, 255, 0.1); }
+
+  .search__hint { padding: 4px 18px 18px; color: rgba(255, 255, 255, 0.5); font: 500 12px/1.4 ui-monospace, monospace; }
+</style>

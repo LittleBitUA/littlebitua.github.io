@@ -1,5 +1,7 @@
 ---
 // ─── Горизонтальний ряд постерів ───────────────────────────────
+// Стрілки з боків гортають ряд на ширину екрана (зручно мишею);
+// на телефоні ряд просто гортається пальцем.
 import type { Game } from "../../data/games";
 import Poster from "./Poster.astro";
 
@@ -13,13 +15,93 @@ const { title, games, href, hrefLabel = "Усі" } = Astro.props;
 ---
 
 {games.length > 0 && (
-  <section class="c-row">
+  <section class="c-row" data-row>
     <header class="c-row__head">
       <h2>{title}</h2>
       {href && <a href={href}>{hrefLabel} →</a>}
     </header>
-    <div class="c-track">
-      {games.map((g) => <Poster game={g} />)}
+    <div class="row-shell">
+      <button class="row-arrow row-arrow--prev" type="button" aria-label={`Гортати «${title}» назад`} hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg>
+      </button>
+      <div class="c-track">
+        {games.map((g) => <Poster game={g} />)}
+      </div>
+      <button class="row-arrow row-arrow--next" type="button" aria-label={`Гортати «${title}» далі`} hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg>
+      </button>
     </div>
   </section>
 )}
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-row]").forEach((row) => {
+    const track = row.querySelector<HTMLElement>(".c-track")!;
+    const prev = row.querySelector<HTMLButtonElement>(".row-arrow--prev")!;
+    const next = row.querySelector<HTMLButtonElement>(".row-arrow--next")!;
+
+    const sync = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      prev.hidden = track.scrollLeft <= 4;
+      next.hidden = track.scrollLeft >= max - 4;
+      row.classList.toggle("has-prev", !prev.hidden);
+      row.classList.toggle("has-next", !next.hidden);
+    };
+    // Гортаємо майже на ширину видимої частини, щоб крайній постер лишався орієнтиром
+    const step = (dir: number) => track.scrollBy({ left: dir * track.clientWidth * 0.85, behavior: "smooth" });
+    prev.addEventListener("click", () => step(-1));
+    next.addEventListener("click", () => step(1));
+    track.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", sync);
+    sync();
+  });
+</script>
+
+<style>
+  .row-shell { position: relative; }
+
+  .row-arrow {
+    position: absolute;
+    top: 4px;
+    bottom: 18px;
+    z-index: 3;
+    width: clamp(44px, 4.6vw, 72px);
+    display: grid;
+    place-items: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .row-arrow[hidden] { display: none; }
+  .row-arrow--prev { left: 0; background: linear-gradient(90deg, color-mix(in srgb, var(--tint) 55%, rgba(0, 0, 0, 0.85)), transparent); }
+  .row-arrow--next { right: 0; background: linear-gradient(270deg, color-mix(in srgb, var(--tint) 55%, rgba(0, 0, 0, 0.85)), transparent); }
+  .row-arrow svg {
+    width: 44px;
+    height: 44px;
+    padding: 10px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: transform 0.18s ease, background-color 0.18s ease;
+  }
+  .row-arrow:hover svg { transform: scale(1.1); background: rgba(255, 255, 255, 0.26); }
+  .row-shell:hover .row-arrow, .row-arrow:focus-visible { opacity: 1; }
+
+  /* М'яке згасання країв, коли за ними є ще постери */
+  [data-row].has-prev .c-track { -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--side)); mask-image: linear-gradient(90deg, transparent, #000 var(--side)); }
+  [data-row].has-next .c-track { -webkit-mask-image: linear-gradient(270deg, transparent, #000 var(--side)); mask-image: linear-gradient(270deg, transparent, #000 var(--side)); }
+  [data-row].has-prev.has-next .c-track {
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--side), #000 calc(100% - var(--side)), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 var(--side), #000 calc(100% - var(--side)), transparent);
+  }
+
+  /* На сенсорних екранах стрілки не потрібні — гортаємо пальцем */
+  @media (hover: none) { .row-arrow { display: none !important; } }
+</style>

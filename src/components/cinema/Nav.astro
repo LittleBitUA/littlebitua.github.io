@@ -2,6 +2,7 @@
 // ─── Плаваюча навігація-«пігулка» ──────────────────────────────
 // Десктоп: одна пігулка по центру вгорі. Телефон: вкладки вгорі
 // і панель дій унизу екрана, як у мобільних застосунках.
+import Search from "./Search.astro";
 const TABS = [
   { href: "/", label: "Головна" },
   { href: "/games/", label: "Каталог" },
@@ -20,9 +21,9 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
       </a>
     ))}
     <span class="cnav__sep" aria-hidden="true"></span>
-    <a href="/games/#search-input" class="cnav__icon" aria-label="Пошук гри">
+    <button type="button" class="cnav__icon" aria-label="Пошук гри (/)" data-search-open>
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
-    </a>
+    </button>
     <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer" class="cnav__icon" aria-label="Telegram-канал">
       <svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z" /><path d="m9 13 12-9" /></svg>
     </a>
@@ -31,10 +32,10 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
 </header>
 
 <nav class="cdock" aria-label="Швидкі дії">
-  <a href="/games/#search-input">
+  <button type="button" data-search-open>
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
     Пошук
-  </a>
+  </button>
   <a href="/#launcher">
     <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14" /></svg>
     Launcher
@@ -45,6 +46,8 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
   </a>
   <a href="/#support" class="cdock__cta">Підтримати</a>
 </nav>
+
+<Search />
 
 <script>
   const nav = document.getElementById("cnav")!;
@@ -147,7 +150,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
       -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     }
-    .cdock a {
+    .cdock a, .cdock button {
       display: inline-flex;
       align-items: center;
       gap: 6px;
@@ -161,6 +164,6 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
     .cdock__cta { background: #f4f1f4; color: #111 !important; font-weight: 700 !important; }
   }
   @media (max-width: 400px) {
-    .cdock a:not(.cdock__cta) { font-size: 0; gap: 0; padding: 10px; }
+    .cdock a:not(.cdock__cta), .cdock button { font-size: 0; gap: 0; padding: 10px; }
   }
 </style>

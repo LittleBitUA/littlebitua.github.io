@@ -106,11 +106,12 @@ const actions = [
     aspect-ratio: 2 / 3;
     min-width: 0;
     overflow: hidden;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    transition: border-color 0.2s ease, translate 0.25s var(--ease);
+    border-radius: 12px;
+    background: var(--surface-2);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 12px 28px rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.2s ease, translate 0.25s var(--ease);
   }
-  .card:hover { border-color: var(--state); translate: 0 -3px; }
+  .card:hover { box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85), 0 18px 40px rgba(0, 0, 0, 0.45); translate: 0 -4px; }
 
   .card__img {
     position: absolute;
@@ -142,8 +143,11 @@ const actions = [
     flex-direction: column;
     align-items: flex-end;
     gap: 3px;
-    padding: 6px 8px;
-    background: var(--bg);
+    padding: 6px 9px;
+    border-radius: 8px;
+    background: rgba(10, 9, 12, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
   }
   .card__money strong { color: var(--st-fund); font-size: 11px; font-weight: 700; }
   .card__money small { color: var(--muted); font-size: 10px; font-weight: 700; }
@@ -211,19 +215,18 @@ const actions = [
     justify-content: center;
     gap: 6px;
     min-height: 34px;
-    padding: 0 6px;
+    padding: 0 8px;
+    border-radius: 9999px;
     white-space: nowrap;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 700;
     transition: background-color 0.18s ease, color 0.18s ease;
   }
   .card__action svg { width: 12px; height: 12px; fill: currentColor; }
   .card__action--play { background: var(--accent); color: var(--on-accent); }
   .card__action--play:hover { background: var(--accent-hover); }
-  .card__action--fund { background: rgba(8, 9, 11, 0.8); border: 1px solid var(--st-fund); color: var(--st-fund); }
-  .card__action--fund:hover { background: var(--st-fund); color: var(--on-accent); }
+  .card__action--fund { background: var(--st-fund); color: #160d02; }
+  .card__action--fund:hover { background: #ffbe66; }
 
   @media (max-width: 479px) {
     .card__bottom { padding: 8px; }

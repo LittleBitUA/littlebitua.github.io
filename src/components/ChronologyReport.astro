@@ -266,27 +266,29 @@ const thumbs = new Map(
     font-size: 14px;
   }
   .archived a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-  .intro { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
-  .intro h1 { margin-top: 12px; font-size: clamp(2rem, 4.6vw, 4rem); font-weight: 800; line-height: 1; letter-spacing: -0.045em; }
+  .intro { margin-top: 24px; padding-top: 8px; }
+  .intro h1 { margin-top: 12px; font-size: clamp(2rem, 4.2vw, 3.6rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; }
   .intro__asof {
     display: inline-block;
     margin-top: 18px;
-    padding: 6px 10px;
+    padding: 6px 14px;
+    border-radius: 9999px;
     background: var(--accent);
     color: var(--on-accent);
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 700;
   }
   .intro__lead { max-width: 78ch; margin-top: 18px; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
 
   /* ── Липка панель ── */
   .bar-tools {
     margin-top: 36px;
-    padding: 12px 0;
-    background: rgba(8, 9, 11, 0.96);
-    border-block: 1px solid var(--line);
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--tint) 30%, rgba(14, 12, 18, 0.82));
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
   .bar-tools__row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
   .search { position: relative; flex: 1 1 100%; }
@@ -295,27 +297,27 @@ const thumbs = new Map(
     width: 100%;
     height: 40px;
     padding: 0 12px 0 38px;
-    background: var(--surface);
+    background: rgba(255, 255, 255, 0.07);
     border: 1px solid var(--line);
+    border-radius: 9999px;
     font-size: 14px;
   }
   .search input::placeholder { color: var(--faint); }
-  .search input:focus { outline: none; border-color: var(--accent); }
+  .search input:focus { outline: none; border-color: rgba(255, 255, 255, 0.5); }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip-btn {
     min-height: 34px;
-    padding: 0 12px;
-    background: var(--surface);
-    border: 1px solid var(--line);
+    padding: 0 14px;
+    background: transparent;
+    border: 1px solid var(--line-strong);
+    border-radius: 9999px;
     color: var(--muted);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: 600;
     white-space: nowrap;
     transition: border-color 0.18s ease, color 0.18s ease;
   }
-  .chip-btn:hover { border-color: var(--line-strong); color: var(--ink); }
+  .chip-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
   .chip-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
   .count { margin-left: auto; color: var(--faint); font-size: 12px; font-weight: 700; white-space: nowrap; }
 
@@ -329,20 +331,23 @@ const thumbs = new Map(
     padding: 10px 0;
     overflow-x: auto;
     scrollbar-width: none;
-    background: rgba(8, 9, 11, 0.96);
+    background: color-mix(in srgb, var(--tint) 30%, rgba(14, 12, 18, 0.9));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--line);
   }
   .secnav::-webkit-scrollbar { display: none; }
   .secnav a {
     flex-shrink: 0;
-    padding: 7px 10px;
-    border: 1px solid var(--line);
+    padding: 7px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 9999px;
     color: var(--muted);
-    font-size: 12px;
-    font-weight: 800;
+    font-size: 13px;
+    font-weight: 600;
     white-space: nowrap;
   }
-  .secnav a:hover { border-color: var(--accent); color: var(--accent); }
+  .secnav a:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
 
   /* ── Розкладка зі змістом ── */
   .layout { display: grid; gap: 40px; margin-top: 36px; }
@@ -357,7 +362,6 @@ const thumbs = new Map(
     padding-top: 16px;
     border-top: 1px solid var(--line);
     font-size: clamp(1.5rem, 3vw, 2.4rem);
-    text-transform: uppercase;
   }
   .sec__lead { max-width: 78ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
   .sec__lead :global(strong) { color: var(--ink); }
@@ -403,6 +407,7 @@ const thumbs = new Map(
     height: 8px;
     translate: 0 -50%;
     border: 2px solid var(--accent);
+    border-radius: 9999px;
     background: var(--bg);
   }
   .tl-summary { margin-bottom: 14px; }
@@ -411,6 +416,7 @@ const thumbs = new Map(
     max-width: 78ch;
     padding: 8px 12px;
     border: 1px solid var(--line-strong);
+    border-radius: 10px;
     color: var(--muted);
     font-size: 13px;
     line-height: 1.55;
@@ -424,20 +430,24 @@ const thumbs = new Map(
     gap: 18px;
     margin-bottom: 12px;
     padding: 18px;
+    border-radius: 16px;
     background: var(--surface);
     border: 1px solid var(--line);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
     scroll-margin-top: calc(var(--header-h) + 80px);
     transition: border-color 0.18s ease;
   }
   .entry:hover { border-color: var(--line-strong); }
   .entry:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-  .entry__cover { display: block; width: 72px; height: 108px; overflow: hidden; border: 1px solid var(--line); background: var(--surface-2); }
+  .entry__cover { display: block; width: 72px; height: 108px; overflow: hidden; border-radius: 8px; background: var(--surface-2); }
   .entry__cover img { width: 100%; height: 100%; object-fit: cover; }
   .entry__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
   .entry__date { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
   .entry__note {
-    padding: 3px 7px;
+    padding: 3px 8px;
     border: 1px solid var(--line-strong);
+    border-radius: 9999px;
     color: var(--muted);
     font-size: 11px;
     font-weight: 800;
@@ -472,9 +482,9 @@ const thumbs = new Map(
   .note {
     margin-top: 48px;
     padding: 18px 20px;
+    border-radius: 16px;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-left: 3px solid var(--accent);
     color: var(--muted);
     font-size: 14px;
     line-height: 1.65;
@@ -482,7 +492,7 @@ const thumbs = new Map(
   }
   .note :global(strong) { color: var(--ink); }
   .archive { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header-h) + 80px); }
-  .archive__title { font-size: 1.1rem; text-transform: uppercase; }
+  .archive__title { font-size: 1.1rem; }
   .archive ul { margin-top: 12px; }
   .archive li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
   .archive a { font-weight: 700; }
