@@ -249,7 +249,7 @@ export const games: Game[] = [
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 40 },
+      { label: "Редактура", percent: 50 },
     ],
     tags: ["Бойовик", "Пригоди", "Відкритий світ", "Аніме"],
     downloadUrl: "https://lbklauncher.com/games/gravity_rush_remastered/little-bit",
@@ -472,7 +472,7 @@ export const games: Game[] = [
     stage: "Текстури",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 100 },
+      { label: "Редактура", percent: 98 },
       { label: "Текстури", percent: 0 },
     ],
     tags: ["Hack and Slash", "Бойовик", "Аркада"],
@@ -779,7 +779,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 97 },
+      { label: "Редактура", percent: 98 },
       { label: "Текстури", percent: 50 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Комедія"],
@@ -854,7 +854,7 @@ export const games: Game[] = [
     stage: "Редактура",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 80 },
+      { label: "Редактура", percent: 88 },
       { label: "Текстури", percent: 40 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Аніме", "Beat 'em up"],
@@ -930,7 +930,7 @@ export const games: Game[] = [
     stage: "Переклад",
     stageDetails: [
       { label: "Переклад", percent: 100 },
-      { label: "Редактура", percent: 60 },
+      { label: "Редактура", percent: 70 },
     ],
     tags: ["Бойовик", "Hack and Slash", "Інді", "Аркада"],
     steamUrl: "https://store.steampowered.com/app/961490/Travis_Strikes_Again_No_More_Heroes_Complete_Edition/",
@@ -973,12 +973,12 @@ export const games: Game[] = [
     description:
       "Самурайський спін-оф серії Yakuza. Рьома Сакамото шукає вбивцю свого батька в Японії епохи Бакумацу.",
     cover: "https://cdn2.steamgriddb.com/thumb/302a3ba086a09127aff1b25258ffab24.jpg",
-    progress: 15,
+    progress: 62,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 15 },
-      { label: "Редактура", percent: 3 },
+      { label: "Переклад", percent: 62 },
+      { label: "Редактура", percent: 62 },
     ],
     tags: ["Бойовик", "RPG", "Історична", "Пригоди"],
     steamUrl: "https://store.steampowered.com/app/1805480/Like_a_Dragon_Ishin/",
@@ -1372,11 +1372,11 @@ export const games: Game[] = [
     description:
       "Дев'ята основна частина культової серії survival horror від Capcom, що повертає гравців туди, де колись почався справжній кошмар, — до Раккун-Сіті. У центрі історії — аналітикиня ФБР Ґрейс Ешкрофт та легендарний Леон С. Кеннеді: дві різні історії та два підходи до виживання поєднують психологічний горор, дослідження небезпечних локацій, загадки й видовищні сутички.",
     cover: "https://shared.steamstatic.com/store_item_assets/steam/apps/3764200/ed3b2cae7d15f598f41006f5f1e605ec5517b5e4/library_capsule_2x.jpg",
-    progress: 79,
+    progress: 100,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 79 },
+      { label: "Переклад", percent: 100 },
     ],
     tags: ["Хоррор", "Бойовик", "Психологічний", "Атмосферна"],
     steamUrl: "https://store.steampowered.com/app/3764200/Resident_Evil_Requiem/",
