@@ -110,7 +110,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
     color: rgba(255, 255, 255, 0.85);
   }
   .cnav__icon:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
-  .cnav svg, .cdock svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .cnav svg, .cdock svg { width: 19px; height: 19px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 
   .cnav__cta {
     flex-shrink: 0;
@@ -150,20 +150,29 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
       -webkit-backdrop-filter: blur(14px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
     }
-    .cdock a, .cdock button {
+    /* Як панель вкладок у застосунках: іконка, під нею підпис */
+    .cdock a:not(.cdock__cta), .cdock button {
+      flex: 1;
       display: inline-flex;
+      flex-direction: column;
       align-items: center;
-      gap: 6px;
-      padding: 10px 12px;
-      border-radius: 9999px;
+      gap: 3px;
+      padding: 5px 4px;
+      border-radius: 18px;
       color: rgba(255, 255, 255, 0.85);
-      font-size: 13px;
-      font-weight: 500;
+      font-size: 11px;
+      font-weight: 600;
       white-space: nowrap;
     }
+    .cdock__cta {
+      flex-shrink: 0;
+      padding: 13px 18px;
+      border-radius: 9999px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    /* Іконки не стискаються під текстом */
+    .cdock svg { width: 22px; height: 22px; flex-shrink: 0; }
     .cdock__cta { background: #f4f1f4; color: #111 !important; font-weight: 700 !important; }
-  }
-  @media (max-width: 400px) {
-    .cdock a:not(.cdock__cta), .cdock button { font-size: 0; gap: 0; padding: 10px; }
   }
 </style>

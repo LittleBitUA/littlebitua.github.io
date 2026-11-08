@@ -118,7 +118,11 @@ const since = human(points[0]?.date ?? today);
     <div class="pchart__axis" aria-hidden="true">
       {ticks.map((t) => <span style={`left:${t.pos}%`}>{t.label}</span>)}
     </div>
-    <p class="pchart__note">Дані з {since}: правки сайту та LBK Launcher, оновлюються щодня.</p>
+    <p class="pchart__note">
+      Графік орієнтовний: для деяких ігор він не відповідає реальному ходу роботи. У різний час публікувалися
+      то первинні відсотки, то одразу зредаговані, а частину проєктів анонсували з первинними відсотками й потім
+      доповнювали швидше, бо фактично готово було більше. Дані з {since}, оновлюються щодня.
+    </p>
   </figure>
 )}
 
@@ -195,7 +199,7 @@ const since = human(points[0]?.date ?? today);
 
   .pchart__axis { position: relative; height: 22px; margin: 8px 6px 0; color: rgba(255, 255, 255, 0.5); font-size: 12px; }
   .pchart__axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
-  .pchart__note { margin-top: 6px; color: rgba(255, 255, 255, 0.45); font-size: 12px; }
+  .pchart__note { max-width: 80ch; margin-top: 8px; color: rgba(255, 255, 255, 0.5); font-size: 12px; line-height: 1.5; }
 
   @media (max-width: 640px) {
     .pchart { padding: 16px 14px 12px; }
