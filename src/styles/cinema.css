@@ -157,7 +157,7 @@ body.cinema h1, body.cinema h2, body.cinema h3 {
   grid-auto-flow: column;
   grid-auto-columns: clamp(120px, 11.8vw, 170px);
   gap: clamp(10px, 1.4vw, 20px);
-  padding: 4px var(--side) 18px;
+  padding: 10px var(--side) 22px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: var(--side);

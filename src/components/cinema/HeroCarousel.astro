@@ -220,10 +220,7 @@ const slides = await Promise.all(
     -webkit-mask-composite: source-in;
     mask-image: linear-gradient(180deg, #000 55%, transparent 100%), linear-gradient(90deg, rgba(0, 0, 0, 0.35), #000 55%);
     mask-composite: intersect;
-    transform: scale(1.04);
-    transition: transform 9s linear;
   }
-  .slide.is-active .slide__bg img { transform: scale(1); }
   /* Затемнення зліва, щоб текст читався на будь-якому банері */
   .slide::before {
     content: "";
