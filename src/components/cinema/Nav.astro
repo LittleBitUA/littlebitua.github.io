@@ -1,0 +1,166 @@
+---
+// ─── Плаваюча навігація-«пігулка» ──────────────────────────────
+// Десктоп: одна пігулка по центру вгорі. Телефон: вкладки вгорі
+// і панель дій унизу екрана, як у мобільних застосунках.
+const TABS = [
+  { href: "/", label: "Головна" },
+  { href: "/games/", label: "Каталог" },
+  { href: "/chronology/", label: "Хронологія" },
+  { href: "/#launcher", label: "LBK Launcher" },
+];
+const path = Astro.url.pathname;
+const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes("#") && path.startsWith(href));
+---
+
+<header class="cnav" id="cnav">
+  <nav class="cnav__pill" aria-label="Головна навігація">
+    {TABS.map((t) => (
+      <a href={t.href} class:list={["cnav__tab", { "is-active": isActive(t.href) }]} aria-current={isActive(t.href) ? "page" : undefined}>
+        {t.label}
+      </a>
+    ))}
+    <span class="cnav__sep" aria-hidden="true"></span>
+    <a href="/games/#search-input" class="cnav__icon" aria-label="Пошук гри">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+    </a>
+    <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer" class="cnav__icon" aria-label="Telegram-канал">
+      <svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z" /><path d="m9 13 12-9" /></svg>
+    </a>
+    <a href="/#support" class="cnav__cta">Підтримати</a>
+  </nav>
+</header>
+
+<nav class="cdock" aria-label="Швидкі дії">
+  <a href="/games/#search-input">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" /></svg>
+    Пошук
+  </a>
+  <a href="/#launcher">
+    <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14" /></svg>
+    Launcher
+  </a>
+  <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer">
+    <svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z" /><path d="m9 13 12-9" /></svg>
+    Telegram
+  </a>
+  <a href="/#support" class="cdock__cta">Підтримати</a>
+</nav>
+
+<script>
+  const nav = document.getElementById("cnav")!;
+  const sync = () => nav.classList.toggle("is-scrolled", window.scrollY > 40);
+  window.addEventListener("scroll", sync, { passive: true });
+  sync();
+</script>
+
+<style>
+  .cnav {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 60;
+    display: flex;
+    justify-content: center;
+    padding: 12px 12px 0;
+    pointer-events: none;
+  }
+  .cnav__pill {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    max-width: 100%;
+    padding: 5px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-radius: 9999px;
+    background: color-mix(in srgb, var(--tint) 45%, rgba(10, 10, 12, 0.45));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    pointer-events: auto;
+    transition: background-color 0.3s ease;
+  }
+  .cnav__pill::-webkit-scrollbar { display: none; }
+  .is-scrolled .cnav__pill { background: color-mix(in srgb, var(--tint) 35%, rgba(10, 10, 12, 0.82)); }
+
+  .cnav__tab {
+    flex-shrink: 0;
+    padding: 10px 20px;
+    border-radius: 9999px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .cnav__tab:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+  .cnav__tab.is-active { background: #f4f1f4; color: #111; font-weight: 700; }
+
+  .cnav__sep { flex-shrink: 0; width: 1px; height: 22px; margin: 0 8px; background: rgba(255, 255, 255, 0.2); }
+  .cnav__icon {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .cnav__icon:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+  .cnav svg, .cdock svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+
+  .cnav__cta {
+    flex-shrink: 0;
+    margin-left: 6px;
+    padding: 10px 18px;
+    border-radius: 9999px;
+    background: #f4f1f4;
+    color: #111;
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .cnav__cta:hover { background: #fff; }
+
+  /* Нижня панель — лише на телефонах */
+  .cdock { display: none; }
+
+  @media (max-width: 760px) {
+    .cnav__sep, .cnav__icon, .cnav__cta { display: none; }
+    .cnav__tab { padding: 9px 16px; font-size: 13px; }
+
+    .cdock {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 60;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 6px;
+      border-radius: 9999px;
+      background: color-mix(in srgb, var(--tint) 40%, rgba(10, 10, 12, 0.8));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+    .cdock a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      border-radius: 9999px;
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .cdock__cta { background: #f4f1f4; color: #111 !important; font-weight: 700 !important; }
+  }
+  @media (max-width: 400px) {
+    .cdock a:not(.cdock__cta) { font-size: 0; gap: 0; padding: 10px; }
+  }
+</style>

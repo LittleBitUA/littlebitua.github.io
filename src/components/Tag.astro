@@ -1,8 +1,0 @@
----
-// ─── Tag ───────────────────────────────────────────────────────
-// Веде в каталог із фільтром за тегом (?tag=…).
-export interface Props { label: string }
-const { label } = Astro.props;
----
-
-<a href={`/games/?tag=${encodeURIComponent(label)}`} class="chip">{label}</a>

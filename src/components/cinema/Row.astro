@@ -1,0 +1,25 @@
+---
+// ─── Горизонтальний ряд постерів ───────────────────────────────
+import type { Game } from "../../data/games";
+import Poster from "./Poster.astro";
+
+export interface Props {
+  title: string;
+  games: Game[];
+  href?: string;
+  hrefLabel?: string;
+}
+const { title, games, href, hrefLabel = "Усі" } = Astro.props;
+---
+
+{games.length > 0 && (
+  <section class="c-row">
+    <header class="c-row__head">
+      <h2>{title}</h2>
+      {href && <a href={href}>{hrefLabel} →</a>}
+    </header>
+    <div class="c-track">
+      {games.map((g) => <Poster game={g} />)}
+    </div>
+  </section>
+)}

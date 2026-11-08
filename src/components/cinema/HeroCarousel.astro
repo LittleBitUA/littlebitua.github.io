@@ -1,0 +1,295 @@
+---
+// ─── Hero-карусель головної ────────────────────────────────────
+// Великий банер гри, логотип замість заголовка, мета-рядок і дії.
+// Слайди гортаються самі; колір тла сторінки (--tint) змінюється разом зі слайдом.
+// На телефоні замість широкого банера — вертикальна обкладинка в заокругленій картці.
+import type { Game } from "../../data/games";
+import { artOf } from "../../lib/art";
+import { cover } from "../../lib/cover";
+import {
+  statusMeta, translationPercent, formatPct, isPlayable, isFundraising, fundraisingPercent, stagesOf, stageName,
+} from "../../utils/status";
+
+export interface Props {
+  games: Game[];
+}
+const { games } = Astro.props;
+
+const slides = await Promise.all(
+  games.map(async (g, i) => {
+    const art = await artOf(g);
+    const st = statusMeta(g.status);
+    const fund = isFundraising(g) && !!g.fundraisingGoal;
+    const pct = translationPercent(g);
+    const editing = stagesOf(g).find((s) => /редакт/i.test(s.label));
+    const fundUrl = g.fundraisingUrl ?? g.donateUrl;
+    const primary =
+      g.downloadUrl && isPlayable(g)
+        ? { label: "Грати", href: g.downloadUrl, external: true, fund: false }
+        : fund && fundUrl
+          ? { label: "Підтримати збір", href: fundUrl, external: true, fund: true }
+          : { label: "Детальніше", href: `/games/${g.id}/`, external: false, fund: false };
+    return {
+      g,
+      i,
+      art,
+      st,
+      poster: await cover(g.cover, 720),
+      meta: [
+        pct >= 100 ? "Текст перекладено" : `Перекладено ${formatPct(pct)}%`,
+        editing && editing.percent > 0 && pct >= 100 ? `${stageName(editing.label)} ${formatPct(editing.percent)}%` : null,
+        fund ? `Зібрано ${fundraisingPercent(g)}%` : null,
+        g.gameYear ? String(g.gameYear) : null,
+        g.tags[0] ?? null,
+      ].filter(Boolean) as string[],
+      primary,
+    };
+  }),
+);
+---
+
+<section class="hero" id="hero" aria-roledescription="карусель" aria-label="Головні проєкти">
+  {slides.map((s) => (
+    <article
+      class:list={["slide", { "is-active": s.i === 0 }]}
+      data-tint={s.art.tint}
+      aria-roledescription="слайд"
+      aria-label={`${s.i + 1} з ${slides.length}: ${s.g.title}`}
+      aria-hidden={s.i === 0 ? undefined : "true"}
+      style={`--state:${s.st.color}`}
+    >
+      <picture class="slide__bg" aria-hidden="true">
+        <img src={s.art.banner ?? s.poster} alt="" fetchpriority={s.i === 0 ? "high" : "low"} decoding="async" />
+      </picture>
+
+      <div class="slide__copy">
+        {s.art.logo ? (
+          <img class="c-logo slide__logo" src={s.art.logo} alt={s.g.title} fetchpriority={s.i === 0 ? "high" : "low"} decoding="async" />
+        ) : (
+          <h2 class="c-title slide__title">{s.g.title}</h2>
+        )}
+        {s.art.logo && <h2 class="sr-only">{s.g.title}</h2>}
+
+        <p class="c-meta slide__meta">
+          <span class="c-badge">{s.st.label}</span>
+          {s.meta.map((m) => <span>{m}</span>)}
+        </p>
+        <p class="slide__text">{s.g.description}</p>
+
+        <div class="slide__actions">
+          <a class:list={["c-btn", { "c-btn--fund": s.primary.fund }]} href={s.primary.href}
+             {...(s.primary.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} tabindex={s.i === 0 ? undefined : "-1"}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" /></svg>
+            {s.primary.label}
+          </a>
+          <span class="c-group">
+            <a href={`/games/${s.g.id}/`} aria-label={`Про локалізацію ${s.g.title}`} tabindex={s.i === 0 ? undefined : "-1"}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 11v6M12 7.5v.5" /></svg>
+              <span class="slide__more">Про переклад</span>
+            </a>
+            {s.g.steamUrl && (
+              <a href={s.g.steamUrl} target="_blank" rel="noopener noreferrer" aria-label="Сторінка в Steam" tabindex={s.i === 0 ? undefined : "-1"}>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5H5V6h5" /></svg>
+              </a>
+            )}
+          </span>
+        </div>
+      </div>
+    </article>
+  ))}
+
+  <div class="hero__controls">
+    <button class="hero__pause" type="button" aria-label="Зупинити автопрокрутку" aria-pressed="false">
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" /></svg>
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+    </button>
+    <div class="hero__dots" role="tablist" aria-label="Обрати слайд">
+      {slides.map((s) => (
+        <button type="button" role="tab" class:list={["hero__dot", { "is-active": s.i === 0 }]} aria-selected={s.i === 0 ? "true" : "false"} aria-label={s.g.title}><i></i></button>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.getElementById("hero");
+  if (root) {
+    const slides = [...root.querySelectorAll<HTMLElement>(".slide")];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>(".hero__dot")];
+    const pauseBtn = root.querySelector<HTMLButtonElement>(".hero__pause")!;
+    const DURATION = 8000;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let index = 0;
+    let paused = reduced;
+    let timer: number | undefined;
+
+    const show = (next: number) => {
+      index = (next + slides.length) % slides.length;
+      slides.forEach((s, i) => {
+        const on = i === index;
+        s.classList.toggle("is-active", on);
+        s.toggleAttribute("aria-hidden", !on);
+        s.querySelectorAll("a").forEach((a) => (on ? a.removeAttribute("tabindex") : a.setAttribute("tabindex", "-1")));
+      });
+      dots.forEach((d, i) => {
+        d.classList.toggle("is-active", i === index);
+        d.setAttribute("aria-selected", String(i === index));
+      });
+      document.body.style.setProperty("--tint", slides[index].dataset.tint ?? "");
+      schedule();
+    };
+
+    const schedule = () => {
+      window.clearTimeout(timer);
+      root.style.setProperty("--dur", `${DURATION}ms`);
+      root.classList.toggle("is-paused", paused);
+      if (!paused) timer = window.setTimeout(() => show(index + 1), DURATION);
+    };
+
+    dots.forEach((d, i) => d.addEventListener("click", () => show(i)));
+    pauseBtn.addEventListener("click", () => {
+      paused = !paused;
+      pauseBtn.setAttribute("aria-pressed", String(paused));
+      pauseBtn.setAttribute("aria-label", paused ? "Продовжити автопрокрутку" : "Зупинити автопрокрутку");
+      schedule();
+    });
+    root.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") show(index + 1);
+      if (e.key === "ArrowLeft") show(index - 1);
+    });
+
+    // Свайп на телефоні
+    let startX = 0;
+    root.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; }, { passive: true });
+    root.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+    });
+
+    // Не гортати, поки вкладка прихована
+    document.addEventListener("visibilitychange", () => (document.hidden ? window.clearTimeout(timer) : schedule()));
+    pauseBtn.setAttribute("aria-pressed", String(paused));
+    // ?slide=N відкриває потрібний слайд (зручно, щоб поділитися або перевірити)
+    const start = Number(new URLSearchParams(location.search).get("slide"));
+    if (start > 0 && start <= slides.length) {
+      paused = true;
+      pauseBtn.setAttribute("aria-pressed", "true");
+      show(start - 1);
+    } else schedule();
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    height: min(88vh, 860px);
+    min-height: 560px;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    isolation: isolate; /* фон із z-index:-1 лишається всередині слайда */
+    display: flex;
+    align-items: flex-end;
+    padding: 0 var(--side) clamp(96px, 12vh, 140px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease, visibility 0s linear 0.8s;
+  }
+  .slide.is-active { opacity: 1; visibility: visible; transition: opacity 0.8s ease; }
+
+  .slide__bg { position: absolute; inset: 0; z-index: -1; }
+  .slide__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 70% 20%;
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%), linear-gradient(90deg, rgba(0, 0, 0, 0.35), #000 55%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(180deg, #000 55%, transparent 100%), linear-gradient(90deg, rgba(0, 0, 0, 0.35), #000 55%);
+    mask-composite: intersect;
+    transform: scale(1.04);
+    transition: transform 9s linear;
+  }
+  .slide.is-active .slide__bg img { transform: scale(1); }
+  /* Затемнення зліва, щоб текст читався на будь-якому банері */
+  .slide::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--tint) 60%, rgba(0, 0, 0, 0.55)) 0%, transparent 60%);
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+  }
+
+  .slide__copy { position: relative; width: min(100%, 620px); }
+  .slide__logo { max-height: clamp(110px, 18vh, 200px); margin-bottom: 22px; }
+  .slide__title { margin-bottom: 22px; }
+  .slide__meta { margin-bottom: 14px; }
+  .slide__text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 52ch;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 16px;
+    line-height: 1.6;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+  }
+  .slide__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+  .hero__controls {
+    position: absolute;
+    right: var(--side);
+    bottom: clamp(96px, 12vh, 140px);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .hero__pause { display: grid; place-items: center; width: 28px; height: 28px; color: #fff; }
+  .hero__pause svg { width: 18px; height: 18px; fill: currentColor; }
+  .hero__pause .i-play, .is-paused .hero__pause .i-pause { display: none; }
+  .is-paused .hero__pause .i-play { display: block; }
+
+  .hero__dots { display: flex; gap: 8px; }
+  .hero__dot { width: 22px; height: 18px; display: grid; align-items: center; }
+  .hero__dot i { position: relative; display: block; height: 4px; border-radius: 4px; background: rgba(255, 255, 255, 0.35); overflow: hidden; transition: background-color 0.2s ease; }
+  .hero__dot:hover i { background: rgba(255, 255, 255, 0.6); }
+  .hero__dot.is-active { width: 54px; }
+  .hero__dot.is-active i::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    transform-origin: left;
+    animation: fill var(--dur, 8000ms) linear forwards;
+  }
+  .is-paused .hero__dot.is-active i::after { animation: none; transform: none; }
+  @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* ── Телефон: заокруглена картка з вертикальною обкладинкою ── */
+  @media (max-width: 760px) {
+    .hero { height: auto; min-height: 0; aspect-ratio: auto; margin: 72px 12px 0; border-radius: 20px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1) inset; }
+    .hero::after { content: ""; display: block; padding-top: 168%; }
+    .slide { padding: 0 18px 76px; }
+    .slide__bg img {
+      object-position: 72% 30%;
+      -webkit-mask-image: linear-gradient(180deg, #000 45%, transparent 98%);
+      mask-image: linear-gradient(180deg, #000 45%, transparent 98%);
+    }
+    .slide::before { background: linear-gradient(180deg, transparent 35%, color-mix(in srgb, var(--tint) 70%, rgba(0, 0, 0, 0.7)) 100%); }
+    .slide__logo { max-height: 96px; max-width: 80%; margin-bottom: 14px; }
+    .slide__text { display: none; }
+    .slide__actions { margin-top: 18px; flex-wrap: nowrap; }
+    .slide__actions .c-btn { flex: 1; }
+    .slide__more { display: none; }
+    .slide__copy { width: 100%; }
+    .slide__actions .c-group a { padding: 0 16px; }
+    .hero__controls { left: 0; right: 0; bottom: 22px; justify-content: center; }
+  }
+</style>

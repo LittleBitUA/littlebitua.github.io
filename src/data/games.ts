@@ -68,6 +68,8 @@ export interface Game {
   launcherSlug?: string;
   /** false — не брати прогрес і статус з LBK Launcher, лишати значення з цього файлу */
   launcherSync?: boolean;
+  /** Банер і логотип гри з LBK Launcher; заповнюється під час збірки (lib/launcher.ts) */
+  launcherArt?: { banner: string; logo: string };
 
   // ── Закинуто ──
   /** Етап, роботу над яким припинено (наприклад, "Редактура"). Статус гри від цього не змінюється. */

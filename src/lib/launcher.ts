@@ -27,6 +27,7 @@ interface LauncherTranslation {
 interface LauncherGame {
   slug: string;
   name: string;
+  banner_path?: string | null;
   updated_at: string | null;
   translations: LauncherTranslation[];
 }
@@ -131,6 +132,15 @@ export function applyLauncherData(site: Game, lg: LauncherGame): Game {
   };
 }
 
+const ART_BASE = "https://supabase.lbklauncher.com/storage/v1/object/public/game-images/";
+
+/** Банер і логотип гри в лаунчері лежать в одній теці сховища: <id>/banner.webp і <id>/logo.webp. */
+function launcherArtOf(lg: LauncherGame): Game["launcherArt"] {
+  if (!lg.banner_path) return undefined;
+  const dir = lg.banner_path.slice(0, lg.banner_path.lastIndexOf("/"));
+  return { banner: ART_BASE + lg.banner_path, logo: `${ART_BASE}${dir}/logo.webp` };
+}
+
 /**
  * Повертає копію списку ігор з даними з лаунчера.
  * Помилки мережі не валять збірку.
@@ -149,12 +159,13 @@ export async function syncLauncher(list: Game[]): Promise<Game[]> {
   const bySlug = new Map(launcher.map((g) => [g.slug, g]));
   let synced = 0;
   const result = list.map((g) => {
-    if (g.launcherSync === false) return g;
     const slug = launcherSlugOf(g);
     const lg = slug ? bySlug.get(slug) : undefined;
     if (!lg) return g;
+    const withArt = { ...g, launcherArt: launcherArtOf(lg) ?? g.launcherArt };
+    if (g.launcherSync === false) return withArt;
     synced++;
-    return applyLauncherData(g, lg);
+    return applyLauncherData(withArt, lg);
   });
 
   const linked = new Set(list.map(launcherSlugOf).filter(Boolean));

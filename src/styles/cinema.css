@@ -1,0 +1,196 @@
+/* ==========================================================================
+   Little Bit — «кінематографічний» шар дизайну
+   Тло сторінки підфарбовується кольором гри (--tint), елементи керування —
+   «пігулки» зі склом, каталог на головній — горизонтальні ряди постерів.
+   Базові токени й скидання стилів — у global.css.
+   ========================================================================== */
+
+/* Плавна зміна кольору тла при перемиканні слайдів */
+@property --tint {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(38 30 44);
+}
+
+body.cinema {
+  --font-cin: "DM Sans", "Manrope", system-ui, sans-serif;
+  --font-logo: "Archivo", "DM Sans", system-ui, sans-serif;
+  --glass: rgba(255, 255, 255, 0.1);
+  --glass-strong: rgba(255, 255, 255, 0.16);
+  --glass-line: rgba(255, 255, 255, 0.14);
+  --pill: 9999px;
+  --card-r: 10px;
+  --side: clamp(16px, 5.4vw, 104px);
+
+  background:
+    radial-gradient(120% 70% at 30% 0%, color-mix(in srgb, var(--tint) 100%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tint) 72%, #000) 0%, color-mix(in srgb, var(--tint) 48%, #060607) 55%, color-mix(in srgb, var(--tint) 30%, #060607) 100%);
+  background-attachment: fixed;
+  font-family: var(--font-cin);
+  transition: --tint 0.9s ease;
+}
+body.cinema h1, body.cinema h2, body.cinema h3 {
+  font-family: var(--font-cin);
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+/* ─── Кнопки-пігулки ────────────────────────────────────────── */
+.c-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 34px;
+  border-radius: var(--pill);
+  background: #f4f1f4;
+  color: #111;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: transform 0.18s ease, background-color 0.18s ease;
+}
+.c-btn:hover { background: #fff; transform: scale(1.03); }
+.c-btn svg { width: 15px; height: 15px; fill: currentColor; }
+
+.c-btn--glass {
+  padding: 0 22px;
+  background: color-mix(in srgb, var(--tint) 55%, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--glass-line);
+  color: #fff;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+.c-btn--glass:hover { background: color-mix(in srgb, var(--tint) 40%, rgba(255, 255, 255, 0.2)); }
+.c-btn--fund { background: #f2a94b; color: #160d02; }
+.c-btn--fund:hover { background: #ffbe66; }
+
+/* Група з кількох дій в одній пігулці, розділених рискою */
+.c-group {
+  display: inline-flex;
+  align-items: center;
+  min-height: 52px;
+  border-radius: var(--pill);
+  background: color-mix(in srgb, var(--tint) 55%, rgba(255, 255, 255, 0.08));
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.c-group a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 20px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.c-group a + a { border-left: 1px solid var(--glass-line); }
+.c-group a:hover { color: #fff; background: rgba(255, 255, 255, 0.08); }
+.c-group a:first-child { border-radius: var(--pill) 0 0 var(--pill); }
+.c-group a:last-child { border-radius: 0 var(--pill) var(--pill) 0; }
+.c-group svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+/* ─── Мета-рядок під логотипом ─────────────────────────────── */
+.c-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.c-meta > * + *::before { content: "·"; margin-right: 10px; color: rgba(255, 255, 255, 0.5); }
+.c-meta svg { display: inline; width: 13px; height: 13px; margin-right: 5px; vertical-align: -2px; fill: none; stroke: currentColor; stroke-width: 2; }
+.c-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  border: 1px solid var(--state, #fff);
+  border-radius: 4px;
+  color: var(--state, #fff);
+  background: color-mix(in srgb, var(--state, #fff) 14%, transparent);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.c-meta .c-badge::before { content: none; }
+
+/* ─── Логотип гри або текстова назва замість нього ─────────── */
+.c-logo { display: block; width: auto; max-width: min(100%, 560px); max-height: 220px; object-fit: contain; object-position: left bottom; filter: drop-shadow(0 6px 24px rgba(0, 0, 0, 0.45)); }
+.c-title {
+  max-width: 14ch;
+  font-family: var(--font-logo) !important;
+  font-size: clamp(2.4rem, 6vw, 5.2rem);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Ряди постерів ─────────────────────────────────────────── */
+.c-row { margin-top: 28px; }
+.c-row__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-inline: var(--side);
+  margin-bottom: 14px;
+}
+.c-row__head h2 { font-size: clamp(1.05rem, 1.6vw, 1.35rem); font-weight: 600; }
+.c-row__head a { color: rgba(255, 255, 255, 0.7); font-size: 13px; font-weight: 600; }
+.c-row__head a:hover { color: #fff; }
+
+.c-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: clamp(120px, 11.8vw, 170px);
+  gap: clamp(10px, 1.4vw, 20px);
+  padding: 4px var(--side) 18px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--side);
+  scrollbar-width: none;
+}
+.c-track::-webkit-scrollbar { display: none; }
+.c-track > * { scroll-snap-align: start; }
+.c-track--wide { grid-auto-columns: clamp(240px, 22vw, 340px); }
+
+/* ─── Скляна панель ─────────────────────────────────────────── */
+.c-panel {
+  border-radius: 14px;
+  background: rgba(20, 20, 24, 0.55);
+  border: 1px solid var(--glass-line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+.c-wrap { padding-inline: var(--side); }
+
+/* Мітки в стилі «TYPE / RELEASED» */
+.c-label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Старі секції (FAQ, підтримка) на кольоровому тлі */
+body.cinema .section + .section { border-top-color: rgba(255, 255, 255, 0.08); }
+body.cinema .container { max-width: none; padding-inline: var(--side); }
