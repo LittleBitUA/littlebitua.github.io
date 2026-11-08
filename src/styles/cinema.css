@@ -77,6 +77,7 @@ body.cinema h1, body.cinema h2, body.cinema h3 {
   border-radius: var(--pill);
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.16);
+  overflow: hidden; /* підсвітка посилань не виходить за округлі краї */
 }
 .c-group a {
   display: inline-flex;
@@ -91,8 +92,6 @@ body.cinema h1, body.cinema h2, body.cinema h3 {
 }
 .c-group a + a { border-left: 1px solid rgba(255, 255, 255, 0.16); }
 .c-group a:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
-.c-group a:first-child { border-radius: var(--pill) 0 0 var(--pill); }
-.c-group a:last-child { border-radius: 0 var(--pill) var(--pill) 0; }
 .c-group svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 /* ─── Мета-рядок під логотипом ─────────────────────────────── */

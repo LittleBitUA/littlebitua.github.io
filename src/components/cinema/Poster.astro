@@ -62,13 +62,17 @@ const badge = fund ? "Збір коштів" : st.label;
     position: absolute;
     top: 8px;
     left: 8px;
-    padding: 3px 7px;
-    border-radius: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
     background: var(--state);
     color: #0b0b0d;
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 0.08em;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    /* власний шар: текст не розмивається маскою ряду, яка гортається */
+    transform: translateZ(0);
+    backface-visibility: hidden;
     text-transform: uppercase;
   }
 
