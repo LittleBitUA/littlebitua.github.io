@@ -68,6 +68,8 @@ const GAME_IDS: Record<string, string> = {
   "Shenmue I & II": "shenmue",
   "Uncharted: The Nathan Drake Collection": "uncharted-collection",
   "Gravity Rush™ Remastered": "gravity-rush",
+  "Gravity Rush™ 2": "gravity-rush-2",
+  "Uncharted: Golden Abyss": "uncharted-golden-abyss",
   "Persona 5 Royal": "persona-5-royal",
   "DRAGON QUEST® XI S: Echoes of an Elusive Age™ - Definitive Edition": "dragon-quest-xi-s",
 };

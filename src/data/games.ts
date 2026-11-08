@@ -241,6 +241,7 @@ export const games: Game[] = [
     id: "gravity-rush",
     launcherSlug: "gravity_rush_remastered",
     title: "Gravity Rush™ Remastered",
+    series: "Gravity Rush",
     description:
       "Дівчина Кет прокидається без спогадів у місті Гексвіль, що ширяє в небі, і разом із загадковим котом отримує владу над гравітацією. Вона бігає стінами, падає в небо й захищає мешканців від химерних істот, поступово розкриваючи таємницю власного минулого. Пригодницький екшен із рукотворним світом у стилі європейських коміксів.",
     cover: "https://cdn2.steamgriddb.com/grid/93058caa4389f7c69bfb0e6ee0472a95.png",
@@ -260,6 +261,25 @@ export const games: Game[] = [
     team: [
       { name: "Дмитро Бидлов", role: "Переклад" },
     ],
+  },
+  {
+    id: "gravity-rush-2",
+    launcherSlug: "gravity_rush_2",
+    title: "Gravity Rush™ 2",
+    series: "Gravity Rush",
+    description:
+      "Кет знову втрачає все — і дім, і силу — та опиняється серед шахтарів, що пливуть небом на летючих кораблях. Повернувши владу над гравітацією, вона вирушає до нових летючих міст, де бідні квартали висять під розкішними, і стикається з таємницею, що загрожує обом світам. Продовження з новими стилями гравітації та величезним відкритим світом.",
+    cover: "https://cdn2.steamgriddb.com/grid/cee0281e36d843e932cbabe3aaa22d50.png",
+    progress: 0,
+    status: "planned",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 0 },
+    ],
+    tags: ["Бойовик", "Пригоди", "Відкритий світ", "Аніме"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-11-08",
+    gameYear: 2017,
   },
   {
     id: "yakuza-kiwami3",
@@ -388,6 +408,25 @@ export const games: Game[] = [
     team: [
       { name: "Дмитро Бидлов", role: "Переклад" },
     ],
+  },
+  {
+    id: "uncharted-golden-abyss",
+    launcherSlug: "uncharted_golden_abyss",
+    title: "Uncharted: Golden Abyss",
+    series: "Uncharted",
+    description:
+      "Пригода Натана Дрейка ще до подій першої частини: разом зі старим знайомим Данте та археологинею Мариссою Чейз він шукає таємницю зниклої іспанської експедиції в джунглях Панами. Перестрілки, скелелазіння й загадки давньої цивілізації в окремій історії серії.",
+    cover: "https://cdn2.steamgriddb.com/grid/7a4dac4925ff62ea0ffe563eb2ee20f8.png",
+    progress: 0,
+    status: "planned",
+    stage: "Переклад",
+    stageDetails: [
+      { label: "Переклад", percent: 0 },
+    ],
+    tags: ["Бойовик", "Пригоди", "Шутер"],
+    donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
+    lastUpdate: "2026-11-08",
+    gameYear: 2011,
   },
   {
     id: "mgs-snake-eater",
