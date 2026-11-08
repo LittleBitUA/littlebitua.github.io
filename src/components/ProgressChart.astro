@@ -1,0 +1,205 @@
+---
+// ─── Графік прогресу локалізації ───────────────────────────────
+// Ступінчасті лінії перекладу й редактури за журналом src/data/progress-log.json
+// (його щодня доповнює scripts/progress.mjs). Показується, лише коли прогрес
+// хоч раз змінювався. Точки підписані при наведенні; позначка «Реліз» — дата виходу.
+import type { Game } from "../data/games";
+import log from "../data/progress-log.json";
+import { stagesOf } from "../utils/status";
+
+export interface Props { game: Game }
+const { game } = Astro.props;
+
+type Point = { date: string; t: number; e?: number };
+const today = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Kyiv" }).format(new Date());
+
+// Журнал + поточні значення (якщо з останнього запису щось змінилося)
+const points: Point[] = [...((log as Record<string, Point[]>)[game.id] ?? [])];
+const editingNow = stagesOf(game).find((s) => /редакт/i.test(s.label))?.percent;
+const now: Point = { date: today, t: Math.round(game.progress), ...(editingNow != null ? { e: Math.round(editingNow) } : {}) };
+const last = points.at(-1);
+if (!last || last.t !== now.t || last.e !== now.e) {
+  if (last?.date === today) points.pop();
+  points.push(now);
+}
+
+const day = (d: string) => Date.parse(d + "T00:00:00Z");
+const start = points.length ? day(points[0].date) : 0;
+const end = day(today);
+const span = end - start;
+const changes = points.length >= 2 && span > 0;
+
+const MONTHS = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
+const MONTHS_FULL = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];
+const human = (d: string) => { const [y, m, dd] = d.split("-").map(Number); return `${dd} ${MONTHS_FULL[m - 1]} ${y}`; };
+const x = (d: string) => ((day(d) - start) / span) * 100;
+const y = (v: number) => 100 - v;
+
+// Ступінчаста лінія: значення тримається до наступної зміни, остання ділянка — до сьогодні
+function stepPath(key: "t" | "e") {
+  const pts = points.filter((p) => p[key] != null);
+  if (pts.length === 0) return null;
+  let d = `M${x(pts[0].date)},${y(pts[0][key]!)}`;
+  for (let i = 1; i < pts.length; i++) d += ` H${x(pts[i].date)} V${y(pts[i][key]!)}`;
+  return d + ` H100`;
+}
+const tPath = changes ? stepPath("t") : null;
+const ePath = changes && points.some((p) => p.e != null && p.e > 0) ? stepPath("e") : null;
+const tArea = tPath ? `${tPath} V100 H${x(points[0].date)} Z` : null;
+
+// Підписи місяців (не частіше ніж ~8 на графік)
+const ticks: { pos: number; label: string }[] = [];
+if (changes) {
+  const s = new Date(start);
+  const cur = new Date(Date.UTC(s.getUTCFullYear(), s.getUTCMonth() + 1, 1));
+  const all: Date[] = [];
+  while (cur.getTime() <= end) { all.push(new Date(cur)); cur.setUTCMonth(cur.getUTCMonth() + 1); }
+  const step = Math.ceil(all.length / 8) || 1;
+  all.forEach((m, i) => {
+    if (i % step) return;
+    const pos = ((m.getTime() - start) / span) * 100;
+    if (pos < 4 || pos > 94) return;
+    ticks.push({ pos, label: MONTHS[m.getUTCMonth()] + (m.getUTCMonth() === 0 ? ` ${m.getUTCFullYear()}` : "") });
+  });
+}
+
+const release = game.releaseDate && changes && day(game.releaseDate) > start && day(game.releaseDate) <= end ? x(game.releaseDate) : null;
+
+// Зміна перекладу за останні 30 днів
+const monthAgo = new Date(end - 30 * 864e5).toISOString().slice(0, 10);
+const before = [...points].reverse().find((p) => p.date <= monthAgo) ?? points[0];
+const delta = changes ? now.t - before.t : 0;
+const since = human(points[0]?.date ?? today);
+---
+
+{changes && (
+  <figure class="pchart c-panel">
+    <figcaption class="pchart__head">
+      <span class="c-label">Як рухалася робота</span>
+      <span class="pchart__legend">
+        <span class="is-t">Переклад</span>
+        {ePath && <span class="is-e">Редактура</span>}
+      </span>
+      {delta > 0 && <strong class="pchart__delta">+{delta} п. перекладу за місяць</strong>}
+    </figcaption>
+
+    <div class="pchart__plot">
+      <span class="pchart__grid" style="top:0"><i>100%</i></span>
+      <span class="pchart__grid" style="top:50%"><i>50%</i></span>
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id={`pc-${game.id}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#f4f1f4" stop-opacity="0.22" />
+            <stop offset="1" stop-color="#f4f1f4" stop-opacity="0" />
+          </linearGradient>
+        </defs>
+        {tArea && <path d={tArea} fill={`url(#pc-${game.id})`} />}
+        {ePath && <path class="line line--e" d={ePath} />}
+        {tPath && <path class="line line--t" d={tPath} />}
+      </svg>
+
+      {release != null && (
+        <span class="pchart__release" style={`left:${release}%`}><i>Реліз</i></span>
+      )}
+
+      {points.map((p, i) => {
+        const prev = points[i - 1];
+        const text = [`переклад ${p.t}%`, p.e != null ? `редактура ${p.e}%` : null].filter(Boolean).join(" · ");
+        const left = x(p.date);
+        return (
+          <button type="button" class:list={["pchart__pt", { "is-right": left > 70, "is-left": left < 30, "is-high": p.t > 60 }]}
+                  style={`left:${left}%;top:${y(p.t)}%`} aria-label={`${human(p.date)}: ${text}`}>
+            <span class="pchart__tip"><b>{human(p.date)}</b>{text}{prev && p.t > prev.t && <em> (+{p.t - prev.t})</em>}</span>
+          </button>
+        );
+      })}
+    </div>
+
+    <div class="pchart__axis" aria-hidden="true">
+      {ticks.map((t) => <span style={`left:${t.pos}%`}>{t.label}</span>)}
+    </div>
+    <p class="pchart__note">Дані з {since}: правки сайту та LBK Launcher, оновлюються щодня.</p>
+  </figure>
+)}
+
+<style>
+  .pchart { margin: 12px 0 0; padding: 20px 22px 16px; }
+  .pchart__head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-bottom: 18px; }
+  .pchart__legend { display: flex; gap: 14px; color: rgba(255, 255, 255, 0.75); font-size: 13px; font-weight: 600; }
+  .pchart__legend span::before { content: ""; display: inline-block; width: 14px; height: 3px; margin-right: 7px; border-radius: 2px; vertical-align: middle; }
+  .pchart__legend .is-t::before { background: #f4f1f4; }
+  .pchart__legend .is-e::before { background: var(--st-early); }
+  .pchart__delta { margin-left: auto; padding: 4px 10px; border-radius: 9999px; background: color-mix(in srgb, var(--st-done) 22%, transparent); color: var(--st-done); font-size: 13px; font-weight: 700; }
+
+  .pchart__plot { position: relative; height: 170px; margin: 0 6px; }
+  .pchart__plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .line { fill: none; stroke-width: 2.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+  .line--t { stroke: #f4f1f4; }
+  .line--e { stroke: var(--st-early); stroke-dasharray: 5 4; }
+
+  .pchart__grid { position: absolute; left: 0; right: 0; border-top: 1px dashed rgba(255, 255, 255, 0.12); }
+  .pchart__grid i { position: absolute; right: 0; top: -18px; color: rgba(255, 255, 255, 0.4); font-size: 11px; font-style: normal; }
+
+  .pchart__release { position: absolute; top: -6px; bottom: 0; border-left: 1px solid color-mix(in srgb, var(--st-done) 70%, transparent); }
+  .pchart__release i { position: absolute; top: -8px; left: 6px; color: var(--st-done); font-size: 11px; font-style: normal; font-weight: 700; white-space: nowrap; }
+
+  .pchart__pt {
+    position: absolute;
+    z-index: 1;
+    width: 22px;
+    height: 22px;
+    margin: -11px 0 0 -11px;
+    border-radius: 50%;
+  }
+  .pchart__pt::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    background: #f4f1f4;
+    box-shadow: 0 0 0 3px rgba(20, 16, 24, 0.9);
+    transition: transform 0.15s ease;
+  }
+  .pchart__pt:hover::before, .pchart__pt:focus-visible::before { transform: scale(1.4); }
+  .pchart__pt:focus-visible { outline: none; }
+  .pchart__tip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    display: grid;
+    gap: 2px;
+    padding: 8px 11px;
+    border-radius: 10px;
+    background: rgba(16, 14, 20, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .is-left .pchart__tip { left: 0; transform: translate(0, 4px); }
+  .is-right .pchart__tip { left: auto; right: 0; transform: translate(0, 4px); }
+  .pchart__tip b { color: #fff; font-weight: 700; }
+  .pchart__tip em { color: var(--st-done); font-style: normal; font-weight: 700; }
+  /* Точки вгорі графіка — підказка під точкою, щоб не налазила на заголовок */
+  .is-high .pchart__tip { top: calc(100% + 6px); bottom: auto; }
+  .pchart__pt:hover, .pchart__pt:focus-visible { z-index: 2; }
+  .pchart__pt:hover .pchart__tip, .pchart__pt:focus-visible .pchart__tip { opacity: 1; transform: translate(-50%, 0); }
+  .is-left:hover .pchart__tip, .is-left:focus-visible .pchart__tip,
+  .is-right:hover .pchart__tip, .is-right:focus-visible .pchart__tip { transform: none; }
+
+  .pchart__axis { position: relative; height: 22px; margin: 8px 6px 0; color: rgba(255, 255, 255, 0.5); font-size: 12px; }
+  .pchart__axis span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+  .pchart__note { margin-top: 6px; color: rgba(255, 255, 255, 0.45); font-size: 12px; }
+
+  @media (max-width: 640px) {
+    .pchart { padding: 16px 14px 12px; }
+    .pchart__delta { margin-left: 0; }
+    .pchart__plot { height: 140px; }
+  }
+</style>

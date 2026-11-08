@@ -10,7 +10,8 @@ on:
     - cron: "0 3 * * *"
 
 permissions:
-  contents: read
+  contents: write # щоденний запис журналу прогресу (src/data/progress-log.json)
+  issues: write   # issue «Розбіжності з LBK Launcher»
   pages: write
   id-token: write
 
@@ -32,6 +33,40 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      # Журнал прогресу для графіків на сторінках ігор + перевірка розбіжностей із LBK Launcher
+      - name: Record progress and check LBK Launcher
+        if: github.ref == 'refs/heads/main'
+        run: npm run progress
+        continue-on-error: true
+
+      - name: Save progress log
+        if: github.ref == 'refs/heads/main'
+        continue-on-error: true
+        run: |
+          git add src/data/progress-log.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Progress log: $(TZ=Europe/Kyiv date +%F)"
+          git pull --rebase origin main && git push origin HEAD:main
+
+      # Розбіжності є — створює або оновлює issue; зникли — закриває його
+      - name: Report LBK Launcher mismatches
+        if: github.ref == 'refs/heads/main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="Розбіжності з LBK Launcher"
+          REPORT=node_modules/.cache/lb-progress/report.md
+          [ -f "$REPORT" ] || exit 0
+          N=$(gh issue list --state open --limit 100 --json number,title -q ".[] | select(.title == \"$TITLE\") | .number" | head -1)
+          if [ -s "$REPORT" ]; then
+            if [ -n "$N" ]; then gh issue edit "$N" --body-file "$REPORT"; else gh issue create --title "$TITLE" --body-file "$REPORT"; fi
+          elif [ -n "$N" ]; then
+            gh issue close "$N" --comment "Розбіжностей більше немає."
+          fi
 
       # Превʼю посилань (og.png, og-chronology.png) зі свіжими даними; без Chrome лишаються збережені
       - name: Generate link previews

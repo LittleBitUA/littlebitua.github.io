@@ -4,6 +4,7 @@
 // праворуч; нижче — стан локалізації, скріншоти рядом карток, схожі ігри.
 import Layout from "../../layouts/Layout.astro";
 import Row from "../../components/cinema/Row.astro";
+import ProgressChart from "../../components/ProgressChart.astro";
 import { games } from "../../data/catalog";
 import { SITE_URL, generateGameStructuredData, generateBreadcrumbs, generateKeywords } from "../../utils/seo";
 import { seriesSlug, hasSeriesPage } from "../../utils/series";
@@ -225,6 +226,8 @@ const related = games
           );
         })}
       </ul>
+
+      <ProgressChart game={game} />
 
       {statsRows.length > 0 && (
         <dl class="stats">

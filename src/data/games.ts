@@ -270,11 +270,11 @@ export const games: Game[] = [
     description:
       "Кет знову втрачає все — і дім, і силу — та опиняється серед шахтарів, що пливуть небом на летючих кораблях. Повернувши владу над гравітацією, вона вирушає до нових летючих міст, де бідні квартали висять під розкішними, і стикається з таємницею, що загрожує обом світам. Продовження з новими стилями гравітації та величезним відкритим світом.",
     cover: "https://cdn2.steamgriddb.com/grid/cee0281e36d843e932cbabe3aaa22d50.png",
-    progress: 0,
-    status: "planned",
+    progress: 60,
+    status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 0 },
+      { label: "Переклад", percent: 60 },
     ],
     tags: ["Бойовик", "Пригоди", "Відкритий світ", "Аніме"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
@@ -417,11 +417,11 @@ export const games: Game[] = [
     description:
       "Пригода Натана Дрейка ще до подій першої частини: разом зі старим знайомим Данте та археологинею Мариссою Чейз він шукає таємницю зниклої іспанської експедиції в джунглях Панами. Перестрілки, скелелазіння й загадки давньої цивілізації в окремій історії серії.",
     cover: "https://cdn2.steamgriddb.com/grid/7a4dac4925ff62ea0ffe563eb2ee20f8.png",
-    progress: 0,
-    status: "planned",
+    progress: 13,
+    status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 0 },
+      { label: "Переклад", percent: 13 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
@@ -1012,18 +1012,18 @@ export const games: Game[] = [
     description:
       "Самурайський спін-оф серії Yakuza. Рьома Сакамото шукає вбивцю свого батька в Японії епохи Бакумацу.",
     cover: "https://cdn2.steamgriddb.com/thumb/302a3ba086a09127aff1b25258ffab24.jpg",
-    progress: 62,
+    progress: 68,
     status: "in-progress",
     stage: "Переклад",
     stageDetails: [
-      { label: "Переклад", percent: 62 },
+      { label: "Переклад", percent: 68 },
       { label: "Редактура", percent: 62 },
     ],
     tags: ["Бойовик", "RPG", "Історична", "Пригоди"],
     steamUrl: "https://store.steampowered.com/app/1805480/Like_a_Dragon_Ishin/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2023,
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-11-08",
   },
   {
     id: "yakuza3",
