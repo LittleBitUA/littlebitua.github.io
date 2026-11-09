@@ -105,7 +105,7 @@ const statusOf = (e: Entry) =>
 const noteOf = (e: Entry) => (e.note && !/^ранн\S* доступ$/i.test(e.note) ? e.note : null);
 const liveOf = (e: Entry) => {
   const l = e.game ? liveNumbers(e.game, e.html) : null;
-  return l && (l.differs || l.translation < 100 || (l.editing != null && l.editing < 100)) ? l : null;
+  return l && (l.differs || stagesOf(e.game!).some((x) => x.percent < 100)) ? l : null;
 };
 
 // ── Точні дати виходів (рік беремо з заголовка року в першому розділі) ──
@@ -444,10 +444,11 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
                                 {live && !stages && (
                                   <div class="live" title="Свіжі цифри з LBK Launcher; текст звіту міг бути написаний раніше">
                                     <span class="live__tag">Зараз</span>
-                                    <span class="live__row"><em>переклад</em><i class="live__bar"><i style={`width:${live.translation}%`}></i></i><b>{live.translation}%</b></span>
-                                    {live.editing != null && (
-                                      <span class="live__row live__row--ed"><em>редактура</em><i class="live__bar"><i style={`width:${live.editing}%`}></i></i><b>{live.editing}%</b></span>
-                                    )}
+                                    {stagesOf(e.game!).map((x) => (
+                                      <span class:list={["live__row", { "live__row--ed": /редакт/i.test(x.label), "live__row--art": /текстур|шрифт/i.test(x.label) }]}>
+                                        <em>{stageName(x.label).toLowerCase()}</em><i class="live__bar"><i style={`width:${x.percent}%`}></i></i><b>{x.percent > 0 ? `${Math.round(x.percent)}%` : "—"}</b>
+                                      </span>
+                                    ))}
                                   </div>
                                 )}
                                 <span class="ev__actions">
@@ -898,6 +899,7 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
   .live__bar { display: block; width: 64px; height: 5px; overflow: hidden; border-radius: 5px; background: rgba(255, 255, 255, 0.1); }
   .live__bar i { display: block; height: 100%; border-radius: 5px; background: var(--st-early); }
   .live__row--ed .live__bar i { background: var(--st-progress); }
+  .live__row--art .live__bar i { background: var(--st-fund); }
 
   /* ── Примітка та архів ── */
   .note {

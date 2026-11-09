@@ -10,11 +10,14 @@ import { SITE_URL } from "../../utils/seo";
 import { getSeriesGroups } from "../../utils/series";
 import { sortByStatus, isPlayable, isFundraising, STATUS_META } from "../../utils/status";
 import { pluralize } from "../../utils/pluralize";
+import { cover } from "../../lib/cover";
 import type { GameStatus } from "../../data/games";
 
 const catalog = sortByStatus(games);
 const playable = games.filter(isPlayable).length;
-const series = getSeriesGroups();
+const series = await Promise.all(
+  getSeriesGroups().map(async (s) => ({ ...s, covers: await Promise.all(s.games.slice(0, 3).map((g) => cover(g.cover, 120))) })),
+);
 
 const ORDER: GameStatus[] = ["done", "early-access", "in-progress", "fundraising", "planned"];
 const kpis = ORDER.map((s) => ({
@@ -71,12 +74,22 @@ const kpis = ORDER.map((s) => ({
 
     {series.length > 0 && (
       <nav class="series" aria-label="Серії">
-        <span class="series__label">Серії</span>
-        <div class="series__list">
+        <p class="series__label">Серії</p>
+        <ul class="series__list">
           {series.map((s) => (
-            <a href={`/games/series/${s.slug}/`}>{s.name}<small>{s.games.length}</small></a>
+            <li>
+              <a href={`/games/series/${s.slug}/`} class="c-panel serie">
+                <span class="serie__fan" aria-hidden="true">
+                  {s.covers.map((src) => <img src={src} alt="" width="40" height="60" loading="lazy" decoding="async" />)}
+                </span>
+                <span class="serie__text">
+                  <strong>{s.name}</strong>
+                  <small>{s.games.length} {pluralize(s.games.length, "гра", "гри", "ігор")}</small>
+                </span>
+              </a>
+            </li>
           ))}
-        </div>
+        </ul>
       </nav>
     )}
 
@@ -118,26 +131,20 @@ const kpis = ORDER.map((s) => ({
   .howto dd { margin-top: 4px; font-size: 13px; }
 
   /* Серії */
-  .series { display: flex; align-items: center; gap: 14px; margin: 28px 0 14px; }
-  .series__label { flex-shrink: 0; color: var(--faint); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
-  .series__list { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
-  .series__list::-webkit-scrollbar { display: none; }
-  .series__list a {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 13px;
-    border: 1px solid var(--line-strong);
-    border-radius: 9999px;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: background-color 0.18s ease, color 0.18s ease;
-  }
-  .series__list a:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
-  .series__list small { color: var(--faint); font-size: 11px; }
+  .series { margin: 32px 0 20px; }
+  .series__label { margin-bottom: 12px; color: var(--faint); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  .series__list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap: 10px; }
+  .serie { display: flex; align-items: center; gap: 14px; height: 100%; padding: 10px 14px 10px 10px; box-shadow: none; transition: border-color 0.2s ease, transform 0.2s ease; }
+  .serie:hover { border-color: rgba(255, 255, 255, 0.4); transform: translateY(-2px); }
+  .serie__fan { display: flex; flex-shrink: 0; }
+  .serie__fan img { width: 34px; height: 51px; object-fit: cover; border-radius: 5px; box-shadow: 0 0 0 2px rgba(20, 18, 24, 0.95), 0 6px 14px rgba(0, 0, 0, 0.4); }
+  .serie__fan img + img { margin-left: -16px; }
+  .serie__fan img:nth-child(1) { position: relative; z-index: 3; }
+  .serie__fan img:nth-child(2) { position: relative; z-index: 2; transform: rotate(6deg); }
+  .serie__fan img:nth-child(3) { position: relative; z-index: 1; transform: rotate(12deg); }
+  .serie__text { display: grid; gap: 2px; min-width: 0; }
+  .serie__text strong { overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .serie__text small { color: var(--faint); font-size: 12px; }
 
   /* Сітка */
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: 32px 18px; }
@@ -150,8 +157,8 @@ const kpis = ORDER.map((s) => ({
     .kpi__btn, .kpi li:first-child .kpi__btn { padding: 16px 10px; }
     .kpi li:nth-child(3n + 1) .kpi__btn { padding-left: 0; }
     .kpi__btn span { font-size: 12px; }
-    .series { flex-direction: column; align-items: flex-start; gap: 8px; }
-    .series__list { max-width: 100%; }
+    .series__list { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 210px; overflow-x: auto; scrollbar-width: none; margin-right: calc(-1 * var(--side)); padding-right: var(--side); }
+    .series__list::-webkit-scrollbar { display: none; }
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
   }
 </style>
