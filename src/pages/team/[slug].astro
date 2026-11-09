@@ -61,7 +61,7 @@ const structuredData = generateBreadcrumbs([
     <header class="hero">
       <PersonAvatar name={person.name} slug={person.slug} size={96} />
       <div>
-        <span class="eyebrow">{person.team ? "Команда-партнер" : "Учасник команди"}</span>
+        <span class="eyebrow">{person.team ? "Команда-партнер" : person.from ? `Команда ${person.from} · не «Little Bit»` : person.guest ? "У титрах перекладів «Little Bit»" : "Учасник команди"}</span>
         <h1 class="title">{person.name}</h1>
         {person.about && <p class="about">{person.about}</p>}
         <p class="c-meta stats">

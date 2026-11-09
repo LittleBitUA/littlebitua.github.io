@@ -21,7 +21,8 @@ const ROLES: [string, RegExp][] = [
   ["Ініціатива", /ініціатив/i],
 ];
 const cards = await Promise.all(
-  PEOPLE.map(async (p) => {
+  // У списку — лише поточний склад; колишні учасники є тільки на сторінках ігор
+  PEOPLE.filter((p) => !p.guest).map(async (p) => {
     const list = p.credits.map((c) => byId.get(c.game)).filter((g) => !!g);
     // Основні ролі людини одним рядком: «Переклад · Редактура · Технічна частина»
     const roles = ROLES.filter(([, re]) => p.credits.some((c) => re.test(c.role))).map(([label]) => label);
@@ -61,6 +62,7 @@ const teams = cards.filter((c) => c.p.team);
             <PersonAvatar name={p.name} slug={p.slug} size={52} />
             <span class="person__main">
               <strong>{p.name}{p.team && <em> · команда</em>}</strong>
+              {p.from && <small class="person__from">з команди {p.from}, не «Little Bit»</small>}
               <small>{roles}</small>
               <small class="person__count">
                 {count} {pluralize(count, "проєкт", "проєкти", "проєктів")}{released > 0 && ` · ${released} уже можна грати`}
@@ -101,6 +103,7 @@ const teams = cards.filter((c) => c.p.team);
   .person__main strong { font-size: 16px; font-weight: 700; }
   .person__main em { color: var(--faint); font-style: normal; font-weight: 500; }
   .person__main small { overflow: hidden; color: var(--muted); font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+  .person__main .person__from { color: var(--st-early, #c9a2ff); font-size: 12px; font-weight: 600; }
   .person__main .person__count { color: var(--faint); font-size: 12px; }
   .person__covers { display: flex; flex-shrink: 0; }
   .person__covers img { width: 30px; height: 45px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 2px rgba(20, 18, 24, 0.9); }

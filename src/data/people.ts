@@ -2,7 +2,10 @@
 // Звідси будуються сторінки /team/ і /team/<slug>/, а також блок
 // «Над локалізацією працювали» на сторінці кожної гри.
 //
-// Тут лише поточний склад команди. Щоб додати людину, допишіть запис у PEOPLE;
+// На сторінці «Команда» — лише поточний склад. Люди з позначкою `guest` (колишні
+// учасники й ті, хто допомагав з окремими проєктами) показуються тільки на
+// сторінках ігор, у списку команди їх немає. `from` — назва іншої команди, якщо
+// людина не з «Little Bit». Щоб додати людину, допишіть запис у PEOPLE;
 // `game` — це id гри з games.ts, `role` — що саме робить.
 // Фото: файл src/assets/team/<slug>.(png|jpg|webp), інакше показуються ініціали.
 // Порядок у списку = порядок на сторінці «Команда».
@@ -20,6 +23,10 @@ export interface Person {
   link?: string;
   /** Не людина, а окрема команда-партнер */
   team?: boolean;
+  /** Не в поточному складі: показується лише на сторінках ігор */
+  guest?: boolean;
+  /** Людина з іншої команди (не «Little Bit») */
+  from?: string;
   credits: Credit[];
 }
 
@@ -147,6 +154,49 @@ export const PEOPLE: Person[] = [
     name: "svitchhh",
     credits: [{ game: "silent-hill-downpour", role: "Переклад" }],
   },
+  {
+    slug: "madao",
+    name: "Мадао",
+    from: "TypeUkraine",
+    credits: [{ game: "resident-evil-requiem", role: "Переклад" }],
+  },
+
+  // ── Не в поточному складі: лише в титрах ігор ──
+  { slug: "mrikso", name: "MrIkso", guest: true, credits: [
+    { game: "lad-ishin", role: "Технічна частина" },
+    { game: "nier-replicant", role: "Технічна частина" },
+    { game: "mgs2", role: "Технічна частина й шрифти" },
+  ] },
+  { slug: "tor", name: "tor", guest: true, credits: [
+    { game: "nmh3", role: "Шрифти" },
+    { game: "hotel-barcelona", role: "Шрифти" },
+    { game: "lost-judgment", role: "Шрифти" },
+  ] },
+  { slug: "yuliia-naturkach", name: "Юлія Натуркач", guest: true, credits: [
+    { game: "dispatch", role: "Літературна редактура перших двох епізодів" },
+    { game: "mgs3-master-collection", role: "Літературна редактура" },
+  ] },
+  { slug: "kyrylo-boldyriev", name: "Кирило Болдирєв", guest: true, credits: [
+    { game: "mgs3-master-collection", role: "Літературна редактура" },
+    { game: "gravity-rush", role: "Ініціатива й тестування" },
+  ] },
+  { slug: "mimotw", name: "Марія «Mimotw» Єфіменко", guest: true, credits: [
+    { game: "kingdom-hearts-3", role: "Шрифти" },
+    { game: "the-missing", role: "Графіка" },
+  ] },
+  { slug: "tsunderman", name: "tsunderman", guest: true, credits: [{ game: "yakuza-kiwami2", role: "Літературна редактура, звірка з японським текстом" }] },
+  { slug: "kostyanchek8", name: "kostyanchek8", guest: true, credits: [{ game: "mgs2", role: "Переклад" }] },
+  { slug: "shprot", name: "Богдан «Шпрот»", guest: true, credits: [{ game: "mgs3-master-collection", role: "Переклад" }] },
+  { slug: "godresky", name: "Андрій «Godresky»", guest: true, credits: [{ game: "mgs3-master-collection", role: "Переклад" }] },
+  { slug: "frayziken", name: "Максим «Frayziken»", guest: true, credits: [{ game: "mgs3-master-collection", role: "Переклад" }] },
+  { slug: "dildo", name: "ДІЛДО", guest: true, credits: [{ game: "silent-hill-townfall", role: "Переклад" }] },
+  { slug: "semon99", name: "semon99", guest: true, credits: [{ game: "silent-hill-townfall", role: "Переклад" }] },
+  { slug: "nazarii-poslushniak", name: "Nazarii Poslushniak", guest: true, credits: [{ game: "silent-hill-townfall", role: "Переклад" }] },
+  { slug: "funfy", name: "Микита «Funfy» Захаров", guest: true, credits: [{ game: "the-missing", role: "Графіка" }] },
+  { slug: "froghus", name: "Денис «FrogHus» Решетілов", guest: true, credits: [{ game: "the-missing", role: "Графіка" }] },
+  { slug: "tenamio", name: "Tenamio", guest: true, credits: [{ game: "travis-strikes-again", role: "Тестування" }] },
+  { slug: "dark-valeriiovych", name: "Дарк Валерійович", guest: true, credits: [{ game: "metal-gear-solid-4", role: "Тестування" }] },
+  { slug: "locus-team", name: "Locus Team", team: true, guest: true, about: "Команда-партнер.", credits: [{ game: "catherine-classic", role: "Переклад" }] },
 ];
 
 /** Люди, які працювали над грою, з їхньою роллю саме в ній */

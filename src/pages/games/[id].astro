@@ -282,7 +282,7 @@ const related = games
             <li>
               <a href={`/team/${person.slug}/`} class="c-panel crew__item">
                 <PersonAvatar name={person.name} slug={person.slug} size={40} />
-                <span><strong>{person.name}</strong><small>{role}</small></span>
+                <span><strong>{person.name}</strong><small>{role}{person.from && ` · команда ${person.from}`}</small></span>
               </a>
             </li>
           ))}
