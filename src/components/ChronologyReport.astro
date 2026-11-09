@@ -4,9 +4,15 @@
 // шапка з підсумками-фільтрами, липка панель пошуку, розділи з нумерацією,
 // роки й квартали як заголовки груп, картки подій із датою зліва.
 // Виходи показуємо від найновіших до найстаріших.
-import { reports, type Report, type Entry, type Item } from "../lib/chronology";
+import { reports, withoutMissingCrew, type Report, type Entry, type Item } from "../lib/chronology";
 import { cover } from "../lib/cover";
 import { liveNumbers } from "../lib/live";
+import PersonAvatar from "./PersonAvatar.astro";
+import { PEOPLE } from "../data/people";
+import { games as catalog } from "../data/catalog";
+import { telegramPosts } from "../lib/telegram";
+import { artOf } from "../lib/art";
+import { stagesOf, stageName, translationPercent, formatPct } from "../utils/status";
 
 export interface Props { report: Report; isLatest: boolean }
 const { report, isLatest } = Astro.props;
@@ -71,7 +77,11 @@ function newestFirst(list: G1[]): G1[] {
 const sections = report.sections.map((s, i) => {
   const groups = group(s.items);
   const reversed = i === 0;
-  return { ...s, num: String(i + 1).padStart(2, "0"), reversed, groups: reversed ? newestFirst(groups) : groups };
+  // «Ще не вийшли» — дошка прогресу: найготовіші вгорі
+  const board = s.items.some((it) => it.kind === "entry" && it.entry.kind === "upcoming");
+  const ready = (e: Entry) => (e.game ? translationPercent(e.game) : -1);
+  const sorted = board ? groups.map((g) => ({ ...g, groups: g.groups.map((x) => ({ ...x, entries: [...x.entries].sort((a, b) => ready(b) - ready(a)) })) })) : groups;
+  return { ...s, num: String(i + 1).padStart(2, "0"), reversed, board, groups: reversed ? newestFirst(sorted) : sorted };
 });
 
 // ── Дрібниці для картки ──
@@ -97,6 +107,96 @@ const liveOf = (e: Entry) => {
   const l = e.game ? liveNumbers(e.game, e.html) : null;
   return l && (l.differs || l.translation < 100 || (l.editing != null && l.editing < 100)) ? l : null;
 };
+
+// ── Точні дати виходів (рік беремо з заголовка року в першому розділі) ──
+const MONTH_NUM = Object.fromEntries(Object.keys(SHORT).map((m, i) => [m, i + 1]));
+const isoOf = new Map<string, string>();
+{
+  let year = "";
+  for (const it of report.sections[0]?.items ?? []) {
+    if (it.kind === "node" && it.level === 1) year = it.text.match(/\d{4}/)?.[0] ?? year;
+    if (it.kind !== "entry" || !year || !it.entry.date) continue;
+    const m = it.entry.date.match(/^(\d{1,2})\s+(\S+)/);
+    const mon = m && MONTH_NUM[m[2].toLowerCase()];
+    if (mon) isoOf.set(it.entry.id, `${year}-${String(mon).padStart(2, "0")}-${m![1].padStart(2, "0")}`);
+  }
+}
+const dayNum = (iso: string) => Date.parse(`${iso}T12:00:00Z`) / 864e5;
+
+// ── Учасники з титрів сайту ──
+const crewOf = (e: Entry) => (e.game ? PEOPLE.filter((p) => p.credits.some((c) => c.game === e.game!.id)) : []);
+
+// ── Пост у Telegram про цей вихід (± 3 дні від дати) ──
+const posts = isLatest ? await telegramPosts(catalog) : [];
+// Якщо точного поста серед свіжих немає — пошук по каналу за назвою гри
+const tgOf = (e: Entry) => {
+  if (!e.game) return null;
+  const iso = isoOf.get(e.id);
+  const exact = iso ? posts.find((p) => p.game.id === e.game!.id && Math.abs(dayNum(p.date) - dayNum(iso)) <= 3) : null;
+  if (exact) return { url: exact.url, title: exact.title, label: "Анонс" };
+  const q = e.game.title.split(/[:™®]/)[0].trim();
+  return { url: `https://t.me/s/LittleBitUA?q=${encodeURIComponent(q)}`, title: `Пости про ${q} у Telegram-каналі`, label: "У Telegram" };
+};
+
+// ── Що змінилося з попереднього звіту ──
+const prev = reports[reports.findIndex((r) => r.date === report.date) + 1];
+const keyOf = (e: Entry) => e.game?.id ?? e.id;
+const plainOf = (h: string) => h.replace(/<[^>]+>/g, "");
+const pctOf = (h: string) => {
+  const t = plainOf(h);
+  const tr = t.match(/перекладено(?: на)?\s*(?:приблизно\s*)?(\d+(?:,\d+)?)\s*%/i)?.[1];
+  const ed = t.match(/редакту?р[а-яі]*[^.;\d]{0,30}?(\d+(?:,\d+)?)\s*%/i)?.[1];
+  return { t: tr ? Math.round(parseFloat(tr.replace(",", "."))) : null, e: ed ? Math.round(parseFloat(ed.replace(",", "."))) : null };
+};
+const diff = (() => {
+  if (!prev) return null;
+  const before = new Map<string, Entry>();
+  for (const e of prev.entries) before.set(keyOf(e), e);
+  const released: Entry[] = [], added: Entry[] = [], moved: { e: Entry; parts: string[] }[] = [];
+  const seen = new Set<string>();
+  for (const e of [...report.entries].reverse()) {
+    const k = keyOf(e);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    const b = before.get(k);
+    if (!b) { (e.kind === "released" ? released : added).push(e); continue; }
+    if (e.kind === "released" && b.kind !== "released") { released.push(e); continue; }
+    const x = pctOf(b.html), y = pctOf(e.html), parts: string[] = [];
+    if (x.t != null && y.t != null && y.t > x.t) parts.push(`переклад ${x.t} → ${y.t}%`);
+    if (x.e != null && y.e != null && y.e > x.e) parts.push(`редактура ${x.e} → ${y.e}%`);
+    if (parts.length) moved.push({ e, parts });
+  }
+  return released.length + added.length + moved.length ? { released, added, moved } : null;
+})();
+
+// ── Останній вихід — великою карткою ──
+const latestEntry = [...isoOf.entries()].sort((a, b) => b[1].localeCompare(a[1])).map(([id]) => report.entries.find((e) => e.id === id && e.game)).find(Boolean) ?? null;
+const latestArt = latestEntry?.game ? await artOf(latestEntry.game) : null;
+
+// ── Ритм виходів: місяці з першого датованого виходу до звіту ──
+const dated = [...isoOf.entries()].map(([id, iso]) => ({ e: report.entries.find((x) => x.id === id)!, iso })).filter((x) => x.e);
+const months: { key: string; label: string; items: typeof dated }[] = [];
+if (dated.length) {
+  let [y, m] = dated.map((d) => d.iso).sort()[0].split("-").map(Number);
+  const [ty, tm] = report.date.split("-").map(Number);
+  while (y < ty || (y === ty && m <= tm)) {
+    const key = `${y}-${String(m).padStart(2, "0")}`;
+    months.push({ key, label: `${Object.values(SHORT)[m - 1]}${m === 1 ? ` ’${String(y).slice(2)}` : ""}`, items: dated.filter((d) => d.iso.startsWith(key)) });
+    if (++m > 12) { m = 1; y++; }
+  }
+}
+
+// ── Режим «за іграми»: усі записи про гру в одній картці ──
+const byGame = new Map<string, Entry[]>();
+for (const e of report.entries) byGame.set(keyOf(e), [...(byGame.get(keyOf(e)) ?? []), e]);
+const gameCards = [...byGame.values()]
+  .map((list) => {
+    const sorted = [...list].sort((a, b) => (isoOf.get(a.id) ?? "").localeCompare(isoOf.get(b.id) ?? ""));
+    return { list: sorted, last: sorted.at(-1)!, iso: sorted.map((e) => isoOf.get(e.id)).filter(Boolean).at(-1) ?? "" };
+  })
+  .sort((a, b) => b.iso.localeCompare(a.iso) || translationPercent(b.last.game ?? ({ progress: 0 } as never)) - translationPercent(a.last.game ?? ({ progress: 0 } as never)));
+
+const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+iso.slice(5, 7) - 1]} ${iso.slice(0, 4)}`;
 ---
 
 <div class="page container chron">
@@ -123,7 +223,21 @@ const liveOf = (e: Entry) => {
   )}
 
   <header class="head">
-    <span class="eyebrow">Хронологія · станом на {report.dateLabel}</span>
+    <div class="head__top">
+      <span class="eyebrow">Хронологія · станом на {report.dateLabel}</span>
+      {reports.length > 1 && (
+        <label class="pick">
+          <span>Звіт</span>
+          <select id="chron-archive" aria-label="Обрати звіт">
+            {reports.map((r, i) => (
+              <option value={i === 0 ? "/chronology/" : `/chronology/${r.date}/`} selected={r.date === report.date}>
+                {r.dateLabel.replace(/ року$/, "")}{i === 0 ? " · найсвіжіший" : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
+    </div>
     <h1 class="title">Хронологія перекладів</h1>
     <p class="lead">
       Коли виходили українські переклади «Little Bit», що зараз оновлюється і що ще попереду — зі зборами коштів,
@@ -150,6 +264,32 @@ const liveOf = (e: Entry) => {
     ))}
   </ul>
 
+  {diff && prev && (
+    <section class="diff" aria-labelledby="diff-title">
+      <h2 id="diff-title" class="diff__title">Що змінилося з {prev.dateLabel.replace(/ року$/, "")}</h2>
+      <div class="diff__cols">
+        {diff.released.length > 0 && (
+          <div>
+            <p class="diff__label"><i style="background:var(--st-done)"></i>Вийшли · {diff.released.length}</p>
+            <ul>{diff.released.map((e) => <li><a href={`#${e.id}`}>{e.title}</a>{e.date && <small>{e.date}</small>}</li>)}</ul>
+          </div>
+        )}
+        {diff.moved.length > 0 && (
+          <div>
+            <p class="diff__label"><i style="background:var(--st-progress)"></i>Просунулися · {diff.moved.length}</p>
+            <ul>{diff.moved.map(({ e, parts }) => <li><a href={`#${e.id}`}>{e.title}</a><small>{parts.join(" · ")}</small></li>)}</ul>
+          </div>
+        )}
+        {diff.added.length > 0 && (
+          <div>
+            <p class="diff__label"><i style="background:var(--st-early)"></i>Нові у звіті · {diff.added.length}</p>
+            <ul>{diff.added.map((e) => <li><a href={`#${e.id}`}>{e.title}</a></li>)}</ul>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
   <!-- Липка панель: пошук і фільтри -->
   <div class="tools" id="chron-tools">
     <label class="search">
@@ -164,6 +304,10 @@ const liveOf = (e: Entry) => {
       ))}
     </div>
     <span class="count" id="chron-count" aria-live="polite"></span>
+    <div class="views" role="group" aria-label="Вигляд">
+      <button type="button" data-view="dates" aria-pressed="true">За датами</button>
+      <button type="button" data-view="games" aria-pressed="false">За іграми</button>
+    </div>
   </div>
 
   <div class="layout">
@@ -186,6 +330,39 @@ const liveOf = (e: Entry) => {
     <div class="report">
       <p class="empty" id="chron-empty" hidden>Нічого не знайдено. Спробуйте інший запит або фільтр.</p>
 
+      {latestEntry && latestEntry.game && (
+        <article class="hero" data-intro>
+          {(latestArt?.bannerLow || latestArt?.banner) && <img class="hero__bg" src={latestArt.bannerLow ?? latestArt.banner!} alt="" loading="lazy" decoding="async" />}
+          <div class="hero__body">
+            <span class="hero__label">Останній вихід · {latestEntry.date}</span>
+            <h2 class="hero__title">{latestEntry.title}</h2>
+            <div class="hero__actions">
+              <a class="c-btn" href={`/games/${latestEntry.game.id}/`}>Сторінка гри</a>
+              <a class="hero__link" href={`#${latestEntry.id}`}>Читати у звіті ↓</a>
+            </div>
+          </div>
+        </article>
+      )}
+
+      {months.length > 1 && (
+        <figure class="rhythm" data-intro>
+          <figcaption>Ритм виходів <span>кожна крапка — вихід; натисніть, щоб перейти</span></figcaption>
+          <ol>
+            {months.map((m) => (
+              <li class:list={{ "is-empty": !m.items.length }}>
+                <span class="rhythm__dots">
+                  {m.items.map((d) => (
+                    <a href={`#${d.e.id}`} title={`${d.e.date} — ${d.e.title}`} style={`--state:${/ранн\S* доступ/i.test(d.e.note ?? "") ? "var(--st-early)" : "var(--st-done)"}`}></a>
+                  ))}
+                </span>
+                <small>{m.label}</small>
+              </li>
+            ))}
+          </ol>
+        </figure>
+      )}
+
+      <div id="view-dates">
       {sections.map((s) => (
         <section class="sec" id={s.id} data-sec>
           <header class="sec__head">
@@ -211,6 +388,9 @@ const liveOf = (e: Entry) => {
                       const st = statusOf(e);
                       const note = noteOf(e);
                       const live = liveOf(e);
+                      const crew = crewOf(e);
+                      const tg = tgOf(e);
+                      const stages = s.board && e.game ? stagesOf(e.game) : null;
                       return (
                         <li
                           class="ev"
@@ -242,9 +422,26 @@ const liveOf = (e: Entry) => {
                               <h4 class="ev__title">
                                 {e.game ? <a href={`/games/${e.game.id}/`}>{e.title}</a> : e.title}
                               </h4>
-                              <div class="ev__text" data-clamp set:html={e.html} />
+                              {stages && (
+                                <ul class="board">
+                                  {stages.map((x) => (
+                                    <li class={x.percent >= 100 ? "is-done" : x.percent > 0 ? "is-active" : "is-todo"}>
+                                      <em>{stageName(x.label)}</em>
+                                      <i class="board__bar"><i style={`width:${x.percent}%`}></i></i>
+                                      <b>{x.percent > 0 ? `${formatPct(Math.round(x.percent))}%` : "—"}</b>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                              <div class="ev__text" data-clamp set:html={crew.length ? withoutMissingCrew(e.html) : e.html} />
+                              {crew.length > 0 && (
+                                <div class="crew">
+                                  {crew.slice(0, 8).map((p) => <a href={`/team/${p.slug}/`} title={p.name}><PersonAvatar name={p.name} slug={p.slug} size={26} /></a>)}
+                                  {crew.length > 8 && <span>+{crew.length - 8}</span>}
+                                </div>
+                              )}
                               <div class="ev__foot">
-                                {live && (
+                                {live && !stages && (
                                   <div class="live" title="Свіжі цифри з LBK Launcher; текст звіту міг бути написаний раніше">
                                     <span class="live__tag">Зараз</span>
                                     <span class="live__row"><em>переклад</em><i class="live__bar"><i style={`width:${live.translation}%`}></i></i><b>{live.translation}%</b></span>
@@ -255,6 +452,12 @@ const liveOf = (e: Entry) => {
                                 )}
                                 <span class="ev__actions">
                                   <button type="button" class="ev__more" data-more hidden>Докладніше</button>
+                                  {tg && (
+                                    <a class="ev__tg" href={tg.url} target="_blank" rel="noopener noreferrer" title={tg.title}>
+                                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z" /><path d="m9 13 12-9" /></svg>
+                                      <span>{tg.label}</span>
+                                    </a>
+                                  )}
                                   <button type="button" class="ev__copy" data-copy={`${base}#${e.id}`} aria-label={`Скопіювати посилання на «${e.title}»`}>
                                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1" /></svg>
                                     <span>Посилання</span>
@@ -273,6 +476,51 @@ const liveOf = (e: Entry) => {
           ))}
         </section>
       ))}
+
+      </div>
+
+      <div id="view-games" class="gview" hidden>
+        {gameCards.map(({ list, last }) => {
+          const st = statusOf(last);
+          const crew = crewOf(last);
+          return (
+            <article
+              class="gcard c-panel"
+              data-entry
+              data-kind={last.kind}
+              data-ea={list.some((e) => e.earlyAccess) ? "1" : ""}
+              data-fund={list.some((e) => e.fundraising) ? "1" : ""}
+              data-search={list.map((e) => e.search).join(" ")}
+            >
+              {last.game ? (
+                <a class="ev__cover" href={`/games/${last.game.id}/`} tabindex="-1" aria-hidden="true">
+                  <img src={thumbs.get(last.id) ?? last.game.cover} alt="" width="84" height="126" loading="lazy" decoding="async" />
+                </a>
+              ) : <span class="ev__cover ev__cover--empty" aria-hidden="true"></span>}
+              <div class="ev__body">
+                <div class="ev__meta"><span class={`badge badge--${st.cls}`}><i aria-hidden="true"></i>{st.label}</span></div>
+                <h4 class="ev__title">{last.game ? <a href={`/games/${last.game.id}/`}>{last.title}</a> : last.title}</h4>
+                <ol class="gcard__events">
+                  {list.map((e) => (
+                    <li>
+                      <span>{isoOf.get(e.id) ? shortDate(isoOf.get(e.id)!) : "без дати"}</span>
+                      <a href={`#${e.id}`} data-goto-dates>{statusOf(e).label}{noteOf(e) ? ` · ${noteOf(e)}` : ""}</a>
+                    </li>
+                  ))}
+                </ol>
+                <div class="ev__text" data-clamp set:html={crew.length ? withoutMissingCrew(last.html) : last.html} />
+                {crew.length > 0 && (
+                  <div class="crew">
+                    {crew.slice(0, 8).map((p) => <a href={`/team/${p.slug}/`} title={p.name}><PersonAvatar name={p.name} slug={p.slug} size={26} /></a>)}
+                    {crew.length > 8 && <span>+{crew.length - 8}</span>}
+                  </div>
+                )}
+                <div class="ev__foot"><span class="ev__actions"><button type="button" class="ev__more" data-more hidden>Докладніше</button></span></div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
 
       {report.footnote && (
         <aside class="note" id="note">
@@ -311,9 +559,14 @@ const liveOf = (e: Entry) => {
   const groups = Array.from(document.querySelectorAll<HTMLElement>("[data-group]"));
   const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-sec]"));
   const summaries = Array.from(document.querySelectorAll<HTMLElement>("[data-summary]"));
+  const intros = Array.from(document.querySelectorAll<HTMLElement>("[data-intro]"));
+  const viewDates = $("view-dates");
+  const viewGames = $("view-games");
+  const viewButtons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-view]"));
 
   const params = new URLSearchParams(location.search);
-  const state = { filter: params.get("f") ?? "all", q: params.get("q") ?? "" };
+  const state = { filter: params.get("f") ?? "all", q: params.get("q") ?? "", view: params.get("v") === "games" ? "games" : "dates" };
+  const inView = (el: HTMLElement) => (state.view === "games" ? viewGames : viewDates)?.contains(el) ?? true;
 
   const matches = (el: HTMLElement) => {
     const d = el.dataset;
@@ -329,10 +582,14 @@ const liveOf = (e: Entry) => {
   function apply() {
     const active = state.filter !== "all" || state.q.trim() !== "";
     let shown = 0;
+    if (viewDates) viewDates.hidden = state.view !== "dates";
+    if (viewGames) viewGames.hidden = state.view !== "games";
+    viewButtons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.view === state.view)));
+    intros.forEach((el) => (el.hidden = active || state.view !== "dates"));
     for (const el of entries) {
       const ok = matches(el);
       el.hidden = !ok;
-      if (ok) shown++;
+      if (ok && inView(el)) shown++;
       // Під час пошуку показуємо текст повністю — збіг може бути в прихованій частині
       el.classList.toggle("is-open", ok && state.q.trim() !== "");
     }
@@ -341,13 +598,14 @@ const liveOf = (e: Entry) => {
     for (const sec of sections) sec.hidden = !sec.querySelector("[data-entry]:not([hidden])");
     summaries.forEach((s) => (s.hidden = active));
     buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === state.filter)));
-    if (count) count.textContent = active ? `${shown} з ${entries.length}` : "";
+    if (count) count.textContent = active ? `${shown} з ${entries.filter(inView).length}` : "";
     if (empty) empty.hidden = shown > 0;
     markClamped();
 
     const p = new URLSearchParams();
     if (state.filter !== "all") p.set("f", state.filter);
     if (state.q.trim()) p.set("q", state.q.trim());
+    if (state.view === "games") p.set("v", "games");
     const qs = p.toString();
     history.replaceState(null, "", (qs ? `?${qs}` : location.pathname) + location.hash);
   }
@@ -388,6 +646,23 @@ const liveOf = (e: Entry) => {
       if (b.classList.contains("kpi__btn")) $("chron-tools")?.scrollIntoView({ behavior: "smooth", block: "start" });
     }),
   );
+  // Перемикач «За датами / За іграми»
+  viewButtons.forEach((b) => b.addEventListener("click", () => { state.view = b.dataset.view === "games" ? "games" : "dates"; apply(); }));
+  // З картки гри — до події в стрічці за датами
+  document.querySelectorAll<HTMLAnchorElement>("[data-goto-dates]").forEach((a) =>
+    a.addEventListener("click", () => {
+      state.view = "dates";
+      apply();
+      document.getElementById(a.hash.slice(1))?.classList.add("is-open");
+    }),
+  );
+  // Ритм виходів на вузьких екранах гортається — показуємо найсвіжіші місяці
+  document.querySelectorAll<HTMLElement>(".rhythm ol").forEach((ol) => (ol.scrollLeft = ol.scrollWidth));
+  // Вибір звіту з архіву
+  document.getElementById("chron-archive")?.addEventListener("change", (e) => {
+    location.href = (e.target as HTMLSelectElement).value;
+  });
+
   // Перехід за якорем на картку — розгорнути її
   const target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
   if (target && target.dataset.entry !== undefined) target.classList.add("is-open");
@@ -697,5 +972,90 @@ const liveOf = (e: Entry) => {
     .ev__text { font-size: 14px; -webkit-line-clamp: 4; line-clamp: 4; }
     .ev__copy span { display: none; }
     .live__bar { width: 48px; }
+  }
+
+  /* ── Вибір звіту в шапці ── */
+  .head__top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; }
+  .pick { display: inline-flex; align-items: center; gap: 8px; color: var(--faint); font-size: 12px; font-weight: 600; }
+  .pick select { height: 34px; padding: 0 12px; border-radius: 9999px; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--line); color: var(--ink); font-size: 13px; font-weight: 600; color-scheme: dark; cursor: pointer; }
+
+  /* ── Що змінилося ── */
+  .diff { margin-top: 24px; padding: 20px 24px; border-radius: 16px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); }
+  .diff__title { font-size: 15px; font-weight: 700; }
+  .diff__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px 32px; margin-top: 14px; }
+  .diff__label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  .diff__label i { width: 8px; height: 8px; border-radius: 50%; }
+  .diff ul { display: grid; gap: 6px; }
+  .diff li { display: grid; gap: 1px; font-size: 14px; }
+  .diff li a { font-weight: 600; }
+  .diff li a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .diff li small { color: var(--faint); font-size: 12px; }
+
+  /* ── Перемикач вигляду ── */
+  .views { display: inline-flex; padding: 3px; border-radius: 9999px; background: rgba(255, 255, 255, 0.07); }
+  .views button { padding: 6px 12px; border-radius: 9999px; color: var(--muted); font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .views button[aria-pressed="true"] { background: #f4f1f4; color: #111; }
+
+  /* ── Останній вихід ── */
+  .hero { position: relative; display: flex; align-items: flex-end; min-height: 240px; margin-bottom: 20px; overflow: hidden; border-radius: 18px; background: #16141b; border: 1px solid var(--glass-line); }
+  .hero__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(8, 8, 10, 0.92), rgba(8, 8, 10, 0.55) 55%, rgba(8, 8, 10, 0.1)); }
+  .hero__body { position: relative; z-index: 1; display: grid; gap: 10px; padding: 28px; }
+  .hero__label { color: var(--st-done); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  .hero__title { max-width: 22ch; font-size: clamp(1.5rem, 3vw, 2.3rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; }
+  .hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 6px; }
+  .hero .c-btn { min-height: 42px; padding: 0 20px; letter-spacing: 0; text-transform: none; }
+  .hero__link { color: rgba(255, 255, 255, 0.85); font-size: 14px; font-weight: 600; }
+  .hero__link:hover { color: #fff; }
+
+  /* ── Ритм виходів ── */
+  .rhythm { margin-bottom: 40px; padding: 18px 20px 14px; border-radius: 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); }
+  .rhythm figcaption { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; color: var(--ink); font-size: 13px; font-weight: 700; }
+  .rhythm figcaption span { color: var(--faint); font-size: 12px; font-weight: 500; }
+  .rhythm ol { display: grid; grid-auto-columns: minmax(28px, 1fr); grid-auto-flow: column; gap: 4px; margin-top: 14px; overflow-x: auto; scrollbar-width: none; }
+  .rhythm ol::-webkit-scrollbar { display: none; }
+  .rhythm li { display: grid; grid-template-rows: 1fr auto; gap: 6px; justify-items: center; min-height: 92px; }
+  .rhythm__dots { display: flex; flex-direction: column-reverse; align-items: center; gap: 4px; align-self: end; }
+  .rhythm__dots a { width: 12px; height: 12px; border-radius: 50%; background: var(--state); box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.3); transition: transform 0.15s ease; }
+  .rhythm__dots a:hover { transform: scale(1.4); }
+  .rhythm small { color: var(--faint); font-size: 10px; white-space: nowrap; }
+  .rhythm .is-empty small { opacity: 0.6; }
+
+  /* ── Учасники, Telegram ── */
+  .crew { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+  .crew a { border-radius: 50%; transition: transform 0.15s ease; }
+  .crew a:hover { transform: translateY(-2px); }
+  .crew span { margin-left: 4px; color: var(--faint); font-size: 12px; font-weight: 600; }
+  .ev__tg { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 9999px; color: #8cc8ff; font-size: 12px; font-weight: 600; }
+  .ev__tg:hover { background: rgba(92, 169, 255, 0.12); }
+  .ev__tg svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+
+  /* ── Дошка «ще не вийшли» ── */
+  .board { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: 8px 20px; padding: 10px 0 2px; }
+  .board li { display: grid; grid-template-columns: 76px 1fr 38px; gap: 8px; align-items: center; }
+  .board em { overflow: hidden; color: var(--faint); font-size: 12px; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
+  .board b { font-size: 12px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+  .board__bar { display: block; height: 5px; overflow: hidden; border-radius: 5px; background: rgba(255, 255, 255, 0.1); }
+  .board__bar i { display: block; height: 100%; border-radius: 5px; background: var(--st-progress); }
+  .board .is-done .board__bar i { background: var(--st-done); }
+  .board .is-todo b { color: var(--faint); }
+
+  /* ── Вигляд «за іграми» ── */
+  .gview { display: grid; gap: 10px; }
+  .gcard { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 20px; padding: 16px 20px 16px 16px; box-shadow: none; }
+  .gcard__events { display: grid; gap: 4px; padding: 2px 0 4px; border-left: 2px solid var(--line); }
+  .gcard__events li { display: grid; grid-template-columns: 130px 1fr; gap: 10px; padding-left: 12px; font-size: 13px; }
+  .gcard__events span { color: var(--faint); font-variant-numeric: tabular-nums; }
+  .gcard__events a { color: var(--muted); font-weight: 600; }
+  .gcard__events a:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .gcard.is-open .ev__text { display: block; -webkit-line-clamp: unset; line-clamp: none; }
+
+  @media (max-width: 600px) {
+    .gcard { grid-template-columns: 60px minmax(0, 1fr); gap: 14px; padding: 14px; }
+    .gcard__events li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .hero { min-height: 200px; }
+    .hero__body { padding: 20px; }
+    .views { width: 100%; }
+    .views button { flex: 1; }
   }
 </style>
