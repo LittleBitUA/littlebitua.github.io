@@ -57,7 +57,9 @@ export const PEOPLE: Person[] = [
     about: "Перекладач, редактор і технічна частина: розбирає ігри, вбудовує текст, робить нативні рекомпіляції.",
     credits: [
       { game: "uncharted-collection", role: "Переклад, редактура, технічна частина" },
-      { game: "gravity-rush", role: "Переклад" },
+      { game: "gravity-rush", role: "Переклад, технічна частина" },
+      { game: "gravity-rush-2", role: "Переклад, технічна частина" },
+      { game: "killer-is-dead", role: "Переклад, технічна частина" },
       { game: "silent-hill-shattered-memories", role: "Переклад" },
       { game: "mixtape", role: "Переклад, редактура, інтеграція в гру" },
       { game: "dead-rising-deluxe-remaster", role: "Переклад, редактура, технічна частина" },
