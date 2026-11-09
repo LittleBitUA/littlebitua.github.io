@@ -262,7 +262,27 @@ const SHARED_ENTRY: Record<string, string> = {
 export function chronologyEntry(gameId: string): Entry | null {
   const id = SHARED_ENTRY[gameId] ?? gameId;
   // Якщо про гру кілька записів (ранній доступ, потім повний реліз) — беремо найсвіжіший, тобто останній
-  return latestReport?.entries.findLast((e) => e.game?.id === id) ?? null;
+  const entry = latestReport?.entries.findLast((e) => e.game?.id === id) ?? null;
+  return entry ? { ...entry, html: ownParagraphs(gameId, id, entry.html) } : null;
+}
+
+/**
+ * У спільному записі (Lost Judgment + Ishin) абзац про іншу гру починається з її назви.
+ * Гостьовій грі лишаємо лише її абзаци, основній — усі, крім абзаців про гостей.
+ */
+function ownParagraphs(gameId: string, hostId: string, html: string): string {
+  const guests = Object.entries(SHARED_ENTRY).filter(([, h]) => h === hostId).map(([g]) => g);
+  if (!guests.length) return html;
+  const paras = html.match(/<p>[\s\S]*?<\/p>/g);
+  if (!paras || paras.length < 2) return html;
+  const startsWith = (p: string, id: string) => {
+    const title = gameById.get(id)?.title;
+    return !!title && p.replace(/<[^>]+>/g, "").trim().toLowerCase().startsWith(title.toLowerCase());
+  };
+  const kept = gameId === hostId
+    ? paras.filter((p) => !guests.some((g) => startsWith(p, g)))
+    : paras.filter((p) => startsWith(p, gameId));
+  return kept.length ? kept.join("\n") : html;
 }
 
 /** Якір гри в найсвіжішому звіті. */

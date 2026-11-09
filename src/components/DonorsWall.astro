@@ -8,7 +8,7 @@ const list = rankedDonors();
 ---
 
 <div class="donors">
-  <p class="donors__head">Топ-5 донатерів</p>
+  <p class="donors__head">Найбільші донатери</p>
   <ol>
     {list.map((d, i) => (
       <li class:list={{ "is-top": i === 0 }}>
@@ -22,7 +22,7 @@ const list = rankedDonors();
 </div>
 
 <style>
-  .donors { padding: 24px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .donors { padding: 24px; border-radius: 16px; background: rgba(20, 20, 24, 0.55); border: 1px solid var(--glass-line, var(--line)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   .donors__head {
     margin-bottom: 8px;
     color: var(--faint);
@@ -41,8 +41,10 @@ const list = rankedDonors();
   }
   .donors__rank { color: var(--faint); font-size: 12px; }
   .donors__name { font-weight: 800; }
-  .donors__amount { color: var(--muted); font-size: 14px; }
-  .is-top .donors__rank, .is-top .donors__amount { color: var(--accent); }
-  .is-top .donors__name { font-size: 1.1rem; }
+  .donors__amount { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .donors li:last-child { border-bottom: 0; }
+  .is-top .donors__rank, .is-top .donors__amount { color: var(--st-fund); font-weight: 700; }
+  .is-top .donors__name { font-size: 1.15rem; }
+  .is-top { padding-top: 6px !important; }
   .donors__thanks { margin-top: 16px; color: var(--faint); font-size: 13px; }
 </style>

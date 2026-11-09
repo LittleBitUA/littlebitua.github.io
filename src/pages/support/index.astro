@@ -4,6 +4,7 @@
 // збірки), призупинені, завершені, а також загальні способи підтримки.
 import Layout from "../../layouts/Layout.astro";
 import DonorsWall from "../../components/DonorsWall.astro";
+import FundedProjects from "../../components/FundedProjects.astro";
 import { games } from "../../data/catalog";
 import { isFundraising, fundraisingPercent, formatMoney, translationPercent, formatPct } from "../../utils/status";
 import { cover } from "../../lib/cover";
@@ -17,7 +18,6 @@ const done = games.filter((g) => g.fundraisingCompleted);
 const card = async (g: (typeof games)[number]) => ({ g, img: await cover(g.cover, 240), pct: fundraisingPercent(g), url: g.fundraisingUrl ?? g.donateUrl });
 const activeCards = await Promise.all(active.map(card));
 const pausedCards = await Promise.all(paused.map(card));
-const doneCards = await Promise.all(done.map(async (g) => ({ g, img: await cover(g.cover, 120) })));
 
 const WAYS = [
   { name: "Donatello", href: "https://donatello.to/LittleBitUA", text: "Разовий донат або підтримка конкретного збору." },
@@ -100,22 +100,11 @@ const WAYS = [
       ))}
     </ul>
 
-    {doneCards.length > 0 && (
+    {done.length > 0 && (
       <>
-        <h2 class="sec">Зібрали разом із вами <span>{doneCards.length}</span></h2>
-        <ul class="done">
-          {doneCards.map(({ g, img }) => (
-            <li>
-              <a href={`/games/${g.id}/`} class="done__item">
-                <img src={img} alt="" width="40" height="60" loading="lazy" />
-                <span>
-                  <strong>{g.title}</strong>
-                  {g.fundraisingGoal && <small>{formatMoney(g.fundraisingRaised ?? g.fundraisingGoal)}</small>}
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+        <h2 class="sec">Зібрали разом із вами <span>{done.length}</span></h2>
+        <p class="sec__note">Проєкти, на які вже зібрали кошти. Дякуємо кожному, хто долучився.</p>
+        <FundedProjects />
       </>
     )}
 
@@ -155,12 +144,6 @@ const WAYS = [
   .way strong { font-size: 16px; }
   .way small { color: var(--muted); font-size: 13px; }
 
-  .done { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 10px; }
-  .done__item { display: flex; align-items: center; gap: 12px; }
-  .done__item img { width: 40px; height: 60px; object-fit: cover; border-radius: 6px; }
-  .done__item span { display: grid; gap: 2px; min-width: 0; }
-  .done__item strong { overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-  .done__item small { color: var(--muted); font-size: 12px; }
   .donors { margin-top: 56px; }
 
   @media (max-width: 520px) {

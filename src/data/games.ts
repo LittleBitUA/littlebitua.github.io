@@ -476,7 +476,7 @@ export const games: Game[] = [
     stage: "Переклад",
     fundraisingRaised: 33475,
     fundraisingGoal: 50000,
-    fundraisingPaused: true,
+    fundraisingCompleted: true,
     fundraisingUrl: "https://donatello.to/LittleBitUA?g=podalsha-tekstova-lokalizatsiya-metal-gear-solid-d-snake-eater-master-collection",
     fundraisingDescription: "Збір на подальшу повноцінну текстову локалізацію METAL GEAR SOLID Δ: SNAKE EATER.",
     stageDetails: [

@@ -9,8 +9,8 @@ export interface Donor {
 }
 
 export const donors: Donor[] = [
-  { name: "LoydiN",      amount: 15006 },
-  { name: "Ґред",        amount: 15000 },
+  { name: "LoydiN",      amount: 15606 },
+  { name: "Ґред",        amount: 27000 },
   { name: "Krov",        amount: 9200  },
   { name: "DiagonBlaze", amount: 7500  },
   { name: "MoreManUA",   amount: 5000  },
