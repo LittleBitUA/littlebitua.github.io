@@ -168,6 +168,7 @@ export const games: Game[] = [
   },
   {
     id: "shadows-of-the-damned",
+    releaseDate: "2026-10-10",
     limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     title: "Shadows of the Damned: Hella Remastered",
     description:
@@ -190,6 +191,7 @@ export const games: Game[] = [
   },
   {
     id: "romeo-is-a-dead-man",
+    releaseDate: "2026-10-08",
     title: "ROMEO IS A DEAD MAN",
     description:
       "ROMEO IS A DEAD MAN — божевільний екшен від Grasshopper Manufacture та Ґоїчі Суди, де смерть — лише початок.\n\nУлітку 2019 року зіткнення сингулярностей розкололо світ на безліч фрагментних усесвітів. Ромео Старґейзер, звичайний заступник шерифа з Дедфорда, опиняється в самому центрі цієї катастрофи. Смертельно поранений і врятований завдяки загадковому «Дедґіру», він стає Дедменом — людиною, що зависла між життям і смертю.\n\nТепер Ромео працює з Часопросторовою поліцією ФБР, полює на часопросторових злочинців, мандрує фрагментними всесвітами й намагається відшукати Джульєт — дівчину, з якої для нього все почалося.\n\nДивакуватий гумор, криваві сутички, абсурд, окультизм, наукова фантастика й фірмове божевілля SUDA51 — усе це ROMEO IS A DEAD MAN.",
@@ -210,6 +212,7 @@ export const games: Game[] = [
   },
   {
     id: "killer-is-dead",
+    releaseDate: "2026-10-14",
     limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     launcherSlug: "killer_is_dead_nightmare_edition",
     title: "Killer is Dead - Nightmare Edition",
@@ -381,6 +384,7 @@ export const games: Game[] = [
   },
   {
     id: "mgs2",
+    releaseDate: "2026-04-13",
     title: "METAL GEAR SOLID 2: Sons of Liberty - Master Collection Version",
     description:
       "Четверта гра в серії METAL GEAR: події розгортаються навколо двох інцидентів 2007 та 2009 років, у центрі сюжету — Солід Снейк і Райден, а гравців чекають нові можливості стелс-ґеймплею.",
@@ -462,6 +466,7 @@ export const games: Game[] = [
   },
   {
     id: "mgs-snake-eater",
+    gameYear: 2025,
     title: "METAL GEAR SOLID Δ: SNAKE EATER",
     description:
       "Зустрічайте ремейк гри 2004 року METAL GEAR SOLID 3 з тією ж неймовірною історією і яскравим світом, але з оновленою графікою та 3D-звуком, що допоможе ще більше зануритися в атмосферу джунглів. Приготуйтеся провести не один десяток годин у цьому неперевершеному стелс-бойовику на виживання.",
@@ -883,6 +888,7 @@ export const games: Game[] = [
   },
   {
     id: "digging-a-hole",
+    releaseDate: "2026-01-05",
     title: "A Game About Digging A Hole™",
     description:
       "Мінімалістична гра про те, як копати яму в саду щойно купленого будинку. Збирайте ресурси, продавайте їх, поліпшуйте спорядження та розкрийте таємничий секрет. Коштує всього одну каву!",
@@ -935,6 +941,7 @@ export const games: Game[] = [
   },
   {
     id: "hotel-barcelona",
+    releaseDate: "2026-06-02",
     title: "HOTEL BARCELONA",
     description:
       "HOTEL BARCELONA — божевільний горор-екшн від SWERY та SUDA51, де федеральна маршалка, одержима серійним убивцею, пробивається крізь моторошний готель, наповнений маніяками, кров’ю й абсурдом. На вас чекають сім зон у стилі різних піджанрів жахів, жорсткі боси, чорний гумор і фірмова шиза двох культових авторів.",
@@ -1083,6 +1090,7 @@ export const games: Game[] = [
   },
   {
     id: "as-dusk-falls",
+    releaseDate: "2025-12-30",
     title: "As Dusk Falls",
     description:
       "As Dusk Falls — кінематографічна інтерактивна драма від творців із Interior/Night, де ви проживаєте історію двох родин, чиї долі переплітаються після невдалого пограбування в маленькому містечку Аризони. Це гра про вибір і наслідки: кожне рішення змінює стосунки, хід подій і фінал. Візуальний стиль — як ожилий графічний роман, а проходження зручно ділиться на епізоди та добре підходить для гри з друзями.",
@@ -1113,6 +1121,7 @@ export const games: Game[] = [
 
   {
     id: "shenmue",
+    releaseDate: "2026-10-14",
     launcherSlug: "shenmue_i_ii",
     title: "Shenmue I & II",
     description:
@@ -1189,6 +1198,8 @@ export const games: Game[] = [
   },
   {
     id: "silent-hill-shattered-memories",
+    gameYear: 2009,
+    releaseDate: "2026-10-14",
     launcherSlug: "silent_hill_shattered_memories",
     title: "Silent Hill: Shattered Memories",
     series: "Silent Hill",
@@ -1210,6 +1221,7 @@ export const games: Game[] = [
   },
   {
     id: "fire-emblem-three-houses",
+    gameYear: 2019,
     title: "Fire Emblem: Three Houses",
     series: "Fire Emblem",
     description:
@@ -1227,6 +1239,7 @@ export const games: Game[] = [
   },
   {
     id: "the-missing",
+    releaseDate: "2026-06-01",
     title: "The MISSING: J.J. Macfield and the Island of Memories",
     description:
       "The Missing: J.J. Macfield and the Island of Memories — моторошна й зворушлива пригода від SWERY, у якій Джей-Джей вирушає на острів Спогадів, щоб знайти зниклу подругу. На цьому кошмарному острові смерть не кінець: героїня знову й знову відроджується, використовуючи власні травми для розв’язання пазлів і поступово відкриваючи болісну правду про себе.",
@@ -1248,6 +1261,8 @@ export const games: Game[] = [
   },
   {
     id: "metal-gear-solid-4",
+    gameYear: 2026,
+    releaseDate: "2026-09-19",
     title: "METAL GEAR SOLID 4: Guns of the Patriots — Master Collection",
     series: "Metal Gear",
     description:
@@ -1316,6 +1331,7 @@ export const games: Game[] = [
   },
   {
     id: "silent-hill-downpour",
+    gameYear: 2012,
     launcherSlug: "silent_hill_downpour",
     title: "Silent Hill: Downpour",
     series: "Silent Hill",
@@ -1374,6 +1390,7 @@ export const games: Game[] = [
   },
   {
     id: "mgs3-master-collection",
+    releaseDate: "2026-09-27",
     title: "METAL GEAR SOLID 3: Snake Eater - Master Collection Version",
     series: "Metal Gear",
     description:
@@ -1395,6 +1412,7 @@ export const games: Game[] = [
   },
   {
     id: "metal-gear-mg2",
+    releaseDate: "2026-09-18",
     limitations: ["Лаунчер гри (меню перед запуском) не перекладено.", "Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     title: "METAL GEAR & METAL GEAR 2: Solid Snake",
     series: "Metal Gear",
@@ -1466,6 +1484,7 @@ export const games: Game[] = [
   },
   {
     id: "dead-rising-deluxe-remaster",
+    releaseDate: "2026-09-27",
     title: "Dead Rising Deluxe Remaster",
     series: "Dead Rising",
     description:
@@ -1487,6 +1506,7 @@ export const games: Game[] = [
   },
   {
     id: "dead-rising",
+    releaseDate: "2026-09-27",
     launcherSlug: "dead_rising",
     title: "Dead Rising",
     series: "Dead Rising",
@@ -1528,6 +1548,7 @@ export const games: Game[] = [
   },
   {
     id: "kh-birth-by-sleep",
+    releaseDate: "2026-09-30",
     title: "KINGDOM HEARTS Birth by Sleep FINAL MIX",
     series: "Kingdom Hearts",
     description:
