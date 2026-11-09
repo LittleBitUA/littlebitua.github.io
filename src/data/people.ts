@@ -97,6 +97,16 @@ export const PEOPLE: Person[] = [
     ],
   },
   {
+    slug: "gromik",
+    name: "Давид Gromik",
+    credits: [{ game: "fire-emblem-three-houses", role: "Переклад" }],
+  },
+  {
+    slug: "tonelicoaesc",
+    name: "tonelicoaesc",
+    credits: [{ game: "fire-emblem-three-houses", role: "Переклад" }],
+  },
+  {
     slug: "molfar",
     name: "мольфар",
     credits: [{ game: "jojo-asbr", role: "Текстури" }],
