@@ -1,0 +1,186 @@
+---
+// ─── Цифри: команда й переклади в числах ───────────────────────
+// Усе рахується під час збірки з тих самих даних, що й решта сайту:
+// каталог (games.ts + LBK Launcher), хронологія, журнал прогресу, титри.
+import Layout from "../../layouts/Layout.astro";
+import { games } from "../../data/catalog";
+import { PEOPLE } from "../../data/people";
+import { latestReport } from "../../lib/chronology";
+import { updatesOf } from "../../lib/updates";
+import { getSeriesGroups } from "../../utils/series";
+import { isPlayable, statusMeta, STATUS_META, isFundraising } from "../../utils/status";
+import { pluralize } from "../../utils/pluralize";
+import { SITE_URL } from "../../utils/seo";
+import type { GameStatus } from "../../data/games";
+
+const n = (v: number) => v.toLocaleString("uk-UA");
+
+// ── Головні числа ──
+const playable = games.filter(isPlayable).length;
+const inWork = games.length - playable;
+const members = PEOPLE.filter((p) => !p.guest && !p.team).length;
+const helpers = PEOPLE.filter((p) => p.guest || p.team).length;
+
+// ── Виходи за місяцями (розділ «Виходи…» останнього звіту) ──
+const MONTHS = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];
+const SHORT = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
+const byYear = new Map<string, { total: number; months: number[] }>();
+let year = "";
+for (const item of latestReport?.sections[0]?.items ?? []) {
+  if (item.kind === "node" && item.level === 1) year = item.text.match(/\d{4}/)?.[0] ?? year;
+  if (item.kind !== "entry" || !year) continue;
+  const y = byYear.get(year) ?? { total: 0, months: Array(12).fill(0) };
+  y.total++;
+  const m = item.entry.date ? MONTHS.findIndex((name) => item.entry.date!.endsWith(name)) : -1;
+  if (m >= 0) y.months[m]++;
+  byYear.set(year, y);
+}
+const years = [...byYear].sort(([a], [b]) => a.localeCompare(b));
+const current = years.at(-1);
+const peak = Math.max(1, ...(current?.[1].months ?? [1]));
+
+// ── Стан каталогу ──
+const ORDER: GameStatus[] = ["done", "early-access", "in-progress", "fundraising", "planned"];
+const byStatus = ORDER.map((s) => ({ s, count: games.filter((g) => g.status === s).length, ...statusMeta(s) })).filter((x) => x.count);
+
+// ── Активність за 30 днів (журнал прогресу) ──
+const since = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
+const recent = updatesOf(games).filter((u) => u.date >= since);
+const touched = new Set(recent.map((u) => u.game.id)).size;
+
+// ── Обсяг тексту (там, де ведеться підрахунок рядків) ──
+const counted = games.filter((g) => g.stats?.translatedLines);
+const lines = counted.reduce((sum, g) => sum + (g.stats!.translatedLines ?? 0), 0);
+
+// ── Серії ──
+const series = getSeriesGroups(2).sort((a, b) => b.games.length - a.games.length).slice(0, 6);
+const fundsActive = games.filter(isFundraising).length;
+const fundsDone = games.filter((g) => g.fundraisingCompleted).length;
+---
+
+<Layout
+  title="Цифри — українські переклади «Little Bit» у числах"
+  description={`«Little Bit» у числах: ${playable} перекладів, у які вже можна грати, ${inWork} у роботі, ${members + helpers} людей у титрах.`}
+  canonicalUrl={`${SITE_URL}/stats/`}
+>
+  <div class="page container">
+    <header class="head">
+      <span class="eyebrow">Цифри</span>
+      <h1 class="title">«Little Bit» у числах</h1>
+      <p class="lead">Усе рахується автоматично з каталогу, хронології та щоденного журналу прогресу з LBK Launcher.</p>
+    </header>
+
+    <ul class="tiles">
+      <li class="c-panel tile"><strong>{playable}</strong><span>{pluralize(playable, "переклад", "переклади", "перекладів")}, у які вже можна грати</span></li>
+      <li class="c-panel tile"><strong>{inWork}</strong><span>{pluralize(inWork, "проєкт", "проєкти", "проєктів")} у роботі</span></li>
+      <li class="c-panel tile"><strong>{members}</strong><span>{pluralize(members, "людина", "людини", "людей")} у команді; ще {helpers} допомагають з окремими іграми</span></li>
+      {current && <li class="c-panel tile"><strong>{current[1].total}</strong><span>{pluralize(current[1].total, "вихід", "виходи", "виходів")} перекладів за {current[0]} рік</span></li>}
+    </ul>
+
+    {current && (
+      <section class="block">
+        <h2 class="sec">Виходи за {current[0]} рік</h2>
+        <div class="c-panel chart">
+          <ol class="months" aria-hidden="true">
+            {current[1].months.map((c, i) => (
+              <li title={`${SHORT[i]}: ${c} ${pluralize(c, "вихід", "виходи", "виходів")}`}>
+                <span class="months__val">{c || ""}</span>
+                <span class="months__bar" style={`height:${(c / peak) * 100}%`}></span>
+                <span class="months__label">{SHORT[i]}</span>
+              </li>
+            ))}
+          </ol>
+          <div class="sr-only"><table>
+            <caption>Кількість виходів перекладів за місяцями {current[0]} року</caption>
+            <tbody>{current[1].months.map((c, i) => <tr><th>{SHORT[i]}</th><td>{c}</td></tr>)}</tbody>
+          </table></div>
+          <p class="chart__note">
+            Релізи, тестові версії й ранній доступ із <a href="/chronology/">хронології</a>.
+            {current[1].total - current[1].months.reduce((a, b) => a + b, 0) > 0 && ` Ще ${current[1].total - current[1].months.reduce((a, b) => a + b, 0)} — без точної дати.`}
+            {years.length > 1 && ` Раніше: ${years.slice(0, -1).map(([y, v]) => `${y} — ${v.total}`).join(", ")}.`}
+          </p>
+        </div>
+      </section>
+    )}
+
+    <section class="block">
+      <h2 class="sec">Стан каталогу · {games.length} {pluralize(games.length, "гра", "гри", "ігор")}</h2>
+      <div class="c-panel chart">
+        <div class="split" role="img" aria-label={byStatus.map((x) => `${x.label}: ${x.count}`).join(", ")}>
+          {byStatus.map((x) => <span style={`flex:${x.count};background:${x.color}`} title={`${x.label}: ${x.count}`}></span>)}
+        </div>
+        <ul class="legend">
+          {byStatus.map((x) => (
+            <li><i style={`background:${x.color}`}></i>{x.label} <b>{x.count}</b></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="block grid2">
+      <div class="c-panel fact">
+        <h2>За останні 30 днів</h2>
+        <p><strong>{recent.length}</strong> {pluralize(recent.length, "зміна", "зміни", "змін")} у {touched} {pluralize(touched, "грі", "іграх", "іграх")}: релізи, нові версії, прогрес перекладу й редактури.</p>
+        <a href="/updates/">Стрічка «Що нового» →</a>
+      </div>
+      <div class="c-panel fact">
+        <h2>Обсяг тексту</h2>
+        <p><strong>{n(lines)}</strong> перекладених рядків — лише в {counted.length} {pluralize(counted.length, "проєкті", "проєктах", "проєктах")}, де ведеться підрахунок; насправді більше.</p>
+      </div>
+      <div class="c-panel fact">
+        <h2>Збори</h2>
+        <p><strong>{fundsDone}</strong> {pluralize(fundsDone, "збір завершено", "збори завершено", "зборів завершено")}{fundsActive > 0 && `, ${fundsActive} ${pluralize(fundsActive, "триває", "тривають", "тривають")}`}.</p>
+        <a href="/support/">Підтримати →</a>
+      </div>
+      <div class="c-panel fact">
+        <h2>Найбільші серії</h2>
+        <ul class="series">
+          {series.map((s) => <li><a href={`/games/series/${s.slug}/`}>{s.name}</a><b>{s.games.length}</b></li>)}
+        </ul>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .head { margin: 24px 0 28px; }
+  .title { margin-top: 10px; font-size: clamp(1.8rem, 4vw, 3.25rem); }
+  .lead { max-width: 70ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
+  .lead a, .chart__note a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+  .tile { display: grid; gap: 8px; padding: 20px 22px; }
+  .tile strong { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
+  .tile span { color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+  .block { margin-top: 44px; }
+  .sec { margin-bottom: 14px; font-size: clamp(1.1rem, 1.7vw, 1.4rem); font-weight: 600; }
+  .chart { padding: 22px 24px; }
+  .chart__note { margin-top: 16px; color: var(--faint); font-size: 13px; }
+
+  .months { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; height: 200px; }
+  .months li { display: grid; grid-template-rows: auto 1fr auto; align-items: end; justify-items: center; gap: 6px; min-width: 0; }
+  .months__val { color: var(--ink); font-size: 13px; font-weight: 600; }
+  .months__bar { align-self: end; width: min(100%, 36px); min-height: 2px; border-radius: 4px 4px 0 0; background: var(--st-early); }
+  .months li:hover .months__bar { filter: brightness(1.2); }
+  .months__label { color: var(--faint); font-size: 12px; }
+
+  .split { display: flex; gap: 2px; height: 14px; overflow: hidden; border-radius: 4px; }
+  .split span { min-width: 4px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; color: var(--muted); font-size: 13px; }
+  .legend li { display: flex; align-items: center; gap: 8px; }
+  .legend i { width: 10px; height: 10px; border-radius: 3px; }
+  .legend b { color: var(--ink); font-weight: 700; }
+
+  .grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
+  .fact { display: grid; gap: 10px; align-content: start; padding: 20px 22px; }
+  .fact h2 { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .fact p { color: var(--muted); font-size: 14px; line-height: 1.55; }
+  .fact p strong { display: block; margin-bottom: 4px; color: var(--ink); font-size: 2rem; font-weight: 700; line-height: 1.1; }
+  .fact a { color: var(--ink); font-size: 13px; font-weight: 600; }
+  .series { display: grid; gap: 6px; font-size: 14px; }
+  .series li { display: flex; justify-content: space-between; gap: 12px; }
+  .series b { color: var(--muted); font-weight: 600; }
+
+  @media (max-width: 520px) { .months { gap: 3px; height: 160px; } .months__label { font-size: 10px; } }
+</style>

@@ -157,6 +157,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
     /* Як панель вкладок у застосунках: іконка, під нею підпис */
     .cdock a:not(.cdock__cta), .cdock button {
       flex: 1;
+      min-width: 0;
       display: inline-flex;
       flex-direction: column;
       align-items: center;
@@ -170,7 +171,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
     }
     .cdock__cta {
       flex-shrink: 0;
-      padding: 13px 18px;
+      padding: 13px 16px;
       border-radius: 9999px;
       font-size: 14px;
       white-space: nowrap;
