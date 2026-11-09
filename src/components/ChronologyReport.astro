@@ -237,7 +237,7 @@ const liveOf = (e: Entry) => {
                                 <span class={`badge badge--${st.cls}`}><i aria-hidden="true"></i>{st.label}</span>
                                 {e.date && <span class="ev__date">{e.date}</span>}
                                 {note && <span class="ev__note">{note}</span>}
-                                {e.fundraising && <span class="ev__note ev__note--fund">збір</span>}
+                                {e.fundraising && <span class="ev__note ev__note--fund">Збір коштів</span>}
                               </div>
                               <h4 class="ev__title">
                                 {e.game ? <a href={`/games/${e.game.id}/`}>{e.title}</a> : e.title}
