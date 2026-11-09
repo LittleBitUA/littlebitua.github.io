@@ -4,7 +4,7 @@
 // назва й відсоток з'являються при наведенні.
 import type { Game } from "../../data/games";
 import { cover } from "../../lib/cover";
-import { statusMeta, translationPercent, formatPct, isFundraising, fundraisingPercent } from "../../utils/status";
+import { statusMeta, translationPercent, formatPct, isFundraising, fundraisingPercent, stagesOf, isPlayable } from "../../utils/status";
 
 export interface Props {
   game: Game;
@@ -18,7 +18,14 @@ const img = await cover(game.cover, 360);
 const imgSmall = await cover(game.cover, 220);
 const fund = isFundraising(game) && !!game.fundraisingGoal;
 const pct = fund ? fundraisingPercent(game) : translationPercent(game);
-const caption = fund ? `зібрано ${pct}%` : pct >= 100 ? "перекладено" : `перекладено ${formatPct(pct)}%`;
+// Для готових ігор — просто «перекладено»; для тих, що в роботі, — завжди з цифрою,
+// а коли текст уже перекладено повністю — ще й з редактурою, якщо вона триває
+const editing = stagesOf(game).find((s) => /редакт/i.test(s.label));
+const caption = fund
+  ? `зібрано ${pct}%`
+  : pct >= 100 && isPlayable(game)
+    ? "перекладено"
+    : `перекладено ${formatPct(pct)}%` + (pct >= 100 && editing && editing.percent < 100 ? ` · редактура ${formatPct(editing.percent)}%` : "");
 // Плашка статусу на кожному постері; під час збору — «Збір»
 const badge = fund ? "Збір коштів" : st.label;
 ---
