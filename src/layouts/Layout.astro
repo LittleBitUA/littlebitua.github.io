@@ -29,6 +29,10 @@ const {
   tint,
 } = Astro.props;
 
+// Сайт переїхав на Cloudflare: кожна сторінка тут одразу перекидає на ту саму сторінку нового сайту
+const NEW_SITE = "https://www.lbua.workers.dev";
+const newUrl = NEW_SITE + Astro.url.pathname;
+
 const FONTS =
   "https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Archivo:wght@800;900&display=swap";
 ---
@@ -37,20 +41,22 @@ const FONTS =
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
+    <script is:inline define:vars={{ NEW_SITE }}>location.replace(NEW_SITE + location.pathname + location.search + location.hash);</script>
+    <meta http-equiv="refresh" content={`0; url=${newUrl}`} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#08090b" />
     <meta name="color-scheme" content="dark" />
     <meta name="keywords" content={keywords} />
     <meta name="author" content="«Little Bit»" />
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href={canonicalUrl} />
+    <meta name="robots" content="noindex, follow" />
+    <link rel="canonical" href={newUrl} />
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content="uk_UA" />
-    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:url" content={newUrl} />
     <meta property="og:site_name" content="«Little Bit» — Локалізації" />
     <meta property="og:image" content={ogImage} />
     {ogImage.endsWith("/images/og.png") || ogImage.endsWith("/images/og-chronology.png") ? (
