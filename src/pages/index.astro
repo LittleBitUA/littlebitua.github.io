@@ -8,6 +8,7 @@ import GetStarted from "../components/GetStarted.astro";
 import Support from "../components/Support.astro";
 import FAQ from "../components/FAQ.astro";
 import StatsBand from "../components/StatsBand.astro";
+import Process from "../components/Process.astro";
 import { games } from "../data/catalog";
 import { SITE_URL } from "../utils/seo";
 import { getSeriesGroups } from "../utils/series";
@@ -74,6 +75,7 @@ const latest = (await getUpdates(games)).slice(0, 6);
   </div>
 
   <StatsBand />
+  <Process />
   <GetStarted />
   <Support />
   <FAQ />

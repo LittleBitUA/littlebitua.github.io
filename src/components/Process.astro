@@ -1,0 +1,104 @@
+---
+// ─── Як робиться переклад ──────────────────────────────────────
+// П'ять етапів локалізації в тому порядку, в якому вони йдуть насправді.
+import { stats as s } from "../lib/stats";
+
+const STAGES = [
+  {
+    title: "Інтеграція",
+    text: "Розбираємо гру: дістаємо тексти, шрифти й текстури і з'ясовуємо, як повернути їх назад. Без цього етапу перекласти гру неможливо.",
+    icon: "M10 4h4v3a2 2 0 1 0 0 4h3v3h-3a2 2 0 1 0 0 4v2h-4v-2a2 2 0 1 0-4 0v2H3v-6h2a2 2 0 1 0 0-4H3V4h7",
+  },
+  {
+    title: "Переклад",
+    text: "Перекладаємо весь текст: діалоги, меню, підказки, описи предметів і записки.",
+    icon: "M4 5h9M8.5 3v2m2.5 0c-.8 3.5-3.5 6.5-7 8m2.5-5c1 2 2.8 3.7 5 4.6M13 21l4-9 4 9m-6.8-3h5.6",
+  },
+  {
+    title: "Редагування",
+    text: "Вичитуємо й звіряємо з оригіналом: стиль, термінологія, помилки, довжина рядків.",
+    icon: "M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4",
+  },
+  {
+    title: "Малювання",
+    text: "Перемальовуємо написи на зображеннях і текстурах українською — вивіски, логотипи, інтерфейс.",
+    icon: "M12 21a9 9 0 1 1 9-9c0 2.5-2 3-3.5 3H15a2 2 0 0 0-1 3.7A1.5 1.5 0 0 1 12 21zM7.5 11.5h.01M10 7.5h.01M15 7.5h.01",
+  },
+  {
+    title: "Тестування",
+    text: "Проходимо гру з перекладом і ловимо обрізаний текст, вилети та неточності.",
+    icon: "M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3",
+  },
+];
+const lineFmt = (v: number) => v.toLocaleString("uk-UA");
+---
+
+<section class="proc" aria-labelledby="proc-title">
+  <header class="proc__head">
+    <span class="eyebrow">Як ми працюємо</span>
+    <h2 id="proc-title">Як народжується переклад</h2>
+    <p>
+      Кожна гра проходить п'ять етапів. Грати можна вже після перекладу — у <b>ранньому доступі</b>, а редактура,
+      малювання й виправлення приходять оновленнями через лаунчер. Для масштабу: лише в {s.linesProjects} проєктах, де ми рахували обсяг, — {lineFmt(s.lines)} рядків тексту.
+    </p>
+  </header>
+
+  <ol class="proc__list">
+    {STAGES.map((st, i) => (
+      <li>
+        <span class="proc__step">
+          <span class="proc__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d={st.icon} /></svg></span>
+          <em>{String(i + 1).padStart(2, "0")}</em>
+        </span>
+        <h3>{st.title}</h3>
+        <p>{st.text}</p>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .proc { padding: clamp(40px, 6vw, 72px) var(--side) 0; }
+  .proc__head { display: grid; gap: 12px; max-width: 72ch; }
+  .proc__head h2 { font-size: clamp(1.9rem, 4vw, 3.2rem); font-weight: 700; line-height: 1.08; letter-spacing: -0.025em; }
+  .proc__head p { color: var(--muted); font-size: 16px; line-height: 1.7; }
+  .proc__head b { color: var(--ink); }
+
+  .proc__list { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-top: 36px; }
+  /* Лінія, що з'єднує етапи */
+  .proc__list::before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    left: 22px;
+    right: 22px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--st-progress), var(--st-early), var(--st-done));
+    opacity: 0.6;
+  }
+  .proc__list li { position: relative; display: grid; gap: 8px; align-content: start; }
+  .proc__step { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .proc__icon {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: #1a1820;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  .proc__icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+  .proc__step em { padding: 2px 8px; border-radius: 9999px; background: #1a1820; color: var(--faint); font-size: 12px; font-style: normal; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.08em; }
+  .proc__list h3 { font-size: 1.1rem; font-weight: 700; }
+  .proc__list p { padding-right: 8px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+  @media (max-width: 1000px) {
+    .proc__list { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .proc__list::before { top: 22px; bottom: 22px; left: 22px; right: auto; width: 2px; height: auto; background: linear-gradient(180deg, var(--st-progress), var(--st-early), var(--st-done)); }
+    .proc__list li { grid-template-columns: 46px minmax(0, 1fr); column-gap: 16px; padding-bottom: 22px; }
+    .proc__step { grid-row: span 2; flex-direction: column; align-items: center; margin: 0; }
+    .proc__step em { display: none; }
+    .proc__list h3 { padding-top: 10px; }
+  }
+</style>
