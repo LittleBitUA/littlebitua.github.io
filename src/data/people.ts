@@ -158,7 +158,7 @@ export const PEOPLE: Person[] = [
     slug: "madao",
     name: "Мадао",
     from: "TypeUkraine",
-    credits: [{ game: "resident-evil-requiem", role: "Переклад" }],
+    credits: [{ game: "resident-evil-requiem", role: "Переклад з японської" }],
   },
 
   // ── Не в поточному складі: лише в титрах ігор ──
