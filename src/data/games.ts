@@ -561,7 +561,7 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1420290/No_More_Heroes/",
     downloadUrl: "https://lbklauncher.com/games/no_more_heroes/little-bit",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
-    lastUpdate: "2026-01-02",
+    lastUpdate: "2026-11-02",
 
     // Extended data
     releaseDate: "2026-01-02",
@@ -944,7 +944,8 @@ export const games: Game[] = [
     steamUrl: "https://store.steampowered.com/app/1420300/No_More_Heroes_2_Desperate_Struggle/",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2021,
-    lastUpdate: "2026-02-16",
+    lastUpdate: "2026-11-01",
+    releaseDate: "2026-11-01",
   },
   {
     id: "hotel-barcelona",

@@ -41,11 +41,7 @@ const KPI = [
         Скільки ми перекладаємо, як швидко рухаються проєкти й хто над ними працює. Числа рахуються автоматично з
         каталогу, <a href="/chronology/">хронології</a> та даних LBK Launcher.
       </p>
-      <p class="disclaimer">
-        <b>Дані приблизні.</b> Це не офіційна звітність: частина цифр неповна (не в усіх проєктах пораховано обсяг тексту,
-        не всі виходи мають точну дату, не всіх учасників зазначено), а відсотки беруться з лаунчера в момент оновлення сайту
-        й можуть відставати від реального стану робіт.
-      </p>
+      <p class="disclaimer">* Цифри приблизні: не для всіх проєктів пораховано обсяг тексту й відомі точні дати, а відсотки з лаунчера можуть трохи відставати.</p>
     </header>
 
     <!-- ── Головні показники ── -->
@@ -251,8 +247,7 @@ const KPI = [
   .head { margin: 24px 0 28px; }
   .title { margin-top: 10px; font-size: clamp(2rem, 5vw, 3.75rem); letter-spacing: -0.02em; }
   .lead { max-width: 68ch; margin-top: 14px; color: var(--muted); font-size: 17px; line-height: 1.7; }
-  .disclaimer { max-width: 68ch; margin-top: 14px; padding: 12px 16px; border-radius: 12px; background: rgba(242, 169, 75, 0.08); border: 1px solid rgba(242, 169, 75, 0.3); color: var(--muted); font-size: 13.5px; line-height: 1.6; }
-  .disclaimer b { color: var(--st-fund); }
+  .disclaimer { max-width: 68ch; margin-top: 10px; color: var(--faint); font-size: 13px; line-height: 1.6; }
   .lead a, .method a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
   .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
