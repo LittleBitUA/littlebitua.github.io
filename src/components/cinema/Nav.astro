@@ -9,7 +9,7 @@ const TABS = [
   { href: "/chronology/", label: "Хронологія" },
   { href: "/team/", label: "Команда" },
   { href: "/stats/", label: "Цифри" },
-  { href: "/#launcher", label: "LBK Launcher" },
+  { href: "/#launcher", label: "Лаунчер" },
 ];
 const path = Astro.url.pathname;
 const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes("#") && path.startsWith(href));
@@ -94,7 +94,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
 
   .cnav__tab {
     flex-shrink: 0;
-    padding: 10px 20px;
+    padding: 10px 16px;
     border-radius: 9999px;
     color: rgba(255, 255, 255, 0.82);
     font-size: 14px;
