@@ -123,7 +123,7 @@ const related = games
   <!-- ── Hero ── -->
   <section class="gh" style={`--state:${st.color}`}>
     <picture class="gh__bg" aria-hidden="true">
-      <img src={art.banner ?? poster} srcset={art.bannerSrcset ?? undefined} sizes="100vw" alt="" fetchpriority="high" decoding="async" />
+      <img src={art.bannerLow ?? poster} data-hi={art.bannerSrcset ?? undefined} sizes="(max-width: 760px) 100vw, max(100vw, 260vh)" alt="" fetchpriority="high" decoding="async" />
     </picture>
 
     <div class="gh__inner">
@@ -396,6 +396,8 @@ const related = games
 </Layout>
 
 <script>
+  import { upgradeAll } from "../../scripts/hires";
+  upgradeAll();
   const box = document.getElementById("lightbox") as HTMLDialogElement | null;
   const links = [...document.querySelectorAll<HTMLAnchorElement>("a[data-shot]")];
   if (box && links.length) {

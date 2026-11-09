@@ -62,9 +62,9 @@ const slides = await Promise.all(
       <picture class="slide__bg" aria-hidden="true">
         {/* Перший банер вантажиться одразу, решта — коли до них доходить черга (див. hydrate у скрипті) */}
         {s.i === 0 ? (
-          <img src={s.art.banner ?? s.poster} srcset={s.art.bannerSrcset ?? undefined} sizes="100vw" alt="" fetchpriority="high" decoding="async" />
+          <img src={s.art.bannerLow ?? s.poster} data-hi={s.art.bannerSrcset ?? undefined} sizes="(max-width: 760px) 100vw, max(100vw, 260vh)" alt="" fetchpriority="high" decoding="async" />
         ) : (
-          <img data-src={s.art.banner ?? s.poster} data-srcset={s.art.bannerSrcset ?? undefined} sizes="100vw" alt="" decoding="async" />
+          <img data-src={s.art.bannerLow ?? s.poster} data-hi={s.art.bannerSrcset ?? undefined} sizes="(max-width: 760px) 100vw, max(100vw, 260vh)" alt="" decoding="async" />
         )}
       </picture>
 
@@ -128,8 +128,10 @@ const slides = await Promise.all(
 </section>
 
 <script>
+  import { upgrade, upgradeAll } from "../../scripts/hires";
   const root = document.getElementById("hero");
   if (root) {
+    upgradeAll(root);
     const slides = [...root.querySelectorAll<HTMLElement>(".slide")];
     const dots = [...root.querySelectorAll<HTMLButtonElement>(".hero__dot")];
     const pauseBtn = root.querySelector<HTMLButtonElement>(".hero__pause")!;
@@ -143,6 +145,8 @@ const slides = await Promise.all(
     const hydrate = (i: number) => {
       slides[(i + slides.length) % slides.length].querySelectorAll<HTMLImageElement>("img[data-src]").forEach((img) => {
         if (img.dataset.srcset) img.srcset = img.dataset.srcset;
+        // Чіткий банер — після того, як показався легкий
+        if (img.dataset.hi) img.addEventListener("load", () => upgrade(img), { once: true });
         img.src = img.dataset.src!;
         img.removeAttribute("data-src");
       });

@@ -11,7 +11,9 @@ import { cover } from "./cover";
 export interface GameArt {
   /** Стиснутий банер для тла (або null — тоді тлом служить обкладинка) */
   banner: string | null;
-  /** Кілька розмірів банера для srcset, щоб на великих екранах він не розмивався */
+  /** Легкий банер, який показується одразу (поки вантажиться чіткий) */
+  bannerLow: string | null;
+  /** Чіткі розміри банера для srcset; підвантажуються окремо, після сторінки */
   bannerSrcset: string | null;
   /** Логотип з прозорим тлом, якщо він є */
   logo: string | null;
@@ -22,7 +24,7 @@ export interface GameArt {
 }
 
 const FALLBACK_TINT = "rgb(38 30 44)";
-const BANNER_WIDTHS = [1280, 1920, 2560, 3200];
+const BANNER_WIDTHS = [1600, 2400, 3200, 3840];
 const TIMEOUT_MS = 20_000;
 
 const bytesCache = new Map<string, Promise<Buffer | null>>();
@@ -68,26 +70,37 @@ async function tintOf(bytes: Buffer): Promise<string> {
 }
 
 async function resolve(g: Game): Promise<GameArt> {
+  // Беремо найбільший з доступних банерів: library_hero_2x зі Steam (3840×1240),
+  // звичайний library_hero (1920×620) або банер з LBK Launcher
+  const id = steamAppId(g);
   const bannerCandidates = [
-    steamAppId(g) && `https://shared.steamstatic.com/store_item_assets/steam/apps/${steamAppId(g)}/library_hero.jpg`,
+    id && `https://shared.steamstatic.com/store_item_assets/steam/apps/${id}/library_hero_2x.jpg`,
+    id && `https://shared.steamstatic.com/store_item_assets/steam/apps/${id}/library_hero.jpg`,
     g.launcherArt?.banner,
   ].filter(Boolean) as string[];
 
   let bannerSrc: string | null = null;
   let bannerBytes: Buffer | null = null;
+  let bannerWidth = 0;
   for (const src of bannerCandidates) {
-    bannerBytes = await fetchBytes(src);
-    if (bannerBytes) { bannerSrc = src; break; }
+    const bytes = await fetchBytes(src);
+    if (!bytes) continue;
+    const w = (await sharp(bytes).metadata().catch(() => ({ width: 0 }))).width ?? 0;
+    if (w > bannerWidth) { bannerSrc = src; bannerBytes = bytes; bannerWidth = w; }
+    if (w >= 3840) break;
   }
 
   const logoBytes = g.launcherArt?.logo ? await fetchBytes(g.launcherArt.logo) : null;
 
   const tintSource = bannerBytes ?? (await fetchBytes(g.cover));
+  // Не збільшуємо картинку понад її справжній розмір — від цього вона лише розмивається
+  const widths = BANNER_WIDTHS.filter((w) => w < bannerWidth).concat(bannerWidth).filter((w, i, a) => w > 0 && a.indexOf(w) === i);
   const sizes = bannerSrc
-    ? await Promise.all(BANNER_WIDTHS.map(async (w) => `${await cover(bannerSrc!, w, 84)} ${w}w`))
+    ? await Promise.all(widths.map(async (w) => `${await cover(bannerSrc!, w, 86)} ${w}w`))
     : null;
   return {
-    banner: bannerSrc ? await cover(bannerSrc, 1920, 84) : null,
+    banner: bannerSrc ? await cover(bannerSrc, Math.min(1920, bannerWidth), 84) : null,
+    bannerLow: bannerSrc ? await cover(bannerSrc, 1280, 70) : null,
     bannerSrcset: sizes ? sizes.join(", ") : null,
     logo: logoBytes && g.launcherArt ? await cover(g.launcherArt.logo, 720) : null,
     logoSrcset:
