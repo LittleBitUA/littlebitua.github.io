@@ -64,7 +64,16 @@ import { richText } from "../../utils/richText";
       <div>
         <span class="eyebrow">{person.team ? "Команда-партнер" : person.from ? `Команда ${person.from} · не «Little Bit»` : person.guest ? "Допомагає з окремими іграми · не учасник «Little Bit»" : "Учасник команди"}</span>
         <h1 class="title">{person.name}</h1>
-        {person.about && <p class="about" set:html={richText(person.about)} />}
+        {person.about && (
+          (person.about.split("\n").length > 8 || person.about.length > 700) ? (
+            <div class="about-box" data-about>
+              <p class="about" set:html={richText(person.about)} />
+              <button type="button" class="about-box__more" data-about-toggle>Показати повністю</button>
+            </div>
+          ) : (
+            <p class="about" set:html={richText(person.about)} />
+          )
+        )}
         <p class="c-meta stats">
           <span>{work.length} {pluralize(work.length, "проєкт", "проєкти", "проєктів")}</span>
           {released > 0 && <span>{released} уже можна грати</span>}
@@ -128,4 +137,20 @@ import { richText } from "../../utils/richText";
     .hero { flex-direction: column; align-items: flex-start; gap: 18px; }
     .works { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
+  /* Довгий опис (вірш тощо) — у рамці, згорнутий */
+  .about-box { position: relative; max-width: 62ch; margin-top: 14px; padding: 16px 20px 14px; border-radius: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12); }
+  .about-box .about { max-height: 220px; margin-top: 0; overflow: hidden; -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent); mask-image: linear-gradient(180deg, #000 60%, transparent); font-size: 14px; }
+  .about-box.is-open .about { max-height: none; -webkit-mask-image: none; mask-image: none; }
+  .about-box__more { margin-top: 8px; padding: 6px 12px; border-radius: 9999px; background: rgba(255, 255, 255, 0.08); color: var(--ink); font-size: 13px; font-weight: 600; }
+  .about-box__more:hover { background: rgba(255, 255, 255, 0.14); }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-about]").forEach((box) => {
+    const btn = box.querySelector<HTMLButtonElement>("[data-about-toggle]")!;
+    btn.addEventListener("click", () => {
+      const open = box.classList.toggle("is-open");
+      btn.textContent = open ? "Згорнути" : "Показати повністю";
+    });
+  });
+</script>
