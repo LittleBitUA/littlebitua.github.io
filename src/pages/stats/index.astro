@@ -68,14 +68,14 @@ const KPI = [
             caption={`Виходи перекладів за місяцями ${s.thisYear} року`}
           />
           <p class="note">
-            {s.undatedThisYear > 0 && `${releasedDated} з точною датою, ще ${s.undatedThisYear} — без неї. `}
+            {"* "}{s.undatedThisYear > 0 && `${releasedDated} з точною датою, ще ${s.undatedThisYear} — без неї. `}
             {s.years.length > 1 && `Попередні роки: ${s.years.slice(0, -1).map((y) => `${y.year} — ${y.count}`).join(", ")}.`}
           </p>
         </div>
         <div class="c-panel card">
           <h3>Зростання бібліотеки</h3>
           <Growth points={s.growth} caption="Накопичена кількість виходів на кінець місяця" />
-          <p class="note">Скільки виходів набралося на кінець кожного місяця (лише з точною датою).</p>
+          <p class="note">* Скільки виходів набралося на кінець кожного місяця (лише з точною датою).</p>
         </div>
       </div>
     </section>
@@ -97,7 +97,7 @@ const KPI = [
               color="var(--st-progress)"
               every={2}
             />
-            <p class="note">Дані до листопада 2026 року відновлено з історії сайту, тож старі місяці приблизні.</p>
+            <p class="note">* Дані до листопада 2026 року відновлено з історії сайту, тож старі місяці приблизні.</p>
           </div>
           <div class="facts">
             <div class="c-panel fact"><strong>+{n(s.points30)}</strong><span>пунктів перекладу за останні 30 днів</span></div>
@@ -176,7 +176,7 @@ const KPI = [
           {s.byStatus.map((x) => <li><i style={`background:${x.color}`}></i>{x.label} <b>{x.count}</b></li>)}
         </ul>
       </div>
-      <div class="grid grid--three">
+      <div class="grid grid--two" style="margin-top:12px">
         <div class="c-panel card">
           <h3>Жанри</h3>
           <HBars items={s.genres.map((g) => ({ label: g.label, value: g.count }))} unit={(v) => `${v}`} />
@@ -190,10 +190,6 @@ const KPI = [
             color="#f2a94b"
             every={3}
           />
-        </div>
-        <div class="c-panel card">
-          <h3>Найбільші серії</h3>
-          <HBars items={s.series.map((x) => ({ label: x.name, value: x.games.length, href: `/games/series/${x.slug}/` }))} color="#56d391" />
         </div>
       </div>
     </section>

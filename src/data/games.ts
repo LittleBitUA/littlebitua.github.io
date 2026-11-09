@@ -93,6 +93,8 @@ export interface Game {
   otherVersions?: { slug: string; label: string; translation: number; editing: number; version: string | null }[];
   /** false — щоденна перевірка не порівнює відсотки з лаунчером (там інша гра чи збірка) */
   launcherCheck?: boolean;
+  /** Переклад зроблено за часів «Солов’їної команди» — показуємо помітку */
+  solovinaEra?: boolean;
   /** Що поки не перекладено чи не зроблено — окремий блок на сторінці гри */
   limitations?: string[];
   releaseDate?: string; // Release date (YYYY-MM-DD)
@@ -696,6 +698,7 @@ export const games: Game[] = [
   },
   {
     id: "dave-the-diver",
+    solovinaEra: true,
     launcherSlug: "dave_the_diver",
     launcherSync: false, // DLC «In The Jungle»: у лаунчері прогрес базової гри
     launcherCheck: false,
@@ -717,6 +720,7 @@ export const games: Game[] = [
   },
   {
     id: "persona-5-royal",
+    solovinaEra: true,
     launcherSlug: "persona_5_royal",
     title: "Persona 5 Royal",
     description:
@@ -1636,6 +1640,7 @@ export const games: Game[] = [
   },
   {
     id: "cat-quest",
+    solovinaEra: true,
     launcherSlug: "cat_quest",
     title: "Cat Quest",
     description:
@@ -1657,6 +1662,7 @@ export const games: Game[] = [
   },
   {
     id: "florence",
+    solovinaEra: true,
     launcherSlug: "florence",
     title: "Florence",
     description:
@@ -1678,6 +1684,7 @@ export const games: Game[] = [
   },
   {
     id: "i-am-fish",
+    solovinaEra: true,
     launcherSlug: "i_am_fish",
     title: "I Am Fish",
     description:
@@ -1744,6 +1751,7 @@ export const games: Game[] = [
   },
   {
     id: "tmnt-shredders-revenge",
+    solovinaEra: true,
     launcherSlug: "teenage_mutant_ninja_turtles_shredders_revenge",
     title: "Teenage Mutant Ninja Turtles: Shredder's Revenge",
     description:

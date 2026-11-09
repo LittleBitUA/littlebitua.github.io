@@ -47,6 +47,7 @@ const badge = fundActive ? "Збір коштів" : st.label;
 
   <span class="cc__body">
     <strong class="cc__title">{game.title}</strong>
+    {game.solovinaEra && <small class="cc__era">* часів «Солов’їної команди»</small>}
     {fundActive && (
       <span class="cc__fund">
         <span><b>{formatMoney(game.fundraisingRaised ?? 0)}</b> із {formatMoney(game.fundraisingGoal!)}</span>
@@ -121,6 +122,7 @@ const badge = fundActive ? "Збір коштів" : st.label;
   }
   .cc:hover .cc__title { text-decoration: underline; text-underline-offset: 3px; }
 
+  .cc__era { margin-top: -4px; color: var(--faint); font-size: 11px; }
   .cc__rows { display: grid; gap: 5px; }
   .cc__row { display: grid; grid-template-columns: minmax(0, 68px) 1fr 34px; gap: 8px; align-items: center; }
   .cc__row em { overflow: hidden; color: var(--faint); font-size: 11px; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
