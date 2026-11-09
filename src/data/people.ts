@@ -90,9 +90,10 @@ export const PEOPLE: Person[] = [
       { game: "silent-hill-townfall", role: "Переклад" },
       { game: "dave-the-diver", role: "Переклад доповнення In The Jungle" },
       { game: "deadly-premonition-dc", role: "Переклад і нативна рекомпіляція" },
-      { game: "deadly-premonition-2", role: "Переклад" },
-      { game: "the-good-life", role: "Переклад" },
-      { game: "fire-emblem-three-houses", role: "Переклад" },
+      { game: "deadly-premonition-2", role: "Переклад, редагування, технічна частина" },
+      { game: "the-good-life", role: "Переклад, технічна частина, редагування" },
+      { game: "fire-emblem-three-houses", role: "Переклад, технічна частина, подальше редагування" },
+      { game: "lad-infinite-wealth", role: "Технічна частина" },
     ],
   },
   {
@@ -224,12 +225,14 @@ export const PEOPLE: Person[] = [
   { slug: "funfy", name: "Микита «Funfy» Захаров", guest: true, credits: [{ game: "the-missing", role: "Графіка" }] },
   { slug: "froghus", name: "Денис «FrogHus» Решетілов", guest: true, credits: [{ game: "the-missing", role: "Графіка" }] },
   { slug: "solomon-kane", name: "Соломон Кейн", guest: true, credits: [{ game: "shadows-of-the-damned", role: "Шрифти" }] },
+  { slug: "hikaro", name: "Галицький Розбишака (Hikaro)", guest: true, credits: [{ game: "dave-the-diver", role: "Переклад основної гри й адаптація під Steam-версію" }] },
   { slug: "tenamio", name: "Tenamio", guest: true, credits: [{ game: "travis-strikes-again", role: "Тестування" }] },
   { slug: "dark-valeriiovych", name: "Дарк Валерійович", guest: true, credits: [{ game: "metal-gear-solid-4", role: "Тестування" }] },
   { slug: "solovina-komanda", name: "Солов’їна команда", team: true, guest: true, about: "Команда, яку очолює Дмитро Бидлов.", credits: [
     { game: "mgs-snake-eater", role: "Переклад" },
     { game: "mgs3-master-collection", role: "Оригінальний переклад, перенесений у Master Collection" },
     { game: "persona-5-royal", role: "Переклад" },
+    { game: "dave-the-diver", role: "Переклад" },
   ] },
   { slug: "locus-team", name: "Locus Team", team: true, guest: true, about: "Команда-партнер.", credits: [{ game: "catherine-classic", role: "Переклад" }] },
 ];
