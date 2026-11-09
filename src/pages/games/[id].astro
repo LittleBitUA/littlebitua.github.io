@@ -13,7 +13,7 @@ import {
   earlyAccessReason, formatMoney, formatDate, stageName, isPlayable, stagesOf, isStageAbandoned,
 } from "../../utils/status";
 import { marked } from "marked";
-import { chronologyEntry, latestReport } from "../../lib/chronology";
+import { chronologyEntry, latestReport, withoutMissingCrew } from "../../lib/chronology";
 import { cover } from "../../lib/cover";
 import { artOf } from "../../lib/art";
 import { liveNumbers, liveLabel } from "../../lib/live";
@@ -316,7 +316,7 @@ const related = games
             <span class="c-label">Зі звіту станом на {latestReport.dateLabel}</span>
             {chron.date && <span class="c-label">Вихід: {chron.date}</span>}
           </p>
-          <div class="chron__text" set:html={chron.html} />
+          <div class="chron__text" set:html={crew.length ? withoutMissingCrew(chron.html) : chron.html} />
           {live?.differs && (
             <p class="chron__live">
               <span class="chron__now">Зараз</span>
