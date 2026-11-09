@@ -37,6 +37,7 @@ const structuredData = generateBreadcrumbs([
   { name: "Команда", url: `${SITE_URL}/team/` },
   { name: person.name, url: canonicalUrl },
 ]);
+import { richText } from "../../utils/richText";
 ---
 
 <Layout
@@ -63,7 +64,7 @@ const structuredData = generateBreadcrumbs([
       <div>
         <span class="eyebrow">{person.team ? "Команда-партнер" : person.from ? `Команда ${person.from} · не «Little Bit»` : person.guest ? "Допомагає з окремими іграми · не учасник «Little Bit»" : "Учасник команди"}</span>
         <h1 class="title">{person.name}</h1>
-        {person.about && <p class="about">{person.about}</p>}
+        {person.about && <p class="about" set:html={richText(person.about)} />}
         <p class="c-meta stats">
           <span>{work.length} {pluralize(work.length, "проєкт", "проєкти", "проєктів")}</span>
           {released > 0 && <span>{released} уже можна грати</span>}
@@ -105,6 +106,7 @@ const structuredData = generateBreadcrumbs([
   .hero { display: flex; align-items: center; gap: 28px; margin: 28px 0 44px; }
   .title { margin-top: 8px; font-size: clamp(1.8rem, 4vw, 3rem); }
   .about { max-width: 62ch; margin-top: 10px; color: var(--muted); line-height: 1.6; white-space: pre-line; }
+  .about :global(a) { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
   .stats { margin-top: 14px; }
   .link { min-height: 42px; margin-top: 18px; }
 
