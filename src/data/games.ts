@@ -258,7 +258,7 @@ export const games: Game[] = [
   },
   {
     id: "gravity-rush",
-    limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
+    limitations: ["Текстури перекладено лише частково — більшість написів на зображеннях поки англійською."],
     launcherSlug: "gravity_rush_remastered",
     launcherVersions: [{ slug: "gravity_rush", label: "Версія для PS Vita" }],
     title: "Gravity Rush™ Remastered",

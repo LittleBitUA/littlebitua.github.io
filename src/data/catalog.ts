@@ -9,6 +9,7 @@ import { syncFundraising } from "../lib/fundraising";
 import { syncLauncher } from "../lib/launcher";
 import { translationPercent } from "../utils/status";
 import descriptions from "./descriptions.json";
+import launcherStages from "./launcher-stages.json";
 
 export * from "./games";
 
@@ -22,7 +23,23 @@ const withDoneRule = (list: typeof baseGames) =>
 const DESC = descriptions as Record<string, string>;
 const withDescriptions = (list: typeof baseGames) => list.map((g) => (DESC[g.id] ? { ...g, description: DESC[g.id] } : g));
 
-export const games = withDoneRule(await syncFundraising(await syncLauncher(withDescriptions(baseGames))));
+// Шрифти й текстури зі сторінок LBK Launcher (launcher-stages.json; щодня оновлює scripts/progress.mjs)
+const STAGES = launcherStages as Record<string, Record<string, number>>;
+const withLauncherStages = (list: typeof baseGames) =>
+  list.map((g) => {
+    const extra = STAGES[g.id];
+    if (!extra) return g;
+    const stages = [...(g.stageDetails ?? [{ label: "Переклад", percent: g.progress }])];
+    for (const [label, percent] of Object.entries(extra)) {
+      const re = /шрифт/i.test(label) ? /шрифт/i : /текстур|малюв/i;
+      const i = stages.findIndex((s) => re.test(s.label));
+      if (i >= 0) stages[i] = { ...stages[i], percent };
+      else stages.push({ label: /шрифт/i.test(label) ? "Шрифти" : "Текстури", percent });
+    }
+    return { ...g, stageDetails: stages };
+  });
+
+export const games = withDoneRule(await syncFundraising(withLauncherStages(await syncLauncher(withDescriptions(baseGames)))));
 
 export function getOverallProgress(): number {
   if (games.length === 0) return 0;

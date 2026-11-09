@@ -26,6 +26,7 @@ import { pathToFileURL } from "node:url";
 const ROOT = resolve(".");
 const LOG = join(ROOT, "src/data/progress-log.json");
 const DESCRIPTIONS = join(ROOT, "src/data/descriptions.json");
+const STAGES = join(ROOT, "src/data/launcher-stages.json");
 const CACHE = join(ROOT, "node_modules/.cache/lb-progress");
 mkdirSync(CACHE, { recursive: true });
 
@@ -151,6 +152,44 @@ for (let i = 0; i < targets.length; i += 6) {
 }
 if (descChanged) writeFileSync(DESCRIPTIONS, JSON.stringify(descriptions, null, 2) + "\n");
 console.log(`[progress] описи: ${descChanged ? `оновлено ${descChanged}` : "без змін"}`);
+
+// ── 3б) Шрифти й текстури ──
+// У списку ігор API їх немає — беремо зі сторінки перекладу команди («Прогрес перекладу»).
+async function stagesOf(slug) {
+  try {
+    const res = await fetch(`https://lbklauncher.com/games/${slug}/little-bit`, {
+      headers: { "User-Agent": "littlebit-site-launcher-sync/1.0" },
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!res.ok) return null;
+    const html = await res.text();
+    const out = {};
+    for (const m of html.matchAll(/game-progress-header"><span>([^<]+)<\/span><span>(\d+(?:[.,]\d+)?)(?:<!-- -->)?%/g)) {
+      const label = m[1].trim();
+      if (/шрифт|текстур/i.test(label)) out[label] = Number(m[2].replace(",", "."));
+    }
+    return out;
+  } catch {
+    return null;
+  }
+}
+const stagesData = JSON.parse(readFileSync(STAGES, "utf8"));
+let stagesChanged = 0;
+for (let i = 0; i < targets.length; i += 6) {
+  await Promise.all(
+    targets.slice(i, i + 6).map(async (g) => {
+      const st = await stagesOf(launcherSlugOf(g));
+      if (!st) return;
+      const next = Object.keys(st).length ? st : undefined;
+      if (JSON.stringify(next) !== JSON.stringify(stagesData[g.id])) {
+        if (next) stagesData[g.id] = next; else delete stagesData[g.id];
+        stagesChanged++;
+      }
+    }),
+  );
+}
+if (stagesChanged) writeFileSync(STAGES, JSON.stringify(stagesData, null, 2) + "\n");
+console.log(`[progress] шрифти й текстури: ${stagesChanged ? `оновлено ${stagesChanged}` : "без змін"}`);
 
 // ── 4) Титри ──
 const norm = (t) => t.toLowerCase().replace(/[«»"'’()]/g, " ");
