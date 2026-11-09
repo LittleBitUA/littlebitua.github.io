@@ -1,0 +1,69 @@
+---
+// Блок «У цифрах» на головній: кілька головних показників і міні-графік виходів.
+// Детально — на /stats/.
+import { stats as s } from "../lib/stats";
+import { pluralize } from "../utils/pluralize";
+
+const n = (v: number) => v.toLocaleString("uk-UA");
+const max = Math.max(1, ...s.releasesByMonth.map((m) => m.count));
+const ITEMS = [
+  { value: n(s.playable), label: `${pluralize(s.playable, "переклад", "переклади", "перекладів")} уже можна грати` },
+  { value: n(s.inWork), label: `${pluralize(s.inWork, "проєкт", "проєкти", "проєктів")} у роботі` },
+  { value: n(s.lines), label: "рядків тексту" },
+  { value: n(s.members + s.helpers), label: `${pluralize(s.members + s.helpers, "людина", "людини", "людей")} у титрах` },
+];
+---
+
+<section class="band" aria-labelledby="band-title">
+  <div class="band__inner">
+    <header class="band__head">
+      <span class="eyebrow">У цифрах</span>
+      <h2 id="band-title">{s.releasesThisYear} {pluralize(s.releasesThisYear, "вихід", "виходи", "виходів")} перекладів за {s.thisYear} рік</h2>
+      <a href="/stats/">Усі цифри →</a>
+    </header>
+    <ol class="band__bars" aria-hidden="true">
+      {s.releasesByMonth.map((m) => (
+        <li title={`${m.label}: ${m.count}`}>
+          <span style={`height:${(m.count / max) * 100}%`}></span>
+          <small>{m.label}</small>
+        </li>
+      ))}
+    </ol>
+    <ul class="band__kpi">
+      {ITEMS.map((it) => <li><strong>{it.value}</strong><span>{it.label}</span></li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .band { padding: 24px var(--side, 20px) 56px; }
+  .band__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    gap: 28px 48px;
+    padding: 30px 32px;
+    border-radius: 20px;
+    background: rgba(20, 20, 24, 0.55);
+    border: 1px solid var(--glass-line, rgba(255, 255, 255, 0.12));
+  }
+  .band__head { display: grid; gap: 10px; align-content: start; }
+  .band__head h2 { font-size: clamp(1.4rem, 2.6vw, 2.1rem); font-weight: 700; letter-spacing: -0.01em; line-height: 1.15; }
+  .band__head a { color: var(--ink); font-size: 14px; font-weight: 600; }
+  .band__head a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .band__bars { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 6px; height: 120px; }
+  .band__bars li { display: grid; grid-template-rows: 1fr auto; gap: 6px; align-items: end; justify-items: center; }
+  .band__bars span { width: min(100%, 22px); min-height: 2px; border-radius: 3px 3px 0 0; background: var(--st-early); }
+  .band__bars small { color: var(--faint); font-size: 10px; }
+  .band__kpi { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .band__kpi li { display: grid; gap: 6px; padding: 20px 16px 0 0; }
+  .band__kpi li + li { padding-left: 20px; border-left: 1px solid var(--line); }
+  .band__kpi strong { font-size: clamp(1.7rem, 3vw, 2.4rem); font-weight: 700; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .band__kpi span { color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 760px) {
+    .band__inner { grid-template-columns: minmax(0, 1fr); padding: 22px 20px; }
+    .band__kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .band__kpi li, .band__kpi li + li { padding: 16px 12px 4px 0; border-left: 0; }
+    .band__kpi li:nth-child(even) { padding-left: 16px; border-left: 1px solid var(--line); }
+  }
+</style>

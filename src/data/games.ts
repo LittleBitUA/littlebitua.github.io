@@ -61,6 +61,8 @@ export interface Game {
   /** Збір тимчасово призупинено: на сайті не показується, Donatello не опитується; суми лишаються на потім */
   fundraisingPaused?: boolean;
   lastUpdate?: string;
+  /** Дата останнього оновлення перекладу в LBK Launcher (заповнюється під час збірки) */
+  translationUpdated?: string;
   /**
    * Адреса гри в LBK Launcher (lbklauncher.com/games/<slug>). Звідти під час збірки
    * беруться переклад, редактура, статус і версія. Якщо не вказано — береться з downloadUrl.
@@ -268,6 +270,9 @@ export const games: Game[] = [
     team: [
       { name: "Дмитро Бидлов", role: "Переклад" },
     ],
+    stats: {
+      totalLines: 5638, // текстових записів
+    },
   },
   {
     id: "gravity-rush-2",
@@ -287,6 +292,9 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     lastUpdate: "2026-11-08",
     gameYear: 2017,
+    stats: {
+      totalLines: 20203, // текстових записів
+    },
   },
   {
     id: "yakuza-kiwami3",
@@ -1034,6 +1042,9 @@ export const games: Game[] = [
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2023,
     lastUpdate: "2026-11-08",
+    stats: {
+      totalLines: 62238, // діалоги й інтерфейс
+    },
   },
   {
     id: "yakuza3",
@@ -1431,6 +1442,11 @@ export const games: Game[] = [
     videoUrl: "https://www.youtube.com/watch?v=5Bk3RuhjquA",
     gameYear: 2026,
     lastUpdate: "2026-10-10",
+    stats: {
+      totalLines: 11791, // записів тексту
+      totalWords: 58573, // слів в англійському тексті
+      totalCharacters: 360874,
+    },
   },
   {
     id: "dead-rising-deluxe-remaster",

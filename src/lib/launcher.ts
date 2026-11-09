@@ -23,6 +23,8 @@ interface LauncherTranslation {
   editing_progress: number;
   version: string | null;
   updated_at: string | null;
+  /** Коли востаннє оновлювали сам переклад (а не, скажімо, опис сторінки) */
+  translation_updated_at?: string | null;
 }
 interface LauncherGame {
   slug: string;
@@ -129,6 +131,7 @@ export function applyLauncherData(site: Game, lg: LauncherGame): Game {
     stageDetails: stages,
     version: t.version?.trim() || site.version,
     lastUpdate,
+    translationUpdated: isoDate(t.translation_updated_at ?? t.updated_at),
   };
 }
 

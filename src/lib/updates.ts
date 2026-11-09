@@ -1,42 +1,71 @@
 // ─── Стрічка «Що нового» ───────────────────────────────────────
-// Події збираються з журналу прогресу (src/data/progress-log.json, щодня
-// поповнює scripts/progress.mjs) і дат релізів з games.ts:
-// зріс відсоток перекладу чи редактури, вийшла нова версія, вийшов переклад.
+// Лише події зі справжніми датами:
+//  • оновлення перекладу в LBK Launcher — дата, версія й поточні відсотки;
+//  • зміни з журналу прогресу, якщо для них записано дату оновлення з лаунчера (поле `u`);
+//  • виходи перекладів (releaseDate у games.ts);
+//  • пости Telegram-каналу про наші ігри.
 import type { Game } from "../data/games";
 import log from "../data/progress-log.json";
+import { stagesOf, translationPercent } from "../utils/status";
+import { telegramPosts } from "./telegram";
 
-type Point = { date: string; t: number; e?: number; v?: string };
+type Point = { date: string; t: number; e?: number; v?: string; u?: string };
 
 export interface Update {
   date: string;
   game: Game;
-  kind: "release" | "version" | "progress";
-  /** Що змінилося, коротко: «переклад 60 → 68%», «версія 2.2» */
+  kind: "release" | "version" | "progress" | "telegram";
+  /** Що змінилося, коротко: «версія 2.2 · переклад 95%» */
   parts: string[];
+  /** Для постів: заголовок і посилання */
+  title?: string;
+  url?: string;
 }
 
 const LOG = log as Record<string, Point[]>;
+const editingOf = (g: Game) => stagesOf(g).find((s) => /редакт/i.test(s.label))?.percent ?? null;
 
-export function updatesOf(games: Game[]): Update[] {
-  const out: Update[] = [];
-  for (const game of games) {
-    const pts = LOG[game.id] ?? [];
-    for (let i = 1; i < pts.length; i++) {
-      const a = pts[i - 1];
-      const b = pts[i];
-      const parts: string[] = [];
-      let kind: Update["kind"] = "progress";
-      // Різке падіння — це виправлення даних, а не подія
-      if (b.t > a.t && b.t - a.t < 100) parts.push(b.t >= 100 ? "текст перекладено повністю" : `переклад ${a.t} → ${b.t}%`);
-      if (b.e != null && b.e > (a.e ?? 0)) parts.push(b.e >= 100 ? "редактуру завершено" : `редактура ${a.e ?? 0} → ${b.e}%`);
-      if (b.v && a.v && b.v !== a.v) { parts.unshift(`версія ${b.v}`); kind = "version"; }
-      if (parts.length) out.push({ date: b.date, game, kind, parts });
+let cache: Promise<Update[]> | null = null;
+
+export function getUpdates(games: Game[]): Promise<Update[]> {
+  cache ??= (async () => {
+    const out: Update[] = [];
+    for (const game of games) {
+      // Останнє оновлення перекладу в лаунчері
+      if (game.translationUpdated) {
+        const e = editingOf(game);
+        out.push({
+          date: game.translationUpdated,
+          game,
+          kind: game.version ? "version" : "progress",
+          parts: [
+            ...(game.version ? [`версія ${game.version}`] : []),
+            `переклад ${Math.round(translationPercent(game))}%`,
+            ...(e != null && e > 0 ? [`редактура ${Math.round(e)}%`] : []),
+          ],
+        });
+      }
+      // Попередні оновлення — з журналу, лише ті, де відома дата з лаунчера
+      const pts = LOG[game.id] ?? [];
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1], b = pts[i];
+        if (!b.u || b.u === game.translationUpdated || b.u === a.u) continue;
+        const parts: string[] = [];
+        if (b.v && b.v !== a.v) parts.push(`версія ${b.v}`);
+        if (b.t > a.t) parts.push(`переклад ${a.t} → ${b.t}%`);
+        if (b.e != null && b.e > (a.e ?? 0)) parts.push(`редактура ${a.e ?? 0} → ${b.e}%`);
+        if (parts.length) out.push({ date: b.u, game, kind: b.v && b.v !== a.v ? "version" : "progress", parts });
+      }
+      if (game.releaseDate) out.push({ date: game.releaseDate, game, kind: "release", parts: ["вийшов переклад"] });
     }
-    if (game.releaseDate) out.push({ date: game.releaseDate, game, kind: "release", parts: ["вийшов переклад"] });
-  }
-  // Свіжіше — вище; в один день реліз важливіший за відсотки
-  const rank = { release: 0, version: 1, progress: 2 };
-  return out.sort((x, y) => y.date.localeCompare(x.date) || rank[x.kind] - rank[y.kind]);
+    for (const p of await telegramPosts(games)) {
+      out.push({ date: p.date, game: p.game, kind: "telegram", parts: p.excerpt ? [p.excerpt] : [], title: p.title, url: p.url });
+    }
+    // Свіжіше — вище; в один день реліз і пост важливіші за відсотки
+    const rank = { release: 0, telegram: 1, version: 2, progress: 3 };
+    return out.sort((x, y) => y.date.localeCompare(x.date) || rank[x.kind] - rank[y.kind]);
+  })();
+  return cache;
 }
 
 const MONTHS = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];

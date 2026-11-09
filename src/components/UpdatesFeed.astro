@@ -1,22 +1,26 @@
 ---
-// Стрічка «Що нового»: на головній — кілька останніх подій, на /updates/ — усі.
+// Стрічка «Що нового»: на головній — кілька останніх подій, на /news/ — усі.
 import type { Update } from "../lib/updates";
 import { dayLabel } from "../lib/updates";
 import { cover } from "../lib/cover";
 
 export interface Props { items: Update[]; showYear?: boolean }
 const { items, showYear = false } = Astro.props;
-const KIND = { release: "Реліз", version: "Оновлення", progress: "Прогрес" };
+const KIND = { release: "Реліз", version: "Оновлення", progress: "Прогрес", telegram: "Telegram" };
 const rows = await Promise.all(items.map(async (u) => ({ u, img: await cover(u.game.cover, 96) })));
 ---
 
 <ul class="feed">
   {rows.map(({ u, img }) => (
     <li>
-      <a href={`/games/${u.game.id}/`} class={`feed__item is-${u.kind}`}>
+      <a
+        href={u.url ?? `/games/${u.game.id}/`}
+        class={`feed__item is-${u.kind}`}
+        {...(u.url ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      >
         <img src={img} alt="" width="40" height="60" loading="lazy" decoding="async" />
         <span class="feed__main">
-          <strong>{u.game.title}</strong>
+          <strong>{u.title ?? u.game.title}</strong>
           <small>{u.parts.join(" · ")}</small>
         </span>
         <span class="feed__side">
@@ -45,10 +49,11 @@ const rows = await Promise.all(items.map(async (u) => ({ u, img: await cover(u.g
   .feed__item img { flex-shrink: 0; width: 40px; height: 60px; object-fit: cover; border-radius: 6px; }
   .feed__main { display: grid; flex: 1; gap: 3px; min-width: 0; }
   .feed__main strong { overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-  .feed__main small { color: var(--muted); font-size: 13px; }
+  .feed__main small { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: var(--muted); font-size: 13px; }
   .feed__side { display: grid; flex-shrink: 0; gap: 4px; justify-items: end; }
   .feed__side em { padding: 2px 8px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.75); font-size: 11px; font-style: normal; font-weight: 700; }
   .is-release .feed__side em { background: color-mix(in srgb, var(--st-done, #4ade80) 22%, transparent); color: var(--st-done, #4ade80); }
+  .is-telegram .feed__side em { background: rgba(42, 171, 238, 0.2); color: #5cc3f5; }
   .is-version .feed__side em { background: color-mix(in srgb, var(--st-early, #a78bfa) 22%, transparent); color: var(--st-early, #a78bfa); }
   .feed__side time { color: var(--faint); font-size: 12px; white-space: nowrap; }
 </style>

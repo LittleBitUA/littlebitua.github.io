@@ -70,13 +70,14 @@ for (const site of games) {
     date: today,
     t: round(g.progress),
     ...(editingOf(g) != null ? { e: round(editingOf(g)) } : {}),
-    // Версія перекладу з лаунчера — для стрічки «Що нового»
+    // Версія перекладу й дата його оновлення в лаунчері — для стрічки «Що нового»
     ...(g.version ? { v: g.version } : {}),
+    ...(g.translationUpdated && site.launcherSync !== false ? { u: g.translationUpdated } : {}),
   };
   if (point.t == null) continue;
   const list = (log[site.id] ??= []);
   const last = list.at(-1);
-  if (last && last.t === point.t && last.e === point.e && (last.v ?? point.v) === point.v) continue;
+  if (last && last.t === point.t && last.e === point.e && (last.v ?? point.v) === point.v && (last.u ?? point.u) === point.u) continue;
   if (last?.date === today) list.pop();
   list.push(point);
   changed++;

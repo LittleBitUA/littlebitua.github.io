@@ -3,10 +3,10 @@
 import Layout from "../../layouts/Layout.astro";
 import UpdatesFeed from "../../components/UpdatesFeed.astro";
 import { games } from "../../data/catalog";
-import { updatesOf } from "../../lib/updates";
+import { getUpdates } from "../../lib/updates";
 import { SITE_URL } from "../../utils/seo";
 
-const all = updatesOf(games);
+const all = await getUpdates(games);
 const MONTHS = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
 const groups = [...Map.groupBy(all, (u) => u.date.slice(0, 7))].map(([ym, items]) => ({
   title: `${MONTHS[+ym.slice(5, 7) - 1]} ${ym.slice(0, 4)}`,
@@ -17,15 +17,15 @@ const groups = [...Map.groupBy(all, (u) => u.date.slice(0, 7))].map(([ym, items]
 <Layout
   title="Що нового — оновлення українських перекладів | «Little Bit»"
   description="Стрічка змін у перекладах «Little Bit»: релізи, нові версії й прогрес перекладу та редактури."
-  canonicalUrl={`${SITE_URL}/updates/`}
+  canonicalUrl={`${SITE_URL}/news/`}
 >
   <div class="page container">
     <header class="head">
       <span class="eyebrow">Стрічка</span>
       <h1 class="title">Що нового</h1>
       <p class="lead">
-        Релізи, нові версії й прогрес перекладу. Відсотки записуються щодня з LBK Launcher; записи до листопада 2026 року
-        відновлено з історії сайту, тож частина старих змін може бути неточною.
+        Оновлення перекладів у LBK Launcher (з датою, версією й поточними відсотками), виходи перекладів і пости
+        <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer">Telegram-каналу</a> про наші ігри. Сторінка оновлюється щодня.
       </p>
     </header>
     {groups.map((g) => (
@@ -41,6 +41,7 @@ const groups = [...Map.groupBy(all, (u) => u.date.slice(0, 7))].map(([ym, items]
   .head { margin: 24px 0 24px; }
   .title { margin-top: 10px; font-size: clamp(1.8rem, 4vw, 3.25rem); }
   .lead { max-width: 70ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
+  .lead a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
   .month { margin-top: 36px; }
   .month h2 { margin-bottom: 14px; font-size: clamp(1.1rem, 1.6vw, 1.35rem); font-weight: 600; }
 </style>

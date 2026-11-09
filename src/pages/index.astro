@@ -7,13 +7,14 @@ import Row from "../components/cinema/Row.astro";
 import GetStarted from "../components/GetStarted.astro";
 import Support from "../components/Support.astro";
 import FAQ from "../components/FAQ.astro";
+import StatsBand from "../components/StatsBand.astro";
 import { games } from "../data/catalog";
 import { SITE_URL } from "../utils/seo";
 import { getSeriesGroups } from "../utils/series";
 import { isPlayable, isFundraising, translationPercent, sortByStatus } from "../utils/status";
 import { artOf } from "../lib/art";
 import UpdatesFeed from "../components/UpdatesFeed.astro";
-import { updatesOf } from "../lib/updates";
+import { getUpdates } from "../lib/updates";
 
 const byFresh = (a: (typeof games)[number], b: (typeof games)[number]) =>
   (b.releaseDate ?? b.lastUpdate ?? "").localeCompare(a.releaseDate ?? a.lastUpdate ?? "");
@@ -43,7 +44,7 @@ const rows = [
   },
 ];
 const series = getSeriesGroups(3);
-const latest = updatesOf(games).slice(0, 6);
+const latest = (await getUpdates(games)).slice(0, 6);
 ---
 
 <Layout
@@ -60,7 +61,7 @@ const latest = updatesOf(games).slice(0, 6);
       <section class="c-row news">
         <header class="c-row__head">
           <h2>Що нового</h2>
-          <a href="/updates/">Уся стрічка →</a>
+          <a href="/news/">Уся стрічка →</a>
         </header>
         <UpdatesFeed items={latest} />
       </section>
@@ -72,6 +73,7 @@ const latest = updatesOf(games).slice(0, 6);
     <Row title={`Усі локалізації · ${games.length}`} games={sortByStatus(games)} href="/games/" hrefLabel="Каталог з фільтрами" />
   </div>
 
+  <StatsBand />
   <GetStarted />
   <Support />
   <FAQ />

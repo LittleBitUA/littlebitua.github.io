@@ -1,0 +1,35 @@
+---
+// Горизонтальні смуги: назва ліворуч, значення праворуч, смуга під ними.
+export interface Props {
+  items: { label: string; value: number; href?: string; note?: string }[];
+  color?: string;
+  unit?: (n: number) => string;
+}
+const { items, color = "var(--st-early)", unit = (n: number) => String(n) } = Astro.props;
+const max = Math.max(1, ...items.map((i) => i.value));
+---
+
+<ul class="hb" style={`--c:${color}`}>
+  {items.map((it) => (
+    <li>
+      <span class="hb__row">
+        {it.href ? <a href={it.href}>{it.label}</a> : <span>{it.label}</span>}
+        <b>{unit(it.value)}</b>
+      </span>
+      {it.note && <small>{it.note}</small>}
+      <span class="hb__track"><i style={`width:${(it.value / max) * 100}%`}></i></span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .hb { display: grid; gap: 14px; }
+  li { display: grid; gap: 6px; }
+  .hb__row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; }
+  .hb__row a { color: var(--ink); }
+  .hb__row a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .hb__row b { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+  small { margin-top: -4px; color: var(--faint); font-size: 12px; }
+  .hb__track { display: block; height: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+  .hb__track i { display: block; height: 100%; border-radius: 6px; background: var(--c); }
+</style>

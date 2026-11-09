@@ -1,0 +1,66 @@
+---
+// Крива накопичення (ступінчаста площа): скільки виходів набралося на кінець місяця.
+// Підказка з точним числом — при наведенні на місяць.
+export interface Props { points: { label: string; total: number }[]; caption: string }
+const { points, caption } = Astro.props;
+const W = 600, H = 200, PAD = 6;
+const max = Math.max(1, ...points.map((p) => p.total));
+const x = (i: number) => (points.length < 2 ? W / 2 : PAD + (i / (points.length - 1)) * (W - PAD * 2));
+const y = (v: number) => H - PAD - (v / max) * (H - PAD * 2 - 18);
+const line = points.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p.total).toFixed(1)}`).join(" ");
+const area = `${line} L${x(points.length - 1).toFixed(1)},${H} L${x(0).toFixed(1)},${H} Z`;
+const last = points.at(-1);
+---
+
+<figure class="growth">
+  <div class="growth__plot" aria-hidden="true">
+    <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="growth-fill" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#56d391" stop-opacity="0.38" />
+          <stop offset="1" stop-color="#56d391" stop-opacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill="url(#growth-fill)" />
+      <path d={line} fill="none" stroke="#56d391" stroke-width="2" vector-effect="non-scaling-stroke" stroke-linejoin="round" />
+    </svg>
+    {last && <span class="growth__end" style={`top:${(y(last.total) / H) * 100}%`}>{last.total}</span>}
+    <ol class="growth__hits" style={`--n:${points.length}`}>
+      {points.map((p) => <li><span>{p.label}: {p.total}</span></li>)}
+    </ol>
+  </div>
+  <div class="growth__axis" aria-hidden="true" style={`--n:${points.length}`}>
+    {points.map((p, i) => <span>{i === 0 || i === points.length - 1 || i % 3 === 0 ? p.label : ""}</span>)}
+  </div>
+  <div class="sr-only"><table><caption>{caption}</caption><tbody>{points.map((p) => <tr><th>{p.label}</th><td>{p.total}</td></tr>)}</tbody></table></div>
+</figure>
+
+<style>
+  .growth { margin: 0; }
+  .growth__plot { position: relative; height: 200px; }
+  svg { display: block; width: 100%; height: 100%; }
+  .growth__end { position: absolute; right: 0; padding: 2px 8px; border-radius: 6px; background: #56d391; color: #0b2015; font-size: 12px; font-weight: 700; transform: translate(0, -130%); }
+  .growth__hits { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--n), 1fr); }
+  .growth__hits li { position: relative; }
+  .growth__hits li:hover { background: linear-gradient(90deg, transparent calc(50% - 0.5px), rgba(255, 255, 255, 0.35) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+  .growth__hits span {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #f4f1f4;
+    color: #111;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    display: none;
+    transform: translateX(-50%);
+  }
+  .growth__hits li:first-child span { left: 0; transform: none; }
+  .growth__hits li:last-child span { left: auto; right: 0; transform: none; }
+  .growth__hits li:hover span { display: block; }
+  .growth__axis { display: grid; grid-template-columns: repeat(var(--n, 12), 1fr); margin-top: 6px; }
+  .growth__axis span { overflow: visible; color: var(--faint); font-size: 11px; text-align: center; white-space: nowrap; }
+</style>

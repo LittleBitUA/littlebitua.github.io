@@ -1,186 +1,338 @@
 ---
-// ─── Цифри: команда й переклади в числах ───────────────────────
-// Усе рахується під час збірки з тих самих даних, що й решта сайту:
-// каталог (games.ts + LBK Launcher), хронологія, журнал прогресу, титри.
+// ─── Цифри: звіт студії ────────────────────────────────────────
+// Усі показники — у lib/stats.ts; тут лише подача.
 import Layout from "../../layouts/Layout.astro";
-import { games } from "../../data/catalog";
-import { PEOPLE } from "../../data/people";
-import { latestReport } from "../../lib/chronology";
-import { updatesOf } from "../../lib/updates";
-import { getSeriesGroups } from "../../utils/series";
-import { isPlayable, statusMeta, STATUS_META, isFundraising } from "../../utils/status";
+import Bars from "../../components/stats/Bars.astro";
+import HBars from "../../components/stats/HBars.astro";
+import Growth from "../../components/stats/Growth.astro";
+import PersonAvatar from "../../components/PersonAvatar.astro";
+import { stats as s } from "../../lib/stats";
 import { pluralize } from "../../utils/pluralize";
+import { formatPct } from "../../utils/status";
 import { SITE_URL } from "../../utils/seo";
-import type { GameStatus } from "../../data/games";
+import { cover } from "../../lib/cover";
 
 const n = (v: number) => v.toLocaleString("uk-UA");
+const asOf = new Date().toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" }).replace(/ р\.$/, " року");
+const nearest = await Promise.all(s.nearest.map(async (x) => ({ ...x, img: await cover(x.g.cover, 96) })));
+const tempoTotal = s.tempo.reduce((a, m) => a + m.t, 0);
+const releasedDated = s.releasesThisYear - s.undatedThisYear;
 
-// ── Головні числа ──
-const playable = games.filter(isPlayable).length;
-const inWork = games.length - playable;
-const members = PEOPLE.filter((p) => !p.guest && !p.team).length;
-const helpers = PEOPLE.filter((p) => p.guest || p.team).length;
-
-// ── Виходи за місяцями (розділ «Виходи…» останнього звіту) ──
-const MONTHS = ["січня", "лютого", "березня", "квітня", "травня", "червня", "липня", "серпня", "вересня", "жовтня", "листопада", "грудня"];
-const SHORT = ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"];
-const byYear = new Map<string, { total: number; months: number[] }>();
-let year = "";
-for (const item of latestReport?.sections[0]?.items ?? []) {
-  if (item.kind === "node" && item.level === 1) year = item.text.match(/\d{4}/)?.[0] ?? year;
-  if (item.kind !== "entry" || !year) continue;
-  const y = byYear.get(year) ?? { total: 0, months: Array(12).fill(0) };
-  y.total++;
-  const m = item.entry.date ? MONTHS.findIndex((name) => item.entry.date!.endsWith(name)) : -1;
-  if (m >= 0) y.months[m]++;
-  byYear.set(year, y);
-}
-const years = [...byYear].sort(([a], [b]) => a.localeCompare(b));
-const current = years.at(-1);
-const peak = Math.max(1, ...(current?.[1].months ?? [1]));
-
-// ── Стан каталогу ──
-const ORDER: GameStatus[] = ["done", "early-access", "in-progress", "fundraising", "planned"];
-const byStatus = ORDER.map((s) => ({ s, count: games.filter((g) => g.status === s).length, ...statusMeta(s) })).filter((x) => x.count);
-
-// ── Активність за 30 днів (журнал прогресу) ──
-const since = new Date(Date.now() - 30 * 864e5).toISOString().slice(0, 10);
-const recent = updatesOf(games).filter((u) => u.date >= since);
-const touched = new Set(recent.map((u) => u.game.id)).size;
-
-// ── Обсяг тексту (там, де ведеться підрахунок рядків) ──
-const counted = games.filter((g) => g.stats?.translatedLines);
-const lines = counted.reduce((sum, g) => sum + (g.stats!.translatedLines ?? 0), 0);
-
-// ── Серії ──
-const series = getSeriesGroups(2).sort((a, b) => b.games.length - a.games.length).slice(0, 6);
-const fundsActive = games.filter(isFundraising).length;
-const fundsDone = games.filter((g) => g.fundraisingCompleted).length;
+const KPI = [
+  { value: n(s.playable), label: `${pluralize(s.playable, "переклад", "переклади", "перекладів")}, у які вже можна грати` },
+  { value: n(s.inWork), label: `${pluralize(s.inWork, "проєкт", "проєкти", "проєктів")} у роботі · у середньому ${s.avgInWork}% тексту` },
+  { value: n(s.releasesThisYear), label: `${pluralize(s.releasesThisYear, "вихід", "виходи", "виходів")} перекладів за ${s.thisYear} рік` },
+  { value: n(s.lines), label: `рядків тексту в ${s.linesProjects} проєктах, де їх пораховано` },
+  { value: n(s.members), label: `${pluralize(s.members, "людина", "людини", "людей")} у команді · ще ${s.helpers} допомагають` },
+  { value: n(s.recent), label: `${pluralize(s.recent, "зміна", "зміни", "змін")} у перекладах за 30 днів` },
+];
 ---
 
 <Layout
-  title="Цифри — українські переклади «Little Bit» у числах"
-  description={`«Little Bit» у числах: ${playable} перекладів, у які вже можна грати, ${inWork} у роботі, ${members + helpers} людей у титрах.`}
+  title="Цифри — «Little Bit» у числах"
+  description={`Звіт студії «Little Bit»: ${s.playable} перекладів, у які можна грати, ${s.inWork} у роботі, ${s.releasesThisYear} виходів за ${s.thisYear} рік, ${n(s.lines)} рядків тексту.`}
   canonicalUrl={`${SITE_URL}/stats/`}
 >
   <div class="page container">
     <header class="head">
-      <span class="eyebrow">Цифри</span>
-      <h1 class="title">«Little Bit» у числах</h1>
-      <p class="lead">Усе рахується автоматично з каталогу, хронології та щоденного журналу прогресу з LBK Launcher.</p>
+      <span class="eyebrow">Звіт студії · станом на {asOf}</span>
+      <h1 class="title">«Little Bit» у цифрах</h1>
+      <p class="lead">
+        Скільки ми перекладаємо, як швидко рухаються проєкти й хто над ними працює. Числа оновлюються автоматично щодня — з
+        каталогу, <a href="/chronology/">хронології</a> та даних LBK Launcher.
+      </p>
     </header>
 
-    <ul class="tiles">
-      <li class="c-panel tile"><strong>{playable}</strong><span>{pluralize(playable, "переклад", "переклади", "перекладів")}, у які вже можна грати</span></li>
-      <li class="c-panel tile"><strong>{inWork}</strong><span>{pluralize(inWork, "проєкт", "проєкти", "проєктів")} у роботі</span></li>
-      <li class="c-panel tile"><strong>{members}</strong><span>{pluralize(members, "людина", "людини", "людей")} у команді; ще {helpers} допомагають з окремими іграми</span></li>
-      {current && <li class="c-panel tile"><strong>{current[1].total}</strong><span>{pluralize(current[1].total, "вихід", "виходи", "виходів")} перекладів за {current[0]} рік</span></li>}
+    <!-- ── Головні показники ── -->
+    <ul class="kpi">
+      {KPI.map((k) => <li><strong>{k.value}</strong><span>{k.label}</span></li>)}
     </ul>
 
-    {current && (
-      <section class="block">
-        <h2 class="sec">Виходи за {current[0]} рік</h2>
-        <div class="c-panel chart">
-          <ol class="months" aria-hidden="true">
-            {current[1].months.map((c, i) => (
-              <li title={`${SHORT[i]}: ${c} ${pluralize(c, "вихід", "виходи", "виходів")}`}>
-                <span class="months__val">{c || ""}</span>
-                <span class="months__bar" style={`height:${(c / peak) * 100}%`}></span>
-                <span class="months__label">{SHORT[i]}</span>
-              </li>
-            ))}
-          </ol>
-          <div class="sr-only"><table>
-            <caption>Кількість виходів перекладів за місяцями {current[0]} року</caption>
-            <tbody>{current[1].months.map((c, i) => <tr><th>{SHORT[i]}</th><td>{c}</td></tr>)}</tbody>
-          </table></div>
-          <p class="chart__note">
-            Релізи, тестові версії й ранній доступ із <a href="/chronology/">хронології</a>.
-            {current[1].total - current[1].months.reduce((a, b) => a + b, 0) > 0 && ` Ще ${current[1].total - current[1].months.reduce((a, b) => a + b, 0)} — без точної дати.`}
-            {years.length > 1 && ` Раніше: ${years.slice(0, -1).map(([y, v]) => `${y} — ${v.total}`).join(", ")}.`}
+    <!-- ── Виходи ── -->
+    <section class="sec">
+      <header class="sec__head">
+        <span class="sec__num">01</span>
+        <h2>Виходи</h2>
+        <p>Релізи, тестові версії й ранній доступ з хронології.</p>
+      </header>
+      <div class="grid grid--wide">
+        <div class="c-panel card">
+          <h3>Виходи за {s.thisYear} рік <b>{s.releasesThisYear}</b></h3>
+          <Bars
+            items={s.releasesByMonth.map((m) => ({ label: m.label, value: m.count, tip: `${m.label}: ${m.count} ${pluralize(m.count, "вихід", "виходи", "виходів")}` }))}
+            caption={`Виходи перекладів за місяцями ${s.thisYear} року`}
+          />
+          <p class="note">
+            {s.undatedThisYear > 0 && `${releasedDated} з точною датою, ще ${s.undatedThisYear} — без неї. `}
+            {s.years.length > 1 && `Попередні роки: ${s.years.slice(0, -1).map((y) => `${y.year} — ${y.count}`).join(", ")}.`}
           </p>
+        </div>
+        <div class="c-panel card">
+          <h3>Зростання бібліотеки</h3>
+          <Growth points={s.growth} caption="Накопичена кількість виходів на кінець місяця" />
+          <p class="note">Скільки виходів набралося на кінець кожного місяця (лише з точною датою).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Темп ── -->
+    {s.tempo.length > 0 && (
+      <section class="sec">
+        <header class="sec__head">
+          <span class="sec__num">02</span>
+          <h2>Темп роботи</h2>
+          <p>На скільки відсоткових пунктів за місяць просунувся переклад у всіх проєктах разом.</p>
+        </header>
+        <div class="grid grid--wide">
+          <div class="c-panel card">
+            <h3>Пункти перекладу за місяць</h3>
+            <Bars
+              items={s.tempo.map((m) => ({ label: m.label, value: m.t, tip: `${m.label}: +${m.t} п. перекладу · +${m.e} п. редактури` }))}
+              caption="Відсоткові пункти перекладу, додані за місяць у всіх проєктах"
+              color="var(--st-progress)"
+              every={2}
+            />
+            <p class="note">Дані до листопада 2026 року відновлено з історії сайту, тож старі місяці приблизні.</p>
+          </div>
+          <div class="facts">
+            <div class="c-panel fact"><strong>+{n(s.points30)}</strong><span>пунктів перекладу за останні 30 днів</span></div>
+            <div class="c-panel fact"><strong>{s.recentGames}</strong><span>{pluralize(s.recentGames, "гра отримала", "гри отримали", "ігор отримали")} оновлення за 30 днів</span></div>
+            <div class="c-panel fact"><strong>{n(tempoTotal)}</strong><span>пунктів перекладу від початку записів</span></div>
+            <a class="fact__link" href="/news/">Стрічка «Що нового» →</a>
+          </div>
         </div>
       </section>
     )}
 
-    <section class="block">
-      <h2 class="sec">Стан каталогу · {games.length} {pluralize(games.length, "гра", "гри", "ігор")}</h2>
-      <div class="c-panel chart">
-        <div class="split" role="img" aria-label={byStatus.map((x) => `${x.label}: ${x.count}`).join(", ")}>
-          {byStatus.map((x) => <span style={`flex:${x.count};background:${x.color}`} title={`${x.label}: ${x.count}`}></span>)}
-        </div>
-        <ul class="legend">
-          {byStatus.map((x) => (
-            <li><i style={`background:${x.color}`}></i>{x.label} <b>{x.count}</b></li>
+    <!-- ── Конвеєр ── -->
+    <section class="sec">
+      <header class="sec__head">
+        <span class="sec__num">03</span>
+        <h2>Виробничий конвеєр</h2>
+        <p>Кожен переклад проходить кілька етапів. Тут — у скількох іграх кожен етап уже завершено, триває чи ще не почався.</p>
+      </header>
+      <div class="c-panel card">
+        <ul class="pipe">
+          {s.pipeline.map((st) => (
+            <li>
+              <span class="pipe__name">{st.label}<small>{st.total} {pluralize(st.total, "гра", "гри", "ігор")}</small></span>
+              <span class="pipe__bar" role="img" aria-label={`${st.label}: завершено ${st.done}, триває ${st.active}, не почато ${st.todo}`}>
+                {st.done > 0 && <i class="is-done" style={`flex:${st.done}`} title={`Завершено: ${st.done}`}>{st.done}</i>}
+                {st.active > 0 && <i class="is-active" style={`flex:${st.active}`} title={`Триває: ${st.active}`}>{st.active}</i>}
+                {st.todo > 0 && <i class="is-todo" style={`flex:${st.todo}`} title={`Не почато: ${st.todo}`}>{st.todo}</i>}
+              </span>
+            </li>
           ))}
+        </ul>
+        <ul class="legend">
+          <li><i class="is-done"></i>Завершено</li>
+          <li><i class="is-active"></i>Триває</li>
+          <li><i class="is-todo"></i>Не почато</li>
         </ul>
       </div>
     </section>
 
-    <section class="block grid2">
-      <div class="c-panel fact">
-        <h2>За останні 30 днів</h2>
-        <p><strong>{recent.length}</strong> {pluralize(recent.length, "зміна", "зміни", "змін")} у {touched} {pluralize(touched, "грі", "іграх", "іграх")}: релізи, нові версії, прогрес перекладу й редактури.</p>
-        <a href="/updates/">Стрічка «Що нового» →</a>
-      </div>
-      <div class="c-panel fact">
-        <h2>Обсяг тексту</h2>
-        <p><strong>{n(lines)}</strong> перекладених рядків — лише в {counted.length} {pluralize(counted.length, "проєкті", "проєктах", "проєктах")}, де ведеться підрахунок; насправді більше.</p>
-      </div>
-      <div class="c-panel fact">
-        <h2>Збори</h2>
-        <p><strong>{fundsDone}</strong> {pluralize(fundsDone, "збір завершено", "збори завершено", "зборів завершено")}{fundsActive > 0 && `, ${fundsActive} ${pluralize(fundsActive, "триває", "тривають", "тривають")}`}.</p>
-        <a href="/support/">Підтримати →</a>
-      </div>
-      <div class="c-panel fact">
-        <h2>Найбільші серії</h2>
-        <ul class="series">
-          {series.map((s) => <li><a href={`/games/series/${s.slug}/`}>{s.name}</a><b>{s.games.length}</b></li>)}
+    <!-- ── Найближчі релізи ── -->
+    <section class="sec">
+      <header class="sec__head">
+        <span class="sec__num">04</span>
+        <h2>Найближчі до релізу</h2>
+        <p>Проєкти в роботі з найбільшим прогресом перекладу.</p>
+      </header>
+      <ul class="near">
+        {nearest.map(({ g, t, e, img }) => (
+          <li>
+            <a class="c-panel near__item" href={`/games/${g.id}/`}>
+              <img src={img} alt="" width="48" height="72" loading="lazy" />
+              <span class="near__main">
+                <strong>{g.title}</strong>
+                <span class="near__row"><em>Переклад</em><span class="near__track"><i style={`width:${t}%`}></i></span><b>{formatPct(t)}%</b></span>
+                {e != null && <span class="near__row"><em>Редактура</em><span class="near__track near__track--ed"><i style={`width:${e}%`}></i></span><b>{formatPct(e)}%</b></span>}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- ── Каталог ── -->
+    <section class="sec">
+      <header class="sec__head">
+        <span class="sec__num">05</span>
+        <h2>Що ми перекладаємо</h2>
+        <p>{s.total} {pluralize(s.total, "гра", "гри", "ігор")} у каталозі — від класики {s.minYear} року до новинок {s.maxYear}-го.</p>
+      </header>
+      <div class="c-panel card">
+        <h3>Стан каталогу</h3>
+        <div class="split" role="img" aria-label={s.byStatus.map((x) => `${x.label}: ${x.count}`).join(", ")}>
+          {s.byStatus.map((x) => <span style={`flex:${x.count};background:${x.color}`} title={`${x.label}: ${x.count}`}></span>)}
+        </div>
+        <ul class="legend">
+          {s.byStatus.map((x) => <li><i style={`background:${x.color}`}></i>{x.label} <b>{x.count}</b></li>)}
         </ul>
       </div>
+      <div class="grid grid--three">
+        <div class="c-panel card">
+          <h3>Жанри</h3>
+          <HBars items={s.genres.map((g) => ({ label: g.label, value: g.count }))} unit={(v) => `${v}`} />
+        </div>
+        <div class="c-panel card">
+          <h3>Рік виходу ігор <b>медіана {s.medianYear}</b></h3>
+          <Bars
+            items={s.byGameYear.map((y) => ({ label: `’${String(y.year).slice(2)}`, value: y.count, tip: `${y.year}: ${y.count} ${pluralize(y.count, "гра", "гри", "ігор")}` }))}
+            caption="Кількість ігор у каталозі за роком виходу гри"
+            height={150}
+            color="#f2a94b"
+            every={3}
+          />
+        </div>
+        <div class="c-panel card">
+          <h3>Найбільші серії</h3>
+          <HBars items={s.series.map((x) => ({ label: x.name, value: x.games.length, href: `/games/series/${x.slug}/` }))} color="#56d391" />
+        </div>
+      </div>
     </section>
+
+    <!-- ── Команда ── -->
+    <section class="sec">
+      <header class="sec__head">
+        <span class="sec__num">06</span>
+        <h2>Команда</h2>
+        <p>{s.members} {pluralize(s.members, "людина", "людини", "людей")} у складі «Little Bit» і {s.helpers}, хто допомагає з окремими іграми. Разом — {s.credits} {pluralize(s.credits, "внесок", "внески", "внесків")} у титрах.</p>
+      </header>
+      <div class="grid grid--two">
+        <div class="c-panel card">
+          <h3>Внески за ролями</h3>
+          <HBars items={s.roles.map((r) => ({ label: r.label, value: r.count }))} color="var(--st-progress)" />
+        </div>
+        <div class="c-panel card">
+          <h3>Найбільше проєктів</h3>
+          <ol class="leaders">
+            {s.leaders.map(({ p, projects }, i) => (
+              <li>
+                <a href={`/team/${p.slug}/`}>
+                  <span class="leaders__rank">{String(i + 1).padStart(2, "0")}</span>
+                  <PersonAvatar name={p.name} slug={p.slug} size={32} />
+                  <span class="leaders__name">{p.name}{p.guest && <small>допомагає</small>}</span>
+                  <b>{projects}</b>
+                </a>
+              </li>
+            ))}
+          </ol>
+          <a class="fact__link" href="/team/">Уся команда →</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Збори ── -->
+    <section class="sec">
+      <header class="sec__head">
+        <span class="sec__num">07</span>
+        <h2>Підтримка</h2>
+        <p>Усі переклади безкоштовні. Збори на конкретні ігри йдуть перекладачам, які над ними працюють.</p>
+      </header>
+      <div class="grid grid--three">
+        <div class="c-panel fact"><strong>{s.fundsDone}</strong><span>{pluralize(s.fundsDone, "збір завершено", "збори завершено", "зборів завершено")}</span></div>
+        <div class="c-panel fact"><strong>{s.fundsActive}</strong><span>{pluralize(s.fundsActive, "збір триває", "збори тривають", "зборів триває")} зараз</span></div>
+        <a class="c-panel fact fact--cta" href="/support/"><strong>Підтримати →</strong><span>Активні збори й загальні донати</span></a>
+      </div>
+    </section>
+
+    <p class="method">
+      <b>Як рахуємо.</b> Каталог і відсотки — з сайту й LBK Launcher; виходи — з останнього звіту <a href="/chronology/">хронології</a>; темп — із
+      щоденного журналу прогресу (пункти перекладу, без відкатів і виправлень даних); команда — з титрів на сторінках ігор. Сторінка
+      перебудовується щодня.
+    </p>
   </div>
 </Layout>
 
 <style>
   .head { margin: 24px 0 28px; }
-  .title { margin-top: 10px; font-size: clamp(1.8rem, 4vw, 3.25rem); }
-  .lead { max-width: 70ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
-  .lead a, .chart__note a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .title { margin-top: 10px; font-size: clamp(2rem, 5vw, 3.75rem); letter-spacing: -0.02em; }
+  .lead { max-width: 68ch; margin-top: 14px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+  .lead a, .method a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
-  .tile { display: grid; gap: 8px; padding: 20px 22px; }
-  .tile strong { font-size: clamp(2.2rem, 4vw, 3rem); font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
-  .tile span { color: var(--muted); font-size: 14px; line-height: 1.45; }
+  .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kpi li { display: grid; gap: 10px; align-content: start; padding: 26px 20px 26px 0; }
+  .kpi li + li { padding-left: 20px; border-left: 1px solid var(--line); }
+  .kpi strong { font-size: clamp(2rem, 3.6vw, 2.9rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .kpi span { color: var(--muted); font-size: 13px; line-height: 1.45; }
 
-  .block { margin-top: 44px; }
-  .sec { margin-bottom: 14px; font-size: clamp(1.1rem, 1.7vw, 1.4rem); font-weight: 600; }
-  .chart { padding: 22px 24px; }
-  .chart__note { margin-top: 16px; color: var(--faint); font-size: 13px; }
+  .sec { margin-top: 64px; }
+  .sec__head { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: baseline; margin-bottom: 18px; }
+  .sec__num { color: var(--faint); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.08em; }
+  .sec__head h2 { font-size: clamp(1.3rem, 2.2vw, 1.75rem); font-weight: 700; letter-spacing: -0.01em; }
+  .sec__head p { grid-column: 2; max-width: 72ch; color: var(--muted); font-size: 14px; line-height: 1.6; }
 
-  .months { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 8px; height: 200px; }
-  .months li { display: grid; grid-template-rows: auto 1fr auto; align-items: end; justify-items: center; gap: 6px; min-width: 0; }
-  .months__val { color: var(--ink); font-size: 13px; font-weight: 600; }
-  .months__bar { align-self: end; width: min(100%, 36px); min-height: 2px; border-radius: 4px 4px 0 0; background: var(--st-early); }
-  .months li:hover .months__bar { filter: brightness(1.2); }
-  .months__label { color: var(--faint); font-size: 12px; }
+  .grid { display: grid; gap: 12px; }
+  .grid--wide { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); }
+  .grid--two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
+  .card { display: grid; gap: 18px; align-content: start; padding: 22px 24px; min-width: 0; }
+  .card h3 { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+  .card h3 b { color: var(--ink); letter-spacing: 0; text-transform: none; }
+  .note { color: var(--faint); font-size: 12px; line-height: 1.5; }
 
-  .split { display: flex; gap: 2px; height: 14px; overflow: hidden; border-radius: 4px; }
-  .split span { min-width: 4px; }
-  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; color: var(--muted); font-size: 13px; }
+  .facts { display: grid; gap: 12px; align-content: start; }
+  .fact { display: grid; gap: 6px; padding: 20px 22px; }
+  .fact strong { font-size: 2rem; font-weight: 700; line-height: 1.05; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .fact span { color: var(--muted); font-size: 13px; line-height: 1.45; }
+  .fact--cta { transition: border-color 0.2s ease; }
+  .fact--cta:hover { border-color: rgba(255, 255, 255, 0.4); }
+  .fact--cta strong { font-size: 1.4rem; }
+  .fact__link { color: var(--ink); font-size: 13px; font-weight: 600; }
+
+  .pipe { display: grid; gap: 16px; }
+  .pipe li { display: grid; grid-template-columns: 140px 1fr; gap: 16px; align-items: center; }
+  .pipe__name { display: grid; font-size: 15px; font-weight: 600; }
+  .pipe__name small { color: var(--faint); font-size: 12px; font-weight: 500; }
+  .pipe__bar { display: flex; gap: 2px; height: 28px; overflow: hidden; border-radius: 6px; }
+  .pipe__bar i { display: grid; place-items: center; min-width: 22px; color: #101014; font-size: 12px; font-style: normal; font-weight: 700; }
+  .is-done { background: var(--st-done); }
+  .is-active { background: var(--st-progress); }
+  .is-todo { background: rgba(255, 255, 255, 0.1); color: var(--muted) !important; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: 13px; }
   .legend li { display: flex; align-items: center; gap: 8px; }
   .legend i { width: 10px; height: 10px; border-radius: 3px; }
   .legend b { color: var(--ink); font-weight: 700; }
+  .split { display: flex; gap: 2px; height: 14px; overflow: hidden; border-radius: 4px; }
+  .split span { min-width: 4px; }
 
-  .grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 12px; }
-  .fact { display: grid; gap: 10px; align-content: start; padding: 20px 22px; }
-  .fact h2 { color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-  .fact p { color: var(--muted); font-size: 14px; line-height: 1.55; }
-  .fact p strong { display: block; margin-bottom: 4px; color: var(--ink); font-size: 2rem; font-weight: 700; line-height: 1.1; }
-  .fact a { color: var(--ink); font-size: 13px; font-weight: 600; }
-  .series { display: grid; gap: 6px; font-size: 14px; }
-  .series li { display: flex; justify-content: space-between; gap: 12px; }
-  .series b { color: var(--muted); font-weight: 600; }
+  .near { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 12px; }
+  .near__item { display: flex; gap: 14px; align-items: center; height: 100%; padding: 12px 16px 12px 12px; transition: border-color 0.2s ease; }
+  .near__item:hover { border-color: rgba(255, 255, 255, 0.4); }
+  .near__item img { flex-shrink: 0; width: 48px; height: 72px; object-fit: cover; border-radius: 6px; }
+  .near__main { display: grid; flex: 1; gap: 7px; min-width: 0; }
+  .near__main strong { overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .near__row { display: grid; grid-template-columns: 72px 1fr 40px; gap: 10px; align-items: center; }
+  .near__row em { color: var(--faint); font-size: 12px; font-style: normal; }
+  .near__row b { font-size: 12px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+  .near__track { display: block; height: 5px; border-radius: 5px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+  .near__track i { display: block; height: 100%; border-radius: 5px; background: var(--st-early); }
+  .near__track--ed i { background: var(--st-progress); }
 
-  @media (max-width: 520px) { .months { gap: 3px; height: 160px; } .months__label { font-size: 10px; } }
+  .leaders { display: grid; gap: 4px; }
+  .leaders a { display: flex; align-items: center; gap: 12px; padding: 6px 8px; border-radius: 10px; transition: background-color 0.15s ease; }
+  .leaders a:hover { background: rgba(255, 255, 255, 0.06); }
+  .leaders__rank { width: 20px; color: var(--faint); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .leaders__name { flex: 1; min-width: 0; overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .leaders__name small { margin-left: 8px; color: var(--faint); font-size: 11px; font-weight: 500; }
+  .leaders { min-width: 0; }
+  .leaders li { min-width: 0; }
+  .leaders b { font-size: 14px; font-variant-numeric: tabular-nums; }
+
+  .method { max-width: 80ch; margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--faint); font-size: 13px; line-height: 1.6; }
+  .method b { color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .grid--wide, .grid--two, .grid--three { grid-template-columns: minmax(0, 1fr); }
+    .kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kpi li, .kpi li + li { padding: 20px 14px; border-left: 0; }
+    .kpi li:nth-child(even) { border-left: 1px solid var(--line); }
+    .kpi li:nth-child(n + 3) { border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 520px) {
+    .pipe li { grid-template-columns: 1fr; gap: 8px; }
+    .sec__head p { grid-column: 1 / -1; }
+  }
 </style>

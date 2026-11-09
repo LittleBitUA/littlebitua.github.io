@@ -1,0 +1,62 @@
+---
+// Вертикальні стовпчики одного ряду. Підпис значення — лише над максимумом
+// і над останнім стовпчиком; решту видно при наведенні (і в таблиці для скрінрідерів).
+export interface Props {
+  items: { label: string; value: number; tip: string }[];
+  caption: string;
+  height?: number;
+  color?: string;
+  /** Скільки підписів осі X показувати: кожен n-й */
+  every?: number;
+}
+const { items, caption, height = 180, color = "var(--st-early)", every = 1 } = Astro.props;
+const max = Math.max(1, ...items.map((i) => i.value));
+const peak = items.findIndex((i) => i.value === max);
+---
+
+<figure class="bars" style={`--h:${height}px;--c:${color};--n:${items.length}`}>
+  <ol aria-hidden="true">
+    {items.map((it, i) => (
+      <li class:list={{ "is-label": i === peak || i === items.length - 1 }} tabindex="-1">
+        <span class="bars__val">{it.value || ""}</span>
+        <span class="bars__bar" style={`height:${(it.value / max) * 100}%`}></span>
+        <span class="bars__x">{i % every === 0 || i === items.length - 1 ? it.label : ""}</span>
+        <span class="bars__tip">{it.tip}</span>
+      </li>
+    ))}
+  </ol>
+  <div class="sr-only"><table><caption>{caption}</caption><tbody>{items.map((it) => <tr><th>{it.label}</th><td>{it.value}</td></tr>)}</tbody></table></div>
+</figure>
+
+<style>
+  .bars { margin: 0; }
+  ol { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: clamp(2px, 0.6vw, 8px); height: calc(var(--h) + 40px); padding-top: 4px; }
+  li { position: relative; display: grid; grid-template-rows: 20px 1fr 18px; align-items: end; justify-items: center; min-width: 0; }
+  .bars__val { visibility: hidden; color: var(--ink); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  li.is-label .bars__val { visibility: visible; }
+  .bars__bar { align-self: end; width: min(100%, 34px); min-height: 2px; border-radius: 4px 4px 0 0; background: var(--c); opacity: 0.9; transition: opacity 0.15s ease; }
+  .bars__x { overflow: hidden; color: var(--faint); font-size: 11px; white-space: nowrap; }
+  .bars__tip {
+    position: absolute;
+    bottom: calc(100% - 14px);
+    left: 50%;
+    z-index: 3;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: #f4f1f4;
+    color: #111;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    pointer-events: none;
+    display: none;
+    transform: translate(-50%, 0);
+    transition: opacity 0.12s ease, transform 0.12s ease;
+  }
+  li:first-child .bars__tip { left: 0; transform: none; }
+  li:last-child .bars__tip { left: auto; right: 0; transform: none; }
+  /* Підказка з'являється лише при наведенні: прихована вона не розширює сторінку на телефоні */
+  li:hover .bars__tip { display: block; }
+  ol:hover .bars__bar { opacity: 0.45; }
+  li:hover .bars__bar { opacity: 1; }
+</style>
