@@ -93,6 +93,8 @@ export interface Game {
   otherVersions?: { slug: string; label: string; translation: number; editing: number; version: string | null }[];
   /** false — щоденна перевірка не порівнює відсотки з лаунчером (там інша гра чи збірка) */
   launcherCheck?: boolean;
+  /** Що поки не перекладено чи не зроблено — окремий блок на сторінці гри */
+  limitations?: string[];
   releaseDate?: string; // Release date (YYYY-MM-DD)
   gameYear?: number; // Рік виходу (для ігор зі Steam — рік виходу в Steam)
 
@@ -166,6 +168,7 @@ export const games: Game[] = [
   },
   {
     id: "shadows-of-the-damned",
+    limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     title: "Shadows of the Damned: Hella Remastered",
     description:
       "Божевільний пригодницький екшн від Grasshopper Manufacture, створений за участю легендарних SUDA51, Шінджі Мікамі та композитора Акіри Ямаоки. Це вибухова суміш горору, чорного гумору, рок-н-ролу, абсурду й відвертих жартів, у якій Пекло — лише початок усіх неприємностей.\n\nГарсія Готспер — безстрашний мисливець на демонів, який вирушає просто в Потойбіччя, щоб урятувати свою кохану Полу з лап жорстокого Володаря демонів Флемінга. Його єдиний напарник — Джонсон, балакучий демон, здатний перетворюватися на смертоносну зброю. Разом їм доведеться пробиватися крізь орди пекельних створінь, долати смертельні пастки, розгадувати загадки та використовувати силу світла проти всепоглинальної Темряви.\n\nHella Remastered повертає культову гру з оновленою графікою, зберігаючи її неповторну атмосферу, зухвалий гумор, видовищні перестрілки та абсолютно непередбачувану історію. Приготуйтеся до подорожі, у якій здоровий глузд давно здох, демони не стуляють пельок, а ваш найкращий друг — буквально зброя в руках.",
@@ -176,6 +179,7 @@ export const games: Game[] = [
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 93 },
+      { label: "Текстури", percent: 0 },
     ],
     tags: ["Бойовик", "Шутер", "Хоррор", "Чорний гумор"],
     steamUrl: "https://store.steampowered.com/app/2535440/Shadows_of_the_Damned_Hella_Remastered/",
@@ -206,6 +210,7 @@ export const games: Game[] = [
   },
   {
     id: "killer-is-dead",
+    limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     launcherSlug: "killer_is_dead_nightmare_edition",
     title: "Killer is Dead - Nightmare Edition",
     description:
@@ -217,6 +222,7 @@ export const games: Game[] = [
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 100 },
+      { label: "Текстури", percent: 0 },
     ],
     tags: ["Hack and Slash", "Бойовик", "Чорний гумор"],
     steamUrl: "https://store.steampowered.com/app/261110/Killer_is_Dead__Nightmare_Edition/",
@@ -247,6 +253,7 @@ export const games: Game[] = [
   },
   {
     id: "gravity-rush",
+    limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     launcherSlug: "gravity_rush_remastered",
     launcherVersions: [{ slug: "gravity_rush", label: "Версія для PS Vita" }],
     title: "Gravity Rush™ Remastered",
@@ -260,6 +267,7 @@ export const games: Game[] = [
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 50 },
+      { label: "Текстури", percent: 0 },
     ],
     tags: ["Бойовик", "Пригоди", "Відкритий світ", "Аніме"],
     downloadUrl: "https://lbklauncher.com/games/gravity_rush_remastered/little-bit",
@@ -400,6 +408,7 @@ export const games: Game[] = [
   },
   {
     id: "uncharted-collection",
+    limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     title: "Uncharted: The Nathan Drake Collection",
     series: "Uncharted",
     description:
@@ -412,6 +421,7 @@ export const games: Game[] = [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 90 },
       { label: "Шрифти", percent: 100 },
+      { label: "Текстури", percent: 0 },
     ],
     tags: ["Бойовик", "Пригоди", "Шутер"],
     downloadUrl: "https://lbklauncher.com/games/uncharted_the_nathan_drake_collection/little-bit",
@@ -523,6 +533,7 @@ export const games: Game[] = [
   },
   {
     id: "nmh1",
+    limitations: ["Перекладено не всі текстури: частина написів на зображеннях лишається англійською."],
     title: "No More Heroes",
     series: "No More Heroes",
     description:
@@ -575,9 +586,10 @@ export const games: Game[] = [
   },
   {
     id: "dispatch",
+    limitations: ["Професійна літературна редакторка відредагувала лише перші два епізоди; для решти епізодів редактура не планується."],
     abandonedStage: "Редактура",
     abandonedReason:
-      "Для гри вийшла офіційна українська локалізація, тому редактуру нашого перекладу припинено. Сам текст перекладено повністю, і цією версією можна користуватися й надалі.",
+      "Професійна редакторка відредагувала лише перші два епізоди. Подальша редактура не планується: для гри вийшла офіційна українська локалізація. Сам текст перекладено повністю, і цією версією можна користуватися й надалі.",
     title: "Dispatch",
     description:
       "Сюжетна супергеройська комедія, у якій колишній герой після втрати бойового костюма влаштовується диспетчером. Тепер йому доведеться керувати командою колишніх лиходіїв, розподіляти їх між завданнями, владнувати офісні конфлікти та ухвалювати рішення, що впливатимуть на стосунки персонажів і розвиток історії.",
@@ -826,6 +838,7 @@ export const games: Game[] = [
   },
   {
     id: "nmh3",
+    limitations: ["Перекладено не всі текстури: частина написів на зображеннях лишається англійською."],
     title: "No More Heroes 3",
     series: "No More Heroes",
     description:
@@ -899,6 +912,7 @@ export const games: Game[] = [
   },
   {
     id: "nmh2",
+    limitations: ["Перекладено не всі текстури: частина написів на зображеннях лишається англійською."],
     launcherSlug: "no_more_heroes_2_desperate_struggle",
     title: "No More Heroes 2: Desperate Struggle",
     series: "No More Heroes",
@@ -1381,6 +1395,7 @@ export const games: Game[] = [
   },
   {
     id: "metal-gear-mg2",
+    limitations: ["Лаунчер гри (меню перед запуском) не перекладено.", "Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     title: "METAL GEAR & METAL GEAR 2: Solid Snake",
     series: "Metal Gear",
     description:
@@ -1392,6 +1407,7 @@ export const games: Game[] = [
     stageDetails: [
       { label: "Переклад", percent: 100 },
       { label: "Редактура", percent: 100 },
+      { label: "Текстури", percent: 0 },
     ],
     tags: ["Стелс", "Бойовик", "Тактика", "Класика"],
     steamUrl: "https://store.steampowered.com/app/2131680/METAL_GEAR__METAL_GEAR_2_Solid_Snake/",

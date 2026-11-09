@@ -243,6 +243,13 @@ const related = games
         })}
       </ul>
 
+      {game.limitations?.length && (
+        <div class="c-panel limits">
+          <span class="c-label">Що поки не перекладено</span>
+          <ul>{game.limitations.map((l) => <li>{l}</li>)}</ul>
+        </div>
+      )}
+
       <ProgressChart game={game} />
 
       {statsRows.length > 0 && (
@@ -653,4 +660,9 @@ const related = games
     .gh__logo { max-height: 110px; max-width: 85%; }
     .gh__facts div { grid-template-columns: 96px minmax(0, 1fr); }
   }
+  .limits { display: grid; gap: 10px; margin-top: 12px; padding: 16px 20px; box-shadow: none; border-color: color-mix(in srgb, var(--st-fund) 35%, transparent); }
+  .limits .c-label { color: var(--st-fund); }
+  .limits ul { display: grid; gap: 6px; }
+  .limits li { position: relative; padding-left: 16px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .limits li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--st-fund); }
 </style>
