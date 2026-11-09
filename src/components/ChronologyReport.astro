@@ -1,27 +1,102 @@
 ---
 // ─── Chronology report ─────────────────────────────────────────
-// Рендер одного звіту (див. src/lib/chronology.ts): шапка, липка панель
-// з пошуком / фільтрами / розділами, стрічка часу, примітка, архів.
-import { reports, type Report } from "../lib/chronology";
+// Рендер одного звіту (див. src/lib/chronology.ts) у стилі решти сайту:
+// шапка з підсумками-фільтрами, липка панель пошуку, розділи з нумерацією,
+// роки й квартали як заголовки груп, картки подій із датою зліва.
+// Виходи показуємо від найновіших до найстаріших.
+import { reports, type Report, type Entry, type Item } from "../lib/chronology";
 import { cover } from "../lib/cover";
-import { liveNumbers, liveLabel } from "../lib/live";
+import { liveNumbers } from "../lib/live";
 
 export interface Props { report: Report; isLatest: boolean }
 const { report, isLatest } = Astro.props;
 const base = isLatest ? "/chronology/" : `/chronology/${report.date}/`;
 
+// ── Підсумки (вони ж фільтри) ──
+const count = (fn: (e: Entry) => boolean) => report.entries.filter(fn).length;
 const FILTERS = [
-  { value: "all", label: "Усі" },
-  { value: "released", label: "Вийшли" },
-  { value: "updated", label: "Оновлюються" },
-  { value: "upcoming", label: "Ще не вийшли" },
-  { value: "ea", label: "Ранній доступ" },
-  { value: "fund", label: "Зі збором" },
-];
+  { value: "released", label: "Вийшли", n: count((e) => e.kind === "released") },
+  { value: "ea", label: "Ранній доступ", n: count((e) => e.earlyAccess) },
+  { value: "updated", label: "Оновлюються", n: count((e) => e.kind === "updated") },
+  { value: "upcoming", label: "Ще не вийшли", n: count((e) => e.kind === "upcoming") },
+  { value: "fund", label: "Зі збором", n: count((e) => e.fundraising) },
+].filter((f) => f.n > 0);
+
 const others = reports.filter((r) => r.date !== report.date);
 const thumbs = new Map(
-  await Promise.all(report.entries.filter((e) => e.game).map(async (e) => [e.id, await cover(e.game!.cover, 160)] as const)),
+  await Promise.all(report.entries.filter((e) => e.game).map(async (e) => [e.id, await cover(e.game!.cover, 200)] as const)),
 );
+
+// ── Плоский список вузлів → групи «рік → квартал → події» ──
+interface G2 { id: string | null; text: string | null; summary: string; entries: Entry[] }
+interface G1 { id: string | null; text: string | null; summary: string; groups: G2[] }
+function group(items: Item[]): G1[] {
+  const out: G1[] = [];
+  let g1: G1 | null = null;
+  let g2: G2 | null = null;
+  const top = () => (g1 ??= (out.push({ id: null, text: null, summary: "", groups: [] }), out.at(-1)!));
+  for (const it of items) {
+    if (it.kind === "node" && it.level === 1) {
+      g1 = { id: it.id, text: it.text, summary: "", groups: [] };
+      out.push(g1);
+      g2 = null;
+    } else if (it.kind === "node") {
+      g2 = { id: it.id, text: it.text, summary: "", entries: [] };
+      top().groups.push(g2);
+    } else if (it.kind === "summary") {
+      if (g2) g2.summary += it.html;
+      else top().summary += it.html;
+    } else {
+      if (!g2) {
+        g2 = { id: null, text: null, summary: "", entries: [] };
+        top().groups.push(g2);
+      }
+      g2.entries.push(it.entry);
+    }
+  }
+  return out;
+}
+// Найновіші вгорі; групи «дата не уточнена» лишаються в кінці свого року
+const undated = (g: G2) => /не уточн/i.test(g.text ?? "");
+function newestFirst(list: G1[]): G1[] {
+  return [...list].reverse().map((g) => ({
+    ...g,
+    groups: [...g.groups.filter((x) => !undated(x)).reverse(), ...g.groups.filter(undated)].map((x) => ({
+      ...x,
+      // Події без дати (поточний стан проєктів) — після датованих
+      entries: [...x.entries.filter((e) => e.date).reverse(), ...x.entries.filter((e) => !e.date)],
+    })),
+  }));
+}
+const sections = report.sections.map((s, i) => {
+  const groups = group(s.items);
+  const reversed = i === 0;
+  return { ...s, num: String(i + 1).padStart(2, "0"), reversed, groups: reversed ? newestFirst(groups) : groups };
+});
+
+// ── Дрібниці для картки ──
+const SHORT: Record<string, string> = {
+  січня: "січ", лютого: "лют", березня: "бер", квітня: "кві", травня: "тра", червня: "чер",
+  липня: "лип", серпня: "сер", вересня: "вер", жовтня: "жов", листопада: "лис", грудня: "гру",
+};
+const dayOf = (date: string | null) => {
+  const m = date?.match(/^(\d{1,2})\s+(\S+)/);
+  return m ? { d: m[1], m: SHORT[m[2].toLowerCase()] ?? m[2] } : null;
+};
+const statusOf = (e: Entry) =>
+  /ранн\S* доступ/i.test(e.note ?? "") && e.kind !== "upcoming"
+    ? { label: "Ранній доступ", cls: "ea" }
+    : e.kind === "released"
+      ? { label: "Вийшов", cls: "done" }
+      : e.kind === "updated"
+        ? { label: "Оновлюється", cls: "progress" }
+        : { label: "Ще не вийшов", cls: "planned" };
+// Позначку з заголовка не повторюємо, якщо вона збігається зі статусом
+const noteOf = (e: Entry) => (e.note && !/^ранн\S* доступ$/i.test(e.note) ? e.note : null);
+const liveOf = (e: Entry) => {
+  const l = e.game ? liveNumbers(e.game, e.html) : null;
+  return l && (l.differs || l.translation < 100 || (l.editing != null && l.editing < 100)) ? l : null;
+};
 ---
 
 <div class="page container chron">
@@ -43,130 +118,180 @@ const thumbs = new Map(
 
   {!isLatest && (
     <p class="archived">
-      Це архівний звіт від {report.dateLabel}. <a href="/chronology/">Відкрити найсвіжіший звіт</a>
+      Це архівний звіт від {report.dateLabel}. <a href="/chronology/">Відкрити найсвіжіший →</a>
     </p>
   )}
 
-  <header class="intro">
-    <span class="eyebrow">Хронологія</span>
-    <h1>{report.title}</h1>
-    <p class="intro__asof">Станом на {report.dateLabel}</p>
-    {report.intro.map((p) => <p class="intro__lead" set:html={p} />)}
+  <header class="head">
+    <span class="eyebrow">Хронологія · станом на {report.dateLabel}</span>
+    <h1 class="title">Хронологія перекладів</h1>
+    <p class="lead">
+      Коли виходили українські переклади «Little Bit», що зараз оновлюється і що ще попереду — зі зборами коштів,
+      учасниками й поточними відсотками з LBK Launcher.
+    </p>
+    {report.intro.slice(1).map((p) => <p class="callout" set:html={p} />)}
+    {report.intro[0] && (
+      <details class="howto">
+        <summary>Як читати звіт</summary>
+        <p set:html={report.intro[0]} />
+      </details>
+    )}
   </header>
 
-  <!-- Липка панель: пошук, фільтри, розділи (на вузьких екранах) -->
-  <div class="bar-tools" id="chron-tools">
-    <div class="bar-tools__row">
-      <label class="search">
-        <span class="sr-only">Пошук у звіті</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-5-5m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-        <input id="chron-q" type="search" placeholder="Гра, учасник, інструмент…" autocomplete="off" />
-      </label>
-      <div class="chips" role="group" aria-label="Фільтр">
-        {FILTERS.map((f) => (
-          <button type="button" class="chip-btn" data-filter={f.value} aria-pressed={f.value === "all" ? "true" : "false"}>{f.label}</button>
-        ))}
-      </div>
-      <span class="count" id="chron-count" aria-live="polite"></span>
+  <!-- Підсумки звіту — водночас фільтри -->
+  <ul class="kpi" role="group" aria-label="Підсумки звіту — натисніть, щоб відфільтрувати">
+    {FILTERS.map((f) => (
+      <li>
+        <button type="button" class="kpi__btn" data-filter={f.value} aria-pressed="false">
+          <strong>{f.n}</strong>
+          <span>{f.label}</span>
+        </button>
+      </li>
+    ))}
+  </ul>
+
+  <!-- Липка панель: пошук і фільтри -->
+  <div class="tools" id="chron-tools">
+    <label class="search">
+      <span class="sr-only">Пошук у звіті</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 21l-5-5m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+      <input id="chron-q" type="search" placeholder="Гра, учасник, інструмент…" autocomplete="off" />
+    </label>
+    <div class="chips" role="group" aria-label="Фільтр">
+      <button type="button" class="chip-btn" data-filter="all" aria-pressed="true">Усі <b>{report.entries.length}</b></button>
+      {FILTERS.map((f) => (
+        <button type="button" class="chip-btn" data-filter={f.value} aria-pressed="false">{f.label} <b>{f.n}</b></button>
+      ))}
     </div>
+    <span class="count" id="chron-count" aria-live="polite"></span>
   </div>
-  <nav class="secnav" aria-label="Розділи звіту">
-    {report.sections.map((s) => <a href={`#${s.id}`}>{s.short}</a>)}
-  </nav>
 
   <div class="layout">
     <aside class="toc" aria-label="Зміст">
       <p class="toc__title">Зміст</p>
       <ol>
-        {report.sections.map((s) => (
+        {sections.map((s) => (
           <li>
-            <a href={`#${s.id}`}>{s.title}</a>
-            {s.toc.length > 0 && (
-              <ol class="toc__sub">{s.toc.map((t) => <li><a href={`#${t.id}`}>{t.text}</a></li>)}</ol>
+            <a href={`#${s.id}`}><span>{s.num}</span>{s.title}</a>
+            {s.groups.some((g) => g.id) && (
+              <ol class="toc__sub">{s.groups.filter((g) => g.id).map((g) => <li><a href={`#${g.id}`}>{g.text}</a></li>)}</ol>
             )}
           </li>
         ))}
-        {report.footnote && <li><a href="#note">Як читати фінансові дані</a></li>}
-        {others.length > 0 && <li><a href="#archive">Архів звітів</a></li>}
+        {report.footnote && <li><a href="#note"><span>·</span>Про фінансові дані</a></li>}
+        {others.length > 0 && <li><a href="#archive"><span>·</span>Архів звітів</a></li>}
       </ol>
     </aside>
 
     <div class="report">
       <p class="empty" id="chron-empty" hidden>Нічого не знайдено. Спробуйте інший запит або фільтр.</p>
 
-      {report.sections.map((s) => (
+      {sections.map((s) => (
         <section class="sec" id={s.id} data-sec>
-          <h2 class="sec__title">{s.title}</h2>
+          <header class="sec__head">
+            <span class="sec__num">{s.num}</span>
+            <h2>{s.title}</h2>
+            {s.reversed && <p class="sec__hint">Найновіші — вгорі</p>}
+          </header>
           {s.lead && <div class="sec__lead" set:html={s.lead} />}
 
-          <div class="tl">
-            {s.items.map((it) =>
-              it.kind === "node" ? (
-                it.level === 1 ? (
-                  <h3 class="tl-period" id={it.id} data-level="1"><span class="tl-dot" aria-hidden="true"></span>{it.text}</h3>
-                ) : (
-                  <p class="tl-month" id={it.id} data-level="2">{it.text}</p>
-                )
-              ) : it.kind === "summary" ? (
-                <div class="tl-summary" set:html={it.html} />
-              ) : (
-                <article
-                  class="entry"
-                  id={it.entry.id}
-                  data-entry
-                  data-kind={it.entry.kind}
-                  data-ea={it.entry.earlyAccess ? "1" : ""}
-                  data-fund={it.entry.fundraising ? "1" : ""}
-                  data-search={it.entry.search}
-                >
-                  {it.entry.game ? (
-                    <a class="entry__cover" href={`/games/${it.entry.game.id}/`} tabindex="-1" aria-hidden="true">
-                      <img src={thumbs.get(it.entry.id) ?? it.entry.game.cover} alt="" width="72" height="108" loading="lazy" decoding="async" />
-                    </a>
-                  ) : (
-                    <span class="entry__cover entry__cover--empty" aria-hidden="true"></span>
-                  )}
-                  <div class="entry__body">
-                    <div class="entry__meta">
-                      {it.entry.date && <span class="entry__date">{it.entry.date}</span>}
-                      {it.entry.note && <span class="entry__note">{it.entry.note}</span>}
-                      <button type="button" class="entry__copy" data-copy={`${base}#${it.entry.id}`} aria-label={`Скопіювати посилання на «${it.entry.title}»`}>
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1" /></svg>
-                        <span>Посилання</span>
-                      </button>
-                    </div>
-                    <h4 class="entry__title">
-                      {it.entry.game ? <a href={`/games/${it.entry.game.id}/`}>{it.entry.title}</a> : it.entry.title}
-                    </h4>
-                    <div class="entry__text" set:html={it.entry.html} />
-                    {(() => {
-                      const live = it.entry.game ? liveNumbers(it.entry.game, it.entry.html) : null;
-                      return live?.differs && (
-                        <p class="entry__live" title="Звіт написано раніше; це свіжі цифри з LBK Launcher">
-                          <span>Зараз</span>{liveLabel(live)}
-                        </p>
+          {s.groups.map((g1) => (
+            <div class="g1" data-group>
+              {g1.text && <h3 class="g1__title" id={g1.id}>{g1.text}</h3>}
+              {g1.summary && <div class="summary" data-summary set:html={g1.summary} />}
+
+              {g1.groups.map((g2) => (
+                <div class="g2" data-group>
+                  {g2.text && <p class="g2__title" id={g2.id}><span>{g2.text}</span></p>}
+                  {g2.summary && <div class="summary" data-summary set:html={g2.summary} />}
+
+                  <ol class="events">
+                    {g2.entries.map((e) => {
+                      const day = dayOf(e.date);
+                      const st = statusOf(e);
+                      const note = noteOf(e);
+                      const live = liveOf(e);
+                      return (
+                        <li
+                          class="ev"
+                          id={e.id}
+                          data-entry
+                          data-kind={e.kind}
+                          data-ea={e.earlyAccess ? "1" : ""}
+                          data-fund={e.fundraising ? "1" : ""}
+                          data-search={e.search}
+                        >
+                          <div class="ev__day" aria-hidden="true">
+                            {day ? <><strong>{day.d}</strong><span>{day.m}</span></> : <span class="ev__nodate">—</span>}
+                          </div>
+                          <article class="ev__card c-panel">
+                            {e.game ? (
+                              <a class="ev__cover" href={`/games/${e.game.id}/`} tabindex="-1" aria-hidden="true">
+                                <img src={thumbs.get(e.id) ?? e.game.cover} alt="" width="84" height="126" loading="lazy" decoding="async" />
+                              </a>
+                            ) : (
+                              <span class="ev__cover ev__cover--empty" aria-hidden="true"></span>
+                            )}
+                            <div class="ev__body">
+                              <div class="ev__meta">
+                                <span class={`badge badge--${st.cls}`}><i aria-hidden="true"></i>{st.label}</span>
+                                {e.date && <span class="ev__date">{e.date}</span>}
+                                {note && <span class="ev__note">{note}</span>}
+                                {e.fundraising && <span class="ev__note ev__note--fund">збір</span>}
+                              </div>
+                              <h4 class="ev__title">
+                                {e.game ? <a href={`/games/${e.game.id}/`}>{e.title}</a> : e.title}
+                              </h4>
+                              <div class="ev__text" data-clamp set:html={e.html} />
+                              <div class="ev__foot">
+                                {live && (
+                                  <div class="live" title="Свіжі цифри з LBK Launcher; текст звіту міг бути написаний раніше">
+                                    <span class="live__tag">Зараз</span>
+                                    <span class="live__row"><em>переклад</em><i class="live__bar"><i style={`width:${live.translation}%`}></i></i><b>{live.translation}%</b></span>
+                                    {live.editing != null && (
+                                      <span class="live__row live__row--ed"><em>редактура</em><i class="live__bar"><i style={`width:${live.editing}%`}></i></i><b>{live.editing}%</b></span>
+                                    )}
+                                  </div>
+                                )}
+                                <span class="ev__actions">
+                                  <button type="button" class="ev__more" data-more hidden>Докладніше</button>
+                                  <button type="button" class="ev__copy" data-copy={`${base}#${e.id}`} aria-label={`Скопіювати посилання на «${e.title}»`}>
+                                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a5 5 0 007 0l3-3a5 5 0 00-7-7l-1 1M14 10a5 5 0 00-7 0l-3 3a5 5 0 007 7l1-1" /></svg>
+                                    <span>Посилання</span>
+                                  </button>
+                                </span>
+                              </div>
+                            </div>
+                          </article>
+                        </li>
                       );
-                    })()}
-                  </div>
-                </article>
-              ),
-            )}
-          </div>
+                    })}
+                  </ol>
+                </div>
+              ))}
+            </div>
+          ))}
         </section>
       ))}
 
-      {report.footnote && <aside class="note" id="note" set:html={report.footnote} />}
+      {report.footnote && (
+        <aside class="note" id="note">
+          <p class="note__title">Про фінансові дані</p>
+          <div set:html={report.footnote} />
+        </aside>
+      )}
 
       {others.length > 0 && (
         <section class="archive" id="archive">
           <h2 class="archive__title">Архів звітів</h2>
+          <p class="archive__lead">Попередні версії звіту — щоб побачити, як змінювалися плани й цифри.</p>
           <ul>
             {reports.map((r, i) => (
               <li>
                 <a href={i === 0 ? "/chronology/" : `/chronology/${r.date}/`} aria-current={r.date === report.date ? "page" : undefined}>
-                  Станом на {r.dateLabel}
+                  {r.dateLabel.replace(/ року$/, "")}
+                  {i === 0 && <small>найсвіжіший</small>}
                 </a>
-                {i === 0 && <span>найсвіжіший</span>}
               </li>
             ))}
           </ul>
@@ -181,9 +306,11 @@ const thumbs = new Map(
   const input = $<HTMLInputElement>("chron-q");
   const count = $("chron-count");
   const empty = $("chron-empty");
-  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(".chip-btn"));
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-filter]"));
   const entries = Array.from(document.querySelectorAll<HTMLElement>("[data-entry]"));
+  const groups = Array.from(document.querySelectorAll<HTMLElement>("[data-group]"));
   const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-sec]"));
+  const summaries = Array.from(document.querySelectorAll<HTMLElement>("[data-summary]"));
 
   const params = new URLSearchParams(location.search);
   const state = { filter: params.get("f") ?? "all", q: params.get("q") ?? "" };
@@ -206,28 +333,17 @@ const thumbs = new Map(
       const ok = matches(el);
       el.hidden = !ok;
       if (ok) shown++;
+      // Під час пошуку показуємо текст повністю — збіг може бути в прихованій частині
+      el.classList.toggle("is-open", ok && state.q.trim() !== "");
     }
-    // Вузли (рік, квартал, група) показуємо, лише якщо під ними є видимі картки
-    for (const sec of sections) {
-      const kids = Array.from(sec.querySelector(".tl")?.children ?? []) as HTMLElement[];
-      kids.forEach((el, i) => {
-        if (el.classList.contains("tl-summary")) { el.hidden = active; return; }
-        const level = Number(el.dataset.level);
-        if (!level) return;
-        let visible = false;
-        for (let j = i + 1; j < kids.length; j++) {
-          const next = kids[j];
-          const nl = Number(next.dataset.level);
-          if (nl && nl <= level) break;
-          if (next.dataset.entry !== undefined && !next.hidden) { visible = true; break; }
-        }
-        el.hidden = !visible;
-      });
-      sec.hidden = !entries.some((e) => sec.contains(e) && !e.hidden);
-    }
+    // Рік, квартал і розділ показуємо, лише якщо в них лишилися видимі події
+    for (const g of [...groups].reverse()) g.hidden = !g.querySelector("[data-entry]:not([hidden])");
+    for (const sec of sections) sec.hidden = !sec.querySelector("[data-entry]:not([hidden])");
+    summaries.forEach((s) => (s.hidden = active));
     buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === state.filter)));
     if (count) count.textContent = active ? `${shown} з ${entries.length}` : "";
     if (empty) empty.hidden = shown > 0;
+    markClamped();
 
     const p = new URLSearchParams();
     if (state.filter !== "all") p.set("f", state.filter);
@@ -235,6 +351,25 @@ const thumbs = new Map(
     const qs = p.toString();
     history.replaceState(null, "", (qs ? `?${qs}` : location.pathname) + location.hash);
   }
+
+  // «Докладніше» — лише там, де текст справді обрізано
+  function markClamped() {
+    for (const el of entries) {
+      if (el.hidden) continue;
+      const text = el.querySelector<HTMLElement>("[data-clamp]");
+      const more = el.querySelector<HTMLButtonElement>("[data-more]");
+      if (!text || !more) continue;
+      const open = el.classList.contains("is-open");
+      more.hidden = !open && text.scrollHeight <= text.clientHeight + 2;
+      more.textContent = open ? "Згорнути" : "Докладніше";
+    }
+  }
+  document.querySelectorAll<HTMLButtonElement>("[data-more]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btn.closest("[data-entry]")?.classList.toggle("is-open");
+      markClamped();
+    });
+  });
 
   if (input) {
     input.value = state.q;
@@ -244,11 +379,23 @@ const thumbs = new Map(
       t = setTimeout(() => { state.q = input.value; apply(); }, 150);
     });
   }
-  buttons.forEach((b) => b.addEventListener("click", () => { state.filter = b.dataset.filter ?? "all"; apply(); }));
+  buttons.forEach((b) =>
+    b.addEventListener("click", () => {
+      const v = b.dataset.filter ?? "all";
+      // Повторне натискання на підсумок знімає фільтр
+      state.filter = state.filter === v ? "all" : v;
+      apply();
+      if (b.classList.contains("kpi__btn")) $("chron-tools")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }),
+  );
+  // Перехід за якорем на картку — розгорнути її
+  const target = location.hash ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null;
+  if (target && target.dataset.entry !== undefined) target.classList.add("is-open");
   apply();
+  window.addEventListener("resize", () => markClamped(), { passive: true });
 
   // Копіювання посилання на картку
-  document.querySelectorAll<HTMLButtonElement>(".entry__copy").forEach((btn) => {
+  document.querySelectorAll<HTMLButtonElement>(".ev__copy").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const url = new URL(btn.dataset.copy ?? "", location.origin).toString();
       const label = btn.querySelector("span");
@@ -258,53 +405,71 @@ const thumbs = new Map(
       } catch {
         if (label) label.textContent = "Не вдалося";
       }
-      history.replaceState(null, "", url.replace(location.origin, "") );
+      history.replaceState(null, "", url.replace(location.origin, ""));
       setTimeout(() => { if (label) label.textContent = "Посилання"; }, 1600);
     });
   });
 </script>
 
 <style>
+  /* Сховані фільтром елементи мають display у своїх стилях — hidden має перемагати */
+  .chron [hidden] { display: none !important; }
+
   /* ── Шапка ── */
   .archived {
     margin-top: 20px;
     padding: 12px 16px;
-    border: 1px solid var(--line-strong);
-    border-left: 3px solid var(--accent);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
     color: var(--muted);
     font-size: 14px;
   }
-  .archived a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-  .intro { margin-top: 24px; padding-top: 8px; }
-  .intro h1 { margin-top: 12px; font-size: clamp(2rem, 4.2vw, 3.6rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; }
-  .intro__asof {
-    display: inline-block;
-    margin-top: 18px;
-    padding: 6px 14px;
-    border-radius: 9999px;
-    background: var(--accent);
-    color: var(--on-accent);
-    font-size: 13px;
-    font-weight: 700;
-  }
-  .intro__lead { max-width: 78ch; margin-top: 18px; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+  .archived a { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .head { margin: 24px 0 28px; }
+  .title { margin-top: 10px; font-size: clamp(2rem, 5vw, 3.75rem); letter-spacing: -0.02em; }
+  .lead { max-width: 68ch; margin-top: 14px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+  .callout { max-width: 68ch; margin-top: 12px; color: var(--faint); font-size: 14px; line-height: 1.6; }
+  .howto { max-width: 78ch; margin-top: 14px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+  .howto summary { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; cursor: pointer; list-style: none; }
+  .howto summary::-webkit-details-marker { display: none; }
+  .howto summary::after { content: "+"; color: var(--faint); font-weight: 500; }
+  .howto[open] summary::after { content: "−"; }
+  .howto p { margin-top: 10px; }
+
+  /* ── Підсумки-фільтри ── */
+  .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kpi li + li { border-left: 1px solid var(--line); }
+  .kpi__btn { display: grid; gap: 8px; width: 100%; height: 100%; padding: 22px 20px; text-align: left; transition: background-color 0.18s ease; }
+  .kpi li:first-child .kpi__btn { padding-left: 0; }
+  .kpi__btn:hover { background: rgba(255, 255, 255, 0.04); }
+  .kpi__btn strong { font-size: clamp(1.9rem, 3.4vw, 2.7rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .kpi__btn span { color: var(--muted); font-size: 13px; }
+  .kpi__btn[aria-pressed="true"] strong, .kpi__btn[aria-pressed="true"] span { color: var(--ink); }
+  .kpi__btn[aria-pressed="true"] span { text-decoration: underline; text-underline-offset: 4px; }
 
   /* ── Липка панель ── */
-  .bar-tools {
-    margin-top: 36px;
+  .tools {
+    position: sticky;
+    top: calc(var(--header-h) - 4px);
+    z-index: 20;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 14px;
+    margin-top: 28px;
     padding: 10px 12px;
-    background: color-mix(in srgb, var(--tint) 30%, rgba(14, 12, 18, 0.82));
-    border: 1px solid var(--line);
-    border-radius: 18px;
+    background: color-mix(in srgb, var(--tint) 30%, rgba(14, 12, 18, 0.86));
+    border: 1px solid var(--glass-line);
+    border-radius: 9999px;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
   }
-  .bar-tools__row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
-  .search { position: relative; flex: 1 1 100%; }
+  .search { position: relative; flex: 0 1 280px; }
   .search svg { position: absolute; left: 12px; top: 50%; width: 16px; height: 16px; translate: 0 -50%; fill: none; stroke: var(--faint); stroke-width: 2.2; pointer-events: none; }
   .search input {
     width: 100%;
-    height: 40px;
+    height: 38px;
     padding: 0 12px 0 38px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid var(--line);
@@ -315,228 +480,222 @@ const thumbs = new Map(
   .search input:focus { outline: none; border-color: rgba(255, 255, 255, 0.5); }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     min-height: 34px;
     padding: 0 14px;
-    background: transparent;
-    border: 1px solid var(--line-strong);
     border-radius: 9999px;
     color: var(--muted);
     font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
-    transition: border-color 0.18s ease, color 0.18s ease;
+    transition: background-color 0.18s ease, color 0.18s ease;
   }
+  .chip-btn b { color: var(--faint); font-weight: 600; font-variant-numeric: tabular-nums; }
   .chip-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
-  .chip-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
-  .count { margin-left: auto; color: var(--faint); font-size: 12px; font-weight: 700; white-space: nowrap; }
-
-  /* На вузьких екранах закріплена лише смуга розділів; пошук і фільтри прокручуються */
-  .secnav {
-    position: sticky;
-    top: calc(var(--header-h) - 4px);
-    z-index: 20;
-    display: flex;
-    gap: 6px;
-    padding: 10px 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    background: color-mix(in srgb, var(--tint) 30%, rgba(14, 12, 18, 0.9));
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid var(--line);
-  }
-  .secnav::-webkit-scrollbar { display: none; }
-  .secnav a {
-    flex-shrink: 0;
-    padding: 7px 12px;
-    border: 1px solid var(--line-strong);
-    border-radius: 9999px;
-    color: var(--muted);
-    font-size: 13px;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .secnav a:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
+  .chip-btn[aria-pressed="true"] { background: #f4f1f4; color: #111; }
+  .chip-btn[aria-pressed="true"] b { color: rgba(0, 0, 0, 0.55); }
+  .count { margin-left: auto; padding-right: 8px; color: var(--faint); font-size: 12px; font-weight: 700; white-space: nowrap; }
 
   /* ── Розкладка зі змістом ── */
-  .layout { display: grid; gap: 40px; margin-top: 36px; }
+  .layout { display: grid; gap: 40px; margin-top: 40px; }
   .toc { display: none; }
   .report { min-width: 0; }
-  .empty { padding: 48px 20px; border: 1px dashed var(--line-strong); color: var(--muted); text-align: center; }
+  .empty { padding: 48px 20px; border: 1px dashed var(--line-strong); border-radius: 14px; color: var(--muted); text-align: center; }
 
   /* ── Розділ ── */
   .sec { scroll-margin-top: calc(var(--header-h) + 80px); }
-  .sec + .sec { margin-top: 64px; }
-  .sec__title {
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
-    font-size: clamp(1.5rem, 3vw, 2.4rem);
-  }
-  .sec__lead { max-width: 78ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
+  .sec + .sec { margin-top: 72px; }
+  .sec__head { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: baseline; }
+  .sec__num { color: var(--faint); font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: 0.08em; }
+  .sec__head h2 { font-size: clamp(1.3rem, 2.2vw, 1.75rem); font-weight: 700; letter-spacing: -0.01em; }
+  .sec__hint { grid-column: 2; color: var(--faint); font-size: 13px; }
+  .sec__lead { max-width: 72ch; margin-top: 10px; padding-left: calc(2ch + 14px); color: var(--muted); font-size: 14px; line-height: 1.65; }
   .sec__lead :global(strong) { color: var(--ink); }
 
-  /* ── Стрічка часу ── */
-  .tl { position: relative; margin-top: 28px; padding-left: 28px; }
-  .tl::before { content: ""; position: absolute; top: 6px; bottom: 0; left: 5px; width: 2px; background: var(--line); }
-
-  .tl-period {
-    position: relative;
-    margin: 40px 0 14px;
-    font-size: clamp(1.15rem, 2vw, 1.5rem);
-    text-transform: uppercase;
+  /* Рік / група */
+  .g1 { margin-top: 36px; }
+  .g1__title {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
     scroll-margin-top: calc(var(--header-h) + 80px);
   }
-  .tl-period:first-child { margin-top: 0; }
-  .tl-dot {
-    position: absolute;
-    top: 50%;
-    left: -28px;
-    width: 12px;
-    height: 12px;
-    translate: 0 -50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 4px var(--bg);
-  }
-  .tl-month {
-    position: relative;
-    margin: 26px 0 10px;
-    color: var(--accent);
-    font-size: 13px;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    scroll-margin-top: calc(var(--header-h) + 80px);
-  }
-  .tl-month::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: -26px;
-    width: 8px;
-    height: 8px;
-    translate: 0 -50%;
-    border: 2px solid var(--accent);
-    border-radius: 9999px;
-    background: var(--bg);
-  }
-  .tl-summary { margin-bottom: 14px; }
-  .tl-summary :global(p) {
-    display: inline-block;
-    max-width: 78ch;
-    padding: 8px 12px;
-    border: 1px solid var(--line-strong);
-    border-radius: 10px;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.55;
-  }
-  .tl-summary :global(strong) { color: var(--ink); font-weight: 700; }
-
-  /* ── Картка гри ── */
-  .entry {
-    display: grid;
-    grid-template-columns: 72px minmax(0, 1fr);
-    gap: 18px;
+  /* Квартал / місяць */
+  .g2 { margin-top: 22px; }
+  .g2__title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     margin-bottom: 12px;
-    padding: 18px;
-    border-radius: 16px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    scroll-margin-top: calc(var(--header-h) + 80px);
-    transition: border-color 0.18s ease;
-  }
-  .entry:hover { border-color: var(--line-strong); }
-  .entry:target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-  .entry__cover { display: block; width: 72px; height: 108px; overflow: hidden; border-radius: 8px; background: var(--surface-2); }
-  .entry__cover img { width: 100%; height: 100%; object-fit: cover; }
-  .entry__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
-  .entry__date { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-  .entry__note {
-    padding: 3px 8px;
-    border: 1px solid var(--line-strong);
-    border-radius: 9999px;
     color: var(--muted);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    scroll-margin-top: calc(var(--header-h) + 80px);
   }
-  .entry__copy {
+  .g2__title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .summary { max-width: 78ch; margin: 10px 0 14px; color: var(--faint); font-size: 13px; line-height: 1.6; }
+  .summary :global(strong) { color: var(--muted); font-weight: 600; }
+
+  /* ── Подія ── */
+  .events { display: grid; gap: 10px; }
+  .ev { display: grid; grid-template-columns: 56px minmax(0, 1fr); gap: 16px; scroll-margin-top: calc(var(--header-h) + 80px); }
+  .ev__day { display: grid; justify-items: center; align-content: start; padding-top: 16px; line-height: 1; }
+  .ev__day strong { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .ev__day span { margin-top: 6px; color: var(--faint); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .ev__day .ev__nodate { margin-top: 0; font-size: 1.4rem; }
+
+  .ev__card {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: 20px;
+    padding: 16px 20px 16px 16px;
+    box-shadow: none;
+    transition: border-color 0.2s ease;
+  }
+  .ev__card:hover { border-color: rgba(255, 255, 255, 0.28); }
+  .ev:target .ev__card { border-color: rgba(255, 255, 255, 0.6); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6); }
+  .ev__cover { display: block; width: 84px; height: 126px; overflow: hidden; border-radius: 8px; background: var(--surface-2); }
+  .ev__cover img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s var(--ease); }
+  .ev__card:hover .ev__cover img { transform: scale(1.04); }
+
+  .ev__body { display: grid; align-content: start; gap: 8px; min-width: 0; }
+  .ev__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+  .ev__date { display: none; color: var(--muted); font-size: 12px; font-weight: 700; }
+  .badge { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-size: 12px; font-weight: 700; }
+  .badge i { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+  .badge--done i { background: var(--st-done); }
+  .badge--ea i { background: var(--st-early); }
+  .badge--progress i { background: var(--st-progress); }
+  .badge--planned i { background: var(--st-planned); }
+  .ev__note { padding: 2px 9px; border: 1px solid var(--line-strong); border-radius: 9999px; color: var(--muted); font-size: 11px; font-weight: 600; }
+  .ev__note--fund { border-color: color-mix(in srgb, var(--st-fund) 55%, transparent); color: var(--st-fund); }
+  .ev__title { font-family: var(--font-body); font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.3; }
+  .ev__title a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  .ev__text {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.65;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+  .ev.is-open .ev__text { display: block; -webkit-line-clamp: unset; line-clamp: none; }
+  .ev__text :global(p + p) { margin-top: 10px; }
+  .ev__text :global(strong), .ev__text :global(em) { color: var(--ink); }
+  .ev__text :global(a), .note :global(a) { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .chron :global(.hl) { color: var(--ink); font-weight: 700; }
+
+  .ev__foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px; margin-top: 2px; }
+  .ev__actions { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
+  .ev__more, .ev__copy {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    margin-left: auto;
-    padding: 3px 6px;
+    padding: 5px 10px;
+    border-radius: 9999px;
     color: var(--faint);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    transition: color 0.18s ease;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background-color 0.18s ease, color 0.18s ease;
   }
-  .entry__copy svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
-  .entry__copy:hover { color: var(--accent); }
-  .entry__title { margin-top: 6px; font-family: var(--font-body); font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.3; }
-  .entry__title a:hover { color: var(--accent); }
-  .entry__text { margin-top: 10px; color: var(--muted); font-size: 15px; line-height: 1.7; }
-  .entry__text :global(p + p) { margin-top: 10px; }
-  .entry__live { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; padding: 6px 12px 6px 6px; border-radius: 9999px; background: rgba(255, 255, 255, 0.07); color: var(--ink); font-size: 13px; font-weight: 700; }
-  .entry__live span { padding: 3px 9px; border-radius: 9999px; background: var(--st-done); color: #0b0b0d; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; }
-  .entry__text :global(strong) { color: var(--ink); }
-  .entry__text :global(em) { color: var(--ink); }
-  .entry__text :global(a), .note :global(a) { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
-  .chron :global(.hl) { color: var(--accent); font-weight: 700; }
+  .ev__more { color: var(--ink); }
+  .ev__more:hover, .ev__copy:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
+  .ev__copy svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+  /* Свіжі цифри з лаунчера */
+  .live { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+  .live__tag { padding: 3px 9px; border-radius: 9999px; background: rgba(255, 255, 255, 0.1); color: var(--ink); font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .live__row { display: inline-flex; align-items: center; gap: 8px; }
+  .live__row em { color: var(--faint); font-size: 12px; font-style: normal; }
+  .live__row b { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .live__bar { display: block; width: 64px; height: 5px; overflow: hidden; border-radius: 5px; background: rgba(255, 255, 255, 0.1); }
+  .live__bar i { display: block; height: 100%; border-radius: 5px; background: var(--st-early); }
+  .live__row--ed .live__bar i { background: var(--st-progress); }
 
   /* ── Примітка та архів ── */
   .note {
-    margin-top: 48px;
-    padding: 18px 20px;
-    border-radius: 16px;
-    background: var(--surface);
+    margin-top: 64px;
+    padding: 20px 24px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--line);
     color: var(--muted);
-    font-size: 14px;
+    font-size: 13.5px;
     line-height: 1.65;
     scroll-margin-top: calc(var(--header-h) + 80px);
   }
+  .note__title { margin-bottom: 8px; color: var(--ink); font-size: 13px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
   .note :global(strong) { color: var(--ink); }
-  .archive { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); scroll-margin-top: calc(var(--header-h) + 80px); }
-  .archive__title { font-size: 1.1rem; }
-  .archive ul { margin-top: 12px; }
-  .archive li { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
-  .archive a { font-weight: 700; }
-  .archive a:hover, .archive a[aria-current] { color: var(--accent); }
-  .archive span { color: var(--faint); font-size: 12px; }
+  .note :global(p + p) { margin-top: 8px; }
+  .archive { margin-top: 56px; scroll-margin-top: calc(var(--header-h) + 80px); }
+  .archive__title { font-size: clamp(1.15rem, 1.8vw, 1.4rem); font-weight: 700; }
+  .archive__lead { margin-top: 6px; color: var(--faint); font-size: 13px; }
+  .archive ul { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .archive a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 9999px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .archive a:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
+  .archive a[aria-current] { background: #f4f1f4; border-color: #f4f1f4; color: #111; }
+  .archive small { color: inherit; font-size: 11px; font-weight: 500; opacity: 0.7; }
 
-  @media (max-width: 639px) {
-    .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  /* ── Широкі екрани: зміст збоку ── */
+  @media (min-width: 1100px) {
+    .layout { grid-template-columns: 220px minmax(0, 1fr); gap: 56px; }
+    .toc { display: block; position: sticky; top: calc(var(--header-h) + 90px); align-self: start; max-height: calc(100vh - var(--header-h) - 110px); overflow-y: auto; }
+    .toc__title { color: var(--faint); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+    .toc > ol { display: grid; gap: 2px; margin-top: 12px; }
+    .toc a { display: flex; gap: 10px; padding: 7px 10px; border-radius: 8px; color: var(--muted); font-size: 14px; font-weight: 600; line-height: 1.35; transition: background-color 0.15s ease, color 0.15s ease; }
+    .toc a span { color: var(--faint); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .toc a:hover { background: rgba(255, 255, 255, 0.06); color: var(--ink); }
+    .toc__sub a { padding: 4px 10px 4px 34px; color: var(--faint); font-size: 13px; font-weight: 500; }
+  }
+
+  /* ── Телефони ── */
+  @media (max-width: 760px) {
+    .tools { border-radius: 18px; }
+    .search { flex: 1 1 100%; }
+    .chips { flex: 1 1 100%; min-width: 0; flex-wrap: nowrap; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
     .chips::-webkit-scrollbar { display: none; }
     .chip-btn { flex-shrink: 0; }
+    .count { display: none; }
+    .kpi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .kpi li + li { border-left: 0; }
+    .kpi li { border-bottom: 1px solid var(--line); }
+    .kpi li:nth-child(even) { border-left: 1px solid var(--line); }
+    .kpi li:nth-last-child(-n + 2):nth-child(odd), .kpi li:last-child { border-bottom: 0; }
+    .kpi__btn, .kpi li:first-child .kpi__btn { padding: 18px 16px 18px 0; }
+    .kpi li:nth-child(even) .kpi__btn { padding-left: 16px; }
   }
-  @media (max-width: 559px) {
-    .tl { padding-left: 20px; }
-    .tl::before { left: 3px; }
-    .tl-dot { left: -20px; width: 10px; height: 10px; }
-    .tl-month::before { left: -19px; }
-    .entry { grid-template-columns: 52px minmax(0, 1fr); gap: 12px; padding: 14px; }
-    .entry__cover { width: 52px; height: 78px; }
-    .entry__text { font-size: 14px; }
-    .entry__copy span { display: none; }
-  }
-  @media (min-width: 640px) {
-    .search { flex: 0 1 280px; }
-  }
-  @media (min-width: 1100px) {
-    .secnav { display: none; }
-    .bar-tools { position: sticky; top: calc(var(--header-h) - 4px); z-index: 20; }
-    .layout { grid-template-columns: 240px minmax(0, 1fr); gap: 64px; }
-    .toc { display: block; position: sticky; top: calc(var(--header-h) + 90px); align-self: start; max-height: calc(100vh - var(--header-h) - 110px); overflow-y: auto; }
-    .toc__title { color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-    .toc > ol { margin-top: 12px; border-left: 1px solid var(--line); }
-    .toc a { display: block; padding: 7px 0 7px 14px; color: var(--muted); font-size: 14px; font-weight: 700; line-height: 1.35; transition: color 0.18s ease; }
-    .toc a:hover { color: var(--accent); }
-    .toc__sub a { padding: 4px 0 4px 26px; color: var(--faint); font-size: 13px; font-weight: 600; }
+  @media (max-width: 600px) {
+    .sec__lead { padding-left: 0; }
+    .ev { grid-template-columns: minmax(0, 1fr); }
+    .ev__day { display: none; }
+    .ev__date { display: inline; }
+    .ev__card { grid-template-columns: 60px minmax(0, 1fr); gap: 14px; padding: 14px; }
+    .ev__cover { width: 60px; height: 90px; }
+    .ev__text { font-size: 14px; -webkit-line-clamp: 4; line-clamp: 4; }
+    .ev__copy span { display: none; }
+    .live__bar { width: 48px; }
   }
 </style>
