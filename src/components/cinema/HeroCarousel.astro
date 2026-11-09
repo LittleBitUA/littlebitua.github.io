@@ -135,7 +135,7 @@ const slides = await Promise.all(
     const slides = [...root.querySelectorAll<HTMLElement>(".slide")];
     const dots = [...root.querySelectorAll<HTMLButtonElement>(".hero__dot")];
     const pauseBtn = root.querySelector<HTMLButtonElement>(".hero__pause")!;
-    const DURATION = 8000;
+    const DURATION = 3000;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let index = 0;
     let paused = reduced;
@@ -341,7 +341,7 @@ const slides = await Promise.all(
     inset: 0;
     background: #fff;
     transform-origin: left;
-    animation: fill var(--dur, 8000ms) linear forwards;
+    animation: fill var(--dur, 3000ms) linear forwards;
   }
   .is-paused .hero__dot.is-active i::after { animation: none; transform: none; }
   @keyframes fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
