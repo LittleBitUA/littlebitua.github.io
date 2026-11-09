@@ -153,6 +153,8 @@ export const PEOPLE: Person[] = [
   {
     slug: "mmartwy",
     name: "mmartwy",
+    about:
+      "За освітою — вчителька образотворчого мистецтва й дизайнерка, у майбутньому — реставраторка та скульпторка (амінь). Має власні переклади: Slime Rancher 2, I Have No Mouth, and I Must Scream, Leaf It Alone, MyVoiceZoo. Співпрацює з CatLocTeam як тестувальниця й художниця текстур, а ще — один із голосів їхнього TikTok-акаунта. Разом із компанією друзів розробляє власну фентезі-гру, яка обов’язково колись вийде (амінь).",
     credits: [
       { game: "romeo-is-a-dead-man", role: "Текстури" },
       { game: "nmh1", role: "Текстури" },
