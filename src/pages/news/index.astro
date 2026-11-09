@@ -8,7 +8,10 @@ import { SITE_URL } from "../../utils/seo";
 
 const all = await getUpdates(games);
 const MONTHS = ["Січень", "Лютий", "Березень", "Квітень", "Травень", "Червень", "Липень", "Серпень", "Вересень", "Жовтень", "Листопад", "Грудень"];
-const groups = [...Map.groupBy(all, (u) => u.date.slice(0, 7))].map(([ym, items]) => ({
+// Групуємо за місяцем (без Map.groupBy — у CI Node 20)
+const byMonth = new Map<string, typeof all>();
+for (const u of all) byMonth.set(u.date.slice(0, 7), [...(byMonth.get(u.date.slice(0, 7)) ?? []), u]);
+const groups = [...byMonth].map(([ym, items]) => ({
   title: `${MONTHS[+ym.slice(5, 7) - 1]} ${ym.slice(0, 4)}`,
   items,
 }));
