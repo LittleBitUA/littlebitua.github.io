@@ -21,8 +21,7 @@ const ROLES: [string, RegExp][] = [
   ["Ініціатива", /ініціатив/i],
 ];
 const cards = await Promise.all(
-  // У списку — лише поточний склад; колишні учасники є тільки на сторінках ігор
-  PEOPLE.filter((p) => !p.guest).map(async (p) => {
+  PEOPLE.map(async (p) => {
     const list = p.credits.map((c) => byId.get(c.game)).filter((g) => !!g);
     // Основні ролі людини одним рядком: «Переклад · Редактура · Технічна частина»
     const roles = ROLES.filter(([, re]) => p.credits.some((c) => re.test(c.role))).map(([label]) => label);
@@ -35,8 +34,17 @@ const cards = await Promise.all(
     };
   }),
 );
-const people = cards.filter((c) => !c.p.team);
-const teams = cards.filter((c) => c.p.team);
+// Спершу поточний склад «Little Bit», далі ті, хто допомагає з окремими іграми
+const people = cards.filter((c) => !c.p.team && !c.p.guest);
+const helpers = [...cards.filter((c) => c.p.guest && !c.p.team), ...cards.filter((c) => c.p.team)];
+const sections = [
+  { title: null, note: null, list: people },
+  {
+    title: "Допомагають з окремими іграми",
+    note: "Ці люди й команди не є частиною «Little Bit»: вони долучилися до конкретних проєктів — перекладу, шрифтів, графіки, тестування чи технічної частини.",
+    list: helpers,
+  },
+];
 ---
 
 <Layout
@@ -55,29 +63,35 @@ const teams = cards.filter((c) => c.p.team);
       </p>
     </header>
 
-    <ul class="people">
-      {[...people, ...teams].map(({ p, count, released, roles, covers }) => (
-        <li>
-          <a href={`/team/${p.slug}/`} class="c-panel person">
-            <PersonAvatar name={p.name} slug={p.slug} size={52} />
-            <span class="person__main">
-              <strong>{p.name}{p.team && <em> · команда</em>}</strong>
-              {p.from && <small class="person__from">з команди {p.from}, не «Little Bit»</small>}
-              <small>{roles}</small>
-              <small class="person__count">
-                {count} {pluralize(count, "проєкт", "проєкти", "проєктів")}{released > 0 && ` · ${released} уже можна грати`}
-              </small>
-            </span>
-            <span class="person__covers" aria-hidden="true">
-              {covers.map((src) => <img src={src} alt="" width="30" height="45" loading="lazy" />)}
-            </span>
-          </a>
-        </li>
-      ))}
-    </ul>
+    {sections.map(({ title, note, list }) => (
+      <>
+        {title && <h2 class="sec">{title} <span>{list.length}</span></h2>}
+        {note && <p class="sec__note">{note}</p>}
+        <ul class="people">
+          {list.map(({ p, count, released, roles, covers }) => (
+            <li>
+              <a href={`/team/${p.slug}/`} class="c-panel person">
+                <PersonAvatar name={p.name} slug={p.slug} size={52} />
+                <span class="person__main">
+                  <strong>{p.name}{p.team && <em> · команда</em>}</strong>
+                  {p.from && <small class="person__from">з команди {p.from}, не «Little Bit»</small>}
+                  <small>{roles}</small>
+                  <small class="person__count">
+                    {count} {pluralize(count, "проєкт", "проєкти", "проєктів")}{released > 0 && ` · ${released} уже можна грати`}
+                  </small>
+                </span>
+                <span class="person__covers" aria-hidden="true">
+                  {covers.map((src) => <img src={src} alt="" width="30" height="45" loading="lazy" />)}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    ))}
 
     <p class="note">
-      Тут поточний склад команди. Над окремими проєктами працювали й інші люди — їх згадано у звітах <a href="/chronology/">хронології</a>. Хочете долучитися — напишіть у
+      Докладніше про кожен проєкт — у звітах <a href="/chronology/">хронології</a>. Хочете долучитися — напишіть у
       <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer">Telegram</a>.
     </p>
   </div>
@@ -109,6 +123,9 @@ const teams = cards.filter((c) => c.p.team);
   .person__covers img { width: 30px; height: 45px; object-fit: cover; border-radius: 4px; box-shadow: 0 0 0 2px rgba(20, 18, 24, 0.9); }
   .person__covers img + img { margin-left: -12px; }
 
+  .sec { display: flex; align-items: baseline; gap: 10px; margin: 56px 0 8px; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 600; }
+  .sec span { color: var(--faint); font-size: 0.8em; font-weight: 500; }
+  .sec__note { max-width: 70ch; margin-bottom: 18px; color: var(--muted); font-size: 14px; line-height: 1.6; }
   .note { margin-top: 40px; color: var(--faint); font-size: 13px; }
 
   @media (max-width: 420px) { .person__covers { display: none; } }
