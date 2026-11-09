@@ -18,6 +18,7 @@ import { cover } from "../../lib/cover";
 import { artOf } from "../../lib/art";
 import { liveNumbers, liveLabel } from "../../lib/live";
 import { peopleOf } from "../../data/people";
+import { leadOf, paragraphs, hasMore } from "../../lib/description";
 import PersonAvatar from "../../components/PersonAvatar.astro";
 
 export function getStaticPaths() {
@@ -29,7 +30,8 @@ const { game } = Astro.props;
 // ── SEO ──
 const canonicalUrl = `${SITE_URL}/games/${game.id}/`;
 const pageTitle = `Українська локалізація ${game.title} — «Little Bit»`;
-const pageDesc = game.description.length > 155 ? game.description.slice(0, 152) + "…" : game.description;
+const lead = leadOf(game);
+const pageDesc = lead.length > 155 ? lead.slice(0, 152) + "…" : lead;
 const { "@context": _c1, ...gameSchema } = JSON.parse(generateGameStructuredData(game));
 const { "@context": _c2, ...breadcrumbSchema } = JSON.parse(
   generateBreadcrumbs([
@@ -140,7 +142,7 @@ const related = games
           <span class="c-badge">{st.label}</span>
           {meta.map((m) => <span>{m}</span>)}
         </p>
-        <p class="gh__text">{game.detailedDescription ?? game.description}</p>
+        <p class="gh__text">{lead}</p>
 
         <div class="gh__actions">
           {primary && (
@@ -213,6 +215,14 @@ const related = games
           {ea.pending.length > 0 && <p><span class="c-label">Ще триває</span> {ea.pending.map(stageName).join(", ")}</p>}
         </div>
       </aside>
+    )}
+
+    <!-- ── Про гру: повний опис із LBK Launcher ── -->
+    {hasMore(game) && (
+      <section class="gsec about">
+        <h2 class="gsec__title">Про гру</h2>
+        {paragraphs(game.description).map((p) => <p class:list={{ about__h: p.length < 60 && !/[.!?…»]$/.test(p) }}>{p}</p>)}
+      </section>
     )}
 
     <!-- ── Стан локалізації ── -->
@@ -478,6 +488,10 @@ const related = games
   /* ── Body ── */
   .gbody { display: grid; gap: 28px; padding-top: 12px; }
   .gsec { margin-top: 12px; }
+  .about { max-width: 72ch; margin-bottom: 40px; color: var(--muted); line-height: 1.7; }
+  .about p + p { margin-top: 12px; }
+  .about .about__h { margin-top: 22px; color: var(--ink); font-weight: 600; }
+  .about .about__h + .about__h { margin-top: 0; color: var(--faint); font-size: 13px; font-weight: 500; }
   .gsec__title { margin-bottom: 16px; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 600; }
 
   .note { padding: 22px 24px; --state: var(--st-early); }

@@ -1,6 +1,7 @@
 // ─── SEO Utilities ───────────────────────────────────────────
 
 import type { Game } from "../data/games";
+import { leadOf } from "../lib/description";
 
 export const SITE_URL = "https://littlebitua.github.io";
 export const SITE_NAME = "«Little Bit» — Українська локалізація відеоігор";
@@ -10,7 +11,7 @@ export function generateGameStructuredData(game: Game): string {
     "@context": "https://schema.org",
     "@type": "VideoGame",
     "name": game.title,
-    "description": game.description,
+    "description": leadOf(game),
     "image": game.cover.startsWith("http") ? game.cover : `${SITE_URL}${game.cover}`,
     "inLanguage": "uk-UA",
     "gamePlatform": game.platform ?? ["PC", "PlayStation", "Xbox"],

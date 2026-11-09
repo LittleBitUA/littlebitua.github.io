@@ -6,6 +6,7 @@
 import type { Game } from "../../data/games";
 import { artOf } from "../../lib/art";
 import { cover } from "../../lib/cover";
+import { leadOf } from "../../lib/description";
 import {
   statusMeta, translationPercent, formatPct, isPlayable, isFundraising, fundraisingPercent, stagesOf, stageName,
 } from "../../utils/status";
@@ -81,7 +82,7 @@ const slides = await Promise.all(
           <span class="c-badge">{s.st.label}</span>
           {s.meta.map((m) => <span>{m}</span>)}
         </p>
-        <p class="slide__text">{s.g.description}</p>
+        <p class="slide__text">{leadOf(s.g)}</p>
 
         <div class="slide__actions">
           <a class:list={["c-btn", { "c-btn--fund": s.primary.fund }]} href={s.primary.href}
