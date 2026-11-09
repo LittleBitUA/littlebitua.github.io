@@ -60,6 +60,7 @@ export const PEOPLE: Person[] = [
       { game: "gravity-rush", role: "Переклад, технічна частина" },
       { game: "gravity-rush-2", role: "Переклад, технічна частина" },
       { game: "killer-is-dead", role: "Переклад, технічна частина" },
+      { game: "shadows-of-the-damned", role: "Переклад, технічна частина" },
       { game: "uncharted-golden-abyss", role: "Переклад, технічна частина" },
       { game: "silent-hill-shattered-memories", role: "Переклад" },
       { game: "mixtape", role: "Переклад, редактура, інтеграція в гру" },
@@ -188,6 +189,8 @@ export const PEOPLE: Person[] = [
   {
     slug: "svitchhh",
     name: "svitchhh",
+    about:
+      "Навчається на англійсько-іспанському перекладі у Львівському національному університеті імені Івана Франка. Має досвід художнього перекладу: її переклад оповідання Баррі Пейна «The End of the Show» опубліковано в журналі «Дзвін». Також співпрацювала з видавництвом RM Publishing як критична читачка. Захоплюється літературою, відеоіграми й театром.",
     credits: [{ game: "silent-hill-downpour", role: "Переклад" }],
   },
   {

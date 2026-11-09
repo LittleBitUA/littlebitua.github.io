@@ -170,8 +170,17 @@ const diff = (() => {
 })();
 
 // ── Останній вихід — великою карткою ──
-const latestEntry = [...isoOf.entries()].sort((a, b) => b[1].localeCompare(a[1])).map(([id]) => report.entries.find((e) => e.id === id && e.game)).find(Boolean) ?? null;
-const latestArt = latestEntry?.game ? await artOf(latestEntry.game) : null;
+// Звіт пишеться вручну й відстає: якщо в каталозі є свіжіший вихід (releaseDate), показуємо його
+const reportLatest = [...isoOf.entries()].sort((a, b) => b[1].localeCompare(a[1])).map(([id, iso]) => ({ e: report.entries.find((e) => e.id === id && e.game), iso })).find((x) => x.e);
+const catalogLatest = isLatest
+  ? catalog.filter((g) => g.releaseDate && g.releaseDate <= new Date().toISOString().slice(0, 10)).sort((a, b) => b.releaseDate!.localeCompare(a.releaseDate!))[0]
+  : undefined;
+const hero = catalogLatest && (!reportLatest || catalogLatest.releaseDate! > reportLatest.iso)
+  ? { game: catalogLatest, title: catalogLatest.title, date: `${+catalogLatest.releaseDate!.slice(8, 10)} ${Object.keys(SHORT)[+catalogLatest.releaseDate!.slice(5, 7) - 1]}`, anchor: null as string | null }
+  : reportLatest?.e
+    ? { game: reportLatest.e.game!, title: reportLatest.e.title, date: reportLatest.e.date, anchor: reportLatest.e.id }
+    : null;
+const latestArt = hero ? await artOf(hero.game) : null;
 
 // ── Ритм виходів: місяці з першого датованого виходу до звіту ──
 const dated = [...isoOf.entries()].map(([id, iso]) => ({ e: report.entries.find((x) => x.id === id)!, iso })).filter((x) => x.e);
@@ -330,15 +339,15 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
     <div class="report">
       <p class="empty" id="chron-empty" hidden>Нічого не знайдено. Спробуйте інший запит або фільтр.</p>
 
-      {latestEntry && latestEntry.game && (
+      {hero && (
         <article class="hero" data-intro>
           {(latestArt?.bannerLow || latestArt?.banner) && <img class="hero__bg" src={latestArt.bannerLow ?? latestArt.banner!} alt="" loading="lazy" decoding="async" />}
           <div class="hero__body">
-            <span class="hero__label">Останній вихід · {latestEntry.date}</span>
-            <h2 class="hero__title">{latestEntry.title}</h2>
+            <span class="hero__label">Останній вихід · {hero.date}</span>
+            <h2 class="hero__title">{hero.title}</h2>
             <div class="hero__actions">
-              <a class="c-btn" href={`/games/${latestEntry.game.id}/`}>Сторінка гри</a>
-              <a class="hero__link" href={`#${latestEntry.id}`}>Читати у звіті ↓</a>
+              <a class="c-btn" href={`/games/${hero.game.id}/`}>Сторінка гри</a>
+              {hero.anchor ? <a class="hero__link" href={`#${hero.anchor}`}>Читати у звіті ↓</a> : <span class="hero__note">* У звіті ще не описано — з’явиться в наступному</span>}
             </div>
           </div>
         </article>
@@ -1020,6 +1029,7 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
   .hero .c-btn { min-height: 42px; padding: 0 20px; letter-spacing: 0; text-transform: none; }
   .hero__link { color: rgba(255, 255, 255, 0.85); font-size: 14px; font-weight: 600; }
   .hero__link:hover { color: #fff; }
+  .hero__note { color: rgba(255, 255, 255, 0.7); font-size: 13px; }
 
   /* ── Ритм виходів ── */
   .rhythm { margin-bottom: 40px; padding: 20px 22px 16px; border-radius: 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--line); }
