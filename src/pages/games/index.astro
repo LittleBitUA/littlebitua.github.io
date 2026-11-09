@@ -16,7 +16,7 @@ import type { GameStatus } from "../../data/games";
 const catalog = sortByStatus(games);
 const playable = games.filter(isPlayable).length;
 const series = await Promise.all(
-  getSeriesGroups().map(async (s) => ({ ...s, covers: await Promise.all(s.games.slice(0, 3).map((g) => cover(g.cover, 120))) })),
+  getSeriesGroups().map(async (s) => ({ ...s, count: s.games.reduce((n, g) => n + (g.gamesCount ?? 1), 0), covers: await Promise.all(s.games.slice(0, 3).map((g) => cover(g.cover, 120))) })),
 );
 
 const ORDER: GameStatus[] = ["done", "early-access", "in-progress", "fundraising", "planned"];
@@ -84,7 +84,7 @@ const kpis = ORDER.map((s) => ({
                 </span>
                 <span class="serie__text">
                   <strong>{s.name}</strong>
-                  <small>{s.games.length} {pluralize(s.games.length, "гра", "гри", "ігор")}</small>
+                  <small>{s.count} {pluralize(s.count, "гра", "гри", "ігор")}</small>
                 </span>
               </a>
             </li>

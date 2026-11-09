@@ -93,6 +93,8 @@ export interface Game {
   otherVersions?: { slug: string; label: string; translation: number; editing: number; version: string | null }[];
   /** false — щоденна перевірка не порівнює відсотки з лаунчером (там інша гра чи збірка) */
   launcherCheck?: boolean;
+  /** Скільки окремих ігор у цьому записі (для збірок, напр. Uncharted 1–3) — для підрахунку ігор у серії */
+  gamesCount?: number;
   /** Переклад зроблено за часів «Солов’їної команди» — показуємо помітку */
   solovinaEra?: boolean;
   /** Що поки не перекладено чи не зроблено — окремий блок на сторінці гри */
@@ -414,6 +416,7 @@ export const games: Game[] = [
   },
   {
     id: "uncharted-collection",
+    gamesCount: 3,
     limitations: ["Текстури (написи на зображеннях) не перекладено — вони лишаються англійською."],
     title: "Uncharted: The Nathan Drake Collection",
     series: "Uncharted",
