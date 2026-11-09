@@ -1,16 +1,23 @@
 ---
 // ─── FilterBar ─────────────────────────────────────────────────
 // Пошук, фільтр за статусом, сортування. Працює з будь-якими
-// елементами [data-game-id] на сторінці (див. GameCard).
+// елементами [data-game-id] на сторінці (див. CatalogCard).
 // Стан синхронізується з URL: ?status=…&q=…&tag=…
-import { getStatusList } from "../data/games";
-import { STATUS_META } from "../utils/status";
+import { games } from "../data/catalog";
+import { STATUS_META, isPlayable, isFundraising } from "../utils/status";
+import type { GameStatus } from "../data/games";
 
+const ORDER: GameStatus[] = ["done", "early-access", "in-progress", "fundraising", "planned"];
+const count = (v: string) =>
+  v === "all" ? games.length
+  : v === "playable" ? games.filter(isPlayable).length
+  : v === "fundraising" ? games.filter((g) => g.status === "fundraising" || isFundraising(g)).length
+  : games.filter((g) => g.status === v).length;
 const filters = [
   { value: "all", label: "Усі" },
   { value: "playable", label: "Можна грати" },
-  ...getStatusList().map((s) => ({ value: s, label: STATUS_META[s].label })),
-];
+  ...ORDER.map((s) => ({ value: s, label: STATUS_META[s].label })),
+].map((f) => ({ ...f, n: count(f.value) })).filter((f) => f.n > 0);
 ---
 
 <div class="filters" id="filters">
@@ -22,8 +29,8 @@ const filters = [
 
   <div class="status-filters" role="group" aria-label="Статус">
     {filters.map((f) => (
-      <button type="button" class="filter-btn" data-value={f.value} aria-pressed={f.value === "all" ? "true" : "false"}>
-        {f.label}
+      <button type="button" class="filter-btn" data-status-filter data-value={f.value} aria-pressed={f.value === "all" ? "true" : "false"}>
+        {f.label} <b>{f.n}</b>
       </button>
     ))}
   </div>
@@ -67,7 +74,7 @@ const filters = [
   const tagLabel = $("active-tag-label");
   const empty = $("filter-empty");
   const emptyTitle = $("filter-empty-title");
-  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>(".filter-btn"));
+  const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-status-filter]"));
 
   const items = Array.from(document.querySelectorAll<HTMLElement>("[data-game-id]")).map((el, index) => ({
     el,
@@ -153,7 +160,15 @@ const filters = [
     clearTimeout(timer);
     timer = setTimeout(() => { state.query = searchInput.value; render(); }, 200);
   });
-  buttons.forEach((b) => b.addEventListener("click", () => { state.status = b.dataset.value ?? "all"; render(); }));
+  buttons.forEach((b) =>
+    b.addEventListener("click", () => {
+      const v = b.dataset.value ?? "all";
+      // Повторне натискання на підсумок угорі знімає фільтр
+      state.status = b.dataset.kpi !== undefined && state.status === v ? "all" : v;
+      render();
+      if (b.dataset.kpi !== undefined) $("filters").scrollIntoView({ behavior: "smooth", block: "start" });
+    }),
+  );
   sortSelect.addEventListener("change", () => { state.sort = sortSelect.value; render(); });
   $("clear-tag").addEventListener("click", () => { state.tag = ""; render(); });
   $("filter-reset").addEventListener("click", () => {
@@ -174,32 +189,22 @@ const filters = [
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px 16px;
-    margin-bottom: 28px;
+    gap: 10px 14px;
+    margin-bottom: 32px;
     padding: 10px 12px;
-    background: color-mix(in srgb, var(--tint) 30%, rgba(14, 12, 18, 0.82));
-    border: 1px solid var(--line);
-    border-radius: 18px;
+    background: color-mix(in srgb, var(--tint) 30%, rgba(14, 12, 18, 0.86));
+    border: 1px solid var(--glass-line);
+    border-radius: 9999px;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
+    scroll-margin-top: calc(var(--header-h) + 8px);
   }
 
-  .search { position: relative; flex: 1 1 100%; }
-  .search svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    width: 16px;
-    height: 16px;
-    translate: 0 -50%;
-    fill: none;
-    stroke: var(--faint);
-    stroke-width: 2.2;
-    pointer-events: none;
-  }
+  .search { position: relative; flex: 0 1 220px; }
+  .search svg { position: absolute; left: 12px; top: 50%; width: 16px; height: 16px; translate: 0 -50%; fill: none; stroke: var(--faint); stroke-width: 2.2; pointer-events: none; }
   .search input, .sort select {
     width: 100%;
-    height: 40px;
+    height: 38px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid var(--line);
     border-radius: 9999px;
@@ -210,53 +215,61 @@ const filters = [
   .search input::placeholder { color: var(--faint); }
   .search input:focus, .sort select:focus { outline: none; border-color: rgba(255, 255, 255, 0.5); }
 
-  .status-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .status-filters { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
   .filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     min-height: 34px;
-    padding: 0 12px;
-    background: transparent;
-    border: 1px solid var(--line-strong);
+    padding: 0 13px;
     border-radius: 9999px;
     color: var(--muted);
     font-size: 13px;
     font-weight: 600;
     white-space: nowrap;
-    transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+    transition: color 0.18s ease, background-color 0.18s ease;
   }
+  .filter-btn b { color: var(--faint); font-weight: 600; font-variant-numeric: tabular-nums; }
   .filter-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
-  .filter-btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .filter-btn[aria-pressed="true"] { background: #f4f1f4; color: #111; }
+  .filter-btn[aria-pressed="true"] b { color: rgba(0, 0, 0, 0.55); }
 
   .filters__end { display: flex; align-items: center; gap: 12px; margin-left: auto; }
-  .counter { color: var(--faint); font-size: 12px; font-weight: 700; white-space: nowrap; }
-  .sort select { min-width: 190px; padding: 0 12px; font-size: 12px; font-weight: 700; color-scheme: dark; cursor: pointer; }
+  /* Лічильник під панеллю — щоб не розсувати її на два рядки */
+  .counter { position: absolute; top: calc(100% + 8px); right: 18px; color: var(--faint); font-size: 12px; font-weight: 700; white-space: nowrap; }
+  @media (max-width: 760px) { .counter { position: static; } }
+  .sort select { min-width: 165px; padding: 0 14px; font-size: 13px; font-weight: 600; color-scheme: dark; cursor: pointer; }
 
   .active-tag {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 6px 6px 10px;
-    border: 1px solid var(--accent);
+    padding: 5px 6px 5px 12px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.08);
     color: var(--muted);
     font-size: 12px;
   }
   .active-tag[hidden] { display: none; }
-  .active-tag b { color: var(--accent); }
-  .active-tag button { display: grid; place-items: center; width: 22px; height: 22px; }
+  .active-tag b { color: var(--ink); }
+  .active-tag button { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; }
+  .active-tag button:hover { background: rgba(255, 255, 255, 0.1); }
   .active-tag svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.4; }
 
-  .empty {
-    margin-bottom: 32px;
-    padding: 48px 20px;
-    border: 1px dashed var(--line-strong);
-    text-align: center;
-  }
+  .empty { margin-bottom: 32px; padding: 48px 20px; border: 1px dashed var(--line-strong); border-radius: 14px; text-align: center; }
   .empty[hidden] { display: none; }
-  .empty__title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; }
+  .empty__title { font-size: 1.2rem; font-weight: 700; }
   .empty__text { margin: 8px 0 20px; color: var(--muted); }
 
-  @media (min-width: 640px) { .search { flex: 0 1 260px; } }
-  @media (max-width: 639px) {
+  @media (max-width: 1260px) {
+    .filters { border-radius: 18px; }
+  }
+  @media (max-width: 760px) {
     .filters { position: static; }
+    .search { flex: 1 1 100%; }
+    .status-filters { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .status-filters::-webkit-scrollbar { display: none; }
+    .filter-btn { flex-shrink: 0; }
     .filters__end { width: 100%; }
     .sort { flex: 1; }
   }

@@ -1,0 +1,138 @@
+---
+// ─── Картка в каталозі ─────────────────────────────────────────
+// Чистий постер, як у рядах на головній (плашка статусу в куті),
+// а під ним — назва й компактні смужки етапів. Уся картка — посилання
+// на сторінку гри. data-* читає FilterBar (пошук, фільтр, сортування).
+import type { Game } from "../data/games";
+import { cover } from "../lib/cover";
+import {
+  statusMeta, isPlayable, isFundraising, fundraisingPercent, formatMoney, formatPct, stagesOf, stageName, isStageAbandoned,
+} from "../utils/status";
+
+export interface Props { game: Game; eager?: boolean }
+const { game, eager = false } = Astro.props;
+
+const st = statusMeta(game.status);
+const img = await cover(game.cover, 400);
+const imgSmall = await cover(game.cover, 240);
+const fundActive = isFundraising(game) && !!game.fundraisingGoal;
+
+type Row = { label: string; pct: number; state: "done" | "active" | "todo" | "abandoned" };
+const rows: Row[] = stagesOf(game).map((s) => ({
+  label: stageName(s.label),
+  pct: s.percent,
+  state: s.percent < 100 && isStageAbandoned(game, s.label) ? "abandoned" : s.percent >= 100 ? "done" : s.percent > 0 ? "active" : "todo",
+}));
+const badge = fundActive ? "Збір коштів" : st.label;
+---
+
+<a
+  href={`/games/${game.id}/`}
+  class="cc"
+  style={`--state:${fundActive ? "var(--st-fund)" : st.color}`}
+  data-game-id={game.id}
+  data-series={game.series ?? ""}
+  data-status={game.status}
+  data-title={game.title}
+  data-tags={game.tags.join(",")}
+  data-progress={game.progress}
+  data-last-update={game.translationUpdated ?? game.lastUpdate ?? ""}
+  data-fundraising={isFundraising(game) ? "true" : ""}
+  data-playable={isPlayable(game) ? "true" : ""}
+>
+  <span class="cc__poster">
+    <img src={img} srcset={`${imgSmall} 240w, ${img} 400w`} sizes="(max-width: 640px) 46vw, 240px" alt="" width="300" height="450" loading={eager ? "eager" : "lazy"} decoding="async" />
+    <span class="cc__badge">{badge}</span>
+  </span>
+
+  <span class="cc__body">
+    <strong class="cc__title">{game.title}</strong>
+    {fundActive && (
+      <span class="cc__fund">
+        <span><b>{formatMoney(game.fundraisingRaised ?? 0)}</b> із {formatMoney(game.fundraisingGoal!)}</span>
+        <i class="cc__bar cc__bar--fund"><i style={`width:${fundraisingPercent(game)}%`}></i></i>
+      </span>
+    )}
+    <span class="cc__rows">
+      {rows.map((r) => (
+        <span class={`cc__row is-${r.state}`}>
+          <em>{r.label}</em>
+          <i class="cc__bar"><i style={`width:${r.pct}%`}></i></i>
+          <b>{r.state === "todo" ? "—" : r.state === "abandoned" ? "стоп" : `${formatPct(Math.round(r.pct))}%`}</b>
+        </span>
+      ))}
+    </span>
+  </span>
+</a>
+
+<style>
+  .cc { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  .cc[hidden] { display: none; }
+
+  .cc__poster {
+    position: relative;
+    display: block;
+    aspect-ratio: 2 / 3;
+    overflow: hidden;
+    border-radius: var(--card-r, 10px);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 12px 28px rgba(0, 0, 0, 0.3);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s ease;
+  }
+  .cc__poster img { width: 100%; height: 100%; object-fit: cover; }
+  .cc__poster::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  .cc:hover .cc__poster, .cc:focus-visible .cc__poster { transform: translateY(-4px); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45); }
+  .cc:hover .cc__poster::after, .cc:focus-visible .cc__poster::after { opacity: 1; }
+  .cc:focus-visible { outline: none; }
+
+  .cc__badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: var(--state);
+    color: #0b0b0d;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cc__body { display: grid; gap: 8px; padding: 0 2px; }
+  .cc__title {
+    display: -webkit-box;
+    overflow: hidden;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+  .cc:hover .cc__title { text-decoration: underline; text-underline-offset: 3px; }
+
+  .cc__rows { display: grid; gap: 5px; }
+  .cc__row { display: grid; grid-template-columns: minmax(0, 68px) 1fr 34px; gap: 8px; align-items: center; }
+  .cc__row em { overflow: hidden; color: var(--faint); font-size: 11px; font-style: normal; text-overflow: ellipsis; white-space: nowrap; }
+  .cc__row b { color: var(--muted); font-size: 11px; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+  .cc__bar { display: block; height: 4px; overflow: hidden; border-radius: 4px; background: rgba(255, 255, 255, 0.1); }
+  .cc__bar > i { display: block; height: 100%; border-radius: 4px; background: var(--st-progress); }
+  .cc__row.is-done .cc__bar > i { background: var(--st-done); }
+  .cc__row.is-done b { color: var(--ink); }
+  .cc__row.is-abandoned .cc__bar > i { background: var(--hatch-abandoned); }
+  .cc__row.is-abandoned b { color: var(--st-abandoned); }
+
+  .cc__fund { display: grid; gap: 5px; color: var(--muted); font-size: 12px; }
+  .cc__fund b { color: var(--st-fund); font-weight: 700; }
+  .cc__bar--fund > i { background: var(--st-fund); }
+</style>

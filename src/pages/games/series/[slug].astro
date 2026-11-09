@@ -1,7 +1,7 @@
 ---
 // ─── Series Page ───────────────────────────────────────────────
 import Layout from "../../../layouts/Layout.astro";
-import GameCard from "../../../components/GameCard.astro";
+import CatalogCard from "../../../components/CatalogCard.astro";
 import { SITE_URL, generateBreadcrumbs } from "../../../utils/seo";
 import { getSeriesGroups } from "../../../utils/series";
 import { pluralize } from "../../../utils/pluralize";
@@ -72,8 +72,8 @@ const others = getSeriesGroups().filter((g) => g.slug !== group.slug);
       </div>
     </header>
 
-    <div class="game-grid">
-      {list.map((game) => <GameCard game={game} />)}
+    <div class="sgrid">
+      {list.map((game) => <CatalogCard game={game} />)}
     </div>
 
     {others.length > 0 && (
@@ -91,4 +91,6 @@ const others = getSeriesGroups().filter((g) => g.slug !== group.slug);
   .others { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); }
   .others > span { margin-right: 6px; color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
   .others small { color: var(--faint); font-size: 10px; }
+  .sgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: 32px 18px; }
+  @media (max-width: 760px) { .sgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; } }
 </style>

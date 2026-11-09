@@ -1,17 +1,28 @@
 ---
-// ─── Catalog Page ──────────────────────────────────────────────
+// ─── Каталог ───────────────────────────────────────────────────
+// Шапка з підсумками за статусами (вони ж фільтри), коротке пояснення
+// статусів, серії, липка панель пошуку й сітка постерів.
 import Layout from "../../layouts/Layout.astro";
-import GameCard from "../../components/GameCard.astro";
+import CatalogCard from "../../components/CatalogCard.astro";
 import FilterBar from "../../components/FilterBar.astro";
-import StatusLegend from "../../components/StatusLegend.astro";
 import { games } from "../../data/catalog";
 import { SITE_URL } from "../../utils/seo";
 import { getSeriesGroups } from "../../utils/series";
-import { sortByStatus, isPlayable } from "../../utils/status";
+import { sortByStatus, isPlayable, isFundraising, STATUS_META } from "../../utils/status";
+import { pluralize } from "../../utils/pluralize";
+import type { GameStatus } from "../../data/games";
 
 const catalog = sortByStatus(games);
 const playable = games.filter(isPlayable).length;
 const series = getSeriesGroups();
+
+const ORDER: GameStatus[] = ["done", "early-access", "in-progress", "fundraising", "planned"];
+const kpis = ORDER.map((s) => ({
+  value: s,
+  label: STATUS_META[s].label,
+  color: STATUS_META[s].color,
+  n: s === "fundraising" ? games.filter((g) => g.status === s || isFundraising(g)).length : games.filter((g) => g.status === s).length,
+})).filter((k) => k.n > 0);
 ---
 
 <Layout
@@ -20,35 +31,127 @@ const series = getSeriesGroups();
   canonicalUrl={`${SITE_URL}/games/`}
 >
   <div class="page container">
-    <header class="section-head">
-      <div>
-        <span class="eyebrow">Каталог · {games.length}</span>
-        <h1 class="title">Усі локалізації</h1>
-        <p>{playable} з {games.length} уже можна грати через LBK Launcher.</p>
-      </div>
+    <header class="head">
+      <span class="eyebrow">Каталог · {games.length} {pluralize(games.length, "гра", "гри", "ігор")}</span>
+      <h1 class="title">Усі локалізації</h1>
+      <p class="lead">
+        <b>{playable}</b> з {games.length} уже можна грати українською через
+        <a href="/#launcher">LBK Launcher</a>. Решта — у роботі або чекає на збір коштів.
+      </p>
     </header>
+
+    <!-- Підсумки за статусами — водночас фільтри -->
+    <ul class="kpi" role="group" aria-label="Статуси — натисніть, щоб відфільтрувати">
+      <li>
+        <button type="button" class="kpi__btn" data-status-filter data-kpi data-value="playable" aria-pressed="false">
+          <strong>{playable}</strong>
+          <span>Можна грати</span>
+        </button>
+      </li>
+      {kpis.map((k) => (
+        <li>
+          <button type="button" class="kpi__btn" data-status-filter data-kpi data-value={k.value} aria-pressed="false" style={`--state:${k.color}`}>
+            <strong>{k.n}</strong>
+            <span><i aria-hidden="true"></i>{k.label}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+
+    <details class="howto">
+      <summary>Що означають статуси</summary>
+      <dl>
+        <div style="--state:var(--st-done)"><dt>Готово</dt><dd>Усі етапи завершено, фінальну версію локалізації опубліковано.</dd></div>
+        <div style="--state:var(--st-early)"><dt>Ранній доступ</dt><dd>Уже можна грати. Текст часто перекладено повністю — ще триває редактура або малювання українських написів. Оновлення приходять через лаунчер.</dd></div>
+        <div style="--state:var(--st-progress)"><dt>У роботі</dt><dd>Грати поки не можна; поступ кожного етапу видно на картці.</dd></div>
+        <div style="--state:var(--st-fund)"><dt>Збір коштів</dt><dd>Гроші йдуть безпосередньо перекладачам, які працюють саме над цією грою. Зібрану й потрібну суму видно на картці.</dd></div>
+        <div style="--state:var(--st-planned)"><dt>Заплановано</dt><dd>Проєкт оголошено, робота ще не почалася.</dd></div>
+      </dl>
+    </details>
 
     {series.length > 0 && (
       <nav class="series" aria-label="Серії">
-        <span>Серії</span>
-        {series.map((s) => (
-          <a href={`/games/series/${s.slug}/`} class="chip">{s.name}<small>{s.games.length}</small></a>
-        ))}
+        <span class="series__label">Серії</span>
+        <div class="series__list">
+          {series.map((s) => (
+            <a href={`/games/series/${s.slug}/`}>{s.name}<small>{s.games.length}</small></a>
+          ))}
+        </div>
       </nav>
     )}
 
-    <StatusLegend />
     <FilterBar />
 
-    <div class="game-grid">
-      {catalog.map((game) => <GameCard game={game} />)}
+    <div class="grid">
+      {catalog.map((game, i) => <CatalogCard game={game} eager={i < 6} />)}
     </div>
   </div>
 </Layout>
 
 <style>
-  .title { margin-top: 10px; font-size: clamp(1.8rem, 4vw, 3.25rem); }
-  .series { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 24px; }
-  .series > span { margin-right: 6px; color: var(--faint); font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
-  .series small { color: var(--faint); font-size: 10px; }
+  .head { margin: 24px 0 28px; }
+  .title { margin-top: 10px; font-size: clamp(2rem, 5vw, 3.75rem); letter-spacing: -0.02em; }
+  .lead { max-width: 68ch; margin-top: 14px; color: var(--muted); font-size: 17px; line-height: 1.7; }
+  .lead b { color: var(--ink); }
+  .lead a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Підсумки-фільтри */
+  .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kpi li + li { border-left: 1px solid var(--line); }
+  .kpi__btn { display: grid; gap: 8px; width: 100%; height: 100%; padding: 22px 18px; text-align: left; transition: background-color 0.18s ease; }
+  .kpi li:first-child .kpi__btn { padding-left: 0; }
+  .kpi__btn:hover { background: rgba(255, 255, 255, 0.04); }
+  .kpi__btn strong { font-size: clamp(1.9rem, 3.4vw, 2.7rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .kpi__btn span { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 13px; }
+  .kpi__btn i { width: 8px; height: 8px; border-radius: 50%; background: var(--state); }
+  .kpi__btn[aria-pressed="true"] span { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+
+  /* Пояснення статусів */
+  .howto { margin-top: 16px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .howto summary { display: inline-flex; align-items: center; gap: 6px; color: var(--ink); font-weight: 600; cursor: pointer; list-style: none; }
+  .howto summary::-webkit-details-marker { display: none; }
+  .howto summary::after { content: "+"; color: var(--faint); font-weight: 500; }
+  .howto[open] summary::after { content: "−"; }
+  .howto dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 16px 28px; margin-top: 14px; }
+  .howto dt { display: flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 600; }
+  .howto dt::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--state); }
+  .howto dd { margin-top: 4px; font-size: 13px; }
+
+  /* Серії */
+  .series { display: flex; align-items: center; gap: 14px; margin: 28px 0 14px; }
+  .series__label { flex-shrink: 0; color: var(--faint); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+  .series__list { display: flex; gap: 6px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+  .series__list::-webkit-scrollbar { display: none; }
+  .series__list a {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border: 1px solid var(--line-strong);
+    border-radius: 9999px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 0.18s ease, color 0.18s ease;
+  }
+  .series__list a:hover { background: rgba(255, 255, 255, 0.08); color: var(--ink); }
+  .series__list small { color: var(--faint); font-size: 11px; }
+
+  /* Сітка */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: 32px 18px; }
+
+  @media (max-width: 760px) {
+    .kpi { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .kpi li + li { border-left: 0; }
+    .kpi li:not(:nth-child(3n + 1)) { border-left: 1px solid var(--line); }
+    .kpi li:nth-child(-n + 3) { border-bottom: 1px solid var(--line); }
+    .kpi__btn, .kpi li:first-child .kpi__btn { padding: 16px 10px; }
+    .kpi li:nth-child(3n + 1) .kpi__btn { padding-left: 0; }
+    .kpi__btn span { font-size: 12px; }
+    .series { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .series__list { max-width: 100%; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }
+  }
 </style>
