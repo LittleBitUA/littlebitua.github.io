@@ -191,6 +191,7 @@ export const PEOPLE: Person[] = [
     slug: "madao",
     name: "Мадао",
     from: "TypeUkraine",
+    guest: true,
     credits: [{ game: "resident-evil-requiem", role: "Переклад з японської" }],
   },
 
