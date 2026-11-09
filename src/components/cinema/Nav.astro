@@ -8,7 +8,7 @@ const TABS = [
   { href: "/games/", label: "Каталог" },
   { href: "/chronology/", label: "Хронологія" },
   { href: "/team/", label: "Команда" },
-  { href: "/stats/", label: "Цифри" },
+  { href: "/stats/", label: "Статистика" },
   { href: "/#launcher", label: "Лаунчер" },
 ];
 const path = Astro.url.pathname;
@@ -44,7 +44,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : !href.includes
   </a>
   <a href="/stats/" aria-current={path.startsWith("/stats/") ? "page" : undefined}>
     <svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6" /></svg>
-    Цифри
+    Статистика
   </a>
   <a href="https://t.me/LittleBitUA" target="_blank" rel="noopener noreferrer">
     <svg viewBox="0 0 24 24"><path d="M21 4 3 11l6 2 2 6 3-4 5 4z" /><path d="m9 13 12-9" /></svg>

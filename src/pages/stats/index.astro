@@ -21,7 +21,7 @@ const releasedDated = s.releasesThisYear - s.undatedThisYear;
 const KPI = [
   { value: n(s.playable), label: `${pluralize(s.playable, "переклад", "переклади", "перекладів")}, у які вже можна грати` },
   { value: n(s.inWork), label: `${pluralize(s.inWork, "проєкт", "проєкти", "проєктів")} у роботі · у середньому ${s.avgInWork}% тексту` },
-  { value: n(s.releasesThisYear), label: `${pluralize(s.releasesThisYear, "вихід", "виходи", "виходів")} перекладів за ${s.thisYear} рік` },
+  { value: n(s.releasesThisYear), label: `${pluralize(s.releasesThisYear, "реліз", "релізи", "релізів")} перекладів за ${s.thisYear} рік` },
   { value: n(s.lines), label: `рядків тексту в ${s.linesProjects} проєктах, де їх пораховано` },
   { value: n(s.members), label: `${pluralize(s.members, "людина", "людини", "людей")} у команді · ще ${s.helpers} допомагають` },
   { value: n(s.recent), label: `${pluralize(s.recent, "зміна", "зміни", "змін")} у перекладах за 30 днів` },
@@ -29,8 +29,8 @@ const KPI = [
 ---
 
 <Layout
-  title="Цифри — «Little Bit» у числах"
-  description={`Звіт студії «Little Bit»: ${s.playable} перекладів, у які можна грати, ${s.inWork} у роботі, ${s.releasesThisYear} виходів за ${s.thisYear} рік, ${n(s.lines)} рядків тексту.`}
+  title="Статистика — «Little Bit» у числах"
+  description={`Звіт студії «Little Bit»: ${s.playable} перекладів, у які можна грати, ${s.inWork} у роботі, ${s.releasesThisYear} релізів за ${s.thisYear} рік, ${n(s.lines)} рядків тексту.`}
   canonicalUrl={`${SITE_URL}/stats/`}
 >
   <div class="page container">
@@ -49,19 +49,19 @@ const KPI = [
       {KPI.map((k) => <li><strong>{k.value}</strong><span>{k.label}</span></li>)}
     </ul>
 
-    <!-- ── Виходи ── -->
+    <!-- ── Релізи ── -->
     <section class="sec">
       <header class="sec__head">
         <span class="sec__num">01</span>
-        <h2>Виходи</h2>
-        <p>Релізи, тестові версії й ранній доступ з хронології.</p>
+        <h2>Релізи</h2>
+        <p>Повні релізи, тестові версії й ранній доступ — за звітами хронології.</p>
       </header>
       <div class="grid grid--wide">
         <div class="c-panel card">
-          <h3>Виходи за {s.thisYear} рік <b>{s.releasesThisYear}</b></h3>
+          <h3>Релізи за {s.thisYear} рік <b>{s.releasesThisYear}</b></h3>
           <Bars
-            items={s.releasesByMonth.map((m) => ({ label: m.label, value: m.count, tip: `${m.label}: ${m.count} ${pluralize(m.count, "вихід", "виходи", "виходів")}` }))}
-            caption={`Виходи перекладів за місяцями ${s.thisYear} року`}
+            items={s.releasesByMonth.map((m) => ({ label: m.label, value: m.count, tip: `${m.label}: ${m.count} ${pluralize(m.count, "реліз", "релізи", "релізів")}` }))}
+            caption={`Релізи перекладів за місяцями ${s.thisYear} року`}
           />
           <p class="note">
             {"* "}{s.undatedThisYear > 0 && `${releasedDated} з точною датою, ще ${s.undatedThisYear} — без неї. `}
@@ -70,8 +70,8 @@ const KPI = [
         </div>
         <div class="c-panel card">
           <h3>Зростання бібліотеки</h3>
-          <Growth points={s.growth} caption="Накопичена кількість виходів на кінець місяця" />
-          <p class="note">* Скільки виходів набралося на кінець кожного місяця (лише з точною датою).</p>
+          <Growth points={s.growth} caption="Накопичена кількість релізів на кінець місяця" />
+          <p class="note">* Скільки релізів набралося на кінець кожного місяця (лише з точною датою).</p>
         </div>
       </div>
     </section>
@@ -236,7 +236,7 @@ const KPI = [
     </section>
 
     <p class="method">
-      <b>Як рахуємо.</b> Каталог і відсотки — з сайту й LBK Launcher; виходи — з останнього звіту <a href="/chronology/">хронології</a>; темп — із
+      <b>Як рахуємо.</b> Каталог і відсотки — з сайту й LBK Launcher; релізи — з останнього звіту <a href="/chronology/">хронології</a>; темп — із
       щоденного журналу прогресу (пункти перекладу, без відкатів і виправлень даних); команда — з титрів на сторінках ігор. Сторінка
       перерахується під час кожного оновлення сайту. Цифри приблизні й можуть розходитися з реальним станом робіт.
     </p>

@@ -1,5 +1,5 @@
 ---
-// Блок «У цифрах» на головній: велике число виходів за рік, графік по місяцях
+// Блок «У цифрах» на головній: велике число релізів за рік, графік по місяцях
 // з підписами й головні показники з контекстом. Детально — на /stats/.
 import { stats as s, MONTHS_GEN } from "../lib/stats";
 import { pluralize } from "../utils/pluralize";
@@ -26,7 +26,7 @@ const ITEMS = [
       <span class="eyebrow">У цифрах · {s.thisYear}</span>
       <h2 id="band-title" class="band__big">
         <strong>{s.releasesThisYear}</strong>
-        <span>{pluralize(s.releasesThisYear, "вихід", "виходи", "виходів")} перекладів<br />за {s.thisYear} рік</span>
+        <span>{pluralize(s.releasesThisYear, "реліз", "релізи", "релізів")} перекладів<br />за {s.thisYear} рік</span>
       </h2>
       <p class="band__note">
         Найбільше — у {IN[peakIdx]}: {s.releasesByMonth[peakIdx].count}.
@@ -48,7 +48,7 @@ const ITEMS = [
           </li>
         ))}
       </ol>
-      <figcaption class="sr-only">Виходи перекладів по місяцях {s.thisYear} року: {s.releasesByMonth.map((m) => `${m.label} — ${m.count}`).join(", ")}.</figcaption>
+      <figcaption class="sr-only">Релізи перекладів по місяцях {s.thisYear} року: {s.releasesByMonth.map((m) => `${m.label} — ${m.count}`).join(", ")}.</figcaption>
     </figure>
 
     <ul class="band__kpi">

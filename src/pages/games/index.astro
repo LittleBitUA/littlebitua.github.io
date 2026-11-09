@@ -8,10 +8,9 @@ import FilterBar from "../../components/FilterBar.astro";
 import { games } from "../../data/catalog";
 import { SITE_URL } from "../../utils/seo";
 import { getSeriesGroups } from "../../utils/series";
-import { sortByStatus, isPlayable, isFundraising, STATUS_META } from "../../utils/status";
+import { sortByStatus, isPlayable } from "../../utils/status";
 import { pluralize } from "../../utils/pluralize";
 import { cover } from "../../lib/cover";
-import type { GameStatus } from "../../data/games";
 
 const catalog = sortByStatus(games);
 const playable = games.filter(isPlayable).length;
@@ -19,13 +18,6 @@ const series = await Promise.all(
   getSeriesGroups().map(async (s) => ({ ...s, count: s.games.reduce((n, g) => n + (g.gamesCount ?? 1), 0), covers: await Promise.all(s.games.slice(0, 3).map((g) => cover(g.cover, 120))) })),
 );
 
-const ORDER: GameStatus[] = ["done", "early-access", "in-progress", "fundraising", "planned"];
-const kpis = ORDER.map((s) => ({
-  value: s,
-  label: STATUS_META[s].label,
-  color: STATUS_META[s].color,
-  n: s === "fundraising" ? games.filter((g) => g.status === s || isFundraising(g)).length : games.filter((g) => g.status === s).length,
-})).filter((k) => k.n > 0);
 ---
 
 <Layout
@@ -42,24 +34,6 @@ const kpis = ORDER.map((s) => ({
         <a href="/#launcher">LBK Launcher</a>. Решта — у роботі або чекає на збір коштів.
       </p>
     </header>
-
-    <!-- Підсумки за статусами — водночас фільтри -->
-    <ul class="kpi" role="group" aria-label="Статуси — натисніть, щоб відфільтрувати">
-      <li>
-        <button type="button" class="kpi__btn" data-status-filter data-kpi data-value="playable" aria-pressed="false">
-          <strong>{playable}</strong>
-          <span>Можна грати</span>
-        </button>
-      </li>
-      {kpis.map((k) => (
-        <li>
-          <button type="button" class="kpi__btn" data-status-filter data-kpi data-value={k.value} aria-pressed="false" style={`--state:${k.color}`}>
-            <strong>{k.n}</strong>
-            <span><i aria-hidden="true"></i>{k.label}</span>
-          </button>
-        </li>
-      ))}
-    </ul>
 
     <details class="howto">
       <summary>Що означають статуси</summary>
@@ -108,16 +82,6 @@ const kpis = ORDER.map((s) => ({
   .lead b { color: var(--ink); }
   .lead a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
 
-  /* Підсумки-фільтри */
-  .kpi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .kpi li + li { border-left: 1px solid var(--line); }
-  .kpi__btn { display: grid; gap: 8px; width: 100%; height: 100%; padding: 22px 18px; text-align: left; transition: background-color 0.18s ease; }
-  .kpi li:first-child .kpi__btn { padding-left: 0; }
-  .kpi__btn:hover { background: rgba(255, 255, 255, 0.04); }
-  .kpi__btn strong { font-size: clamp(1.9rem, 3.4vw, 2.7rem); font-weight: 700; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
-  .kpi__btn span { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 13px; }
-  .kpi__btn i { width: 8px; height: 8px; border-radius: 50%; background: var(--state); }
-  .kpi__btn[aria-pressed="true"] span { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
 
   /* Пояснення статусів */
   .howto { margin-top: 16px; color: var(--muted); font-size: 14px; line-height: 1.6; }
@@ -150,13 +114,6 @@ const kpis = ORDER.map((s) => ({
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: 32px 18px; }
 
   @media (max-width: 760px) {
-    .kpi { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .kpi li + li { border-left: 0; }
-    .kpi li:not(:nth-child(3n + 1)) { border-left: 1px solid var(--line); }
-    .kpi li:nth-child(-n + 3) { border-bottom: 1px solid var(--line); }
-    .kpi__btn, .kpi li:first-child .kpi__btn { padding: 16px 10px; }
-    .kpi li:nth-child(3n + 1) .kpi__btn { padding-left: 0; }
-    .kpi__btn span { font-size: 12px; }
     .series__list { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 210px; overflow-x: auto; scrollbar-width: none; margin-right: calc(-1 * var(--side)); padding-right: var(--side); }
     .series__list::-webkit-scrollbar { display: none; }
     .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 12px; }

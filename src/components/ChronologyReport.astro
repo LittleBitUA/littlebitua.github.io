@@ -274,28 +274,22 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
   </ul>
 
   {diff && prev && (
-    <section class="diff" aria-labelledby="diff-title">
-      <h2 id="diff-title" class="diff__title">Що змінилося з {prev.dateLabel.replace(/ року$/, "")}</h2>
-      <div class="diff__cols">
-        {diff.released.length > 0 && (
-          <div>
-            <p class="diff__label"><i style="background:var(--st-done)"></i>Вийшли · {diff.released.length}</p>
-            <ul>{diff.released.map((e) => <li><a href={`#${e.id}`}>{e.title}</a>{e.date && <small>{e.date}</small>}</li>)}</ul>
-          </div>
-        )}
-        {diff.moved.length > 0 && (
-          <div>
-            <p class="diff__label"><i style="background:var(--st-progress)"></i>Просунулися · {diff.moved.length}</p>
-            <ul>{diff.moved.map(({ e, parts }) => <li><a href={`#${e.id}`}>{e.title}</a><small>{parts.join(" · ")}</small></li>)}</ul>
-          </div>
-        )}
-        {diff.added.length > 0 && (
-          <div>
-            <p class="diff__label"><i style="background:var(--st-early)"></i>Нові у звіті · {diff.added.length}</p>
-            <ul>{diff.added.map((e) => <li><a href={`#${e.id}`}>{e.title}</a></li>)}</ul>
-          </div>
-        )}
-      </div>
+    <section class="diff" aria-label={`Що змінилося з ${prev.dateLabel}`}>
+      <span class="diff__title">Змінилося з {prev.dateLabel.replace(/ \d{4} року$/, "")}</span>
+      <ul class="diff__list">
+        {[
+          ...diff.released.map((e) => ({ e, text: "вийшов", cls: "done" })),
+          ...diff.moved.map(({ e, parts }) => ({ e, text: parts.join(" · "), cls: "progress" })),
+          ...diff.added.map((e) => ({ e, text: "новий у звіті", cls: "new" })),
+        ].map(({ e, text, cls }) => (
+          <li>
+            <a href={`#${e.id}`} class={`diff__item is-${cls}`}>
+              {e.game && <img src={thumbs.get(e.id) ?? e.game.cover} alt="" width="22" height="33" loading="lazy" decoding="async" />}
+              <span><strong>{e.title}</strong><small>{text}</small></span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </section>
   )}
 
@@ -343,7 +337,7 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
         <article class="hero" data-intro>
           {(latestArt?.bannerLow || latestArt?.banner) && <img class="hero__bg" src={latestArt.bannerLow ?? latestArt.banner!} alt="" loading="lazy" decoding="async" />}
           <div class="hero__body">
-            <span class="hero__label">Останній вихід · {hero.date}</span>
+            <span class="hero__label">Останній реліз · {hero.date}</span>
             <h2 class="hero__title">{hero.title}</h2>
             <div class="hero__actions">
               <a class="c-btn" href={`/games/${hero.game.id}/`}>Сторінка гри</a>
@@ -356,8 +350,8 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
       {months.length > 1 && (
         <figure class="rhythm" data-intro>
           <figcaption>
-            <strong>Виходи по місяцях</strong>
-            <span>{dated.length} {dated.length % 10 === 1 && dated.length % 100 !== 11 ? "вихід" : [2, 3, 4].includes(dated.length % 10) && ![12, 13, 14].includes(dated.length % 100) ? "виходи" : "виходів"} з точною датою · наведіть на обкладинку, щоб побачити гру</span>
+            <strong>Релізи по місяцях</strong>
+            <span>{dated.length} {dated.length % 10 === 1 && dated.length % 100 !== 11 ? "реліз" : [2, 3, 4].includes(dated.length % 10) && ![12, 13, 14].includes(dated.length % 100) ? "релізи" : "релізів"} з точною датою · наведіть на обкладинку, щоб побачити гру</span>
           </figcaption>
           <ol>
             {months.map((m) => (
@@ -378,7 +372,7 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
               </li>
             ))}
           </ol>
-          <p class="rhythm__legend"><i style="background:var(--st-done)"></i>вихід <i style="background:var(--st-early)"></i>ранній доступ</p>
+          <p class="rhythm__legend"><i style="background:var(--st-done)"></i>реліз <i style="background:var(--st-early)"></i>ранній доступ</p>
         </figure>
       )}
 
@@ -1002,17 +996,18 @@ const shortDate = (iso: string) => `${+iso.slice(8, 10)} ${Object.keys(SHORT)[+i
   .pick select { height: 34px; padding: 0 12px; border-radius: 9999px; background: rgba(255, 255, 255, 0.07); border: 1px solid var(--line); color: var(--ink); font-size: 13px; font-weight: 600; color-scheme: dark; cursor: pointer; }
 
   /* ── Що змінилося ── */
-  .diff { margin-top: 24px; padding: 20px 24px; border-radius: 16px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); }
-  .diff__title { font-size: 15px; font-weight: 700; }
-  .diff__cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px 32px; margin-top: 14px; }
-  .diff__label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-  .diff__label i { width: 8px; height: 8px; border-radius: 50%; }
-  .diff ul { display: grid; gap: 6px; }
-  .diff li { display: grid; gap: 1px; font-size: 14px; }
-  .diff li a { font-weight: 600; }
-  .diff li a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .diff li small { color: var(--faint); font-size: 12px; }
-
+  .diff { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 20px; }
+  .diff__title { color: var(--faint); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+  .diff__list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .diff__item { display: flex; align-items: center; gap: 9px; padding: 5px 12px 5px 5px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--line); transition: border-color 0.18s ease; }
+  .diff__item:hover { border-color: rgba(255, 255, 255, 0.3); }
+  .diff__item img { width: 22px; height: 33px; object-fit: cover; border-radius: 4px; }
+  .diff__item span { display: grid; line-height: 1.25; }
+  .diff__item strong { max-width: 220px; overflow: hidden; font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .diff__item small { font-size: 11px; font-weight: 600; }
+  .diff__item.is-done small { color: var(--st-done); }
+  .diff__item.is-progress small { color: #c9a8ff; }
+  .diff__item.is-new small { color: #8cc8ff; }
   /* ── Перемикач вигляду ── */
   .views { display: inline-flex; padding: 3px; border-radius: 9999px; background: rgba(255, 255, 255, 0.07); }
   .views button { padding: 6px 12px; border-radius: 9999px; color: var(--muted); font-size: 12px; font-weight: 600; white-space: nowrap; }
