@@ -246,7 +246,6 @@ export const PEOPLE: Person[] = [
   { slug: "feostyle", name: "Олексій «Feostyle»", guest: true, credits: [{ game: "tmnt-shredders-revenge", role: "Переклад" }] },
   { slug: "froghus", name: "Денис «FrogHus» Решетілов", guest: true, credits: [{ game: "the-missing", role: "Графіка" }] },
   { slug: "solomon-kane", name: "Соломон Кейн", guest: true, credits: [{ game: "shadows-of-the-damned", role: "Шрифти" }] },
-  { slug: "hikaro", name: "Галицький Розбишака (Hikaro)", guest: true, credits: [{ game: "dave-the-diver", role: "Переклад основної гри й адаптація під Steam-версію" }] },
   { slug: "tenamio", name: "Tenamio", guest: true, credits: [
     { game: "travis-strikes-again", role: "Тестування" },
     { game: "tmnt-shredders-revenge", role: "Переклад" },
