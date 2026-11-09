@@ -1,0 +1,54 @@
+---
+// Стрічка «Що нового»: на головній — кілька останніх подій, на /updates/ — усі.
+import type { Update } from "../lib/updates";
+import { dayLabel } from "../lib/updates";
+import { cover } from "../lib/cover";
+
+export interface Props { items: Update[]; showYear?: boolean }
+const { items, showYear = false } = Astro.props;
+const KIND = { release: "Реліз", version: "Оновлення", progress: "Прогрес" };
+const rows = await Promise.all(items.map(async (u) => ({ u, img: await cover(u.game.cover, 96) })));
+---
+
+<ul class="feed">
+  {rows.map(({ u, img }) => (
+    <li>
+      <a href={`/games/${u.game.id}/`} class={`feed__item is-${u.kind}`}>
+        <img src={img} alt="" width="40" height="60" loading="lazy" decoding="async" />
+        <span class="feed__main">
+          <strong>{u.game.title}</strong>
+          <small>{u.parts.join(" · ")}</small>
+        </span>
+        <span class="feed__side">
+          <em>{KIND[u.kind]}</em>
+          <time datetime={u.date}>{dayLabel(u.date)}{showYear && ` ${u.date.slice(0, 4)}`}</time>
+        </span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .feed { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr)); gap: 10px; }
+  .feed__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 100%;
+    padding: 10px 14px 10px 10px;
+    border-radius: 14px;
+    background: rgba(20, 20, 24, 0.55);
+    border: 1px solid var(--glass-line);
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+  }
+  .feed__item:hover { border-color: rgba(255, 255, 255, 0.4); background: rgba(30, 30, 36, 0.7); }
+  .feed__item img { flex-shrink: 0; width: 40px; height: 60px; object-fit: cover; border-radius: 6px; }
+  .feed__main { display: grid; flex: 1; gap: 3px; min-width: 0; }
+  .feed__main strong { overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .feed__main small { color: var(--muted); font-size: 13px; }
+  .feed__side { display: grid; flex-shrink: 0; gap: 4px; justify-items: end; }
+  .feed__side em { padding: 2px 8px; border-radius: 6px; background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.75); font-size: 11px; font-style: normal; font-weight: 700; }
+  .is-release .feed__side em { background: color-mix(in srgb, var(--st-done, #4ade80) 22%, transparent); color: var(--st-done, #4ade80); }
+  .is-version .feed__side em { background: color-mix(in srgb, var(--st-early, #a78bfa) 22%, transparent); color: var(--st-early, #a78bfa); }
+  .feed__side time { color: var(--faint); font-size: 12px; white-space: nowrap; }
+</style>

@@ -12,6 +12,8 @@ import { SITE_URL } from "../utils/seo";
 import { getSeriesGroups } from "../utils/series";
 import { isPlayable, isFundraising, translationPercent, sortByStatus } from "../utils/status";
 import { artOf } from "../lib/art";
+import UpdatesFeed from "../components/UpdatesFeed.astro";
+import { updatesOf } from "../lib/updates";
 
 const byFresh = (a: (typeof games)[number], b: (typeof games)[number]) =>
   (b.releaseDate ?? b.lastUpdate ?? "").localeCompare(a.releaseDate ?? a.lastUpdate ?? "");
@@ -41,6 +43,7 @@ const rows = [
   },
 ];
 const series = getSeriesGroups(3);
+const latest = updatesOf(games).slice(0, 6);
 ---
 
 <Layout
@@ -52,7 +55,17 @@ const series = getSeriesGroups(3);
   <HeroCarousel games={slides} />
 
   <div class="rows" id="projects">
-    {rows.map((r) => <Row title={r.title} games={r.games} href={r.href} />)}
+    {rows.slice(0, 1).map((r) => <Row title={r.title} games={r.games} href={r.href} />)}
+    {latest.length > 0 && (
+      <section class="c-row news">
+        <header class="c-row__head">
+          <h2>Що нового</h2>
+          <a href="/updates/">Уся стрічка →</a>
+        </header>
+        <UpdatesFeed items={latest} />
+      </section>
+    )}
+    {rows.slice(1).map((r) => <Row title={r.title} games={r.games} href={r.href} />)}
     {series.map((s) => (
       <Row title={s.name} games={s.games} href={`/games/series/${s.slug}/`} hrefLabel="Уся серія" />
     ))}
@@ -66,5 +79,6 @@ const series = getSeriesGroups(3);
 
 <style>
   .rows { position: relative; margin-top: clamp(-120px, -9vh, -72px); padding-bottom: 40px; }
+  .news :global(.feed) { padding-inline: var(--side); }
   @media (max-width: 760px) { .rows { margin-top: 12px; } }
 </style>

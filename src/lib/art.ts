@@ -5,6 +5,10 @@
 // щоб на ньому читався світлий текст. Усе рахується один раз під час збірки.
 
 import sharp from "sharp";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import type { ImageMetadata } from "astro";
+import { getImage } from "astro:assets";
 import type { Game } from "../data/games";
 import { cover } from "./cover";
 
@@ -41,6 +45,29 @@ function fetchBytes(url: string): Promise<Buffer | null> {
   return result;
 }
 
+// Власні банери: src/assets/banners/<id гри>.(jpg|png|webp), бажано 3840×1240.
+// Мають пріоритет над Steam і лаунчером — для ігор, де там лише 1920 px.
+const LOCAL = import.meta.glob<{ default: ImageMetadata }>("../assets/banners/*.{jpg,jpeg,png,webp}", { eager: true });
+const localBanner = (id: string) => {
+  const hit = Object.entries(LOCAL).find(([p]) => p.split("/").pop()!.replace(/\.\w+$/, "") === id);
+  return hit ? { meta: hit[1].default, file: hit[0].split("/").pop()! } : null;
+};
+
+async function resolveLocal(g: Game, local: NonNullable<ReturnType<typeof localBanner>>): Promise<Pick<GameArt, "banner" | "bannerLow" | "bannerSrcset" | "tint">> {
+  const { meta, file } = local;
+  const img = (width: number, quality: number) =>
+    getImage({ src: meta, width: Math.min(width, meta.width), format: "webp", quality }).then((r) => r.src);
+  const widths = BANNER_WIDTHS.filter((w) => w < meta.width).concat(meta.width).filter((w, i, a) => a.indexOf(w) === i);
+  let tint = FALLBACK_TINT;
+  try { tint = await tintOf(readFileSync(join(process.cwd(), "src/assets/banners", file))); } catch {}
+  return {
+    banner: await img(1920, 84),
+    bannerLow: await img(1280, 70),
+    bannerSrcset: (await Promise.all(widths.map(async (w) => `${await img(w, 86)} ${w}w`))).join(", "),
+    tint,
+  };
+}
+
 const steamAppId = (g: Game) => g.steamUrl?.match(/\/app\/(\d+)/)?.[1];
 
 /**
@@ -70,6 +97,19 @@ async function tintOf(bytes: Buffer): Promise<string> {
 }
 
 async function resolve(g: Game): Promise<GameArt> {
+  const local = localBanner(g.id);
+  if (local) {
+    const logoBytes = g.launcherArt?.logo ? await fetchBytes(g.launcherArt.logo) : null;
+    return {
+      ...(await resolveLocal(g, local)),
+      logo: logoBytes && g.launcherArt ? await cover(g.launcherArt.logo, 720) : null,
+      logoSrcset:
+        logoBytes && g.launcherArt
+          ? `${await cover(g.launcherArt.logo, 360)} 360w, ${await cover(g.launcherArt.logo, 720)} 720w, ${await cover(g.launcherArt.logo, 1120)} 1120w`
+          : null,
+    };
+  }
+
   // Беремо найбільший з доступних банерів: library_hero_2x зі Steam (3840×1240),
   // звичайний library_hero (1920×620) або банер з LBK Launcher
   const id = steamAppId(g);

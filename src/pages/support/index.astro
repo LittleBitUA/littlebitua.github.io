@@ -1,0 +1,170 @@
+---
+// ─── Підтримати: усі збори в одному місці ──────────────────────
+// Активні збори з прогресом (суми щоразу підтягуються з Donatello під час
+// збірки), призупинені, завершені, а також загальні способи підтримки.
+import Layout from "../../layouts/Layout.astro";
+import DonorsWall from "../../components/DonorsWall.astro";
+import { games } from "../../data/catalog";
+import { isFundraising, fundraisingPercent, formatMoney, translationPercent, formatPct } from "../../utils/status";
+import { cover } from "../../lib/cover";
+import { leadOf } from "../../lib/description";
+import { SITE_URL } from "../../utils/seo";
+
+const withGoal = games.filter((g) => g.fundraisingGoal);
+const active = withGoal.filter(isFundraising).sort((a, b) => fundraisingPercent(b) - fundraisingPercent(a));
+const paused = withGoal.filter((g) => g.fundraisingPaused && !g.fundraisingCompleted);
+const done = games.filter((g) => g.fundraisingCompleted);
+const card = async (g: (typeof games)[number]) => ({ g, img: await cover(g.cover, 240), pct: fundraisingPercent(g), url: g.fundraisingUrl ?? g.donateUrl });
+const activeCards = await Promise.all(active.map(card));
+const pausedCards = await Promise.all(paused.map(card));
+const doneCards = await Promise.all(done.map(async (g) => ({ g, img: await cover(g.cover, 120) })));
+
+const WAYS = [
+  { name: "Donatello", href: "https://donatello.to/LittleBitUA", text: "Разовий донат або підтримка конкретного збору." },
+  { name: "Банка Monobank", href: "https://send.monobank.ua/jar/3h4akVJRXK", text: "Загальна підтримка команди: купівля ігор, нові проєкти." },
+];
+---
+
+<Layout
+  title="Підтримати — збори на українські переклади ігор | «Little Bit»"
+  description={`Усі збори «Little Bit» в одному місці: ${active.length ? active.map((g) => g.title).join(", ") + " та " : ""}загальна підтримка команди. Усі переклади безкоштовні.`}
+  canonicalUrl={`${SITE_URL}/support/`}
+>
+  <div class="page container">
+    <header class="head">
+      <span class="eyebrow">Підтримка</span>
+      <h1 class="title">Підтримати переклади</h1>
+      <p class="lead">
+        Усі наші локалізації безкоштовні. Збори на конкретні ігри йдуть перекладачам, які над ними працюють; загальні
+        донати допомагають купувати ігри й братися за нові проєкти.
+      </p>
+    </header>
+
+    <h2 class="sec">Активні збори <span>{active.length}</span></h2>
+    {activeCards.length ? (
+      <ul class="funds">
+        {activeCards.map(({ g, img, pct, url }) => (
+          <li class="c-panel fund">
+            <a href={`/games/${g.id}/`} class="fund__cover"><img src={img} alt="" width="120" height="180" loading="lazy" /></a>
+            <div class="fund__body">
+              <a href={`/games/${g.id}/`} class="fund__title">{g.title}</a>
+              <p class="fund__text">{g.fundraisingDescription ?? leadOf(g)}</p>
+              <div class="fund__numbers">
+                <strong>{formatMoney(g.fundraisingRaised ?? 0)}</strong>
+                <span>з {formatMoney(g.fundraisingGoal!)}</span>
+                <b>{pct}%</b>
+              </div>
+              <span class="bar"><i style={`width:${Math.min(100, pct)}%`}></i></span>
+              <small class="fund__meta">Переклад зараз: {formatPct(translationPercent(g))}%</small>
+              <a class="c-btn c-btn--fund" href={url} target="_blank" rel="noopener noreferrer">Підтримати збір</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Зараз активних зборів немає — підтримати команду можна загальним донатом нижче.</p>
+    )}
+
+    {pausedCards.length > 0 && (
+      <>
+        <h2 class="sec">Призупинені збори <span>{pausedCards.length}</span></h2>
+        <p class="sec__note">Збір тимчасово не ведеться, але вже зібрані кошти працюють на переклад.</p>
+        <ul class="funds funds--small">
+          {pausedCards.map(({ g, img, pct }) => (
+            <li class="c-panel fund">
+              <a href={`/games/${g.id}/`} class="fund__cover"><img src={img} alt="" width="80" height="120" loading="lazy" /></a>
+              <div class="fund__body">
+                <a href={`/games/${g.id}/`} class="fund__title">{g.title}</a>
+                <div class="fund__numbers">
+                  <strong>{formatMoney(g.fundraisingRaised ?? 0)}</strong>
+                  <span>з {formatMoney(g.fundraisingGoal!)}</span>
+                  <b>{pct}%</b>
+                </div>
+                <span class="bar bar--muted"><i style={`width:${Math.min(100, pct)}%`}></i></span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+
+    <h2 class="sec">Загальна підтримка</h2>
+    <ul class="ways">
+      {WAYS.map((w) => (
+        <li>
+          <a class="c-panel way" href={w.href} target="_blank" rel="noopener noreferrer">
+            <strong>{w.name} →</strong>
+            <small>{w.text}</small>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    {doneCards.length > 0 && (
+      <>
+        <h2 class="sec">Зібрали разом із вами <span>{doneCards.length}</span></h2>
+        <ul class="done">
+          {doneCards.map(({ g, img }) => (
+            <li>
+              <a href={`/games/${g.id}/`} class="done__item">
+                <img src={img} alt="" width="40" height="60" loading="lazy" />
+                <span>
+                  <strong>{g.title}</strong>
+                  {g.fundraisingGoal && <small>{formatMoney(g.fundraisingRaised ?? g.fundraisingGoal)}</small>}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+
+    <section class="donors"><DonorsWall /></section>
+  </div>
+</Layout>
+
+<style>
+  .head { margin: 24px 0 8px; }
+  .title { margin-top: 10px; font-size: clamp(1.8rem, 4vw, 3.25rem); }
+  .lead { max-width: 70ch; margin-top: 14px; color: var(--muted); line-height: 1.7; }
+  .sec { display: flex; align-items: baseline; gap: 10px; margin: 48px 0 16px; font-size: clamp(1.15rem, 1.8vw, 1.45rem); font-weight: 600; }
+  .sec span { color: var(--faint); font-size: 0.8em; font-weight: 500; }
+  .sec__note { margin: -8px 0 16px; color: var(--muted); font-size: 14px; }
+  .empty { color: var(--muted); }
+
+  .funds { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); gap: 14px; }
+  .fund { display: flex; gap: 20px; padding: 18px; }
+  .fund__cover img { width: 120px; height: 180px; object-fit: cover; border-radius: 10px; }
+  .funds--small .fund__cover img { width: 80px; height: 120px; }
+  .fund__body { display: grid; flex: 1; gap: 10px; align-content: start; min-width: 0; }
+  .fund__title { font-size: 18px; font-weight: 700; }
+  .fund__text { display: -webkit-box; overflow: hidden; -webkit-line-clamp: 3; -webkit-box-orient: vertical; color: var(--muted); font-size: 14px; line-height: 1.55; }
+  .fund__numbers { display: flex; align-items: baseline; gap: 8px; }
+  .fund__numbers strong { font-size: 22px; font-weight: 700; }
+  .fund__numbers span { color: var(--muted); font-size: 13px; }
+  .fund__numbers b { margin-left: auto; font-size: 14px; }
+  .bar { display: block; height: 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.14); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 6px; background: #f2a94b; }
+  .bar--muted i { background: rgba(255, 255, 255, 0.45); }
+  .fund__meta { color: var(--faint); font-size: 12px; }
+  .fund .c-btn { justify-self: start; margin-top: 4px; }
+
+  .ways { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+  .way { display: grid; gap: 6px; padding: 18px 20px; transition: border-color 0.2s ease; }
+  .way:hover { border-color: rgba(255, 255, 255, 0.4); }
+  .way strong { font-size: 16px; }
+  .way small { color: var(--muted); font-size: 13px; }
+
+  .done { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 10px; }
+  .done__item { display: flex; align-items: center; gap: 12px; }
+  .done__item img { width: 40px; height: 60px; object-fit: cover; border-radius: 6px; }
+  .done__item span { display: grid; gap: 2px; min-width: 0; }
+  .done__item strong { overflow: hidden; font-size: 14px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+  .done__item small { color: var(--muted); font-size: 12px; }
+  .donors { margin-top: 56px; }
+
+  @media (max-width: 520px) {
+    .fund { flex-direction: column; }
+    .fund__cover img { width: 100px; height: 150px; }
+  }
+</style>

@@ -162,13 +162,20 @@ export async function syncLauncher(list: Game[]): Promise<Game[]> {
     const slug = launcherSlugOf(g);
     const lg = slug ? bySlug.get(slug) : undefined;
     if (!lg) return g;
-    const withArt = { ...g, launcherArt: launcherArtOf(lg) ?? g.launcherArt };
+    // Інші версії гри в лаунчері (PS Vita, рекомпіляція тощо) — лише цифри для сторінки гри
+    const otherVersions = g.launcherVersions
+      ?.map((v) => {
+        const t = bySlug.get(v.slug) && ourTranslation(bySlug.get(v.slug)!);
+        return t ? { ...v, translation: t.translation_progress, editing: t.editing_progress, version: t.version?.trim() || null } : null;
+      })
+      .filter((v) => v !== null);
+    const withArt = { ...g, launcherArt: launcherArtOf(lg) ?? g.launcherArt, ...(otherVersions?.length ? { otherVersions } : {}) };
     if (g.launcherSync === false) return withArt;
     synced++;
     return applyLauncherData(withArt, lg);
   });
 
-  const linked = new Set(list.map(launcherSlugOf).filter(Boolean));
+  const linked = new Set([...list.map(launcherSlugOf), ...list.flatMap((g) => g.launcherVersions?.map((v) => v.slug) ?? [])].filter(Boolean));
   const manual = list.filter((g) => g.launcherSync === false).map((g) => g.id);
   if (manual.length) console.log(`[launcher] вручну (launcherSync: false): ${manual.join(", ")}`);
   const missing = launcher.filter((g) => !linked.has(g.slug)).map((g) => g.slug);

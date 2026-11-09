@@ -85,6 +85,12 @@ export interface Game {
   faq?: { question: string; answer: string }[]; // FAQ items
   team?: TeamMember[]; // Translation team
   detailedDescription?: string; // Extended description for detail page
+  /** Інші сторінки цієї ж гри в LBK Launcher (інша платформа чи видання) */
+  launcherVersions?: { slug: string; label: string }[];
+  /** Заповнюється з лаунчера під час збірки: прогрес цих версій */
+  otherVersions?: { slug: string; label: string; translation: number; editing: number; version: string | null }[];
+  /** false — щоденна перевірка не порівнює відсотки з лаунчером (там інша гра чи збірка) */
+  launcherCheck?: boolean;
   releaseDate?: string; // Release date (YYYY-MM-DD)
   gameYear?: number; // Рік виходу (для ігор зі Steam — рік виходу в Steam)
 
@@ -240,6 +246,7 @@ export const games: Game[] = [
   {
     id: "gravity-rush",
     launcherSlug: "gravity_rush_remastered",
+    launcherVersions: [{ slug: "gravity_rush", label: "Версія для PS Vita" }],
     title: "Gravity Rush™ Remastered",
     series: "Gravity Rush",
     description:
@@ -560,7 +567,6 @@ export const games: Game[] = [
   },
   {
     id: "dispatch",
-    launcherSync: false,
     abandonedStage: "Редактура",
     abandonedReason:
       "Для гри вийшла офіційна українська локалізація, тому редактуру нашого перекладу припинено. Сам текст перекладено повністю, і цією версією можна користуватися й надалі.",
@@ -667,6 +673,7 @@ export const games: Game[] = [
     id: "dave-the-diver",
     launcherSlug: "dave_the_diver",
     launcherSync: false, // DLC «In The Jungle»: у лаунчері прогрес базової гри
+    launcherCheck: false,
     title: "Dave The Diver: In The Jungle",
     description:
       "Dave The Diver — затишна пригодницька гра про Дейва, який удень пірнає в загадкову Блакитну Діру, ловить рибу й збирає скарби, а ввечері керує суші-баром: готує страви, розвиває заклад і знайомиться з дивакуватими персонажами. Тут поєдналися дослідження, легкий екшен під водою та приємний менеджмент у стилі “ще один день — і спати”.",
@@ -934,6 +941,7 @@ export const games: Game[] = [
   {
     id: "deadly-premonition-dc",
     launcherSlug: "deadly_premonition_the_directors_cut",
+    launcherVersions: [{ slug: "deadly_premonition_recompilation", label: "Deadly Premonition Recompilation" }],
     title: "Deadly Premonition: The Director's Cut",
     series: "Deadly Premonition",
     description:
@@ -1362,7 +1370,6 @@ export const games: Game[] = [
   },
   {
     id: "metal-gear-mg2",
-    launcherSync: false,
     title: "METAL GEAR & METAL GEAR 2: Solid Snake",
     series: "Metal Gear",
     description:
@@ -1505,7 +1512,9 @@ export const games: Game[] = [
     tags: ["Action RPG", "JRPG", "Пригоди", "Disney"],
     steamUrl: "https://store.steampowered.com/app/2552430/KINGDOM_HEARTS_HD_1525_ReMIX/",
     // У лаунчері гра — частина сторінки збірки 1.5+2.5 (там 40%), тож цифри лише звідси
+    // і щоденна перевірка їх із лаунчером не порівнює
     launcherSync: false,
+    launcherCheck: false,
     downloadUrl: "https://lbklauncher.com/games/kingdom_hearts_hd_1525_remix/little-bit-dmytro-naumchas-naumenko-solovina-komanda",
     donateUrl: "https://send.monobank.ua/jar/3h4akVJRXK",
     gameYear: 2024,
@@ -1638,7 +1647,9 @@ export const games: Game[] = [
   {
     id: "kingdom-hearts-2",
     // У лаунчері гра — частина сторінки збірки 1.5+2.5 (там 40%), тож цифри лише звідси
+    // і щоденна перевірка їх із лаунчером не порівнює
     launcherSync: false,
+    launcherCheck: false,
     title: "KINGDOM HEARTS II FINAL MIX",
     series: "Kingdom Hearts",
     description:

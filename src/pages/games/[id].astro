@@ -257,6 +257,24 @@ const related = games
       )}
     </section>
 
+    <!-- ── Інші версії цієї гри в LBK Launcher (PS Vita, рекомпіляція тощо) ── -->
+    {game.otherVersions && game.otherVersions.length > 0 && (
+      <section class="gsec">
+        <h2 class="gsec__title">Інші версії</h2>
+        <ul class="versions">
+          {game.otherVersions.map((v) => (
+            <li>
+              <a class="c-panel version" href={`https://lbklauncher.com/games/${v.slug}`} target="_blank" rel="noopener noreferrer">
+                <strong>{v.label}</strong>
+                <small>переклад {v.translation}% · редактура {v.editing}%{v.version && ` · версія ${v.version}`}</small>
+                <span class="version__go">У LBK Launcher →</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     {fundActive && game.fundraisingGoal && (
       <section class="gsec">
         <h2 class="gsec__title">Збір коштів</h2>
@@ -503,6 +521,12 @@ const related = games
   .note__cols { display: flex; flex-wrap: wrap; gap: 8px 32px; margin-top: 14px; }
   .note__cols p { display: flex; gap: 10px; align-items: baseline; color: #fff; font-weight: 600; }
 
+  .versions { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; margin-bottom: 40px; }
+  .version { display: grid; gap: 6px; padding: 18px 20px; transition: border-color 0.2s ease; }
+  .version:hover { border-color: rgba(255, 255, 255, 0.4); }
+  .version strong { font-size: 16px; font-weight: 700; }
+  .version small { color: var(--muted); font-size: 13px; }
+  .version__go { margin-top: 6px; color: var(--ink); font-size: 13px; font-weight: 600; }
   .stages { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
   .stage { display: grid; gap: 8px; padding: 18px 20px; --c: rgba(255, 255, 255, 0.5); }
   .stage strong { font-size: 2rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
